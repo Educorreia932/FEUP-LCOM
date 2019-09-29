@@ -5,6 +5,25 @@
 
 #include "i8254.h"
 
+// Sets the corresponding timer bits on the control word
+int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
+{
+  switch (timer)
+  {
+  case 0:
+    *cmd |= TIMER_SEL0;
+    return 0;
+  case 1:
+    *cmd |= TIMER_SEL1;
+    return 0;
+  case 2:
+    *cmd |= TIMER_SEL2;
+    return 0;
+  default:
+    return 1;
+  }
+}
+
 // Sets timer_port to the correct port of the timer
 // Returns 0 if timer is between 0 and 2, returns 1 otherwise
 int timer_get_port(uint8_t timer, uint8_t *timer_port)
@@ -26,9 +45,42 @@ int timer_get_port(uint8_t timer, uint8_t *timer_port)
 }
 
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  // "Thus, in mode 3, the timer generates a square wave with a frequency given by the expression clock/div, where clock is the frequency of the Clock input and div is the value loaded initially in the timer."
+  // TIMER_FREQ is clock on that equation
+  uint16_t div = TIMER_FREQ / freq;
 
+  uint8_t cmd; // Will initially have Status
+  timer_get_conf(timer, &cmd); // Loads status to cmd
+
+  // Saves the 4 least significant bits to preserve mode (3) and counting (BCD/Binary)
+  cmd &= 0x01;
+
+  // Sets the correct timer on the control word
+  if (timer_set_control_word_timer(timer, &cmd))
+    return 1;
+  
+  // Sets LSB followed by MSB on the control word
+  cmd |= (uint8_t) TIMER_LSB_MSB;
+
+  // Gets the timer port
+  uint8_t timer_port;
+  if (timer_get_port(timer, &timer_port))
+    return 1;
+
+  // Gets the LSB and MSB of the div
+  uint8_t lsb, msb;
+  if (util_get_LSB(div, &lsb))
+    return 1;
+  if (util_get_MSB(div, &msb))
+    return 1;
+
+  // Sends control word
+  sys_outb(TIMER_CTRL, cmd);
+
+  //Send the div to get the frequency right
+  sys_outb(timer_port, lsb);
+  sys_outb(timer_port, msb);
+  
   return 1;
 }
 
