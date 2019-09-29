@@ -1,19 +1,15 @@
 {
   "env": {
-    "minix.include": "${workspaceFolder}/../../minix-src/include"
+    "minix.include": "${workspaceFolder}/../.minix-src/include"
   },
   "configurations": [{
     "name": "Minix",
     "compilerPath": "",
     "cStandard": "c11",
     "defines": ["__minix", "_MINIX ", "_NETBSD_SOURCE", "__i386__"],
-    "includePath": [
-      "${workspaceFolder}", "${env:minix.include}", "${workspaceFolder}/include"
-    ],
+    "includePath": ["${workspaceFolder}", "${env:minix.include}"],
     "browse": {
-      "path": [
-        "${workspaceFolder}", "${env:minix.include}", "${workspaceFolder}/include"
-      ],
+      "path": ["${workspaceFolder}", "${env:minix.include}"],
       "limitSymbolsToIncludedHeaders": false,
       "databaseFilename": ""
     }
