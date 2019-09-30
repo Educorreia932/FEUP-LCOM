@@ -5,6 +5,9 @@
 
 #include "i8254.h"
 
+static int timer0_hook_id;
+unsigned int global_counter;
+
 // Sets the corresponding timer bits on the control word
 int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
 {
@@ -88,23 +91,42 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   return 0;
 }
 
+// bit_no = bit a 1 do hook_id 
 int (timer_subscribe_int)(uint8_t *bit_no) {
-    /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
 
-  return 1;
+  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
+    return 1;
+
+  *bit_no = 0;
+  int aux = timer0_hook_id;
+  // aka while (aux != 0)
+  while (aux)
+  {
+    ++bit_no;
+    aux >>= 1;
+  }
+
+  // bit_no must be in [0, 31]
+  if (*bit_no > 31)
+    return 1;
+
+  // Should not be necessary, but here it is anyway
+  // if (sys_irqenable(bit_no) != OK)
+  //   return 1;
+
+  global_counter = 0;
+
+  return 0;
 }
 
 int (timer_unsubscribe_int)() {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+  if (sys_irqrmpolicy(&timer0_hook_id) != OK)
+    return 1;
+  return 0;
 }
 
 void (timer_int_handler)() {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  ++global_counter;
 }
 
 
