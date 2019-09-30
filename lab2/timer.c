@@ -47,20 +47,21 @@ int timer_get_port(uint8_t timer, uint8_t *timer_port)
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   // "Thus, in mode 3, the timer generates a square wave with a frequency given by the expression clock/div, where clock is the frequency of the Clock input and div is the value loaded initially in the timer."
   // TIMER_FREQ is clock on that equation
+  // div is Time-Base
   uint16_t div = TIMER_FREQ / freq;
 
   uint8_t cmd; // Will initially have Status
   timer_get_conf(timer, &cmd); // Loads status to cmd
 
   // Saves the 4 least significant bits to preserve mode (3) and counting (BCD/Binary)
-  cmd &= 0x01;
+  cmd &= 0x0F;
 
   // Sets the correct timer on the control word
   if (timer_set_control_word_timer(timer, &cmd))
     return 1;
   
   // Sets LSB followed by MSB on the control word
-  cmd |= (uint8_t) TIMER_LSB_MSB;
+  cmd |= TIMER_LSB_MSB;
 
   // Gets the timer port
   uint8_t timer_port;
@@ -75,13 +76,16 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
     return 1;
 
   // Sends control word
-  sys_outb(TIMER_CTRL, cmd);
+  if (sys_outb(TIMER_CTRL, cmd))
+    return 1;
 
   //Send the div to get the frequency right
-  sys_outb(timer_port, lsb);
-  sys_outb(timer_port, msb);
-  
-  return 1;
+  if (sys_outb(timer_port, lsb))
+    return 1;
+  if (sys_outb(timer_port, msb))
+    return 1;
+
+  return 0;
 }
 
 int (timer_subscribe_int)(uint8_t *bit_no) {
@@ -124,6 +128,10 @@ int (timer_get_conf)(uint8_t timer, uint8_t *st) {
 int (timer_display_conf)(uint8_t timer, uint8_t st,
                         enum timer_status_field field) {
   
+  // Check if timer is within range
+  if (timer > 2)
+    return 1;
+
   union timer_status_field_val field_val;
   if (field == 0) // aka "all"
   {
