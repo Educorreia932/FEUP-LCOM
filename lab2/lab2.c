@@ -44,7 +44,9 @@ int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
 // Assuming, as we were told, that frequency is already set to 60
 int(timer_test_int)(uint8_t time) {
 
-  uint8_t bit_no;
+  uint8_t bit_no = 0;
+  // Only avoids making this operation on every notification
+  int bit_mask_thing = BIT(bit_no);
 
   if (timer_subscribe_int(&bit_no))
     return 1;
@@ -63,7 +65,7 @@ int(timer_test_int)(uint8_t time) {
     if (is_ipc_notify(ipc_status)) { /* received notification */
         switch (_ENDPOINT_P(msg.m_source)) {
             case HARDWARE: /* hardware interrupt notification */				
-                if (msg.m_notify.interrupts & BIT(bit_no)) { /* subscribed interrupt */
+                if (msg.m_notify.interrupts & bit_mask_thing) { /* subscribed interrupt */
                   timer_int_handler();
                   if (global_counter == 60)
                   {

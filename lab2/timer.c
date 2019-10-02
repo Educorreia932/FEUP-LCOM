@@ -5,8 +5,8 @@
 
 #include "i8254.h"
 
-static int timer0_hook_id;
-unsigned int global_counter;
+static int global_bit_no = 0;
+unsigned long int global_counter = 0;
 
 // Sets the corresponding timer bits on the control word
 int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
@@ -93,36 +93,27 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   return 0;
 }
 
-// bit_no = bit a 1 do hook_id 
+// bit_no IS hook_id, and also global_bit_no (used to unsubscribe)
 int (timer_subscribe_int)(uint8_t *bit_no) {
 
-  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
-    return 1;
-
-  *bit_no = 0;
-  int aux = timer0_hook_id;
-  // aka while (aux != 0)
-  while (aux)
-  {
-    ++bit_no;
-    aux >>= 1;
-  }
-
-  // bit_no must be in [0, 31]
-  if (*bit_no > 31)
-    return 1;
-
-  // Should not be necessary, but here it is anyway
-  // if (sys_irqenable(bit_no) != OK)
-  //   return 1;
-
   global_counter = 0;
+  global_bit_no = *bit_no;
+
+  if (*bit_no > 31)
+    return false;
+
+  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &global_bit_no) != OK)
+    return 1;
+
+  // Is not necessary but gives a fun message if uncommented :D
+  // if (sys_irqenable(&timer0_hook_id) != OK)
+  //   return 1;
 
   return 0;
 }
 
 int (timer_unsubscribe_int)() {
-  if (sys_irqrmpolicy(&timer0_hook_id) != OK)
+  if (sys_irqrmpolicy(&global_bit_no) != OK)
     return 1;
   return 0;
 }
