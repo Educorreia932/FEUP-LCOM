@@ -51,6 +51,8 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   // "Thus, in mode 3, the timer generates a square wave with a frequency given by the expression clock/div, where clock is the frequency of the Clock input and div is the value loaded initially in the timer."
   // TIMER_FREQ is clock on that equation
   // div is Time-Base
+  if (freq < 19) // Freq lower than 19 would get a div larger than 16 bit, therefore, error
+    return 1;
   uint16_t div = TIMER_FREQ / freq;
 
   uint8_t cmd; // Will initially have Status
