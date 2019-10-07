@@ -53,6 +53,7 @@
 #define TIMER_RB_SEL(n)  BIT((n) + 1)
 
 /* Status Related Macros */
+/* Used to "filter" the relevant bits from the status byte */
 
 #define TIMER_STATUS_OUTPUT BIT(7)
 #define TIMER_STATUS_NULL_COUNT BIT(6)

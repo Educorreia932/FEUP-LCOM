@@ -99,11 +99,15 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
 // bit_no IS hook_id, and also global_bit_no (used to unsubscribe)
 int (timer_subscribe_int)(uint8_t *bit_no) {
 
+  if (!bit_no) // Check if pointer is NULL
+    return 1;
+
   global_counter = 0;
   global_bit_no = *bit_no;
 
+  // Bit_no must be in [0, 31] (and it is unsigned)
   if (*bit_no > 31)
-    return false;
+    return 1;
 
   if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &global_bit_no) != OK)
     return 1;
@@ -127,9 +131,13 @@ void (timer_int_handler)() {
 
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
+
+  if (!st) // Checks if pointer is NULL
+    return 1;
+
   uint8_t timer_port;
   // Need to set the RB_COUNT to 1, otherwise the status will not be correct
-  uint8_t cmd = (uint8_t) (0x00 | TIMER_RB_SEL(timer) |
+  uint8_t cmd = (uint8_t) (TIMER_RB_SEL(timer) |
     TIMER_RB_CMD | TIMER_RB_COUNT_);
   
   if (timer_get_port(timer, &timer_port))
@@ -157,18 +165,16 @@ int (timer_display_conf)(uint8_t timer, uint8_t st,
 
   } else if (field == 1) // aka counting "mode" (0 - 5)
   {
+    //  Selects only the counting mode bits and shifts them to get simpler numbers
     st = (st & TIMER_STATUS_TYPE_OF_ACCESS) >> 4;
     switch (st)
     {
-      case 0:
-        field_val.in_mode = INVAL_val; break;
-      case 1:
-        field_val.in_mode = LSB_only; break;
-      case 2:
-        field_val.in_mode = MSB_only; break;
-      case 3:
-        field_val.in_mode = MSB_after_LSB; break;
-      default:
+      case INVAL_val: // 000
+      case LSB_only: // 001
+      case MSB_only: // 010
+      case MSB_after_LSB: // 011
+        field_val.in_mode = st; break;
+      default: // If not a valid value, returns 1
         return 1;
     }
 
@@ -185,10 +191,12 @@ int (timer_display_conf)(uint8_t timer, uint8_t st,
 
   } else if (field == 3) // aka counting "base"
   {
+    // VGets the counting base and sends the result to the field_val bool
     if (st & TIMER_STATUS_BCD)
       field_val.bcd = true;
     else
       field_val.bcd = false;
+
   } else
       return 1;
 
