@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "i8254.h"
+
 extern unsigned int global_counter;
 
 int main(int argc, char *argv[]) {
@@ -44,7 +46,7 @@ int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
 // Assuming, as we were told, that frequency is already set to 60
 int(timer_test_int)(uint8_t time) {
 
-  uint8_t bit_no = 0;
+  uint8_t bit_no = TIMER0_IRQ; 
   // Only avoids making this operation on every notification
   int bit_mask_thing = BIT(bit_no);
 

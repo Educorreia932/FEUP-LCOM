@@ -11,6 +11,9 @@ unsigned long int global_counter = 0;
 // Sets the corresponding timer bits on the control word
 int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
 {
+  if (!cmd) // Check if pointer is NULL
+    return 1;
+
   switch (timer)
   {
   case 0:
@@ -31,6 +34,9 @@ int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
 // Returns 0 if timer is between 0 and 2, returns 1 otherwise
 int timer_get_port(uint8_t timer, uint8_t *timer_port)
 {
+  if (!timer_port) // Check if pointer is NULL
+    return 1;
+
   switch (timer)
   {
     case 0:
