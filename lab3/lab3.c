@@ -9,7 +9,7 @@
 #include "i8042.h"
 #include "keyboard.h"
 
-extern uint8_t scancode, st, error;	
+extern uint8_t scancode, st, error;	// Defined in keyboard
 extern uint32_t no_of_calls;
 
 int main(int argc, char *argv[]) {
@@ -45,10 +45,11 @@ int(kbd_test_scan)() {
   	if (kbd_subscribe_int(&bit_no))
 	  	return 1;
 
-	int r;
-  	int ipc_status;
+	int r, ipc_status;
   	message msg;
+	uint8_t bytes[1];
 	
+	// Interrupt loop
 	while (scancode != ESC_BREAKCODE) { 
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
@@ -60,8 +61,22 @@ int(kbd_test_scan)() {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
 						kbc_ih();
+						
+						uint8_t size = sizeof(scancode);		
 
-						//kbd_print_scancode(true, sizeof(scancode), )
+						//Implement in function
+						if (util_get_LSB(scancode, bytes)) //Only one byte
+							return 1;
+
+						if (sizeof(scancode) > 1)
+							if (util_get_MSB(scancode, bytes + 1)) //Two bytes
+								return 1; 
+
+						if (is_makecode(scancode)) /* Makecode */
+							kbd_print_scancode(true, size, bytes);
+						
+						else /* Breakcode */
+							kbd_print_scancode(false, size, bytes);
 					}
 
 					break;
@@ -86,17 +101,17 @@ int(kbd_test_scan)() {
 }
 
 void (kbc_ih)() {
-	kbc_int_handler();
+		kbc_int_handler();
 }
 
-int(kbd_test_poll)() {
+int (kbd_test_poll)() {
 	/* To be completed by the students */
 	printf("%s is not yet implemented!\n", __func__);
 
 	return 1;
 }
 
-int(kbd_test_timed_scan)(uint8_t n) {
+int (kbd_test_timed_scan)(uint8_t n) {
 	/* To be completed by the students */
 	printf("%s is not yet implemented!\n", __func__);
 
