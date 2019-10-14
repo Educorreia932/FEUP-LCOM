@@ -8,8 +8,7 @@
 
 #include "i8042.h"
 #include "keyboard.h"
-
-extern uint32_t no_of_calls;
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
 	// sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -59,6 +58,9 @@ int(kbd_test_scan)() {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
 						kbc_ih();
+						if (is_scancode_complete)
+							if (kbc_print_scancode_wrapper())
+								return 1;	
 					}
 					break;
 
@@ -82,47 +84,32 @@ int(kbd_test_scan)() {
 }
 
 void (kbc_ih)() {
-		kbc_int_handler();
-
-		if (!kbc_error)
-			kbc_print_scancode_wrapper();	
+		kbc_get_scancode(0);
 }
 
 int (kbd_test_poll)() {
-
-	uint8_t poll_st = 0;
-
-	while (1)
+	while (scancode != ESC_BREAKCODE)
 	{
-		if (util_sys_inb(STAT_REG, &poll_st)) // Read status (replace by a function?)
-			return 1;
-		// Check if there are errors in the status
-		if (poll_st & ST_OUT_BUF) // Out buffer full (but it's fine)
-		{
-			if (poll_st & (ST_PAR_ERR | ST_TO_ERR)) // Invalid breakcode in out buffer (problem)
+		// ALl the verification is already done inside kbc_get_scancode()
+		// So all we need to check is if it returns a non-zero
+		if (kbc_get_scancode(1))
 			{
 				if (tickdelay(micros_to_ticks(KBC_WAIT)))
 					return 1;		
 				continue;
 			}
-		}
-		else
-		{
-			if (tickdelay(micros_to_ticks(KBC_WAIT)))
-				return 1;		
-			continue;
-		}		
-
-		// It's all fine, time to read the scancode
-		kbc_get_scancode();
-		if (!kbc_error)
-			kbc_print_scancode_wrapper();
 		
-		if (scancode == ESC_BREAKCODE)
-			break;
+
+		if (is_scancode_complete)
+			if (kbc_print_scancode_wrapper())
+				return 1;
+		
 	}
 
-	kbc_reenable_default_int();
+	// Avoids the trouble of reenabling the
+	// keyboard interrupts from a remote shell
+	if (kbc_reenable_default_int())
+		return 1;
 
 	if (kbd_print_no_sysinb(no_of_calls))
 		return 1;
