@@ -12,8 +12,8 @@
 #define KBD_IRQ 1 /**< @brief Keyboard IRQ line */
 
 /* Time outs */
-#define TIMEOUT_ATTEMPTS 50 // At a rate of 20ms per attempt, it will timeout in 1 sec
-#define KBC_WAIT 20000 // Will wait for 20ms
+#define TIMEOUT_ATTEMPTS 5 // At a rate of 10ms per attempt, it will timeout in 50ms
+#define KBC_WAIT 10000 // Will wait for 10ms
 
 /* I/O Port addresses */
 
@@ -38,24 +38,28 @@
 #define CMD_BYTE_ENABLE_INT_MOUSE BIT(1)
 #define CMD_BYTE_ENABLE_INT_KBD BIT(0)
 
-/* Status Related Macros */
+/* STATUS RELATED MACROS */
 /* Used to "filter" the relevant bits from the status byte */
 
 /* Input buffer full */
 
-#define ST_IN_BUF BIT(1)
 #define ST_OUT_BUF BIT(0)
+#define ST_IN_BUF BIT(1)
+
+/* Is the output buffer filled with mouse data */
+
+#define ST_MOUSE_DATA BIT(5)
 
 /* Error selection: bits 7 and 6 */
 
 #define ST_PAR_ERR BIT(7)
 #define ST_TO_ERR BIT(6)
 
-//#define OBF // ?
-
-/* Scancode Related Macros */
+/* SCANCODE RELATED MACROS */
 #define ESC_BREAKCODE 0x81
 #define MAKE_TO_BREAK 0x80 /**< @brief Difference between the breakcode and the makecode */
+
+#define SCANCODE_TWO_BYTES 0xE0
 
 /**@}*/
 
