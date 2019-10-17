@@ -132,7 +132,7 @@ int (kbd_test_timed_scan)(uint8_t n) {
 	if (kbd_subscribe_int(&kbd_bit_no))
 	 	return 1;
 
-	if (timer0_subscribe_int(&timer0_bit_no))
+	if (timer_subscribe_int(&timer0_bit_no))
 		return 1;
 
 	// Only avoids making this operation on every notification
@@ -154,7 +154,7 @@ int (kbd_test_timed_scan)(uint8_t n) {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & timer0_bit_mask)
 					{
-						timer0_int_handler();
+						timer_int_handler();
 						if (global_timer0_counter == 60)
 						{
 							global_timer0_counter = 0;
@@ -183,10 +183,10 @@ int (kbd_test_timed_scan)(uint8_t n) {
 		}
 	}
 
-	if (kbd_unsubscribe_int(&kbd_bit_no))
+	if (kbd_unsubscribe_int())
 		return 1;
 	
-	if (timer0_unsubscribe_int())
+	if (timer_unsubscribe_int())
 		return 1;
 
 
