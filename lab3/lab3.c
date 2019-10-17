@@ -9,6 +9,12 @@
 #include "i8042.h"
 #include "keyboard.h"
 #include "utils.h"
+// #include "i8254.h" Already in "timer.h"
+#include "timer.h"
+
+// // The counter is declared here too, because it won't compile
+// // with it only declared on timer.h, which is included too
+// extern unsigned long int global_timer0_counter;
 
 int main(int argc, char *argv[]) {
 	// sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -118,8 +124,74 @@ int (kbd_test_poll)() {
 }
 
 int (kbd_test_timed_scan)(uint8_t n) {
-	/* To be completed by the students */
-	printf("%s is not yet implemented!\n", __func__);
+	uint8_t idle_countdown = n;
+	// These next vars their values from the function
+	uint8_t kbd_bit_no, timer0_bit_no;
+	
+	// Subscribe to both interrupts
+	if (kbd_subscribe_int(&kbd_bit_no))
+	 	return 1;
 
-	return 1;
+	if (timer0_subscribe_int(&timer0_bit_no))
+		return 1;
+
+	// Only avoids making this operation on every notification
+	int kbd_bit_mask = BIT(kbd_bit_no);
+	int timer0_bit_mask = BIT(timer0_bit_no);
+
+	int r, ipc_status;
+  message msg;
+	
+	// Interrupt loop
+	while ((scancode != ESC_BREAKCODE) && idle_countdown) { 
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
+
+		if (is_ipc_notify(ipc_status)) {
+			switch (_ENDPOINT_P(msg.m_source)) {
+				case HARDWARE: /* hardware interrupt notification */
+					if (msg.m_notify.interrupts & timer0_bit_mask)
+					{
+						timer0_int_handler();
+						if (global_timer0_counter == 60)
+						{
+							global_timer0_counter = 0;
+							--idle_countdown;
+						}
+					}
+					if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
+						kbc_ih();
+						idle_countdown = n;
+						global_timer0_counter = 0;
+						if (is_scancode_complete)
+						{
+							if (kbc_print_scancode_wrapper())
+								return 1;
+						}
+					}
+					break;
+
+				default:
+					break; /* no other notifications expected: do nothing */     
+			}
+		}
+
+		else { /* received a standard message, not a notification */
+			/* no standard messages expected: do nothing */
+		}
+	}
+
+	if (kbd_unsubscribe_int(&kbd_bit_no))
+		return 1;
+	
+	if (timer0_unsubscribe_int())
+		return 1;
+
+
+	if (kbd_print_no_sysinb(no_of_calls))
+		return 1;
+
+	return 0;
 }

@@ -2,16 +2,18 @@
 
 static uint8_t scancode_no_bytes, scancode_bytes[2], st;
 uint8_t scancode, kbc_error, is_scancode_complete=1;
-int global_kbd_bit_no = KBD_IRQ;
+static int kbd_bit_no = KBD_IRQ;
 
 
 int (kbd_subscribe_int)(uint8_t *bit_no) {
-	if (!bit_no || *bit_no > 31)
+
+	if (!bit_no) // Check if pointer is NULL
 		return 1;
 
-	global_kbd_bit_no = *bit_no;
+	kbd_bit_no = KBD_IRQ;
+	*bit_no = kbd_bit_no;
 
-	if (sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &global_kbd_bit_no))
+	if (sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &kbd_bit_no))
 		return 1;
 
 	return 0;
@@ -19,9 +21,9 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
 
 // Unsubscribes the keyboard interrupts
 int(kbd_unsubscribe_int)() {
-	if (sys_irqrmpolicy(&global_kbd_bit_no))
+	if (sys_irqrmpolicy(&kbd_bit_no))
 		return 1;
-	
+		
 	return 0;
 }
 
