@@ -2,18 +2,20 @@
 
 static uint8_t scancode_no_bytes, scancode_bytes[2], st;
 uint8_t scancode, kbc_error, is_scancode_complete=1;
-static int kbd_bit_no = KBD_IRQ;
+static int kbd_hook_id;
 
-
+// Sends the bit number for the interrupt through bit_no
+// and saves the hook id on kbd_hook_id to be used
+// later for unsubscribing and other actions
 int (kbd_subscribe_int)(uint8_t *bit_no) {
 
 	if (!bit_no) // Check if pointer is NULL
 		return 1;
 
-	kbd_bit_no = KBD_IRQ;
-	*bit_no = kbd_bit_no;
+	kbd_hook_id = KBD_IRQ;
+	*bit_no = KBD_IRQ;
 
-	if (sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &kbd_bit_no))
+	if (sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &kbd_hook_id))
 		return 1;
 
 	return 0;
@@ -21,29 +23,29 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
 
 // Unsubscribes the keyboard interrupts
 int(kbd_unsubscribe_int)() {
-	if (sys_irqrmpolicy(&kbd_bit_no))
+	if (sys_irqrmpolicy(&kbd_hook_id))
 		return 1;
 		
 	return 0;
 }
 
 // Sends a command to the kbc
-// Was only used for reenabling the interrupts
-// Has status as a parameter so we may save util_sys_inb() calls
-int kbc_send_cmd(uint8_t port, uint8_t cmd, uint8_t *status)
+// Used for reenabling the interrupts
+int kbc_send_cmd(uint8_t port, uint8_t cmd)
 {	
 	// This section waits until it can write to input buffer
 	// or it reaches a time out state
 	uint8_t i = TIMEOUT_ATTEMPTS;
 	while (i) // Tries for i attempts
 	{
+		if (util_sys_inb(STAT_REG, &st)) // Read Status
+  		return 1;
+
 		// Can only write if the ST_IN_BUF is set to 0
 		if (st & ST_IN_BUF)
 		{
 			--i;
 			if (tickdelay(micros_to_ticks(KBC_WAIT)))
-				return 1;
-			if (util_sys_inb(STAT_REG, status)) // Read status (replace by a function?)
 				return 1;
 			continue;
 		}
@@ -59,10 +61,9 @@ int kbc_send_cmd(uint8_t port, uint8_t cmd, uint8_t *status)
 	return 0;
 }
 
-// Was used only for reenabling the interrupts
+// Used for reenabling the interrupts
 // Reads something from port (used mainly to read the responses from commands)
-// Has status as a parameter so we may save util_sys_inb() calls
-int kbc_read_outbf(uint8_t port, uint8_t *content, uint8_t *status)
+int kbc_read_outbf(uint8_t port, uint8_t *content)
 {
 	// This section waits until there is something
 	// to read from the output buffer
@@ -70,6 +71,9 @@ int kbc_read_outbf(uint8_t port, uint8_t *content, uint8_t *status)
 	uint8_t i = TIMEOUT_ATTEMPTS;
 	while (i) // Tries for i attempts
 	{
+		if (util_sys_inb(STAT_REG, &st)) // Read Status
+  		return 1;
+
 		// Can only read if the ST_OUT_BUF is set to 1
 		if (st & ST_OUT_BUF)
 		{
@@ -80,8 +84,6 @@ int kbc_read_outbf(uint8_t port, uint8_t *content, uint8_t *status)
 			--i;
 		  if (tickdelay(micros_to_ticks(KBC_WAIT)))
 			 	return 1;
-			if (util_sys_inb(port, status)) // Read status (replace by a function?)
-				return 1;
 			continue;
 		}		
 	}
@@ -104,8 +106,8 @@ int kbc_get_scancode(uint8_t isPoll)
 		return 1;
 
 	// Only make this check if in polling mode
-	// because sometimes the interrupts can be faster
-	// than the status updating
+	// because sometimes the interrupt may come up
+	// faster than the status updating
 	if (isPoll && !(st & ST_OUT_BUF))
 		return 1;
 
@@ -116,6 +118,8 @@ int kbc_get_scancode(uint8_t isPoll)
 	if (util_sys_inb(OUT_BUF, &scancode)) // Read scancode
 		return 1;
 	
+	// Whenever is_scancode_complete is false,
+	// a 2 byte scancode is being read
 	if (is_scancode_complete)
 	{
 		scancode_bytes[0] = scancode;
@@ -141,6 +145,7 @@ int kbc_get_scancode(uint8_t isPoll)
 
 // Unimportant function for the project as it is only used for lab3
 // It is stored here only to avoid more global variables
+// (using static variables isntead)
 int kbc_print_scancode_wrapper()
 {
 	// In 2 byte scancodes, the difference between make and break
@@ -158,32 +163,27 @@ int kbc_print_scancode_wrapper()
 	return 0;
 }
 
-// Wasn't requested, but reenables the keyboard interrupts
+// Reenables the keyboard interrupts
 // Avoids having to call the executable from a remote shell
 // to restore the keyboard interrupts
+// IMPORTANT:
+// This is only meant to be called when interrupts are disabled
+// Otherwise, the ih may "steal" our response and ruin everything
 int kbc_reenable_default_int()
 {
-	if (util_sys_inb(STAT_REG, &st))
-  	return 1;
-	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE, &st))
+	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE))
 		return 1;
 
 	uint8_t cmd;
-	if (util_sys_inb(STAT_REG, &st))
-  	return 1;
-	if (kbc_read_outbf(OUT_BUF, &cmd, &st))
+	if (kbc_read_outbf(OUT_BUF, &cmd))
 		return 1;
 
 	cmd |= CMD_BYTE_ENABLE_INT_KBD;
 	
-	if (util_sys_inb(STAT_REG, &st))
-  	return 1;
-	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE, &st))
+	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE))
 		return 1;
 
-	if (util_sys_inb(STAT_REG, &st))
-  	return 1;
-	if (kbc_send_cmd(IN_BUF_ARGS, cmd, &st))
+	if (kbc_send_cmd(IN_BUF_ARGS, cmd))
 		return 1;
 	
 	return 0;

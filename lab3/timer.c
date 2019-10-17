@@ -5,7 +5,7 @@
 
 #include "timer.h"
 
-static int timer0_bit_no = TIMER0_IRQ;
+static int timer0_hook_id;
 unsigned long int global_timer0_counter = 0;
 
 // Sets the corresponding timer bits on the control word
@@ -102,33 +102,35 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   return 0;
 }
 
-// bit_no IS hook_id, and also global_bit_no (used to unsubscribe)
-int timer0_subscribe_int(uint8_t *bit_no) {
+// Sends the bit number for the interrupt through bit_no
+// and saves the hook id on timer0_hook_id to be used
+// later for unsubscribing and other actions
+int (timer_subscribe_int)(uint8_t *bit_no) {
 
   if (!bit_no) // Check if pointer is NULL
     return 1;
 
-  timer0_bit_no = TIMER0_IRQ;
-  *bit_no = timer0_bit_no;
+  *bit_no = TIMER0_IRQ;
+  timer0_hook_id = TIMER0_IRQ;
   global_timer0_counter = 0; 
 
-  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_bit_no) != OK)
+  if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
     return 1;
 
   // Is not necessary but gives a fun message if uncommented :D
-  // if (sys_irqenable(&timer0_bit_no) != OK)
+  // if (sys_irqenable(&timer0_hook_id) != OK)
   //   return 1;
 
   return 0;
 }
 
-int timer0_unsubscribe_int() {
-  if (sys_irqrmpolicy(&timer0_bit_no) != OK)
+int (timer_unsubscribe_int)() {
+  if (sys_irqrmpolicy(&timer0_hook_id) != OK)
     return 1;
   return 0;
 }
 
-void timer0_int_handler() {
+void (timer_int_handler)() {
   ++global_timer0_counter;
 }
 
