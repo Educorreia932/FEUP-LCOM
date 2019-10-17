@@ -5,7 +5,7 @@
 #include "utils.h"
 
 extern uint8_t scancode, is_scancode_complete, kbc_error;
-extern int global_kbd_bit_no;
+//extern int global_kbd_bit_no; This is static, needs testing 
 
 int (kbd_subscribe_int)(uint8_t *bit_no);
 int (kbd_unsubscribe_int)();
