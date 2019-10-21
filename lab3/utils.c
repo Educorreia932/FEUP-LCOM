@@ -33,10 +33,3 @@ int (util_sys_inb)(int port, uint8_t *value) {
 
   return 0;
 }
-
-int (is_makecode)(uint8_t scancode) {
-	if (scancode < MAKE_TO_BREAK)
-		return 1;
-
-	return 0;
-}

@@ -37,4 +37,7 @@
     "timer.h": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
+  "python.linting.pylintEnabled": true,
+  "python.linting.flake8Enabled": false,
+  "python.linting.enabled": true,
 }
