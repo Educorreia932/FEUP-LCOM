@@ -64,6 +64,7 @@ int(kbd_test_scan)() {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
 						kbc_ih();
+						analyse_scancode();
 						if (is_scancode_complete)
 							if (kbc_print_scancode_wrapper())
 								return 1;	
@@ -90,7 +91,7 @@ int(kbd_test_scan)() {
 }
 
 void (kbc_ih)() {
-		kbc_get_scancode(0);
+		kbc_get_scancode();
 }
 
 int (kbd_test_poll)() {
@@ -98,13 +99,15 @@ int (kbd_test_poll)() {
 	{
 		// ALl the verification is already done inside kbc_get_scancode()
 		// So all we need to check is if it returns a non-zero
-		if (kbc_get_scancode(1))
-			{
-				if (tickdelay(micros_to_ticks(KBC_WAIT)))
-					return 1;		
-				continue;
-			}
+		if (kbc_get_scancode())
+		{ // There was an error in the read operation
+			if (tickdelay(micros_to_ticks(KBC_WAIT)))
+				return 1;		
+			continue;
+		}
 		
+		// There was no error in the read operation (if there was, the cycle repeats until it is valid, thanks to the continue)
+		analyse_scancode();
 
 		if (is_scancode_complete)
 			if (kbc_print_scancode_wrapper())
@@ -163,8 +166,9 @@ int (kbd_test_timed_scan)(uint8_t n) {
 					}
 					if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
 						kbc_ih();
-						idle_countdown = n;
-						global_timer0_counter = 0;
+						analyse_scancode();
+						idle_countdown = n; // Reset the idle countdown
+						global_timer0_counter = 0; // Make sure we are counting <idle> complete seconds
 						if (is_scancode_complete)
 						{
 							if (kbc_print_scancode_wrapper())

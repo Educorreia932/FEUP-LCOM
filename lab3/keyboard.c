@@ -1,7 +1,7 @@
 #include "keyboard.h"
 
-static uint8_t scancode_no_bytes, scancode_bytes[2], st;
-uint8_t scancode, kbc_error, is_scancode_complete=1;
+static uint8_t scancode_no_bytes, scancode_bytes[2], st, valid_scancode=0;
+uint8_t scancode, is_scancode_complete=1;
 static int kbd_hook_id;
 
 // Sends the bit number for the interrupt through bit_no
@@ -100,47 +100,67 @@ int kbc_read_outbf(uint8_t port, uint8_t *content)
 // Reads a scancode from the kbc output buffer
 // Supports 2 byte scancodes, but it will wait
 // for the second call to recognize the full scancode
-int kbc_get_scancode(uint8_t isPoll)
+int kbc_get_scancode()
 {
-	if (util_sys_inb(STAT_REG, &st))
-		return 1;
 
-	// Only make this check if in polling mode
-	// because sometimes the interrupt may come up
-	// faster than the status updating
-	if (isPoll && !(st & ST_OUT_BUF))
+	if (util_sys_inb(STAT_REG, &st))
+	{
+		valid_scancode = 0;
 		return 1;
+	}	
+
+	// Check if output buffer is full
+	if (!(st & ST_OUT_BUF))
+	{
+		valid_scancode = 0;
+		return 1;
+	}	
+
+	if (util_sys_inb(OUT_BUF, &scancode)) // Read scancode
+	{
+		valid_scancode = 0;
+		return 1;
+	}	
 
 	// If either one is set to 1, there's an error
 	if (st & (ST_PAR_ERR | ST_TO_ERR | ST_MOUSE_DATA))
+	{
+		valid_scancode = 0;
 		return 1;
+	}	
 
-	if (util_sys_inb(OUT_BUF, &scancode)) // Read scancode
-		return 1;
-	
-	// Whenever is_scancode_complete is false,
-	// a 2 byte scancode is being read
-	if (is_scancode_complete)
-	{
-		scancode_bytes[0] = scancode;
-		if (scancode == SCANCODE_TWO_BYTES)
-		{ // Will have to wait for the second byte
-			is_scancode_complete = 0;
-			scancode_no_bytes = 2;
-		}
-		else
-		{ // Regular 1 byte scancodes
-			is_scancode_complete = 1;
-			scancode_no_bytes = 1;
-		}
-	}
-	else // Reading the second byte of a scancode
-	{
-		scancode_bytes[1] = scancode;
-		is_scancode_complete = 1;
-	}
+	valid_scancode = 1;
 	
 	return 0;
+}
+
+
+// It's sole purpose is to parse both 1 & 2 byte scancodes
+void analyse_scancode() {
+	if (valid_scancode) // Checks if the current scancode was invalid (error in the read operation)
+	{
+		// Whenever is_scancode_complete is false,
+		// a 2 byte scancode is being read
+		if (is_scancode_complete)
+		{
+			scancode_bytes[0] = scancode;
+			if (scancode == SCANCODE_TWO_BYTES)
+			{ // Will have to wait for the second byte
+				is_scancode_complete = 0;
+				scancode_no_bytes = 2;
+			}
+			else
+			{ // Regular 1 byte scancodes
+				is_scancode_complete = 1;
+				scancode_no_bytes = 1;
+			}
+		}
+		else // Reading the second byte of a scancode
+		{
+			scancode_bytes[1] = scancode;
+			is_scancode_complete = 1;
+		}
+	}
 }
 
 // Unimportant function for the project as it is only used for lab3
@@ -150,7 +170,7 @@ int kbc_print_scancode_wrapper()
 {
 	// In 2 byte scancodes, the difference between make and break
 	// will already be stored in scancode
-	if (is_makecode(scancode)) /* Makecode */
+	if (scancode < MAKE_TO_BREAK) // Checks if it's a make code
 	{
 		if (kbd_print_scancode(true, scancode_no_bytes, scancode_bytes))
 			return 1;

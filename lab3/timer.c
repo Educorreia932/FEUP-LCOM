@@ -112,7 +112,7 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
 
   *bit_no = TIMER0_IRQ;
   timer0_hook_id = TIMER0_IRQ;
-  global_timer0_counter = 0; 
+  global_timer0_counter = 0; // Reset time counter
 
   if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
     return 1;
