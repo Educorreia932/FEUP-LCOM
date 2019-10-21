@@ -132,11 +132,14 @@ int (kbd_test_timed_scan)(uint8_t n) {
 	uint8_t kbd_bit_no, timer0_bit_no;
 	
 	// Subscribe to both interrupts
-	if (kbd_subscribe_int(&kbd_bit_no))
-	 	return 1;
-
 	if (timer_subscribe_int(&timer0_bit_no))
 		return 1;
+
+	if (kbd_subscribe_int(&kbd_bit_no))
+	{ // If this has an error, the timer would still be subscribed, so we need to unsubscribe it
+		timer_unsubscribe_int(); // Don't care if it ends in an error, we did all we could do
+		return 1;
+	}
 
 	// Only avoids making this operation on every notification
 	int kbd_bit_mask = BIT(kbd_bit_no);
@@ -193,9 +196,8 @@ int (kbd_test_timed_scan)(uint8_t n) {
 	if (timer_unsubscribe_int())
 		return 1;
 
-
-	if (kbd_print_no_sysinb(no_of_calls))
-		return 1;
+	// if (kbd_print_no_sysinb(no_of_calls))
+	// 	return 1;
 
 	return 0;
 }
