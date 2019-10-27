@@ -33,10 +33,10 @@ int main(int argc, char *argv[]) {
 }
 
 int (mouse_test_packet)(uint32_t cnt) {
-    uint8_t bit_no = MOUSE_IRQ;
+  uint8_t mouse_bit_no = MOUSE_IRQ;
 
-    // Only avoids making this operation on every notification
-    int mouse_bit_mask = BIT(bit_no);
+  // Only avoids making this operation on every notification
+  int mouse_bit_mask = BIT(mouse_bit_no);
 
 	//if (kbc_send_cmd(0x64, STREAM_MODE))
 	//	return 1;
@@ -47,14 +47,15 @@ int (mouse_test_packet)(uint32_t cnt) {
 	if (mouse_enable_data_reporting())
 		return 1;
 
-	if (mouse_subscribe_int(&bit_no))
+	if (mouse_subscribe_int(&mouse_bit_no))
 		return 1;
 
 	int r, ipc_status;
   	message msg;
 
+  cnt *= 3; // TODO: Temporary fix
 	// Interrupt loop
-	while (cnt) { 
+	while (cnt) {
 			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 				printf("driver_receive failed with: %d", r);
 				continue;
@@ -64,17 +65,19 @@ int (mouse_test_packet)(uint32_t cnt) {
 				switch (_ENDPOINT_P(msg.m_source)) {
 					case HARDWARE: /* hardware interrupt notification */
 						if (msg.m_notify.interrupts & mouse_bit_mask) { /* subscribed interrupt */
-                            mouse_ih();
+              
+              mouse_ih();
 														
-							if (error)
-                                return 1;
-														
-                            if (read_data())
-                                return 1;  
+							if (mouse_ih_error)
+                return 1;
+              
+              if (mouse_data_handler())
+                return 1;
+              
+              if (is_mouse_packet_complete)
+                mouse_print_packet(&mouse_parsed_packet);
 
-                            mouse_print_packet(&data);
-
-                            cnt--;                 
+              cnt--;
 						}
 
 						break;
@@ -88,7 +91,7 @@ int (mouse_test_packet)(uint32_t cnt) {
 			}
 	}
 
-	if (mouse_unsubscribe_int(&bit_no))
+	if (mouse_unsubscribe_int(&mouse_bit_no))
 		return 1;
 
 	return 0;
