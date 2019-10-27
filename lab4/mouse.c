@@ -1,7 +1,13 @@
 #include "mouse.h"
 
-uint8_t counter = 0;
-bool error = false;
+// Gloval Vars
+bool mouse_ih_error = false, is_mouse_packet_complete = false;
+struct packet mouse_parsed_packet;
+
+// Static vars
+static int mouse_hook_id;
+static uint8_t st, counter = 0;
+static uint8_t packet_bytes[3];
 
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
@@ -25,55 +31,69 @@ uint8_t (mouse_unsubscribe_int)() {
 
 void (mouse_ih)() {
     if (util_sys_inb(STAT_REG, &st)) {
-        error = 1; 
+        mouse_ih_error = 1; 
         return;        
     }
 
     // If either one is set to 1, there's an error
     if (st & (ST_PAR_ERR | ST_TO_ERR)) {
-        error = 1; 
+        mouse_ih_error = 1; 
         return;
     }
 
-    if (util_sys_inb(OUT_BUF, &data_bytes[counter])) {
-        error = 1;
+    if (util_sys_inb(OUT_BUF, &packet_bytes[counter])) {
+        mouse_ih_error = 1;
         return;
     }
 
-    counter++;       
-
-    if (counter > 2)
-        counter = 0;
 }
 
-uint8_t (read_data)() {
-    uint8_t first_byte = data_bytes[0]; 
-    bool x_sign, y_sign; 
+uint8_t (parse_packet)() {
 
-    data.lb = first_byte & BIT(0);     
-    data.rb = first_byte >> 1 & BIT(0);
-    data.mb = first_byte >> 1 & BIT(0);   
+    mouse_parsed_packet.bytes[0] = packet_bytes[0];
+    mouse_parsed_packet.bytes[1] = packet_bytes[1];
+    mouse_parsed_packet.bytes[2] = packet_bytes[2]; 
 
-    y_sign = first_byte >> 2 & BIT(0);
-    x_sign = first_byte >> 1 & BIT(0);
+    // According to stdbool, for numerical types (aka uint8_t)
+    // 0 gets converted to 0 (false) and any other number gets converted
+    // to 1 (true), so we don't need to shift the result of the parsed data
+    
+    /* MOUSE BUTTONS */
+    mouse_parsed_packet.lb = packet_bytes[0] & MOUSE_PARSE_LB;     
+    mouse_parsed_packet.rb = packet_bytes[0] & MOUSE_PARSE_RB;
+    mouse_parsed_packet.mb = packet_bytes[0] & MOUSE_PARSE_MB;   
 
-    data.y_ov = first_byte >> 1 & BIT(0);
-    data.x_ov = first_byte >> 1 & BIT(0);
+    /* MOUSE MOVEMENT DELTAS */
+    // Doesn't take into account the sign
+    mouse_parsed_packet.delta_x = (uint16_t) packet_bytes[1];
+    mouse_parsed_packet.delta_y = (uint16_t) packet_bytes[2];
 
-    data.delta_x = data_bytes[1];
-    data.delta_y = data_bytes[2];
+    // Fixes the sign if it was a negative number
+    if (packet_bytes[0] & MOUSE_PARSE_X_DELTA_MSB)
+        mouse_parsed_packet.delta_x |= EXTEND_SIGN;
+    if (packet_bytes[0] & MOUSE_PARSE_Y_DELTA_MSB)
+        mouse_parsed_packet.delta_y |= EXTEND_SIGN;
 
-    if (x_sign)
-        data.delta_x |= EXTEND_SIGN;
+    mouse_parsed_packet.x_ov = packet_bytes[0] & MOUSE_PARSE_X_OVERFLOW;
+    mouse_parsed_packet.y_ov = packet_bytes[0] & MOUSE_PARSE_Y_OVERFLOW;
 
-    if (y_sign)
-        data.delta_y |= EXTEND_SIGN;
+    return 0;
+}
 
-    data.bytes[0] = data_bytes[0];
-    data.bytes[1] = data_bytes[1];
-    data.bytes[2] = data_bytes[2]; 
+uint8_t mouse_data_handler() {
+    ++counter;
 
-    return 0;   
+    if (counter > 2) {
+        is_mouse_packet_complete = true;
+        if (parse_packet())
+            return 1;
+        counter = 0;
+    }
+    else {
+        is_mouse_packet_complete = false;
+    }
+    
+    return 0;
 }
 
 uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd) {        
