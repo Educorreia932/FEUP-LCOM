@@ -8,4 +8,7 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no);
 uint8_t (mouse_unsubscribe_int)();
 void (mouse_ih)();
 uint8_t (mouse_data_handler)();
-uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd);
+
+uint8_t mouse_data_reporting_enable();
+uint8_t mouse_data_reporting_disable();
+uint8_t mouse_set_stream_mode();

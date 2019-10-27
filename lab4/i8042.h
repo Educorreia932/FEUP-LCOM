@@ -68,20 +68,29 @@
 
 #define MOUSE_IRQ 12 /**< @brief Mouse IRQ line */
 
-#define CTRL_REG 0x64
-#define IN_BUF 0x60
+/* PS/2 Mouse Ports */
 
-#define EXTEND_SIGN 0xFF00
+#define MOUSE_STAT_REG 0x64
+#define MOUSE_CTRL_REG 0x64
+#define MOUSE_IN_BUF 0x60
+#define MOUSE_OUT_BUF 0x60
 
 /* Mouse Commands */
 
-#define RESET 0xFF
-#define DISABLE_DATA_REPORT 0XF5
-#define ENABLE_DATA_REPORT 0xF4
-#define REMOTE_MODE 0xF0
-#define STREAM_MODE 0xEA
-#define SCALING_ACCELERATION 0xE7
-#define SCALING_LINEAR 0xE6
+#define KBC_WRITE_BYTE_TO_MOUSE 0xD4
+#define MOUSE_CMD_RESET 0xFF
+#define MOUSE_CMD_DISABLE_DATA_REPORT 0XF5
+#define MOUSE_CMD_ENABLE_DATA_REPORT 0xF4
+#define MOUSE_CMD_REMOTE_MODE 0xF0
+#define MOUSE_CMD_STREAM_MODE 0xEA
+#define MOUSE_CMD_SCALING_ACCELERATION 0xE7
+#define MOUSE_CMD_SCALING_LINEAR 0xE6
+
+/* Mouse Controller Acknowledgements */
+
+#define MOUSE_CTRL_ACK 0xFA
+#define MOUSE_CTRL_NACK 0xFE
+#define MOUSE_CTRL_ERROR 0xFC
 
 /* Mouse Packet Parsing */
 
@@ -93,6 +102,7 @@
 #define MOUSE_PARSE_Y_DELTA_MSB BIT(5)
 #define MOUSE_PARSE_X_OVERFLOW BIT(6)
 #define MOUSE_PARSE_Y_OVERFLOW BIT(7)
+#define EXTEND_SIGN 0xFF00
 
 /**@}*/
 

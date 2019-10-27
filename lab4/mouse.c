@@ -8,6 +8,7 @@ struct packet mouse_parsed_packet;
 static int mouse_hook_id;
 static uint8_t st, counter = 0;
 static uint8_t packet_bytes[3];
+static bool found_first_byte = false;
 
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
@@ -29,15 +30,60 @@ uint8_t (mouse_unsubscribe_int)() {
     return 0;
 }
 
+uint8_t mouse_send_cmd(uint8_t cmd) {
+    if (kbc_send_cmd(MOUSE_CTRL_REG, KBC_WRITE_BYTE_TO_MOUSE))
+        return 1;
+    if (kbc_send_cmd(MOUSE_IN_BUF, cmd))
+        return 1;
+
+    uint8_t byte_received;
+    if (kbc_read_outbf(MOUSE_OUT_BUF, &byte_received) || byte_received != MOUSE_CTRL_ACK)
+        return 1;
+    
+    return 0;
+}
+
+uint8_t mouse_data_reporting_enable() {
+    if (mouse_send_cmd(MOUSE_CMD_ENABLE_DATA_REPORT))
+        return 1;
+    return 0;
+}
+
+uint8_t mouse_data_reporting_disable() {
+    if (mouse_send_cmd(MOUSE_CMD_DISABLE_DATA_REPORT))
+        return 1;
+    return 0;
+}
+
+uint8_t mouse_send_cmd_stream_mode(uint8_t cmd) {
+    if (mouse_data_reporting_disable())
+        return 1;
+    if (mouse_send_cmd(cmd))
+        return 1;
+    if (mouse_data_reporting_enable())
+        return 1;
+    return 0;
+}
+
+uint8_t mouse_set_stream_mode() {
+    if (mouse_send_cmd(MOUSE_CMD_STREAM_MODE))
+        return 1;
+    return 0;
+}
+
 void (mouse_ih)() {
     if (util_sys_inb(STAT_REG, &st)) {
-        mouse_ih_error = 1; 
+        mouse_ih_error = 1;
+        uint8_t discarded_byte;
+        util_sys_inb(OUT_BUF, &discarded_byte);
         return;        
     }
 
     // If either one is set to 1, there's an error
     if (st & (ST_PAR_ERR | ST_TO_ERR)) {
-        mouse_ih_error = 1; 
+        mouse_ih_error = 1;
+        uint8_t discarded_byte;
+        util_sys_inb(OUT_BUF, &discarded_byte);
         return;
     }
 
@@ -81,47 +127,29 @@ uint8_t (parse_packet)() {
 }
 
 uint8_t mouse_data_handler() {
-    ++counter;
+    if (!found_first_byte) { // Business as usual
+        ++counter;
 
-    if (counter > 2) {
-        is_mouse_packet_complete = true;
-        if (parse_packet())
-            return 1;
-        counter = 0;
+        if (counter > 2) {
+            is_mouse_packet_complete = true;
+            if (parse_packet())
+                return 1;
+            counter = 0;
+        }
+        else {
+            is_mouse_packet_complete = false;
+        }
+        
+        return 0;
     }
-    else {
+    else { // We need to find out the first byte
+        // Assume that if that bit is 1, it's the first byte
         is_mouse_packet_complete = false;
-    }
-    
-    return 0;
-}
-
-uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd) {        
-    // This section waits until it can write to input buffer or it reaches a timeout state
-    uint8_t i = TIMEOUT_ATTEMPTS;
-
-    while (i) { // Tries for i attempts
-        if (util_sys_inb(STAT_REG, &st)) // Read Status
-            return 1;
-
-        // Can only write if the ST_IN_BUF is set to 0
-        if (st & ST_IN_BUF) {
-            i--;
-            
-            if (tickdelay(micros_to_ticks(KBC_WAIT)))
-                    return 1;
-            continue;
+        if (packet_bytes[counter] & MOUSE_PARSE_FIRST_PACKET_IDENTIFIER) {
+            packet_bytes[0] = packet_bytes[counter];
+            found_first_byte = true;
         }
 
-        else
-            break;                
+        return 0;
     }
-
-    if (i == 0) // Timed out
-            return 1;
-
-    if (sys_outb(port, cmd)) // Write the command
-            return 1;
-
-    return 0;
 }
