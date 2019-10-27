@@ -7,6 +7,7 @@
 // Any header files included below this line should have been created by you
 #include "i8042.h"
 #include "mouse.h"
+#include "timer.h"
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -98,15 +99,97 @@ int (mouse_test_packet)(uint32_t cnt) {
 }
 
 int (mouse_test_remote)(uint16_t period, uint8_t cnt) {
-    /* To be completed */
-    printf("%s(%u, %u): under construction\n", __func__, period, cnt);
-    return 1;
+  /* To be completed */
+  printf("%s(%u, %u): under construction\n", __func__, period, cnt);
+  return 1;
 }
 
 int (mouse_test_async)(uint8_t idle_time) {
-    /* To be completed */
-    printf("%s(%u): under construction\n", __func__, idle_time);
+  uint8_t mouse_bit_no = MOUSE_IRQ;
+  uint8_t timer0_bit_no = TIMER0_IRQ;
+
+  if (timer_subscribe_int(&timer0_bit_no))
     return 1;
+
+  if (mouse_set_stream_mode())
+    return 1;
+
+	if (mouse_data_reporting_enable())
+	 	return 1;
+  
+	if (mouse_subscribe_int(&mouse_bit_no)) {
+		timer_unsubscribe_int();
+    return 1;
+  }
+
+  // Only avoids making this operation on every notification
+  int mouse_bit_mask = BIT(mouse_bit_no);
+  int timer0_bit_mask = BIT(timer0_bit_no);
+  uint8_t idle_countdown = idle_time;
+
+	int r, ipc_status;
+  	message msg;
+
+	// Interrupt loop
+	while (idle_countdown) {
+			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+				printf("driver_receive failed with: %d", r);
+				continue;
+			}
+
+			if (is_ipc_notify(ipc_status)) {
+				switch (_ENDPOINT_P(msg.m_source)) {
+					case HARDWARE: /* hardware interrupt notification */
+
+            /* -------- Timer0 Interrupts -------- */
+            if (msg.m_notify.interrupts & timer0_bit_mask) {
+              timer_int_handler();
+              if (global_timer0_counter == 60) {
+                global_timer0_counter = 0;
+                --idle_countdown;
+              }
+            }
+
+            /* -------- Mouse Interrupts -------- */
+						if (msg.m_notify.interrupts & mouse_bit_mask) { /* subscribed interrupt */
+              
+              mouse_ih();
+														
+							if (mouse_ih_error)
+                return 1;
+              
+              if (mouse_data_handler())
+                return 1;
+              
+              if (is_mouse_packet_complete) {
+                idle_countdown = idle_time;
+                global_timer0_counter = 0;
+                // printf("%x, %x, %x\n", mouse_parsed_packet.bytes[0], mouse_parsed_packet.bytes[1], mouse_parsed_packet.bytes[2]);
+                mouse_print_packet(&mouse_parsed_packet);
+              }
+						}
+
+						break;
+					default:
+						break; /* no other notifications expected: do nothing */     
+				}
+			}
+
+			else { /* received a standard message, not a notification */
+				/* no standard messages expected: do nothing */
+			}
+	}
+
+  if (timer_unsubscribe_int())
+    return 1;
+
+	if (mouse_unsubscribe_int(&mouse_bit_no))
+		return 1;
+
+  if (mouse_data_reporting_disable())
+    return 1;
+
+	return 0;
 }
 
 int (mouse_test_gesture)(uint8_t x_len, uint8_t tolerance) {
