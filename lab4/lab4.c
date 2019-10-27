@@ -53,7 +53,6 @@ int (mouse_test_packet)(uint32_t cnt) {
 	int r, ipc_status;
   	message msg;
 
-  cnt *= 3; // TODO: Temporary fix
 	// Interrupt loop
 	while (cnt) {
 			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
@@ -74,10 +73,10 @@ int (mouse_test_packet)(uint32_t cnt) {
               if (mouse_data_handler())
                 return 1;
               
-              if (is_mouse_packet_complete)
+              if (is_mouse_packet_complete) {
+                cnt--;
                 mouse_print_packet(&mouse_parsed_packet);
-
-              cnt--;
+              }
 						}
 
 						break;
