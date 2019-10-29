@@ -12,3 +12,5 @@ uint8_t (mouse_data_handler)();
 uint8_t mouse_data_reporting_enable();
 uint8_t mouse_data_reporting_disable();
 uint8_t mouse_set_stream_mode();
+uint8_t mouse_set_remote_mode();
+uint8_t mouse_read_data();
