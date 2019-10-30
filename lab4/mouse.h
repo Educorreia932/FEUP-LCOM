@@ -14,3 +14,5 @@ uint8_t mouse_data_reporting_disable();
 uint8_t mouse_set_stream_mode();
 uint8_t mouse_set_remote_mode();
 uint8_t mouse_read_data();
+uint8_t gesture_sm(uint8_t x_len, uint8_t tolerance);
+uint8_t mouse_gesture(uint8_t x_len, uint8_t tolerance);
