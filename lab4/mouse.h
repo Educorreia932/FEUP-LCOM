@@ -1,3 +1,5 @@
+#pragma once
+
 #include "i8042.h"
 #include "utils.h"
 

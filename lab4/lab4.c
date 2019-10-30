@@ -7,6 +7,7 @@
 // Any header files included below this line should have been created by you
 #include "i8042.h"
 #include "mouse.h"
+#include "mouse_gesture.h"
 #include "timer.h"
 
 int main(int argc, char *argv[]) {
