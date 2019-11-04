@@ -73,6 +73,8 @@ uint8_t kbc_read_outbf(uint8_t port, uint8_t *content)
 	uint8_t i = TIMEOUT_ATTEMPTS;
 	while (i) // Tries for i attempts
 	{
+		//printf("Tries: %u\n", i);
+
 		if (util_sys_inb(STAT_REG, &st)) // Read Status
   		return 1;
 
