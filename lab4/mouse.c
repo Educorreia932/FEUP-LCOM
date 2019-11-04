@@ -49,7 +49,7 @@ uint8_t mouse_send_cmd(uint8_t cmd) {
 
         // Make sure the mouse responded with ACK
         uint8_t byte_received;
-        if (kbc_read_outbf(MOUSE_OUT_BUF, &byte_received))
+        if (kbc_read_outbf(MOUSE_OUT_BUF, &byte_received, true))
             return 1;
         
         // If ACK return 0, it's all fine
