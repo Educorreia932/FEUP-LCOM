@@ -17,17 +17,19 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     mouse_hook_id = MOUSE_IRQ;
     *bit_no = MOUSE_IRQ;	
 
-    if (sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id))
-        return 1;
-
-    return 0;
+    return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
 
 uint8_t (mouse_unsubscribe_int)() {
-    if (sys_irqrmpolicy(&mouse_hook_id))
-        return 1;
-                
-    return 0;
+    return sys_irqrmpolicy(&mouse_hook_id);
+}
+
+uint8_t mouse_enable_int() {
+    return sys_irqenable(&mouse_hook_id);
+}
+
+uint8_t mouse_disable_int() {
+    return sys_irqdisable(&mouse_hook_id);
 }
 
 // Has a more complicated structure than simple KBC commands,
@@ -60,7 +62,8 @@ uint8_t mouse_send_cmd(uint8_t cmd) {
             continue;
         }
         
-        // If it was anything else... Something is REALLY wrong, return 1
+        // If it was MOUSE_CTR_ERROR or
+        // if it was anything else... Something is REALLY wrong, return 1
         return 1;
     }
 

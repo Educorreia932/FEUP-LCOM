@@ -8,6 +8,8 @@ extern struct packet mouse_parsed_packet;
 
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no);
 uint8_t (mouse_unsubscribe_int)();
+uint8_t mouse_enable_int();
+uint8_t mouse_disable_int();
 void (mouse_ih)();
 uint8_t (mouse_data_handler)();
 
