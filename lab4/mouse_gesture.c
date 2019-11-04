@@ -54,7 +54,7 @@ static int x_displacement = 0;
 static int y_displacement = 0;
 
 uint8_t gesture_sm(uint8_t x_len, uint8_t tolerance) {
-    printf("%u\n", state);
+    //printf("%u\n", state);
     //printf("y= %d\n x= %d\n", y_displacement, x_displacement);
 
     handle_events(x_len, tolerance);
