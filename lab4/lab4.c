@@ -40,13 +40,19 @@ int (mouse_test_packet)(uint32_t cnt) {
 	// Only avoids making this operation on every notification
 	int mouse_bit_mask = BIT(mouse_bit_no);
 
+	if (mouse_subscribe_int(&mouse_bit_no))
+		return 1;
+
+	if (mouse_disable_int())
+		return 1;
+
+	// Set mouse to streaming mode with data reporting enabled
 	if (mouse_set_stream_mode())
 		return 1;
+	if (mouse_data_reporting_enable())
+	 	return 1;
 
-	if (mouse_data_reporting_enable()) // Change to command
-		return 1;
-
-	if (mouse_subscribe_int(&mouse_bit_no))
+	if (mouse_enable_int())
 		return 1;
 
 	int r, ipc_status;
@@ -170,17 +176,22 @@ int (mouse_test_async)(uint8_t idle_time) {
 	if (timer_subscribe_int(&timer0_bit_no))
 	return 1;
 
-	// Set mouse to streaming mode with data reporting enabled
-	if (mouse_set_stream_mode())
-	return 1;
-	if (mouse_data_reporting_enable())
-	 	return 1;
-	
-	// Subscribe to mouse interrupts
 	if (mouse_subscribe_int(&mouse_bit_no)) {
 		timer_unsubscribe_int(); // If it fails, we need to unsubscribe from timer0
-	return 1;
+		return 1;
 	}
+	
+	if (mouse_disable_int())
+		return 1;
+
+	// Set mouse to streaming mode with data reporting enabled
+	if (mouse_set_stream_mode())
+		return 1;
+	if (mouse_data_reporting_enable())
+	 	return 1;
+
+	if (mouse_enable_int())
+		return 1;
 
 	// Only avoids making this operation on every notification
 	int mouse_bit_mask = BIT(mouse_bit_no);
@@ -261,13 +272,19 @@ int (mouse_test_gesture)(uint8_t x_len, uint8_t tolerance) {
 	// Only avoids making this operation on every notification
 	int mouse_bit_mask = BIT(mouse_bit_no);
 
-	if (mouse_set_stream_mode())
+	if (mouse_subscribe_int(&mouse_bit_no))
 		return 1;
 
+	if (mouse_disable_int())
+		return 1;
+
+	// Set mouse to streaming mode with data reporting enabled
+	if (mouse_set_stream_mode())
+		return 1;
 	if (mouse_data_reporting_enable())
 	 	return 1;
-	
-	if (mouse_subscribe_int(&mouse_bit_no))
+
+	if (mouse_enable_int())
 		return 1;
 
 	int r, ipc_status;
