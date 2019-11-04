@@ -11,4 +11,5 @@ int (util_get_MSB) (uint16_t val, uint8_t *msb);
 int (util_sys_inb) (int port, uint8_t *value);
 
 uint8_t (kbc_send_cmd) (uint8_t port, uint8_t cmd);
-uint8_t (kbc_read_outbf) (uint8_t port, uint8_t *content);
+uint8_t (kbc_read_outbf) (uint8_t port, uint8_t *content, bool isMouse);
+uint8_t restore_kbc_byte();

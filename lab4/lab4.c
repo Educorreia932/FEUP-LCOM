@@ -105,65 +105,66 @@ int (mouse_test_packet)(uint32_t cnt) {
 
 int (mouse_test_remote)(uint16_t period, uint8_t cnt) {
 	// Set mouse to remote mode and disable data reporting
-	if (mouse_set_remote_mode())
-	return 1;
-	if (mouse_data_reporting_disable())
-	return 1;
+	if (mouse_data_reporting_disable()) {
+		printf("Reporting failed\n");
+		return 1;
+	}
+	if (mouse_set_remote_mode()) {
+		return 1;
+	}
 
 	uint8_t status;
 	uint8_t bytes_read;
+
 	while (cnt) {
 	
-	// Send cmd to read a packet to the mouse
-	if (mouse_read_data())
-		return 1;
-
-	bytes_read = 3;
-	while (bytes_read) { // We will read 3 bytes (a complete packet)
-
-		// Read status
-		if (util_sys_inb(MOUSE_STAT_REG, &status))
-		return 1;
-		
-		// Check if the output buffer is full with mouse data
-		if (status & (ST_MOUSE_DATA | ST_OUT_BUF)) {
-
-		// Pretty much same treatment as with the interrupts
-		mouse_ih();
-					
-		if (mouse_ih_error)
-			return 1;
-		
-		if (mouse_data_handler())
+		// Send cmd to read a packet to the mouse
+		if (mouse_read_data())
 			return 1;
 
-		--bytes_read;
+		bytes_read = 3;
+		while (bytes_read) { // We will read 3 bytes (a complete packet)
+
+			// Read status
+			if (util_sys_inb(MOUSE_STAT_REG, &status))
+				return 1;
+			
+			// Check if the output buffer is full with mouse data
+			if (status & (ST_MOUSE_DATA | ST_OUT_BUF)) {
+
+				// Pretty much same treatment as with the interrupts
+				mouse_ih();
+							
+				if (mouse_ih_error)
+					return 1;
+				
+				if (mouse_data_handler())
+					return 1;
+
+				--bytes_read;
+			}
 		}
-	}
-	
-	if (is_mouse_packet_complete) {
-		cnt--;
-		// printf("%x, %x, %x\n", mouse_parsed_packet.bytes[0], mouse_parsed_packet.bytes[1], mouse_parsed_packet.bytes[2]);
-		mouse_print_packet(&mouse_parsed_packet);
-	}
+		
+		if (is_mouse_packet_complete) {
+			cnt--;
+			// printf("%x, %x, %x\n", mouse_parsed_packet.bytes[0], mouse_parsed_packet.bytes[1], mouse_parsed_packet.bytes[2]);
+			mouse_print_packet(&mouse_parsed_packet);
+		}
 
-	// We have read out packet, so we wait for period miliseconds
-	tickdelay(micros_to_ticks(period * 1000)); // *1000 to convert to microseconds
+		// We have read out packet, so we wait for period miliseconds
+		tickdelay(micros_to_ticks(period * 1000)); // *1000 to convert to microseconds
 	}
 
 	// Reenable stream mode
 	if (mouse_set_stream_mode())
-	return 1;
+		return 1;
 	
 	// Disable data reporting
 	if (mouse_data_reporting_disable())
-	return 1;
+		return 1;
 
-	// Restore KBC byte to default state (returned by minix_get_dflt_kbc_byte())
-	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE))
-	return 1;
-	if (kbc_send_cmd(IN_BUF_ARGS, minix_get_dflt_kbc_cmd_byte()))
-	return 1;
+	if (restore_kbc_byte())
+		return 1;
 
 	return 0;
 }
@@ -222,23 +223,23 @@ int (mouse_test_async)(uint8_t idle_time) {
 			}
 
 			/* -------- Mouse Interrupts -------- */
-						if (msg.m_notify.interrupts & mouse_bit_mask) { /* subscribed interrupt */
-				
+			if (msg.m_notify.interrupts & mouse_bit_mask) { /* subscribed interrupt */
+
 				mouse_ih();
-														
-							if (mouse_ih_error)
-				return 1;
-				
+															
+				if (mouse_ih_error)
+					return 1;
+					
 				if (mouse_data_handler())
-				return 1;
-				
+					return 1;
+					
 				if (is_mouse_packet_complete) {
-				idle_countdown = idle_time;
-				global_timer0_counter = 0;
-				// printf("%x, %x, %x\n", mouse_parsed_packet.bytes[0], mouse_parsed_packet.bytes[1], mouse_parsed_packet.bytes[2]);
-				mouse_print_packet(&mouse_parsed_packet);
+					idle_countdown = idle_time;
+					global_timer0_counter = 0;
+					// printf("%x, %x, %x\n", mouse_parsed_packet.bytes[0], mouse_parsed_packet.bytes[1], mouse_parsed_packet.bytes[2]);
+					mouse_print_packet(&mouse_parsed_packet);
 				}
-						}
+			}
 
 						break;
 					default:
@@ -253,7 +254,7 @@ int (mouse_test_async)(uint8_t idle_time) {
 
 	// Unsubscribe from timer0 interrupts
 	if (timer_unsubscribe_int())
-	return 1;
+		return 1;
 
 	// Unsubscribe from mouse interrupts
 	if (mouse_unsubscribe_int())
@@ -261,7 +262,7 @@ int (mouse_test_async)(uint8_t idle_time) {
 
 	// Mouse is already on streaming mode, only need to disable data reporting
 	if (mouse_data_reporting_disable())
-	return 1;
+		return 1;
 
 	return 0;
 }
