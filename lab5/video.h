@@ -5,4 +5,3 @@
 
 void privctl();
 
-int video_init(uint16_t mode);
