@@ -6,6 +6,7 @@
 // Any header files included below this line should have been created by you
 
 #include "video.h"
+#include "keyboard.h"
 
 int main(int argc, char *argv[]) {
 	// sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -42,11 +43,58 @@ int(video_test_init)(uint16_t mode, uint8_t delay) {
 }
 
 int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
-	/* To be completed */
-	printf("%s(0x%03X, %u, %u, %u, %u, 0x%08x): under construction\n",
-			__func__, mode, x, y, width, height, color);
+	video_init(mode);
 
-	return 1;
+	vbe_mode_info_t info;
+
+	if(vbe_get_mode_info(&info))
+		return 1;
+
+	if (vg_draw_hline(x, y, width, height))
+		return 1;
+
+	// Keyboard
+ 	uint8_t bit_no = KBD_IRQ;
+        
+    // Only avoids making this operation on every notification
+    int kbd_bit_mask = BIT(bit_no);
+    
+	if (kbd_subscribe_int(&bit_no))
+        return 1;
+    
+	int r, ipc_status;
+  	message msg;
+
+	// Interrupt loop
+	while (scancode != ESC_BREAKCODE) { 
+			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+					printf("driver_receive failed with: %d", r);
+					continue;
+			}
+
+			if (is_ipc_notify(ipc_status)) {
+					switch (_ENDPOINT_P(msg.m_source)) {
+							case HARDWARE: /* hardware interrupt notification */
+									if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
+										kbc_ih();
+										analyse_scancode();       
+									}
+									break;
+							default:
+									break; /* no other notifications expected: do nothing */     
+					}
+			}
+			else { /* received a standard message, not a notification */
+					/* no standard messages expected: do nothing */
+			}
+	}
+
+	if (kbd_unsubscribe_int(&bit_no))
+			return 1;
+
+	vg_exit();
+
+	return 0;
 }
 
 int(video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, uint8_t step) {

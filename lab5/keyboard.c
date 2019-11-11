@@ -67,6 +67,9 @@ int kbc_get_scancode()
 	return 0;
 }
 
+void (kbc_ih)() {
+	kbc_get_scancode();
+}
 
 // It's sole purpose is to parse both 1 & 2 byte scancodes
 void analyse_scancode() {
