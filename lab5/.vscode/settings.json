@@ -6,6 +6,10 @@
   "editor.tabSize": 2,
   "editor.wordWrap": "bounded",
   "editor.wordWrapColumn": 100,
-  "files.associations": {},
+  "files.associations": {
+    "keyboard.h": "c",
+    "lcf.h": "c",
+    "video.h": "c"
+  },
   "C_Cpp.errorSquiggles": "Disabled",
 }
