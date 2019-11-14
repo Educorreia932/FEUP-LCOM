@@ -1,24 +1,22 @@
 #include "video.h"
 
+vbe_mode_info_t info;
 uint16_t x_res, y_res;
+uint8_t bits_per_pixel, bytes_per_pixel;
+void* buffer_base = NULL;
 
-void privctl() {
-  	int r;
-	struct minix_mem_range mr;		
-	unsigned int phys_addr = 0;
+void privctl(phys_bytes mr_base, size_t size) {
+  int r;
+	struct minix_mem_range mr;
 
-	mr.mr_base = (phys_bytes) phys_addr;	
-	mr.mr_limit = phys_addr + BIT(20);  
+	mr.mr_base = mr_base;	
+	mr.mr_limit = mr_base + size;  
 
 	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
 		panic("sys_privctl (ADD_MEM) failed: %d\n", r);
 }
 
-void* (vg_init)(uint16_t mode) {	
-
-  /* Allow memory mapping */
-	privctl();
-
+int vg_set_mode(uint16_t mode) {
   reg86_t reg;
 	memset(&reg, 0, sizeof(reg86_t));	
 
@@ -28,29 +26,58 @@ void* (vg_init)(uint16_t mode) {
 
 	if(sys_int86(&reg) != OK ) {
 		printf("set_vbe_mode: sys_int86() failed \n");
-		return NULL;
+		return 1;
 	}
 
-  lm_init(false);
+	return 0;
+}
 
-  vbe_mode_info_t info;
-  // memset(&info, 0, sizeof(vbe_mode_info_t));
+void* (vg_init)(uint16_t mode) {	
+
+  /* Allow memory mapping */
+	privctl(0, BIT(20));
 
 	if (vbe_get_mode_info(mode, &info))
 		return NULL;
 
+	// printf("%x\n", info.MemoryModel);
+	// Memory mode 4 -> Indexed
+	// Memory mode 6 -> Direct color
+
+	// +7 para garantir q se for necessário reservamos espaço para o final do byte
 	x_res = info.XResolution;
 	y_res = info.YResolution;
-  uint16_t size = (x_res * y_res * info.BitsPerPixel) << 3;
+	bits_per_pixel = info.BitsPerPixel;
+	bytes_per_pixel = (bits_per_pixel + 7) >> 3;
+  size_t size = x_res * y_res * bytes_per_pixel;
 
-  return vm_map_phys(SELF, &info.PhysBasePtr, size);
-  return NULL;
+	privctl((phys_bytes) info.PhysBasePtr, size);
+	buffer_base = vm_map_phys(SELF, (void *) info.PhysBasePtr, size);
+	
+	if (buffer_base == MAP_FAILED)
+		printf("Mapping failed\n");
+
+	if (vg_set_mode(mode))
+		return NULL;
+
+	return buffer_base;
 }
 
+// base_address + (y * x_res + x) * bytes_per_pixel;
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
+	// Index mode
+	uint8_t *base = (uint8_t *) buffer_base + (y * x_res + x) * bytes_per_pixel;
+	for (int i = x; i < len; ++i) {
+		*base = (uint8_t) color;
+		++base;
+	}
 	return 1;
 }
 
 int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
-  return 1;
+	for (int i = 0; i < height; ++i) {
+		if (vg_draw_hline(x, y+i, width, color))
+			return 1;
+	}
+  return 0;
 }	
