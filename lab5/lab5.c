@@ -55,8 +55,10 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width,
 	// Only avoids making this operation on every notification
 	int kbd_bit_mask = BIT(bit_no);
     
-	if (kbd_subscribe_int(&bit_no))
-        return 1;
+	if (kbd_subscribe_int(&bit_no)) {
+		vg_exit();
+    return 1;
+	}
     
 	int r, ipc_status;
   	message msg;
@@ -73,7 +75,7 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width,
 							case HARDWARE: /* hardware interrupt notification */
 									if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
 										kbc_ih();
-										analyse_scancode();       
+										analyse_scancode(); 
 									}
 									break;
 							default:
@@ -85,8 +87,10 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width,
 			}
 	}
 
-	if (kbd_unsubscribe_int(&bit_no))
-			return 1;
+	if (kbd_unsubscribe_int(&bit_no)){
+		vg_exit();
+    return 1;
+	}
 
 	vg_exit();
 
