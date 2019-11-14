@@ -9,7 +9,13 @@
   "files.associations": {
     "keyboard.h": "c",
     "lcf.h": "c",
-    "video.h": "c"
+    "video.h": "c",
+    "__tree": "c",
+    "bitset": "c",
+    "functional": "c",
+    "iterator": "c",
+    "memory": "c",
+    "tuple": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
 }
