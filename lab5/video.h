@@ -3,7 +3,13 @@
 #include <lcom/lcf.h>
 #include "video_macros.h"
 
-extern vbe_mode_info_t info;
+typedef struct {
+	uint16_t x_res, y_res;
+	uint8_t bits_per_pixel, bytes_per_pixel, vg_mode;
+	uint32_t red_mask, green_mask, blue_mask;
+	uint8_t red_field_position, green_field_position, blue_field_position;
+	uint8_t red_mask_size, green_mask_size, blue_mask_size;
+} vbe_mode_info_summary_t;
 
 void privctl();
 
