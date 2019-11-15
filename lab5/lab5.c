@@ -45,16 +45,7 @@ int(video_test_init)(uint16_t mode, uint8_t delay) {
 	return 0;
 }
 
-int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
-
-	if (vg_init(mode) == NULL) {
-		vg_exit();
-		return 1;
-	}
-
-	if (vg_draw_rectangle(x, y, width, height, color))
-		return 1;
-
+int kbd_esc_loop() {
 	// Keyboard
  	uint8_t bit_no = KBD_IRQ;
         
@@ -94,8 +85,27 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width,
 	}
 
 	if (kbd_unsubscribe_int(&bit_no)){
-		vg_exit();
     return 1;
+	}
+
+	return 0;
+}
+
+int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
+
+	if (vg_init(mode) == NULL) {
+		vg_exit();
+		return 1;
+	}
+
+	if (vg_draw_rectangle(x, y, width, height, color)) {
+		vg_exit();
+		return 1;
+	}
+
+	if (kbd_esc_loop()) {
+		vg_exit();
+		return 1;
 	}
 
 	vg_exit();
@@ -104,11 +114,53 @@ int(video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width,
 }
 
 int(video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, uint8_t step) {
-  /* To be completed */
-  printf("%s(0x%03x, %u, 0x%08x, %d): under construction\n", __func__,
-		 mode, no_rectangles, first, step);
+		if (vg_init(mode) == NULL) {
+		vg_exit();
+		return 1;
+	}
 
-  return 1;
+
+	uint16_t width = vg_info.x_res / no_rectangles;
+	uint16_t height = vg_info.y_res / no_rectangles;
+	uint32_t color;
+	uint16_t red, green, blue;
+	uint16_t first_red = ((first & vg_info.red_mask) >> vg_info.red_field_position);
+	uint16_t first_green = ((first & vg_info.green_mask) >> vg_info.green_field_position);
+	uint16_t first_blue = ((first & vg_info.blue_mask) >> vg_info.blue_field_position);
+
+	for (uint16_t i = 0; i < no_rectangles; ++i) { // Linhas, Row
+		for (uint16_t j = 0; j < no_rectangles; ++j) { // Colunas, Col
+			if (vg_info.vg_mode == VG_MODE_INDEXED) {
+				color = (first + (i * no_rectangles + j) * step) % BIT(vg_info.bits_per_pixel);
+			}
+			else if (vg_info.vg_mode == VG_MODE_DIRECT) {
+				red = (first_red + j * step) % BIT(vg_info.red_mask_size);
+				green = (first_green + i * step) % BIT(vg_info.green_mask_size);
+				blue = (first_blue + (j + i) * step) % BIT(vg_info.blue_mask_size);
+
+				color = 0 | (red << vg_info.red_field_position) | (green << vg_info.green_field_position) | (blue << vg_info.blue_field_position);
+			}
+			else {
+				vg_exit();
+				return 1;
+			}
+			vg_draw_rectangle(j * width, i * height, width, height, color);
+		}
+	}
+
+	// if (vg_draw_rectangle(x, y, width, height, color))
+	// 	return 1;
+
+
+
+	if (kbd_esc_loop()) {
+		vg_exit();
+		return 1;
+	}
+
+	vg_exit();
+
+	return 0;
 }
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
