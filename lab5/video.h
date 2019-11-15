@@ -11,5 +11,7 @@ typedef struct {
 	uint8_t red_mask_size, green_mask_size, blue_mask_size;
 } vbe_mode_info_summary_t;
 
+extern vbe_mode_info_summary_t vg_info;
+
 void privctl();
 
