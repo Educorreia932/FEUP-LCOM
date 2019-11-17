@@ -15,7 +15,8 @@
     "functional": "c",
     "iterator": "c",
     "memory": "c",
-    "tuple": "c"
+    "tuple": "c",
+    "map": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
 }

@@ -123,34 +123,39 @@ int(video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, ui
 	uint16_t width = vg_info.x_res / no_rectangles;
 	uint16_t height = vg_info.y_res / no_rectangles;
 	uint32_t color;
-	uint16_t red, green, blue;
-	uint16_t first_red = ((first & vg_info.red_mask) >> vg_info.red_field_position);
-	uint16_t first_green = ((first & vg_info.green_mask) >> vg_info.green_field_position);
-	uint16_t first_blue = ((first & vg_info.blue_mask) >> vg_info.blue_field_position);
 
-	for (uint16_t i = 0; i < no_rectangles; ++i) { // Linhas, Row
-		for (uint16_t j = 0; j < no_rectangles; ++j) { // Colunas, Col
-			if (vg_info.vg_mode == VG_MODE_INDEXED) {
-				color = (first + (i * no_rectangles + j) * step) % BIT(vg_info.bits_per_pixel);
+	if (vg_info.vg_mode == VG_MODE_INDEXED) {
+		for (uint16_t i = 0; i < no_rectangles; ++i) { // Linhas, Row
+			for (uint16_t j = 0; j < no_rectangles; ++j) { // Colunas, Col
+					color = (first + (i * no_rectangles + j) * step) % BIT(vg_info.bits_per_pixel);
+				vg_draw_rectangle(j * width, i * height, width, height, color);
 			}
-			else if (vg_info.vg_mode == VG_MODE_DIRECT) {
+		}
+	}
+
+	else if (vg_info.vg_mode == VG_MODE_DIRECT) {
+		uint16_t red, green, blue;
+		uint16_t first_red = ((first & vg_info.red_mask) >> vg_info.red_field_position);
+		uint16_t first_green = ((first & vg_info.green_mask) >> vg_info.green_field_position);
+		uint16_t first_blue = ((first & vg_info.blue_mask) >> vg_info.blue_field_position);
+		
+		for (uint16_t i = 0; i < no_rectangles; ++i) { // Linhas, Row
+			for (uint16_t j = 0; j < no_rectangles; ++j) { // Colunas, Col
+			
 				red = (first_red + j * step) % BIT(vg_info.red_mask_size);
 				green = (first_green + i * step) % BIT(vg_info.green_mask_size);
 				blue = (first_blue + (j + i) * step) % BIT(vg_info.blue_mask_size);
 
-				color = 0 | (red << vg_info.red_field_position) | (green << vg_info.green_field_position) | (blue << vg_info.blue_field_position);
+				color = 0 | (red << vg_info.red_field_position) | (green << vg_info.green_field_position) | 	(blue << vg_info.blue_field_position);
+					
+				vg_draw_rectangle(j * width, i * height, width, height, color);
 			}
-			else {
-				vg_exit();
-				return 1;
-			}
-			vg_draw_rectangle(j * width, i * height, width, height, color);
 		}
 	}
-
-	// if (vg_draw_rectangle(x, y, width, height, color))
-	// 	return 1;
-
+	else {
+		vg_exit();
+		return 1;
+	}
 
 
 	if (kbd_esc_loop()) {

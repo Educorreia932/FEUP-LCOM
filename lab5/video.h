@@ -14,4 +14,3 @@ typedef struct {
 extern vbe_mode_info_summary_t vg_info;
 
 void privctl();
-

@@ -16,6 +16,8 @@
 #define VBE_AL_SET_MODE 0x02
 #define VBE_BX_SET_MODE_ARGUMENT BIT(14)
 
+#define VBE_INTERRUPT_NUMBER 0x10
+
 // Returns are on the AX
 #define VBE_FUNCTION_RET_SUCCESS 0x00
 #define VBE_FUNCTION_RET_FAIL 0x01
