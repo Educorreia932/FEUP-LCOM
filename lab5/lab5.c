@@ -169,10 +169,25 @@ int(video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, ui
 }
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
-  /* To be completed */
-  printf("%s(%8p, %u, %u): under construction\n", __func__, xpm, x, y);
 
-  return 1;
+    if (vg_init(0x105) == NULL) {
+			vg_exit();
+			return 1;
+    }
+
+		if (vg_draw_xpm(xpm, x, y)) {
+			vg_exit();
+			return 1;
+		}
+
+    if (kbd_esc_loop()) {
+			vg_exit();
+			return 1;
+    }
+
+    vg_exit();
+
+    return 0;
 }
 
 int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint16_t yf,
