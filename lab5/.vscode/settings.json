@@ -16,7 +16,8 @@
     "iterator": "c",
     "memory": "c",
     "tuple": "c",
-    "map": "c"
+    "map": "c",
+    "ios": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
 }

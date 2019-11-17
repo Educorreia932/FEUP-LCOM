@@ -186,4 +186,35 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
   return 0;
 
-}	
+}
+
+
+// Only works for mode 105, as requested
+int vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
+	xpm_image_t img;
+	uint8_t* map = NULL;
+
+	map = xpm_load(xpm, XPM_INDEXED, &img);
+
+	uint counter = 0;
+
+	uint16_t width, height;
+	if (x + img.width <= vg_info.x_res)
+		width = x + img.width;
+	else
+		width = vg_info.x_res;
+	if (y + img.height <= vg_info.y_res)
+		height = y + img.height;
+	else
+		height = vg_info.y_res;
+
+
+	for (uint16_t j = y; j < height; j++) {
+		 for (uint16_t i = x; i < width; i++) {
+			vg_draw_pixel(i, j, map[counter]);
+			counter++;
+		}
+	}
+
+	return 0;
+}

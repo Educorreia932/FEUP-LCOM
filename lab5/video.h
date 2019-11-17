@@ -14,3 +14,5 @@ typedef struct {
 extern vbe_mode_info_summary_t vg_info;
 
 void privctl();
+
+int vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y);
