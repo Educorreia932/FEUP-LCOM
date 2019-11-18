@@ -190,7 +190,7 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 
 // Only works for mode 105, as requested
-int vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
+uint8_t vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
 	xpm_image_t img;
 	uint8_t* map = NULL;
 
@@ -215,6 +215,23 @@ int vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
 			counter++;
 		}
 	}
+
+	return 0;
+}
+
+uint8_t vg_update_xpm(xpm_map_t xpm, uint16_t old_x, uint16_t old_y, uint16_t new_x, uint16_t new_y) {
+
+	xpm_image_t img;
+	uint8_t* map = NULL;
+
+	map = xpm_load(xpm, XPM_INDEXED, &img);
+
+	// Paint over the old one
+	if (vg_draw_rectangle(old_x, old_y, img.width, img.height, 0))
+		return 1;
+
+	if (vg_draw_xpm(xpm, new_x, new_y))
+		return 1;
 
 	return 0;
 }
