@@ -7,6 +7,7 @@
 
 #include "video.h"
 #include "keyboard.h"
+#include "timer.h"
 
 int main(int argc, char *argv[]) {
 	// sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -170,33 +171,147 @@ int(video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, ui
 
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
 
-    if (vg_init(0x105) == NULL) {
-			vg_exit();
-			return 1;
-    }
+	if (vg_init(0x105) == NULL) {
+		vg_exit();
+		return 1;
+	}
 
-		if (vg_draw_xpm(xpm, x, y)) {
-			vg_exit();
-			return 1;
-		}
+	if (vg_draw_xpm(xpm, x, y)) {
+		vg_exit();
+		return 1;
+	}
 
-    if (kbd_esc_loop()) {
-			vg_exit();
-			return 1;
-    }
+	if (kbd_esc_loop()) {
+		vg_exit();
+		return 1;
+	}
 
-    vg_exit();
-
-    return 0;
+	vg_exit();
+	return 0;
 }
 
 int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint16_t yf,
 					 int16_t speed, uint8_t fr_rate) {
-  /* To be completed */
-  printf("%s(%8p, %u, %u, %u, %u, %d, %u): under construction\n",
-		 __func__, xpm, xi, yi, xf, yf, speed, fr_rate);
 
-  return 1;
+	uint16_t period_per_frame = 60 / fr_rate;
+	uint16_t x_delta = 0, y_delta = 0;
+	uint16_t old_x, old_y;
+	bool animation_ongoing = true;
+
+	// x and y deltas are the number of pixels to move each update
+	if (speed > 0) {
+		// How many pixels to move per update
+		// period_per_frame *= 1;
+		if (xi == xf) {
+			// Vertical movement
+			y_delta = speed;
+		}
+		else {
+			// Horizontal movement
+			x_delta = speed;
+		}
+	}
+	else {
+		// Number of frames to wait to move 1 pixel
+		// Speed is already negative here
+		period_per_frame *= -speed;
+		if (xi == xf) {
+			// Vertical movement
+			y_delta = 1;
+		}
+		else {
+			// Horizontal movement
+			x_delta = 1;
+		}
+	}
+	// printf("Frame period: %d\nDelta: (%d, %d)\n", period_per_frame, x_delta, y_delta);
+
+	// Set mode 0x105
+	if (vg_init(0x105) == NULL) {
+		vg_exit();
+		return 1;
+	}
+
+	// draw first xpm
+	if (vg_draw_xpm(xpm, xi, yi)) {
+		vg_exit();
+		return 1;
+	}
+
+	// Keyboard
+ 	uint8_t kbd_bit_no = KBD_IRQ;
+	uint8_t timer0_bit_no = TIMER0_IRQ;
+        
+	// Only avoids making this operation on every notification
+	uint32_t kbd_bit_mask = BIT(kbd_bit_no);
+	uint32_t timer0_bit_mask = BIT(timer0_bit_no);
+    
+	if (kbd_subscribe_int(&kbd_bit_no)) {
+		vg_exit();
+    return 1;
+	}
+
+	if (timer_subscribe_int(&timer0_bit_no)) {
+		vg_exit();
+		kbd_unsubscribe_int();
+		return 1;
+	}
+    
+	int r, ipc_status;
+  	message msg;
+
+	// Interrupt loop
+	while (scancode != ESC_BREAKCODE) { 
+			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+					printf("driver_receive failed with: %d", r);
+					continue;
+			}
+
+			if (is_ipc_notify(ipc_status)) {
+					switch (_ENDPOINT_P(msg.m_source)) {
+							case HARDWARE: /* hardware interrupt notification */
+									if (msg.m_notify.interrupts & timer0_bit_mask) {
+										timer_int_handler();
+										if (animation_ongoing) {
+											if (global_timer0_counter >= period_per_frame) {
+												// Update coordinate values
+												old_x = xi;
+												old_y = yi;
+												xi = xi + x_delta;
+												yi = yi + y_delta;
+
+												if ((xi >= xf && x_delta) || (yi >= y_delta && y_delta)) {
+													// Fix final movement
+													vg_update_xpm(xpm, old_x, old_y, xf, yf);
+													animation_ongoing = false;
+												}
+												else {
+													vg_update_xpm(xpm, old_x, old_y, xi, yi);
+												}
+												// Reset counter
+												global_timer0_counter = 0;
+											}
+										}
+									}
+									if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
+										kbc_ih();
+										analyse_scancode(); 
+									}
+									break;
+							default:
+									break; /* no other notifications expected: do nothing */     
+					}
+			}
+			else { /* received a standard message, not a notification */
+					/* no standard messages expected: do nothing */
+			}
+	}
+
+	kbd_unsubscribe_int();
+	timer_unsubscribe_int();
+	vg_exit();
+
+	return 0;
 }
 
 int(video_test_controller)() {

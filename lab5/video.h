@@ -15,4 +15,5 @@ extern vbe_mode_info_summary_t vg_info;
 
 void privctl();
 
-int vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y);
+uint8_t vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y);
+uint8_t vg_update_xpm(xpm_map_t xpm, uint16_t old_x, uint16_t old_y, uint16_t new_x, uint16_t new_y);
