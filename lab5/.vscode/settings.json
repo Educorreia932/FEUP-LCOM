@@ -17,7 +17,10 @@
     "memory": "c",
     "tuple": "c",
     "map": "c",
-    "ios": "c"
+    "ios": "c",
+    "utils.h": "c",
+    "stdbool.h": "c",
+    "sstream": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
 }

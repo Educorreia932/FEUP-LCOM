@@ -8,6 +8,7 @@
 #include "video.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
 	// sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -315,8 +316,132 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 }
 
 int(video_test_controller)() {
-  /* To be completed */
-  printf("%s(): under construction\n", __func__);
+  
+	vbe_controller_straight_from_hell_t ctrl;
+	// VBE_CONTROLLER_SIGNATURE_VBE2 = 0x0200
+	ctrl.vbe_signature[0] = 'V';
+	ctrl.vbe_signature[1] = 'B';
+	ctrl.vbe_signature[2] = 'E';
+	ctrl.vbe_signature[3] = '2';
 
-  return 1;
+	mmap_t map;
+	if(lm_alloc(sizeof(vbe_controller_straight_from_hell_t), &map) == NULL) {
+    printf("Error: failed to allocate memory block.");
+    return 1;
+  }
+
+	reg86_t reg;
+	memset(&reg, 0, sizeof(reg86_t));
+
+	// Set function
+	reg.ah = VBE_AH_FUNCTION_INDICATOR;
+	reg.al = VBE_AL_CONTROLLER_INFO;
+	// The struct to save the information
+	reg.es = PB2BASE(map.phys);
+	reg.di = PB2OFF(map.phys);
+	// Set interrupt
+	reg.intno = VBE_INTERRUPT_NUMBER;
+
+	if(sys_int86(&reg) != OK ) {
+		printf("vbe_get_controller_info: sys_int86() failed \n");
+		return 1;
+	}
+
+	if (reg.ah != VBE_FUNCTION_RET_SUCCESS || reg.al != VBE_AH_FUNCTION_INDICATOR) {
+		printf("vbe_get_controller_info: function return value different from success: %x\n", reg.ax);
+		printf("reg.ah: %x reg.ax: %x reg.al: %x\n", reg.ah, reg.ax, reg.al);
+		return 1;
+	}
+
+	ctrl = *((vbe_controller_straight_from_hell_t*) map.virt);
+	if (!lm_free(&map)) {
+		printf("vbe_get_mode_info_ours: couldn't deallocate memory in the low memory region\n");
+		return 1;
+	}
+
+	// PROCESS CRTL HERE
+
+	vg_vbe_contr_info_t ctrl_summary;
+	ctrl_summary.VBESignature[0] = ctrl.vbe_signature[0];
+	ctrl_summary.VBESignature[1] = ctrl.vbe_signature[1];
+	ctrl_summary.VBESignature[2] = ctrl.vbe_signature[2];
+	ctrl_summary.VBESignature[3] = ctrl.vbe_signature[3];
+	// these 2 may be in the wrong order
+	util_get_LSB(ctrl.vbe_version, &ctrl_summary.VBEVersion[0]);
+	util_get_MSB(ctrl.vbe_version, &ctrl_summary.VBEVersion[1]);
+	ctrl_summary.TotalMemory = ctrl.total_memory;
+
+	// pointer time :(
+
+	// oem string
+	uint8_t size = 0;
+	char* str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.oem_string_ptr), &map);
+	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
+		++size;
+	}
+	++size;
+	ctrl_summary.OEMString = (char *) malloc(sizeof(char) * size);
+	strcpy(ctrl_summary.OEMString, str_ptr);
+
+	//vendor name
+	size = 0;
+	str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.vendor_name_ptr), &map);
+	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
+		++size;
+	}
+	++size;
+	ctrl_summary.OEMVendorNamePtr = (char *) malloc(sizeof(char) * size);
+	strcpy(ctrl_summary.OEMVendorNamePtr, str_ptr);
+
+	//vendor product name
+	size = 0;
+	str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.vendor_product_name_ptr), &map);
+	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
+		++size;
+	}
+	++size;
+	ctrl_summary.OEMProductNamePtr = (char *) malloc(sizeof(char) * size);
+	strcpy(ctrl_summary.OEMProductNamePtr, str_ptr);
+
+	//vendor product rev
+	size = 0;
+	str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.vendor_product_rev_ptr), &map);
+	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
+		++size;
+	}
+	++size;
+	ctrl_summary.OEMProductRevPtr = (char *) malloc(sizeof(char) * size);
+	strcpy(ctrl_summary.OEMProductRevPtr, str_ptr);
+	
+	// video mode list
+
+	uint16_t *video_mode_list = linear_to_virt(far_ptr_to_linear(ctrl.video_mode_list_ptr), &map);
+	size = 0;
+	for (uint16_t *aux = video_mode_list; *aux != VBE_CONTROLLER_MODE_LIST_TERMINATOR; ++aux) {
+		++size;
+	}
+	// One extra for the terminator
+	++size;
+	// printf("Ran for: %d\n", size);
+
+	// printf("Copying now\n");
+	ctrl_summary.VideoModeList = (uint16_t*) malloc(sizeof(uint16_t) * size);
+	uint16_t *aux = ctrl_summary.VideoModeList;
+	for (uint8_t i = 0; i < size; ++i) {
+		// printf("Iteration: %d\n", i);
+		*aux = *video_mode_list;
+		++video_mode_list;
+		++aux;
+	}
+
+	
+	vg_display_vbe_contr_info(&ctrl_summary);
+
+	// END FUNCTION HERE
+
+	// frees here?
+	
+
+	return 0;
+	
 }

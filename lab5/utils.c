@@ -112,3 +112,12 @@ uint8_t restore_kbc_byte() {
 		return 1;
 	return kbc_send_cmd(IN_BUF_ARGS, minix_get_dflt_kbc_cmd_byte());
 }
+
+phys_bytes far_ptr_to_linear(uint32_t far_ptr) {
+	// já vem com shift de 4 para a direita (16 - 4 = 12)
+	return (phys_bytes) (((far_ptr & 0xFFFF0000) >> 12) + (far_ptr & 0x0000FFFF));
+}
+
+void* linear_to_virt(uint32_t linear_ptr, mmap_t *map) {
+	return (void*) (((uint32_t) map->virt) + (linear_ptr - map->phys));
+}
