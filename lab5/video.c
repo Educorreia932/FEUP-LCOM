@@ -39,8 +39,7 @@ int vg_set_mode(uint16_t mode) {
 	return 0;
 }
 
-// STILL WRONG; DO NOT USE
-int vbe_get_mode_info_ours(uint8_t mode, vbe_mode_info_t *vbe_info) {
+int vbe_get_mode_info_ours(uint16_t mode, vbe_mode_info_t *vbe_info) {
 
 	privctl(BASE_PHYS_ADDRESS, MiB);
 
@@ -61,12 +60,13 @@ int vbe_get_mode_info_ours(uint8_t mode, vbe_mode_info_t *vbe_info) {
 	reg.di = PB2OFF(map.phys);
 	// Set interrupt
 	reg.intno = VBE_INTERRUPT_NUMBER;
+	// Set mode
+	reg.cx = mode;
 
 	if(sys_int86(&reg) != OK ) {
 		printf("vbe_get_mode_info_ours: sys_int86() failed \n");
 		return 1;
 	}
-
 
 	if (reg.ah != VBE_FUNCTION_RET_SUCCESS || reg.al != VBE_AH_FUNCTION_INDICATOR) {
 		printf("vbe_get_mode_info_ours: function return value different from success: %x\n", reg.ax);
@@ -76,8 +76,10 @@ int vbe_get_mode_info_ours(uint8_t mode, vbe_mode_info_t *vbe_info) {
 
 	*vbe_info = *((vbe_mode_info_t*) map.virt);
 
-	if (lm_free(&map))
+	if (!lm_free(&map)) {
+		printf("vbe_get_mode_info_ours: couldn't deallocate memory in the low memory region\n");
 		return 1;
+	}
 
 	return 0;
 }
@@ -85,7 +87,7 @@ int vbe_get_mode_info_ours(uint8_t mode, vbe_mode_info_t *vbe_info) {
 void* (vg_init)(uint16_t mode) {	
 
 	vbe_mode_info_t vbe_info;
-	if (vbe_get_mode_info(mode, &vbe_info)) {
+	if (vbe_get_mode_info_ours(mode, &vbe_info)) {
 		return NULL;
 	}
 
