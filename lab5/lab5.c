@@ -374,17 +374,20 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 int(video_test_controller)() {
   
 	vbe_controller_straight_from_hell_t ctrl;
-	// VBE_CONTROLLER_SIGNATURE_VBE2 = 0x0200
-	ctrl.vbe_signature[0] = 'V';
-	ctrl.vbe_signature[1] = 'B';
-	ctrl.vbe_signature[2] = 'E';
-	ctrl.vbe_signature[3] = '2';
 
 	mmap_t map;
 	if(lm_alloc(sizeof(vbe_controller_straight_from_hell_t), &map) == NULL) {
     printf("Error: failed to allocate memory block.");
     return 1;
   }
+
+	char* vbe_signature_ptr = map.virt;
+
+	// VBE_CONTROLLER_SIGNATURE_VBE2 = 0x0200
+	vbe_signature_ptr[0] = 'V';
+	vbe_signature_ptr[1] = 'B';
+	vbe_signature_ptr[2] = 'E';
+	vbe_signature_ptr[3] = '2';
 
 	reg86_t reg;
 	memset(&reg, 0, sizeof(reg86_t));
@@ -415,8 +418,6 @@ int(video_test_controller)() {
 		return 1;
 	}
 
-	printf("Base lm_alloc: %x virt: %x\n", map.phys, map.virt);
-
 	// PROCESS CRTL HERE
 
 	vg_vbe_contr_info_t ctrl_summary;
@@ -427,14 +428,14 @@ int(video_test_controller)() {
 	// these 2 may be in the wrong order
 	util_get_LSB(ctrl.vbe_version, &ctrl_summary.VBEVersion[0]);
 	util_get_MSB(ctrl.vbe_version, &ctrl_summary.VBEVersion[1]);
-	ctrl_summary.TotalMemory = ctrl.total_memory;
+	// Total memory is in 64KB blocks, so we need to multiply by 64, aka shift left 6
+	ctrl_summary.TotalMemory = ctrl.total_memory << 6;
 
 	// pointer time :(
 
 	// oem string
 	uint8_t size = 0;
 	char* str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.oem_string_ptr), &map);
-	printf("Phys: %x Virt: %x\n", ctrl.oem_string_ptr, str_ptr);
 	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
 		++size;
 	}
@@ -445,7 +446,6 @@ int(video_test_controller)() {
 	//vendor name
 	size = 0;
 	str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.vendor_name_ptr), &map);
-	printf("Phys: %x Virt: %x\n", ctrl.vendor_name_ptr, str_ptr);
 	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
 		++size;
 	}
