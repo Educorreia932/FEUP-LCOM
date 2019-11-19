@@ -195,7 +195,7 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 					 int16_t speed, uint8_t fr_rate) {
 
 	uint16_t period_per_frame = 60 / fr_rate;
-	uint16_t x_delta = 0, y_delta = 0;
+	int16_t x_delta = 0, y_delta = 0;
 	uint16_t old_x, old_y;
 	bool animation_ongoing = true;
 
@@ -225,6 +225,11 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 			x_delta = 1;
 		}
 	}
+	if (xf < xi)
+		x_delta *= -1;
+	if (yf < yi)
+		y_delta *= -1;
+	
 	// printf("Frame period: %d\nDelta: (%d, %d)\n", period_per_frame, x_delta, y_delta);
 
 	// Set mode 0x105
@@ -261,53 +266,104 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 	int r, ipc_status;
   	message msg;
 
-	// Interrupt loop
-	while (scancode != ESC_BREAKCODE) { 
-			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-					printf("driver_receive failed with: %d", r);
-					continue;
-			}
+	if (x_delta > 0 || y_delta > 0) {
+		// Interrupt loop
+		while (scancode != ESC_BREAKCODE) { 
+				if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+						printf("driver_receive failed with: %d", r);
+						continue;
+				}
 
-			if (is_ipc_notify(ipc_status)) {
-					switch (_ENDPOINT_P(msg.m_source)) {
-							case HARDWARE: /* hardware interrupt notification */
-									if (msg.m_notify.interrupts & timer0_bit_mask) {
-										timer_int_handler();
-										if (animation_ongoing) {
-											if (global_timer0_counter >= period_per_frame) {
-												// Update coordinate values
-												old_x = xi;
-												old_y = yi;
-												xi = xi + x_delta;
-												yi = yi + y_delta;
+				if (is_ipc_notify(ipc_status)) {
+						switch (_ENDPOINT_P(msg.m_source)) {
+								case HARDWARE: /* hardware interrupt notification */
+										if (msg.m_notify.interrupts & timer0_bit_mask) {
+											timer_int_handler();
+											if (animation_ongoing) {
+												if (global_timer0_counter >= period_per_frame) {
+													// Update coordinate values
+													old_x = xi;
+													old_y = yi;
+													xi = xi + x_delta;
+													yi = yi + y_delta;
 
-												if ((xi >= xf && x_delta) || (yi >= y_delta && y_delta)) {
-													// Fix final movement
-													vg_update_xpm(xpm, old_x, old_y, xf, yf);
-													animation_ongoing = false;
+													if ((xi >= xf && x_delta) || (yi >= yf && y_delta)) {
+														// Fix final movement
+														vg_update_xpm(xpm, old_x, old_y, xf, yf);
+														animation_ongoing = false;
+													}
+													else {
+														vg_update_xpm(xpm, old_x, old_y, xi, yi);
+													}
+													// Reset counter
+													global_timer0_counter = 0;
 												}
-												else {
-													vg_update_xpm(xpm, old_x, old_y, xi, yi);
-												}
-												// Reset counter
-												global_timer0_counter = 0;
 											}
 										}
-									}
-									if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
-										kbc_ih();
-										analyse_scancode(); 
-									}
-									break;
-							default:
-									break; /* no other notifications expected: do nothing */     
-					}
-			}
-			else { /* received a standard message, not a notification */
-					/* no standard messages expected: do nothing */
-			}
+										if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
+											kbc_ih();
+											analyse_scancode(); 
+										}
+										break;
+								default:
+										break; /* no other notifications expected: do nothing */     
+						}
+				}
+				else { /* received a standard message, not a notification */
+						/* no standard messages expected: do nothing */
+				}
+		}
 	}
+	else
+	{
+		// Interrupt loop
+		while (scancode != ESC_BREAKCODE) { 
+				if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+						printf("driver_receive failed with: %d", r);
+						continue;
+				}
 
+				if (is_ipc_notify(ipc_status)) {
+						switch (_ENDPOINT_P(msg.m_source)) {
+								case HARDWARE: /* hardware interrupt notification */
+										if (msg.m_notify.interrupts & timer0_bit_mask) {
+											timer_int_handler();
+											if (animation_ongoing) {
+												if (global_timer0_counter >= period_per_frame) {
+													// Update coordinate values
+													old_x = xi;
+													old_y = yi;
+													xi = xi + x_delta;
+													yi = yi + y_delta;
+
+													if ((xi <= xf && x_delta) || (yi <= yf && y_delta)) {
+														// Fix final movement
+														vg_update_xpm(xpm, old_x, old_y, xf, yf);
+														animation_ongoing = false;
+													}
+													else {
+														vg_update_xpm(xpm, old_x, old_y, xi, yi);
+													}
+													// Reset counter
+													global_timer0_counter = 0;
+												}
+											}
+										}
+										if (msg.m_notify.interrupts & kbd_bit_mask) { /* subscribed interrupt */
+											kbc_ih();
+											analyse_scancode(); 
+										}
+										break;
+								default:
+										break; /* no other notifications expected: do nothing */     
+						}
+				}
+				else { /* received a standard message, not a notification */
+						/* no standard messages expected: do nothing */
+				}
+		}
+	}
+	
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
 	vg_exit();
@@ -359,6 +415,8 @@ int(video_test_controller)() {
 		return 1;
 	}
 
+	printf("Base lm_alloc: %x virt: %x\n", map.phys, map.virt);
+
 	// PROCESS CRTL HERE
 
 	vg_vbe_contr_info_t ctrl_summary;
@@ -376,6 +434,7 @@ int(video_test_controller)() {
 	// oem string
 	uint8_t size = 0;
 	char* str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.oem_string_ptr), &map);
+	printf("Phys: %x Virt: %x\n", ctrl.oem_string_ptr, str_ptr);
 	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
 		++size;
 	}
@@ -386,6 +445,7 @@ int(video_test_controller)() {
 	//vendor name
 	size = 0;
 	str_ptr = linear_to_virt(far_ptr_to_linear(ctrl.vendor_name_ptr), &map);
+	printf("Phys: %x Virt: %x\n", ctrl.vendor_name_ptr, str_ptr);
 	for (char *aux = str_ptr; *aux != '\0'; ++aux) {
 		++size;
 	}
@@ -439,8 +499,12 @@ int(video_test_controller)() {
 
 	// END FUNCTION HERE
 
-	// frees here?
-	
+	// frees here
+	free(ctrl_summary.OEMString);
+	free(ctrl_summary.OEMVendorNamePtr);
+	free(ctrl_summary.OEMProductNamePtr);
+	free(ctrl_summary.OEMProductRevPtr);
+	free(ctrl_summary.VideoModeList);
 
 	return 0;
 	
