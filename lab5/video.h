@@ -27,7 +27,7 @@ typedef struct {
 	uint32_t vendor_product_rev_ptr;
 	uint8_t reserved[222];
 	uint8_t oem_data[256];
-} vbe_controller_straight_from_hell_t;
+} vbe_controller_complete_t;
 #pragma options align = reset
 
 extern vbe_mode_info_summary_t vg_info;

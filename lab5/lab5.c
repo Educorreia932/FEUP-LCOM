@@ -372,11 +372,9 @@ int(video_test_move)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint1
 }
 
 int(video_test_controller)() {
-  
-	vbe_controller_straight_from_hell_t ctrl;
 
 	mmap_t map;
-	if(lm_alloc(sizeof(vbe_controller_straight_from_hell_t), &map) == NULL) {
+	if(lm_alloc(sizeof(vbe_controller_complete_t), &map) == NULL) {
     printf("Error: failed to allocate memory block.");
     return 1;
   }
@@ -412,9 +410,11 @@ int(video_test_controller)() {
 		return 1;
 	}
 
-	ctrl = *((vbe_controller_straight_from_hell_t*) map.virt);
+	
+	vbe_controller_complete_t ctrl;
+	ctrl = *((vbe_controller_complete_t*) map.virt);
 	if (!lm_free(&map)) {
-		printf("vbe_get_mode_info_ours: couldn't deallocate memory in the low memory region\n");
+		printf("vbe_get_controller_info: couldn't deallocate memory in the low memory region\n");
 		return 1;
 	}
 
