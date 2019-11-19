@@ -20,7 +20,12 @@
     "ios": "c",
     "utils.h": "c",
     "stdbool.h": "c",
-    "sstream": "c"
+    "sstream": "c",
+    "__split_buffer": "c",
+    "initializer_list": "c",
+    "string": "c",
+    "utility": "c",
+    "vector": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
 }

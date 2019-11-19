@@ -174,6 +174,9 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 
 int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
 	
+	if (x > vg_info.x_res || y > vg_info.y_res)
+		return 0;
+
 	if (x + width >= vg_info.x_res) {
 		width = vg_info.x_res - x;
 	}
@@ -199,12 +202,15 @@ uint8_t vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
 	map = xpm_load(xpm, XPM_INDEXED, &img);
 
 	uint counter = 0;
+	uint16_t extra_x = 0;
 
 	uint16_t width, height;
 	if (x + img.width <= vg_info.x_res)
 		width = x + img.width;
-	else
+	else {
 		width = vg_info.x_res;
+		extra_x = x + img.width - width;
+	}
 	if (y + img.height <= vg_info.y_res)
 		height = y + img.height;
 	else
@@ -216,6 +222,7 @@ uint8_t vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y) {
 			vg_draw_pixel(i, j, map[counter]);
 			counter++;
 		}
+		counter += extra_x;
 	}
 
 	return 0;
