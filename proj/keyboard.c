@@ -29,12 +29,10 @@ int(kbd_unsubscribe_int)() {
 	return 0;
 }
 
-
 // Reads a scancode from the kbc output buffer
 // Supports 2 byte scancodes, but it will wait
 // for the second call to recognize the full scancode
-int kbc_get_scancode()
-{
+int kbc_get_scancode() {
 
 	if (util_sys_inb(STAT_REG, &st))
 	{
@@ -73,8 +71,7 @@ void kbd_ih() {
 
 // It's sole purpose is to parse both 1 & 2 byte scancodes
 void analyse_scancode() {
-	if (valid_scancode) // Checks if the current scancode was invalid (error in the read operation)
-	{
+	if (valid_scancode) { // Checks if the current scancode was invalid (error in the read operation)
 		// Whenever is_scancode_complete is false,
 		// a 2 byte scancode is being read
 		if (is_scancode_complete)
@@ -91,8 +88,8 @@ void analyse_scancode() {
 				scancode_no_bytes = 1;
 			}
 		}
-		else // Reading the second byte of a scancode
-		{
+
+		else { // Reading the second byte of a scancode
 			scancode_bytes[1] = scancode;
 			is_scancode_complete = 1;
 		}

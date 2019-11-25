@@ -3,7 +3,6 @@
 #include <lcom/lcf.h>
 #include "input_events.h"
 
-
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
 uint8_t hw_manager_subscribe_int(uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask);

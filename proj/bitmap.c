@@ -3,7 +3,7 @@
 
 #define BITMAP_ID 0x4D42
 
-extern void* buffer_base;
+extern void* double_buffer_base;
 extern vbe_mode_info_summary_t vg_info;
 
 // TODO: Convert to our bit specifying data types
@@ -187,7 +187,7 @@ void draw_bitmap(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint1
         if (pos < 0 || pos >= vg_info.y_res)
             continue;
 
-        bufferStartPos = (uint16_t*) buffer_base;
+        bufferStartPos = (uint16_t*) double_buffer_base;
         bufferStartPos += x + pos * vg_info.x_res;
 
         imgStartPos = (uint16_t*) bmp->data + xCorrection + i * width;
@@ -246,7 +246,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
 
     // TODO: This currently has the naive approach, hoping that everything will be just fine
 
-    uint16_t* buffer_cur_pos = (uint16_t*) buffer_base;
+    uint16_t* buffer_cur_pos = (uint16_t*) double_buffer_base;
     uint16_t* img_cur_pos = (uint16_t*) bmp->data;
     uint16_t* img_rel_pos = (uint16_t*) bmp->data;
     
@@ -261,7 +261,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             continue;
         }
 
-        buffer_cur_pos = (uint16_t*) buffer_base + x + pos * vg_info.x_res;
+        buffer_cur_pos = (uint16_t*) double_buffer_base + x + pos * vg_info.x_res;
         // dynamic_slice_size * 3 means an entire line
         img_cur_pos = (uint16_t*) bmp->data + i * dynamic_slice_size * 3;
 
@@ -306,7 +306,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             continue;
         }
 
-        buffer_cur_pos = (uint16_t*) buffer_base + x + pos * vg_info.x_res;
+        buffer_cur_pos = (uint16_t*) double_buffer_base + x + pos * vg_info.x_res;
         // dynamic_slice_size * 3 means an entire line
         img_cur_pos = (uint16_t*) bmp->data + (i % dynamic_slice_size + dynamic_slice_size) * dynamic_slice_size * 3;
         
@@ -356,7 +356,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             continue;
         }
 
-        buffer_cur_pos = (uint16_t*) buffer_base + x + pos * vg_info.x_res;
+        buffer_cur_pos = (uint16_t*) double_buffer_base + x + pos * vg_info.x_res;
         // dynamic_slice_size * 3 means an entire line
         img_cur_pos = (uint16_t*) bmp->data + (line + (dynamic_slice_size << 1)) * dynamic_slice_size * 3;
 
