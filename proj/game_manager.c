@@ -73,7 +73,7 @@ void free_game_manager(GameManager_t *gm) {
 
 // Update is executed once every frame
 void update(GameManager_t* gm) {
-  
+  update_level(gm->level, gm->kbd_input_events, gm->mouse_input_events);
 }
 
 void render(GameManager_t *gm) {
@@ -104,7 +104,7 @@ uint8_t start_game() {
 
 	/* GAME LOOP */
   /* aka interrupt loop */
-  bool mouse_interrupt=false, kbd_interrupt=false, timer0_interrupt=false;
+  bool is_frame = false;
   printf("start_game: Entering game loop\n");
 	while (!gm->kbd_input_events->key_esc_down) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
@@ -117,17 +117,20 @@ uint8_t start_game() {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & mouse_bit_mask) {
 						hw_manager_mouse_ih();
-            mouse_interrupt = true;
+
+            hw_manager_mouse(gm->mouse_input_events);
+            
           }
 					
           if (msg.m_notify.interrupts & kbd_bit_mask) {
             hw_manager_kbd_ih();
-            kbd_interrupt = true;
+
+            hw_manager_kbd(gm->kbd_input_events);
           }
           
           if (msg.m_notify.interrupts & timer0_bit_mask) {
             hw_manager_timer0_ih();
-            timer0_interrupt = true;
+            is_frame = hw_manager_is_frame();
           }
 
 					break;
@@ -136,25 +139,14 @@ uint8_t start_game() {
 			}
 		}
 
-    // This is our place for "out of the critical path stuff"
-    if (kbd_interrupt) {
-      hw_manager_kbd(gm->kbd_input_events);
-      kbd_interrupt = false;
-    }
-
-    if (mouse_interrupt) {
-      hw_manager_mouse(gm->mouse_input_events);
-      mouse_interrupt = false;
-    }
-
-    if (timer0_interrupt) {
-      if (hw_manager_is_frame()) {
+    // We only do the heavy stuff here, out of the "critical path"
+    if (is_frame) {
         update(gm);
         render(gm);
         reset_inputs(gm->kbd_input_events, gm->mouse_input_events);
-      }
-      timer0_interrupt = false;
-    }    
+
+        is_frame = false;
+    }
 	}
   
   printf("start_game: Game loop ended\n");
