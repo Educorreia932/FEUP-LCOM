@@ -1,6 +1,8 @@
 #pragma once
 
-#include <lcom/lcf.h>
+#include <lcom/lcf.h>a
+
+#define deltatime 0.03333333f // Time between frames
 
 typedef struct Vec2d{
     float x, y;

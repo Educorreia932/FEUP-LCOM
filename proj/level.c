@@ -61,20 +61,20 @@ Level_t* new_testing_level() {
 }
 
 void free_level(Level_t *level) {
-  free_sprite(level->background);
-  free_platforms(level->platforms);
-  free_player(level->player);
-  free(level);
+	free_sprite(level->background);
+	free_platforms(level->platforms);
+	free_player(level->player);
+	free(level);
 }
 
 // Actual level stuff
 
 void update_level(Level_t* level, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
-  player_movement(level->player, level->platforms, kbd_ev, mouse_ev);
+  	player_movement(level->player, level->platforms, kbd_ev, mouse_ev);
 }
 
 void render_level(Level_t *level) {
-  draw_sprite_floats(level->background, 0, 0, 0, COLOR_NO_MULTIPLY);
-  render_platforms(level->platforms);
-  render_player(level->player);
+	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY);
+	render_platforms(level->platforms);
+	render_player(level->player);
 }
