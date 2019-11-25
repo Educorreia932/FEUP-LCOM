@@ -20,6 +20,9 @@
     "__split_buffer": "c",
     "string": "c",
     "vector": "c",
-    "proj.h": "c"
+    "proj.h": "c",
+    "hw_manager.h": "c",
+    "geometry.h": "c",
+    "game_manager.h": "c"
   },
 }

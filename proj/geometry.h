@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lcom/lcf.h>a
+#include <lcom/lcf.h>
 
 #define deltatime 0.03333333f // Time between frames
 

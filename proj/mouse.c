@@ -97,11 +97,6 @@ uint8_t mouse_set_stream_mode() {
     return mouse_send_cmd(MOUSE_CMD_STREAM_MODE);
 }
 
-// Sets mouse to remote mode
-uint8_t mouse_set_remote_mode() {
-    return mouse_send_cmd(MOUSE_CMD_REMOTE_MODE);
-}
-
 // Sends cmd to mouse signaling we want to read a packet
 uint8_t mouse_read_data() {
     return mouse_send_cmd(MOUSE_CMD_READ_DATA);
