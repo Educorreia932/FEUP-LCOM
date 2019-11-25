@@ -11,6 +11,8 @@
 #define KBD_ESC_BREAKCODE 0x81
 #define KBD_Z_MAKECODE 0x2c
 #define KBD_Z_BREAKCODE 0xac
+#define KBD_X_MAKECODE 0x2d
+#define KBD_X_BREAKCODE 0xad
 
 // 2 byte scancodes, but we only need to compare the second one
 #define KBD_ARROW_LEFT_MAKECODE 0x4b
@@ -84,56 +86,61 @@ inline void hw_manager_kbd_ih() {
 }
 
 void hw_manager_kbd(KbdInputEvents_t* kbd_ev) {
-	analyse_scancode();
 
-	if (is_scancode_complete) {
-		if (scancode_no_bytes == 1) {
-			// 1 byte scancodes
-			switch (scancode) {
-				case KBD_ESC_MAKECODE:
-					if (!kbd_ev->key_esc)
-						kbd_ev->key_esc_down = true;
-					kbd_ev->key_esc = true;
-					break;
-				case KBD_ESC_BREAKCODE:
-					kbd_ev->key_esc = false;
-					break;
-				case KBD_Z_MAKECODE:
-					if (!kbd_ev->key_z)
-						kbd_ev->key_z_down = true;
-					kbd_ev->key_z = true;
-					break;
-				case KBD_Z_BREAKCODE:
-					kbd_ev->key_z = false;
-					break;
-				// No need for a default
-			}
-		}
-
-		else {
-			// 2 byte scancodes
-			switch (scancode) {
-				case KBD_ARROW_LEFT_MAKECODE:
-					if (!kbd_ev->left_arrow)
-						kbd_ev->left_arrow_down = true;
-					kbd_ev->left_arrow = true;
-					break;
-				case KBD_ARROW_LEFT_BREAKCODE:
-					kbd_ev->left_arrow = false;
-					break;
-				case KBD_ARROW_RIGHT_MAKECODE:
-					if (!kbd_ev->right_arrow)
-						kbd_ev->right_arrow_down = true;
-					kbd_ev->right_arrow = true;          
-					break;
-				case KBD_ARROW_RIGHT_BREAKCODE:
-					kbd_ev->right_arrow = false;
-					break;
-				// No need for a default
-			}
-		}
-	}
-
+  analyse_scancode();
+  if (is_scancode_complete) {
+    if (scancode_no_bytes == 1) {
+      // 1 byte scancodes
+      switch (scancode) {
+        case KBD_ESC_MAKECODE:
+          if (!kbd_ev->key_esc)
+            kbd_ev->key_esc_down = true;
+          kbd_ev->key_esc = true;
+          break;
+        case KBD_ESC_BREAKCODE:
+          kbd_ev->key_esc = false;
+          break;
+        case KBD_Z_MAKECODE:
+          if (!kbd_ev->key_z)
+            kbd_ev->key_z_down = true;
+          kbd_ev->key_z = true;
+          break;
+        case KBD_Z_BREAKCODE:
+          kbd_ev->key_z = false;
+          break;
+        case KBD_X_MAKECODE:
+          if (!kbd_ev->key_x)
+            kbd_ev->key_x_down = true;
+          kbd_ev->key_x = true;
+          break;
+        case KBD_X_BREAKCODE:
+          kbd_ev->key_x = false;
+        // No need for a default
+      }
+    }
+    else {
+      // 2 byte scancodes
+      switch (scancode) {
+        case KBD_ARROW_LEFT_MAKECODE:
+          if (!kbd_ev->left_arrow)
+            kbd_ev->left_arrow_down = true;
+          kbd_ev->left_arrow = true;
+          break;
+        case KBD_ARROW_LEFT_BREAKCODE:
+          kbd_ev->left_arrow = false;
+          break;
+        case KBD_ARROW_RIGHT_MAKECODE:
+          if (!kbd_ev->right_arrow)
+            kbd_ev->right_arrow_down = true;
+          kbd_ev->right_arrow = true;          
+          break;
+        case KBD_ARROW_RIGHT_BREAKCODE:
+          kbd_ev->right_arrow = false;
+          break;
+        // No need for a default
+      }
+    }
+  }
 }
 
 inline void hw_manager_mouse_ih() {
@@ -177,12 +184,14 @@ void hw_manager_mouse(MouseInputEvents_t* mouse_ev) {
 
 /* RESETTING NECESSARY INPUTS */
 
-void reset_inputs(KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {	
-	// Reset kbd
-	kbd_ev->key_esc_down = false;
-	kbd_ev->key_z_down = false;
-	kbd_ev->left_arrow_down = false;
-	kbd_ev->right_arrow_down = false;
+void reset_inputs(KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
+  
+  // Reset kbd
+  kbd_ev->key_esc_down = false;
+  kbd_ev->key_z_down = false;
+  kbd_ev->key_x_down = false;
+  kbd_ev->left_arrow_down = false;
+  kbd_ev->right_arrow_down = false;
 
 	// Reset mouse
 	mouse_ev->left_button_down = false;

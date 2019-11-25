@@ -12,6 +12,15 @@ inline float fmax(float f1, float f2) {
   return f1 > f2 ? f1 : f2;
 }
 
+inline float fclamp(float f, float min, float max) {
+  return fmax(min, fmin(f, max));
+}
+
+inline float fsign(float f) {
+  return f >= 0 ? 1 : -1;
+}
+
+
 // Thanks quake arena 3 :D
 float Q_rsqrt( float number )
 {

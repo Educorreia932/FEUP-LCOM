@@ -1,16 +1,22 @@
 #include "player.h"
 #include "geometry.h"
+#include "math.h"
 #include "sprite.h"
 
+/* PHYSICS STUFF */
+#define BASE_GRAVITY 800.0f
+#define FALLING_MULT 1.6f
+#define MAX_VELOCITY 800.0f
 
 /* PLAYER CONSTANTS */
-#define PLAYER_BASE_SPEED 8.0f
-#define PLAYER_BASE_JUMP 20.0f
+#define PLAYER_BASE_SPEED 8.0f // Raw pixels
+#define PLAYER_BASE_JUMP 575.0f
 
 struct Player {
     Rect_t rect;
     Sprite_t *sprite;
     float speed_mult, jump_mult;
+    float y_speed, gravity;
 };
 
 // TODO: ALL OF THIS
@@ -46,6 +52,8 @@ Player_t* new_testing_player() {
   printf("new_testing_player: Customizing player stats\n");
   player->speed_mult = 1.0f;
   player->jump_mult = 1.0f;
+  player->y_speed = 0.0f;
+  player->gravity = BASE_GRAVITY;
 
 	printf("new_testing_player: Finished making player\n");
 	return player;
@@ -59,9 +67,10 @@ void free_player(Player_t* player) {
 // TODO: Implement animations depending on movement
 void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
   
+  Rect_t previous_pos = player->rect;
   // Horizontal Movement
+  // TODO: Add a secondary check for larger horizontal movements
   if (!(kbd_ev->right_arrow && kbd_ev->left_arrow)) {
-    Rect_t previous_pos = player->rect;
 
     if (kbd_ev->right_arrow) {
 
@@ -76,14 +85,35 @@ void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_
         player->rect = previous_pos;
     }
   }
-  
+
+  // TODO: Temporary fix to check alternating gravity
+  if (kbd_ev->key_x_down)
+    player->gravity *= -1;
+
+
   // Vertical Movement
+  previous_pos = player->rect;
+  if (player->y_speed * player->gravity > 0)
+    player->y_speed += DELTATIME * player->gravity;
+  else
+    player->y_speed += DELTATIME * FALLING_MULT * player->gravity;
+
+  // Jump button
   if (kbd_ev->key_z_down) {
-    Rect_t previous_pos = player->rect;
-    player->rect.y -= PLAYER_BASE_JUMP * player->jump_mult;
-    if (does_collide_platforms(plat, &player->rect))
-        player->rect = previous_pos;
+    player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
   }
+
+  // Kinda like terminal velocity
+  player->y_speed = fclamp(player->y_speed, -MAX_VELOCITY, MAX_VELOCITY);
+
+  player->rect.y += player->y_speed * DELTATIME
+    + 0.5f * fsquare(DELTATIME) * player->gravity;
+  
+  if (does_collide_platforms(plat, &player->rect)) {
+    player->rect = previous_pos;
+    player->y_speed /= 3;
+  }
+
 }
 
 void render_player(Player_t* player) {
