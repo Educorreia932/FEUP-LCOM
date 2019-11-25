@@ -75,6 +75,21 @@ void free_platforms(Platforms_t *plat) {
   free(plat);
 }
 
+
+// Actual platform stuff
+
+bool does_collide_platforms(Platforms_t* plat, Rect_t* rect) {
+
+  Rect_t* rectangles = plat->rects;
+  for (uint16_t i = 0; i < plat->size; ++i) {
+    if (rect_collision(rect, rectangles))
+      return 1;
+    ++rectangles;
+  }
+
+  return 0;
+}
+
 void render_platforms(Platforms_t *plat) {
   
   Rect_t* rects = (Rect_t*) plat->rects;
