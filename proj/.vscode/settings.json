@@ -1,0 +1,25 @@
+{
+  "git.ignoreLimitWarning": true,
+  "C_Cpp.clang_format_fallbackStyle": "LLVM",
+  "diffEditor.ignoreTrimWhitespace": true,
+  "editor.formatOnSave": false,
+  "editor.tabSize": 2,
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 100,
+  "files.associations": {
+    "bitmap.h": "c",
+    "video.h": "c",
+    "stdint.h": "c",
+    "video_macros.h": "c",
+    "timer.h": "c",
+    "lcf.h": "c",
+    "sprite.h": "c",
+    "level.h": "c",
+    "platforms.h": "c",
+    "mouse.h": "c",
+    "__split_buffer": "c",
+    "string": "c",
+    "vector": "c",
+    "proj.h": "c"
+  },
+}
