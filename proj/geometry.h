@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-#define deltatime 0.03333333f // Time between frames
+#define DELTATIME 0.03333333f // Time between frames
 
 typedef struct Vec2d{
     float x, y;

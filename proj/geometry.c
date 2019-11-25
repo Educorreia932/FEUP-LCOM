@@ -74,3 +74,5 @@ inline bool rect_collision(Rect_t *r1, Rect_t *r2) {
     && r1->y < r2->y + r2->h
     && r1->y + r1->h > r2->y;
 }
+
+

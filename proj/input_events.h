@@ -11,6 +11,8 @@ typedef struct KbdInputEvents {
     bool left_arrow;
     bool key_z_down;
     bool key_z;
+    bool key_x_down;
+    bool key_x;
     bool key_esc_down;
     bool key_esc;
 } KbdInputEvents_t;

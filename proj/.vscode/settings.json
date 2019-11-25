@@ -3,7 +3,7 @@
   "C_Cpp.clang_format_fallbackStyle": "LLVM",
   "diffEditor.ignoreTrimWhitespace": true,
   "editor.formatOnSave": false,
-  "editor.tabSize": 2,
+  "editor.tabSize": 4,
   "editor.wordWrap": "bounded",
   "editor.wordWrapColumn": 100,
   "files.associations": {
