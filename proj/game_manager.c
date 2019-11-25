@@ -80,27 +80,29 @@ void render(GameManager_t *gm) {
   render_level(gm->level);
 }
 
-uint8_t start_game() {
-  
+uint8_t start_game() {  
   printf("start_game: Creating GameManager object\n");
+
   GameManager_t *gm = new_testing_game_manager();
+
   if (gm == NULL) {
     printf("start_game: Failed to create GameManager object\n");
     return 1;
   }
+  
   printf("start_game: Created Game Manager\n");
 
   uint32_t kbd_bit_mask;
   uint32_t timer0_bit_mask;
   uint32_t mouse_bit_mask;
 
-  if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask)) {
+  if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask))
     printf("start_game: Failed to enable interrupts\n");
-  }
+  
   printf("start_game: Subscribed to all interrupts\n");
 
 	int r, ipc_status;
-		message msg;
+	message msg;
 
 	/* GAME LOOP */
   /* aka interrupt loop */

@@ -9,7 +9,6 @@
 // Any header files included below this line should have been created by you
 #include "game_manager.h"
 
-
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -41,7 +40,7 @@ static int print_usage() {
 }
 
 int proj_game() {
-  if (vg_init(0x117) == NULL) 
+  	if (vg_init(0x117) == NULL) 
 		return 1;
 
 	start_game();

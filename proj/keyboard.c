@@ -25,7 +25,7 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
 int(kbd_unsubscribe_int)() {
 	if (sys_irqrmpolicy(&kbd_hook_id))
 		return 1;
-		
+
 	return 0;
 }
 
@@ -40,30 +40,30 @@ int kbc_get_scancode()
 	{
 		valid_scancode = 0;
 		return 1;
-	}	
+	}
 
 	// Check if output buffer is full
 	if (!(st & ST_OUT_BUF))
 	{
 		valid_scancode = 0;
 		return 1;
-	}	
+	}
 
 	if (util_sys_inb(OUT_BUF, &scancode)) // Read scancode
 	{
 		valid_scancode = 0;
 		return 1;
-	}	
+	}
 
 	// If either one is set to 1, there's an error
 	if (st & (ST_PAR_ERR | ST_TO_ERR | ST_MOUSE_DATA))
 	{
 		valid_scancode = 0;
 		return 1;
-	}	
+	}
 
 	valid_scancode = 1;
-	
+
 	return 0;
 }
 
@@ -105,22 +105,22 @@ void analyse_scancode() {
 // IMPORTANT:
 // This is only meant to be called when interrupts are disabled
 // Otherwise, the ih may "steal" our response and ruin everything
-int kbc_reenable_default_int()
-{
+int kbc_reenable_default_int() {
 	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE))
 		return 1;
 
 	uint8_t cmd;
+
 	if (kbc_read_outbf(OUT_BUF, &cmd, false))
 		return 1;
 
 	cmd |= CMD_BYTE_ENABLE_INT_KBD;
-	
+
 	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE))
 		return 1;
 
 	if (kbc_send_cmd(IN_BUF_ARGS, cmd))
 		return 1;
-	
+
 	return 0;
 }

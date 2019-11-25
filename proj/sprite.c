@@ -11,6 +11,7 @@ struct Sprite {
     Bitmap_t **bmps;
     uint8_t size;
     float x_offset, y_offset;
+	uint8_t animation_state;
 };
 
 Sprite_t* new_sprite(float x_offset, float y_offset, int num, ...) {
@@ -30,7 +31,8 @@ Sprite_t* new_sprite(float x_offset, float y_offset, int num, ...) {
   obj->size = num;
   obj->x_offset = x_offset;
   obj->y_offset = y_offset;
-  
+  obj->animation_state = 0;
+
   // Load all bitmaps
   obj->bmps = (Bitmap_t**) malloc(sizeof(Bitmap_t*) * num);
   if (obj->bmps == NULL) {
@@ -66,29 +68,34 @@ void free_sprite(Sprite_t *s) {
   free(s);
 }
 
-
-inline void draw_sprite(Sprite_t *s, Rect_t *r, uint8_t animState, uint32_t color_to_multiply) {
-  draw_sprite_floats(s, r->x, r->y, animState, color_to_multiply);
+inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply) {
+  	draw_sprite_floats(s, r->x, r->y, color_to_multiply);
 }
 
-void draw_sprite_floats(Sprite_t *s, float x, float y, uint8_t animState, uint32_t color_to_multiply) {
-
-  if (animState > s->size) {
-    printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", animState, s->size);
-    return;
-  }
-  
-  draw_bitmap(s->bmps[animState], (int32_t) (x + s->x_offset), (int32_t) (y + s->y_offset), ALIGN_LEFT, color_to_multiply);
+void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply) {
+	if (s->animation_state > s->size) {
+		printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", s->animation_state, s->size);
+		return;
+	}
+	
+	draw_bitmap(s->bmps[s->animation_state], (int32_t) (x + s->x_offset), (int32_t) (y + s->y_offset), ALIGN_LEFT, color_to_multiply);
 }
 
 inline uint16_t sprite_get_width(Sprite_t *s) {
-  return bitmap_get_width(s->bmps[0]);
+  	return bitmap_get_width(s->bmps[0]);
 }
 
 inline uint16_t sprite_get_height(Sprite_t *s) {
-  return bitmap_get_height(s->bmps[0]);
+  	return bitmap_get_height(s->bmps[0]);
 }
 
+void set_animation_state(Sprite_t *s, uint8_t state) {
+	s->animation_state = state;
+}
+
+uint8_t get_animation_state(const Sprite_t *s) {
+	return s->animation_state;
+}
 
 /* SPRITE DYNAMIC */
 
