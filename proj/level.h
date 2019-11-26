@@ -10,7 +10,7 @@
 typedef struct Level {
     Sprite_t *background;
     Platforms_t *platforms;
-    //Lasers_t *lasers;
+    Lasers_t *lasers;
     Player_t* player;
 } Level_t;
 

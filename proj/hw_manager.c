@@ -87,7 +87,6 @@ inline void hw_manager_kbd_ih() {
 }
 
 void hw_manager_kbd(KbdInputEvents_t* kbd_ev) {
-
   analyse_scancode();
   if (is_scancode_complete) {
     if (scancode_no_bytes == 1) {

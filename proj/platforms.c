@@ -9,8 +9,8 @@ struct Platforms {
     Rect_t *rects;
     bool *is_wall;
     uint8_t size;
-    SpriteDynamic_t *platform;
-    SpriteDynamic_t *wall;
+    SpriteDynamic_t* platform;
+    SpriteDynamic_t* wall;
 };
 
 // TODO: ALL OF THIS
