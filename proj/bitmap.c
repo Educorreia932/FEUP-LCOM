@@ -178,24 +178,30 @@ void draw_bitmap(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint1
     else if (x + drawWidth >= vg_info.x_res )
         drawWidth = vg_info.x_res - x;
 
-    uint16_t* bufferStartPos;
-    uint16_t* imgStartPos;
+    // So because of the 4 byte padding, every bitmap with uneven width would render incorrectly, as such, we need to increment width by 1 in order to guarantee our pointer arithmetic is correct (this is, to include the 2 byte padding)
+    if (width % 2)
+        width += 1;
 
+    uint16_t* imgPos;
+    uint16_t* bufferPos;
+    
     for (int32_t i = 0; i < height; i++) {
         int pos = y + height - 1 - i;
 
         if (pos < 0 || pos >= vg_info.y_res)
             continue;
 
-        bufferStartPos = (uint16_t*) double_buffer_base;
-        bufferStartPos += x + pos * vg_info.x_res;
+        bufferPos = (uint16_t*) double_buffer_base
+            + x + pos * vg_info.x_res;
 
-        imgStartPos = (uint16_t*) bmp->data + xCorrection + i * width;
-
-        for (int j = 0; j < drawWidth; ++j)
-            if (is_not_background(imgStartPos[j])) {
-                bufferStartPos[j] = imgStartPos[j] & multiply;
+        imgPos = (uint16_t*) bmp->data + xCorrection + i * width;
+        for (int j = 0; j < drawWidth; ++j) {
+            if (is_not_background(*imgPos)) {
+                *bufferPos = *imgPos & multiply;
             }
+            ++imgPos;
+            ++bufferPos;
+        }
     }
 
 }
@@ -250,6 +256,10 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
     uint16_t* img_cur_pos = (uint16_t*) bmp->data;
     uint16_t* img_rel_pos = (uint16_t*) bmp->data;
     
+    // So because of the 4 byte padding, every bitmap with uneven width would render incorrectly, as such, we need to increment width by 1 in order to guarantee our pointer arithmetic is correct (this is, to include the 2 byte padding)
+    if (width % 2)
+        width += 1;
+
     /* TOP SECTION */
 
     // Top Left block
