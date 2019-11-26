@@ -90,7 +90,7 @@ void update_level(Level_t* level, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* 
 }
 
 void render_level(Level_t *level) {
-	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY);
+	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, false);
 	render_platforms(level->platforms);
 	render_player(level->player);
 	render_lasers(level->lasers);

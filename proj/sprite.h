@@ -13,8 +13,8 @@ typedef struct Sprite Sprite_t;
 Sprite_t* new_sprite(float x_offset, float y_offset, int num, ...);
 void free_sprite(Sprite_t *s);
 
-void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply);
-void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply);
+void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed);
+void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, bool reversed);
 
 uint16_t sprite_get_width(Sprite_t *s);
 uint16_t sprite_get_height(Sprite_t *s);

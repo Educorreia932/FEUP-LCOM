@@ -22,6 +22,7 @@ MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_fi
         printf("new_cursor: MouseInputEvents_t must be valid (it was a NULL pointer)\n");
         return NULL;
     }
+
     cursor->mouse_ev = mouse_ev;
 
     // TODO: Use screen size
@@ -78,5 +79,5 @@ void update_cursor(MouseCursor_t* cursor) {
 
 void render_cursor(MouseCursor_t* cursor) {
     if (cursor->rendered)
-        draw_sprite_floats(cursor->sprite, cursor->x, cursor->y, COLOR_NO_MULTIPLY);
+        draw_sprite_floats(cursor->sprite, cursor->x, cursor->y, COLOR_NO_MULTIPLY, false);
 }
