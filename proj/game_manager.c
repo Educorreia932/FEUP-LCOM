@@ -79,6 +79,10 @@ GameManager_t * new_testing_game_manager() {
 }
 
 void free_game_manager(GameManager_t *gm) {
+	if (gm == NULL) {
+        printf("free_game_manager: Cannot free a NULL pointer\n");
+        return;
+    }
 	free_level(gm->level);
 	free_kbd_input_events(gm->kbd_ev);
 	free_mouse_input_events(gm->mouse_ev);
@@ -140,7 +144,7 @@ uint8_t start_game() {
 			hw_manager_mouse(gm->mouse_ev);
 			
 		}
-					
+
 		if (msg.m_notify.interrupts & kbd_bit_mask) {
 			hw_manager_kbd_ih();
 
@@ -162,8 +166,8 @@ uint8_t start_game() {
 		if (is_frame) {
 			update(gm);
 			render(gm);
-			reset_inputs(gm->kbd_ev, gm->mouse_ev);
 			hw_manager_switch_double_buffer();
+			reset_inputs(gm->kbd_ev, gm->mouse_ev);
 
 			is_frame = false;
 		}

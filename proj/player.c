@@ -66,6 +66,10 @@ Player_t* new_testing_player() {
 }
 
 void free_player(Player_t* player) {
+	if (player == NULL) {
+		printf("free_player: Cannot free a NULL pointer\n");
+		return;
+  	}
 	free_sprite(player->sprite);
 	free(player);
 }
@@ -93,7 +97,12 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 }
 
 // TODO: Implement animations depending on movement
-void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {	
+void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
+
+	if (kbd_ev->key_c_down) {
+		lasers_cycle_link_id(lasers);
+	}
+
 	if (player_is_dead(lasers, &player->rect)) {
 			player->rect.x = player->x_spawn;
 			player->rect.y = player->y_spawn;

@@ -13,6 +13,8 @@ typedef struct KbdInputEvents {
     bool key_z;
     bool key_x_down;
     bool key_x;
+    bool key_c_down;
+    bool key_c;
     bool key_esc_down;
     bool key_esc;
 } KbdInputEvents_t;
