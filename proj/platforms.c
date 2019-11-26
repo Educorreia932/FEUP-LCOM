@@ -2,6 +2,9 @@
 #include "geometry.h"
 #include "sprite.h"
 
+#define PLATFORMS_COLOR 0x23
+#define WALLS_COLOR 0x0E
+
 struct Platforms {
     Rect_t *rects;
     bool *is_wall;
@@ -30,7 +33,7 @@ Platforms_t* new_testing_platforms() {
     return NULL;
   }
 
-  plat->size = 7;
+  plat->size = 8;
 
   plat->rects = (Rect_t*) malloc(sizeof(Rect_t) * plat->size);
   if (plat->wall == NULL) {
@@ -48,11 +51,11 @@ Platforms_t* new_testing_platforms() {
 
   plat->rects[0] = rect(0, 0, 1024, 24);
   plat->is_wall[0] = true;
-  plat->rects[1] = rect(0, 0, 24, 768);
+  plat->rects[1] = rect(0, 24, 24, 768 - 24*2);
   plat->is_wall[1] = true;
   plat->rects[2] = rect(0, 768 - 24, 1024, 24);
   plat->is_wall[2] = true;
-  plat->rects[3] = rect(1024 - 24, 0, 24, 768);
+  plat->rects[3] = rect(1024 - 24, 24, 24, 768 - 24*2);
   plat->is_wall[3] = true;
 
   plat->rects[4] = rect(400, 700, 200, 16);
@@ -63,6 +66,9 @@ Platforms_t* new_testing_platforms() {
 
   plat->rects[6] = rect(500, 500, 100, 100);
   plat->is_wall[6] = false;
+
+  plat->rects[7] = rect(40, 500, 148, 120);
+  plat->is_wall[7] = false;
 
   return plat; 
 }
