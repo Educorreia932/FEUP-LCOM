@@ -8,6 +8,8 @@
 #define FALLING_MULT 1.6f
 #define MAX_VELOCITY 800.0f
 
+#define IS_GROUNDED_MARGIN 8.0f
+
 /* PLAYER CONSTANTS */
 #define PLAYER_BASE_SPEED 8.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
@@ -66,12 +68,23 @@ void free_player(Player_t* player) {
 
 // TODO: This is_grounded is very sketchy, improve it later down the road
 bool player_is_grounded(Player_t* player, Platforms_t* plat) {
-	Rect_t r = rect(
+	Rect_t r;
+	if (player->gravity > 0) {
+		r = rect(
 					player->rect.x + 2,
 					player->rect.y + player->rect.h,
 					player->rect.w - 2,
-					8
+					IS_GROUNDED_MARGIN
 				);
+	}
+	else {
+		r = rect(
+			player->rect.x + 2,
+			player->rect.y - IS_GROUNDED_MARGIN,
+			player->rect.w - 2,
+			IS_GROUNDED_MARGIN
+		);
+	}
 	return does_collide_platforms(plat, &r);
 }
 
