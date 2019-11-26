@@ -40,7 +40,7 @@ static int print_usage() {
 }
 
 int proj_game() {
-  	if (vg_init(0x117) == NULL) 
+  if (vg_init(0x117) == NULL) 
 		return 1;
 
 	start_game();
@@ -57,6 +57,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
   if (strcmp(argv[0], "game") == 0)
     return proj_game();
+  else if (strcmp(argv[0], "test") == 0) {
+    panic("No code to test");
+    return 1;
+  }
   else {
     printf("Invalid command\n");
     return 1;

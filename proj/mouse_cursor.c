@@ -7,6 +7,7 @@ struct MouseCursor {
     float x, y;
     Sprite_t* sprite;
     MouseInputEvents_t* mouse_ev;
+    bool rendered;
 };
 
 /* CONSTRUCTORS */
@@ -26,6 +27,8 @@ MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_fi
     // TODO: Use screen size
     cursor->x = 100;
     cursor->y = 100;
+
+    cursor->rendered = true;
     
     cursor->sprite = new_sprite(0.0f, 0.0f, 1, mouse_bmp_file_name);
     if (cursor->sprite == NULL) {
@@ -39,6 +42,19 @@ MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_fi
 void free_cursor(MouseCursor_t* cursor) {
     free_sprite(cursor->sprite);
     free(cursor);
+}
+
+/* Activate and Deactivate mouse cursor rendering */
+inline void cursor_hide(MouseCursor_t* cursor) {
+    cursor->rendered = false;
+}
+
+inline void cursor_show(MouseCursor_t* cursor) {
+    cursor->rendered = true;
+}
+
+inline bool cursor_is_active(MouseCursor_t* cursor) {
+    return cursor->rendered;
 }
 
 /* CURSOR METHODS */
@@ -55,6 +71,8 @@ void update_cursor(MouseCursor_t* cursor) {
         768
     );
 }
+
 void render_cursor(MouseCursor_t* cursor) {
-    draw_sprite_floats(cursor->sprite, cursor->x, cursor->y, COLOR_NO_MULTIPLY);
+    if (cursor->rendered)
+        draw_sprite_floats(cursor->sprite, cursor->x, cursor->y, COLOR_NO_MULTIPLY);
 }
