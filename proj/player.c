@@ -78,22 +78,29 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 // TODO: Implement animations depending on movement
 void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 	
-	Rect_t previous_pos = player->rect;
+	Rect_t previous_rect = player->rect;
+
 	// Horizontal Movement
-	// TODO: Add a secondary check for larger horizontal movements
-	if (!(kbd_ev->right_arrow && kbd_ev->left_arrow)) {
+	float h_delta = 0;
+	if (kbd_ev->right_arrow)
+		h_delta = PLAYER_BASE_SPEED * player->speed_mult;
+	
+	if (kbd_ev->left_arrow)
+		h_delta = -PLAYER_BASE_SPEED * player->speed_mult;
 
-		if (kbd_ev->right_arrow) {
-
-			player->rect.x += PLAYER_BASE_SPEED * player->speed_mult;
+	if (h_delta != 0) {
+		player->rect.x += h_delta / 2;
+		if (does_collide_platforms(plat, &player->rect)) {
+			player->rect.x -= h_delta / 4;
 			if (does_collide_platforms(plat, &player->rect))
-				player->rect = previous_pos;
-		
+				player->rect = previous_rect;
 		}
-		if (kbd_ev->left_arrow) {
-			player->rect.x -= PLAYER_BASE_SPEED * player->speed_mult;
+		else
+		{	
+			previous_rect = player->rect;
+			player->rect.x += h_delta / 2;
 			if (does_collide_platforms(plat, &player->rect))
-				player->rect = previous_pos;
+				player->rect = previous_rect;
 		}
 	}
 
@@ -103,7 +110,7 @@ void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_
 
 
 	// Vertical Movement
-	previous_pos = player->rect;
+	previous_rect = player->rect;
 	if (player->y_speed * player->gravity > 0)
 		player->y_speed += DELTATIME * player->gravity;
 	else
@@ -121,7 +128,7 @@ void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_
 		+ 0.5f * fsquare(DELTATIME) * player->gravity;
 	
 	if (does_collide_platforms(plat, &player->rect)) {
-		player->rect = previous_pos;
+		player->rect = previous_rect;
 		player->y_speed /= 3;
 	}
 
