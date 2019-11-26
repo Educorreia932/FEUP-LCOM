@@ -4,6 +4,7 @@
 #include "geometry.h"
 
 #define COLOR_NO_MULTIPLY 0xFFFF
+#define PATH "/home/lcom/labs/proj/assets/"
 
 typedef struct Sprite Sprite_t;
 

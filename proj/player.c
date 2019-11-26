@@ -19,6 +19,7 @@ struct Player {
 		Sprite_t *sprite;
 		float speed_mult, jump_mult;
 		float y_speed, gravity;
+		float x_spawn, y_spawn;
 };
 
 // TODO: ALL OF THIS
@@ -36,7 +37,8 @@ Player_t* new_testing_player() {
 	}
 
 	printf("new_testing_player: Creating player sprite\n");
-	player->sprite = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/watt_tmp.bmp");
+
+	player->sprite = new_sprite(0, 0, 2, "/home/lcom/labs/proj/assets/watt_tmp.bmp", "/home/lcom/labs/proj/assets/watt_left.bmp");
 
 	if (player->sprite == NULL) {
 		printf("new_testing_player: Failed to create the Sprite object\n");
@@ -45,8 +47,8 @@ Player_t* new_testing_player() {
 
 	printf("new_testing_player: Customizing player Rect\n");
 	player->rect = rect_from_uints(
-		200,
-		200, 
+		200.0f,
+		200.0f, 
 		sprite_get_width(player->sprite), 
 		sprite_get_height(player->sprite)
 	);
@@ -56,6 +58,8 @@ Player_t* new_testing_player() {
 	player->jump_mult = 1.0f;
 	player->y_speed = 0.0f;
 	player->gravity = BASE_GRAVITY;
+	player->x_spawn = 200;
+	player->y_spawn = 200;
 
 	printf("new_testing_player: Finished making player\n");
 	return player;
@@ -89,27 +93,40 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 }
 
 // TODO: Implement animations depending on movement
-void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
-	
+void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {	
+	if (player_is_dead(lasers, &player->rect)) {
+			player->rect.x = player->x_spawn;
+			player->rect.y = player->y_spawn;
+			player->y_speed = 0;	
+				
+		return;
+	}
+
 	Rect_t previous_rect = player->rect;
 
 	// Horizontal Movement
 	float h_delta = 0;
-	if (kbd_ev->right_arrow)
+	if (kbd_ev->right_arrow) {
 		h_delta = PLAYER_BASE_SPEED * player->speed_mult;
+		set_animation_state(player->sprite, 0);
+	}
 	
-	if (kbd_ev->left_arrow)
+	if (kbd_ev->left_arrow) {
 		h_delta = -PLAYER_BASE_SPEED * player->speed_mult;
+		set_animation_state(player->sprite, 1);
+	}
 
 	if (h_delta != 0) {
 		player->rect.x += h_delta / 2;
+		
 		if (does_collide_platforms(plat, &player->rect)) {
 			player->rect.x -= h_delta / 4;
+
 			if (does_collide_platforms(plat, &player->rect))
 				player->rect = previous_rect;
 		}
-		else
-		{	
+
+		else {	
 			previous_rect = player->rect;
 			player->rect.x += h_delta / 2;
 			if (does_collide_platforms(plat, &player->rect))
@@ -121,11 +138,12 @@ void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_
 	if (kbd_ev->key_x_down)
 		player->gravity *= -1;
 
-
 	// Vertical Movement
 	previous_rect = player->rect;
+
 	if (player->y_speed * player->gravity > 0)
 		player->y_speed += DELTATIME * player->gravity;
+	
 	else
 		player->y_speed += DELTATIME * FALLING_MULT * player->gravity;
 
@@ -144,10 +162,9 @@ void player_movement(Player_t* player, Platforms_t* plat, KbdInputEvents_t* kbd_
 		player->rect = previous_rect;
 		player->y_speed /= 3;
 	}
-
 }
 
 void render_player(Player_t* player) {
-		draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY);
+	draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY);
 }
 
