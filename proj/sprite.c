@@ -73,18 +73,22 @@ void free_sprite(Sprite_t *s) {
   free(s);
 }
 
-// TODO: Perhaps add option to rotate/flip sprite?
-inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply) {
-  	draw_sprite_floats(s, r->x, r->y, color_to_multiply);
+// TODO: Argument (reversed)
+inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed) {
+	draw_sprite_floats(s, r->x, r->y, color_to_multiply, reversed);
 }
 
-void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply) {
-  if (s->animation_state > s->size) {
-    printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", s->animation_state, s->size);
-    return;
-  }
+void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, bool reversed) {
+	if (s->animation_state > s->size) {
+		printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", s->animation_state, s->size);
+		return;
+	}
 
-  draw_bitmap(s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);
+	if (!reversed) 
+		draw_bitmap(s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);
+
+	else 
+		draw_bitmap_reversed(s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);	
 }
 
 inline uint16_t sprite_get_width(Sprite_t *s) {

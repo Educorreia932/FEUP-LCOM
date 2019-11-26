@@ -20,6 +20,7 @@ struct Player {
 		float speed_mult, jump_mult;
 		float y_speed, gravity;
 		float x_spawn, y_spawn;
+		bool heading_right;
 };
 
 // TODO: ALL OF THIS
@@ -60,6 +61,7 @@ Player_t* new_testing_player() {
 	player->gravity = BASE_GRAVITY;
 	player->x_spawn = 200;
 	player->y_spawn = 200;
+	player->heading_right = true;
 
 	printf("new_testing_player: Finished making player\n");
 	return player;
@@ -115,14 +117,15 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdI
 
 	// Horizontal Movement
 	float h_delta = 0;
+
 	if (kbd_ev->right_arrow) {
 		h_delta = PLAYER_BASE_SPEED * player->speed_mult;
-		set_animation_state(player->sprite, 0);
+		player->heading_right = true;
 	}
 	
 	if (kbd_ev->left_arrow) {
 		h_delta = -PLAYER_BASE_SPEED * player->speed_mult;
-		set_animation_state(player->sprite, 1);
+		player->heading_right = false;
 	}
 
 	if (h_delta != 0) {
@@ -174,6 +177,6 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdI
 }
 
 void render_player(Player_t* player) {
-	draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY);
+	draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY, !player->heading_right);
 }
 
