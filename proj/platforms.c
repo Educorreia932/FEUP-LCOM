@@ -71,13 +71,17 @@ Platforms_t* new_testing_platforms() {
   plat->rects[6] = rect(500, 500, 100, 100);
   plat->is_wall[6] = false;
 
-  plat->rects[7] = rect(40, 500, 148, 120);
+  plat->rects[7] = rect(40, 400, 148, 120);
   plat->is_wall[7] = false;
 
   return plat; 
 }
 
 void free_platforms(Platforms_t *plat) {
+  if (plat == NULL) {
+		printf("free_platforms: Cannot free a NULL pointer\n");
+		return;
+  }
   free(plat->rects);
   free(plat->is_wall);
   free_sprite_dynamic(plat->platform);

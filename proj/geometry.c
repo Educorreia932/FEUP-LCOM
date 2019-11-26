@@ -63,6 +63,10 @@ Rect_t* new_rect(float x, float y, float w, float h) {
 }
 
 void free_rect(Rect_t* rect) {
+  if (rect == NULL) {
+        printf("free_rect: Cannot free a NULL pointer\n");
+        return;
+    }
   free(rect);
 }
 

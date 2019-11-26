@@ -61,6 +61,11 @@ Sprite_t *new_sprite(float x_offset, float y_offset, int num, ...) {
 }
 
 void free_sprite(Sprite_t *s) {
+  if (s == NULL) {
+		printf("free_sprite: Cannot free a NULL pointer\n");
+		return;
+  }
+
   for (uint8_t i = 0; i < s->size; ++i) {
     free_bitmap(s->bmps[i]);
   }
@@ -130,6 +135,10 @@ SpriteDynamic_t *new_sprite_dynamic(const char *file_name, uint16_t dynamic_slic
 }
 
 void free_sprite_dynamic(SpriteDynamic_t *sd) {
+  if (sd == NULL) {
+		printf("free_sprite_dynamic: Cannot free a NULL pointer\n");
+		return;
+  }
   free_bitmap(sd->bmp);
   free(sd);
 }

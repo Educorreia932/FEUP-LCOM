@@ -40,6 +40,10 @@ MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_fi
 }
 
 void free_cursor(MouseCursor_t* cursor) {
+    if (cursor == NULL) {
+		printf("free_cursor: Cannot free a NULL pointer\n");
+		return;
+  	}
     free_sprite(cursor->sprite);
     free(cursor);
 }

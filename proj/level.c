@@ -72,9 +72,14 @@ Level_t* new_testing_level() {
 }
 
 void free_level(Level_t *level) {
+	if (level == NULL) {
+        printf("free_level: Cannot free a NULL pointer\n");
+        return;
+    }
 	free_sprite(level->background);
 	free_platforms(level->platforms);
 	free_player(level->player);
+	free_lasers(level->lasers);
 	free(level);
 }
 

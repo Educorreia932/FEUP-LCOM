@@ -124,6 +124,10 @@ Bitmap_t* new_bitmap(const char *filename) {
 }
 
 void free_bitmap(Bitmap_t *bmp) {
+    if (bmp == NULL) {
+        printf("free_bmp: Cannot free a NULL pointer\n");
+        return;
+    }
     free(bmp->data);
     free(bmp);
 }
@@ -161,6 +165,7 @@ void draw_bitmap(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint1
     else if (alignment == ALIGN_RIGHT)
         x -= width;
 
+    // Completely out of bounds
     if (x + width < 0 || x > vg_info.x_res || y + height < 0 || y > vg_info.y_res)
         return;
 
@@ -225,6 +230,10 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
 
     uint16_t x_repetitions = width / dynamic_slice_size;
     uint16_t x_extra = width % dynamic_slice_size;
+
+    // Completely out of bounds
+    if (x + width < 0 || x > vg_info.x_res || y + height < 0 || y > vg_info.y_res)
+        return;
 
     if (alignment == ALIGN_CENTER)
         x -= width / 2;
