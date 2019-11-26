@@ -2,8 +2,8 @@
 #include "geometry.h"
 #include "sprite.h"
 
-#define PLATFORMS_COLOR 0x23
-#define WALLS_COLOR 0x0E
+#define PLATFORMS_COLOR 0xb60e
+#define WALLS_COLOR 0x11e2
 
 struct Platforms {
     Rect_t *rects;
@@ -49,13 +49,17 @@ Platforms_t* new_testing_platforms() {
 
   /* TESTING PLATFORMS & WALLS */
 
+  // Top wall
   plat->rects[0] = rect(0, 0, 1024, 24);
   plat->is_wall[0] = true;
-  plat->rects[1] = rect(0, 24, 24, 768 - 24*2);
+  // Left wall
+  plat->rects[1] = rect(0, 24, 24, 768 - 24*2 + 1);
   plat->is_wall[1] = true;
-  plat->rects[2] = rect(0, 768 - 24, 1024, 24);
+  // Bottom wall
+  plat->rects[2] = rect(0, 768 - 24 + 1, 1024, 24);
   plat->is_wall[2] = true;
-  plat->rects[3] = rect(1024 - 24, 24, 24, 768 - 24*2);
+  // Right wall
+  plat->rects[3] = rect(1024 - 24, 24, 24, 768 - 24*2 + 1);
   plat->is_wall[3] = true;
 
   plat->rects[4] = rect(400, 700, 200, 16);
@@ -103,9 +107,9 @@ void render_platforms(Platforms_t *plat) {
 
   for (uint32_t i = 0; i < plat->size; ++i) {
     if (*are_walls)
-      draw_sprite_dynamic(plat->wall, rects, COLOR_NO_MULTIPLY);
+      draw_sprite_dynamic(plat->wall, rects, WALLS_COLOR);
     else
-      draw_sprite_dynamic(plat->platform, rects, COLOR_NO_MULTIPLY);
+      draw_sprite_dynamic(plat->platform, rects, PLATFORMS_COLOR);
     
     ++rects;
     ++are_walls;

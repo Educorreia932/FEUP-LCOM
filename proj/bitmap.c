@@ -267,7 +267,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
 
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
@@ -279,7 +279,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             img_cur_pos = img_rel_pos;
             for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
                 if (is_not_background(*img_cur_pos)) {
-                    *buffer_cur_pos = *img_cur_pos;
+                    *buffer_cur_pos = *img_cur_pos & multiply;
                 }
                 ++buffer_cur_pos;
                 ++img_cur_pos;
@@ -291,7 +291,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             + (dynamic_slice_size << 1);
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
@@ -312,7 +312,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
         
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
@@ -324,7 +324,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             img_cur_pos = img_rel_pos;
             for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
                 if (is_not_background(*img_cur_pos)) {
-                    *buffer_cur_pos = *img_cur_pos;
+                    *buffer_cur_pos = *img_cur_pos & multiply;
                 }
                 ++buffer_cur_pos;
                 ++img_cur_pos;
@@ -336,7 +336,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             + (dynamic_slice_size << 1);
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
@@ -362,7 +362,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
 
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
@@ -374,7 +374,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             img_cur_pos = img_rel_pos;
             for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
                 if (is_not_background(*img_cur_pos)) {
-                    *buffer_cur_pos = *img_cur_pos;
+                    *buffer_cur_pos = *img_cur_pos & multiply;
                 }
                 ++buffer_cur_pos;
                 ++img_cur_pos;
@@ -387,7 +387,7 @@ void draw_bitmap_dynamic(Bitmap_t *bmp, uint16_t dynamic_slice_size, int32_t x, 
             + (dynamic_slice_size << 1);
         for (uint16_t k = 0; k < dynamic_slice_size; ++k) {
             if (is_not_background(*img_cur_pos)) {
-                *buffer_cur_pos = *img_cur_pos;
+                *buffer_cur_pos = *img_cur_pos & multiply;
             }
             ++buffer_cur_pos;
             ++img_cur_pos;
