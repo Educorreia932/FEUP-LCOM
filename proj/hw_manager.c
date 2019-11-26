@@ -2,6 +2,7 @@
 #include "timer.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "video.h"
 
 // Frame rate
 #define FRAME_PERIOD 2  // 30 fps
@@ -198,4 +199,10 @@ void reset_inputs(KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 	mouse_ev->right_button_down = false;
 	mouse_ev->x_delta = 0;
 	mouse_ev->y_delta = 0;
+}
+
+/* VIDEO WRAPPERS */
+
+inline void hw_manager_switch_double_buffer() {
+	switch_double_buffer();
 }

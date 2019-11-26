@@ -24,3 +24,7 @@ void hw_manager_mouse_ih();
 void hw_manager_mouse(MouseInputEvents_t* mouse_ev);
 
 void reset_inputs(KbdInputEvents_t* kbd_eb, MouseInputEvents_t* mouse_ev);
+
+/* VIDEO WRAPPERS */
+
+void hw_manager_switch_double_buffer();
