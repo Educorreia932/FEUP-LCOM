@@ -71,8 +71,8 @@ Platforms_t* new_testing_platforms() {
 	plat->rects[6] = rect(500, 500, 100, 100);
 	plat->is_wall[6] = false;
 
-  plat->rects[7] = rect(40, 400, 148, 120);
-  plat->is_wall[7] = false;
+	plat->rects[7] = rect(40, 400, 148, 120);
+	plat->is_wall[7] = false;
 
 	return plat; 
 }
@@ -118,3 +118,4 @@ void render_platforms(Platforms_t *plat) {
 		++are_walls;
 	}
 }
+

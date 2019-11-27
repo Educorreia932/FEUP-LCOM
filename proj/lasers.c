@@ -24,6 +24,7 @@ Laser_t laser(Rect_t rect, uint8_t link_id) {
 
 Lasers_t* new_testing_lasers() {
     Lasers_t *lasers = (Lasers_t*) malloc(sizeof(Lasers_t));
+    
     if (lasers == NULL) {
         printf("new_testing_lasers: Failed to allocate memory for the Lasers object\n");
         return NULL;
@@ -82,19 +83,17 @@ inline void lasers_cycle_link_id(Lasers_t *lasers) {
 }
 
 void render_lasers(Lasers_t* lasers) {
-
     Laser_t* aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
         if (lasers->cur_link_id == aux->link_id)
             draw_sprite_dynamic(lasers->sprite, &aux->rect, lasers->colors[lasers->cur_link_id]);
+        
         ++aux;
     }
-
 }
 
 bool player_is_dead(Lasers_t* lasers, Rect_t* rect) {
-
     Laser_t* aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
@@ -106,4 +105,3 @@ bool player_is_dead(Lasers_t* lasers, Rect_t* rect) {
 
     return false;
 }
-

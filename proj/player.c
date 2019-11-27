@@ -102,8 +102,7 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 }
 
 // TODO: Implement animations depending on movement
-void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
-
+void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resistances_t * resistances, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 	Rect_t previous_rect = player->rect;
 
 	// Horizontal Movement
@@ -170,7 +169,7 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdI
 		player->y_speed /= 3;
 	}
 
-	if (player_is_dead(lasers, &player->rect)) {
+	if (player_is_dead(lasers, &player->rect) || player_touches_resistance(resistances, &player->rect)) {
 		player->rect.x = player->x_spawn;
 		player->rect.y = player->y_spawn;
 		player->y_speed = 0;

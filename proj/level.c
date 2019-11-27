@@ -37,7 +37,9 @@ Level_t* new_testing_level(bool is_single_player) {
 	}
 	
 	printf("new_testing_level: Background\n");
+	
 	level->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/background.bmp");
+
 	if (level->background == NULL) {
 		printf("new_testing_level: Failed to load background sprite\n");
 		return NULL;
@@ -51,6 +53,7 @@ Level_t* new_testing_level(bool is_single_player) {
 	}
 
 	printf("new_testing_level: Creating platforms\n");
+
 	level->platforms = new_testing_platforms();
 	if (level->platforms == NULL) {
 		printf("new_testing_level: Failed to create new testing platforms\n");
@@ -66,9 +69,18 @@ Level_t* new_testing_level(bool is_single_player) {
     	return NULL;
 	} 
 
+	printf("new_testing_level: Creating resistances\n");
 
-  printf("new_testing_level: Created full Level\n");
-  return level;
+	level->resistances = new_testing_resistances();
+
+	if (level->resistances == NULL) {
+		printf("new_testing_level: Failed to create new testing resistances\n");
+		return NULL;
+	}
+
+	printf("new_testing_level: Created full Level\n");
+	
+	return level;
 }
 
 void free_level(Level_t *level) {
@@ -86,7 +98,7 @@ void free_level(Level_t *level) {
 // Actual level stuff
 
 void update_level(Level_t* level, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev){
-  	player_movement(level->player, level->platforms, level->lasers, kbd_ev, mouse_ev);
+  	player_movement(level->player, level->platforms, level->lasers, level->resistances, kbd_ev, mouse_ev);
 }
 
 void render_level(Level_t *level) {
@@ -94,4 +106,5 @@ void render_level(Level_t *level) {
 	render_platforms(level->platforms);
 	render_player(level->player);
 	render_lasers(level->lasers);
+	render_resistances(level->resistances);
 }
