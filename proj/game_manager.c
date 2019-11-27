@@ -63,7 +63,7 @@ GameManager_t * new_testing_game_manager() {
 		return NULL;
 	}
 
-	gm->level = new_testing_level();
+	gm->level = new_testing_level(true);
 	if (gm->level == NULL) {
 		printf("new_testing_game_manager: Failed to create the Level object\n");
 		return NULL;

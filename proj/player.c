@@ -21,6 +21,7 @@ struct Player {
 		float y_speed, gravity;
 		float x_spawn, y_spawn;
 		bool heading_right;
+		bool is_single_player;
 };
 
 // TODO: ALL OF THIS
@@ -29,7 +30,7 @@ Player_t* new_player() {
 	return NULL;
 }
 
-Player_t* new_testing_player() {
+Player_t* new_testing_player(bool is_single_player) {
 	Player_t* player = (Player_t*) malloc(sizeof(Player_t));
 	
 	if (player == NULL) {
@@ -62,6 +63,8 @@ Player_t* new_testing_player() {
 	player->x_spawn = 200;
 	player->y_spawn = 200;
 	player->heading_right = true;
+
+	player->is_single_player = is_single_player;
 
 	printf("new_testing_player: Finished making player\n");
 	return player;
@@ -101,18 +104,6 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 // TODO: Implement animations depending on movement
 void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 
-	if (kbd_ev->key_c_down) {
-		lasers_cycle_link_id(lasers);
-	}
-
-	if (player_is_dead(lasers, &player->rect)) {
-			player->rect.x = player->x_spawn;
-			player->rect.y = player->y_spawn;
-			player->y_speed = 0;	
-				
-		return;
-	}
-
 	Rect_t previous_rect = player->rect;
 
 	// Horizontal Movement
@@ -146,9 +137,13 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdI
 		}
 	}
 
-	// TODO: Temporary fix to check alternating gravity
-	if (kbd_ev->key_x_down)
-		player->gravity *= -1;
+	if (player->is_single_player) {
+		if (kbd_ev->key_c_down) {
+			lasers_cycle_link_id(lasers);
+		}
+		if (kbd_ev->key_x_down)
+			player->gravity *= -1;
+	}
 
 	// Vertical Movement
 	previous_rect = player->rect;
@@ -174,6 +169,13 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, KbdI
 		player->rect = previous_rect;
 		player->y_speed /= 3;
 	}
+
+	if (player_is_dead(lasers, &player->rect)) {
+		player->rect.x = player->x_spawn;
+		player->rect.y = player->y_spawn;
+		player->y_speed = 0;
+	}
+
 }
 
 void render_player(Player_t* player) {
