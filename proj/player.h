@@ -8,7 +8,7 @@
 typedef struct Player Player_t;
 
 Player_t* new_player();
-Player_t* new_testing_player();
+Player_t* new_testing_player(bool is_single_player);
 
 void free_player(Player_t* player);
 

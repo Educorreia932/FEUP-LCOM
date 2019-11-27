@@ -17,7 +17,7 @@ typedef struct Level {
 // typedef struct Level Level_t;
 
 Level_t* new_level(const char* background_file_name);
-Level_t* new_testing_level();
+Level_t* new_testing_level(bool is_single_player);
 void free_level(Level_t *level);
 
 // Actual level stuff

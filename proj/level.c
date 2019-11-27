@@ -28,7 +28,7 @@ Level_t* new_level(const char* background_file_name) {
   return level;
 }
 
-Level_t* new_testing_level() {
+Level_t* new_testing_level(bool is_single_player) {
 	Level_t *level = (Level_t*) malloc(sizeof(Level_t));
 
 	if (level == NULL) {
@@ -44,7 +44,7 @@ Level_t* new_testing_level() {
 	}
 
 	printf("Creating Player\n");
-	level->player = new_testing_player();
+	level->player = new_testing_player(is_single_player);
 	if (level->player == NULL) {
 		printf("new_testing_level: Failed to create new testing player\n");
 		return NULL;
