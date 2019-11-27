@@ -40,30 +40,30 @@ static int print_usage() {
 }
 
 int proj_game() {
-  if (vg_init(0x117) == NULL) 
-		return 1;
+  if (vg_init(0x117) == NULL)
+    return 1;
 
-	start_game();
+  start_game();
 
-	vg_exit();
+  vg_exit();
 
-	return 0;	
+  return 0;
 }
 
 int(proj_main_loop)(int argc, char *argv[]) {
+	if (argc != 1)
+		return print_usage();
 
-  if (argc != 1)
-    return print_usage();
+	if (strcmp(argv[0], "game") == 0)
+		return proj_game();
 
-  if (strcmp(argv[0], "game") == 0)
-    return proj_game();
-  else if (strcmp(argv[0], "test") == 0) {
-    panic("No code to test");
-    return 1;
-  }
-  else {
-    printf("Invalid command\n");
-    return 1;
-  }
-
+	else if (strcmp(argv[0], "test") == 0) {
+		panic("No code to test");
+		return 1;
+	}
+	
+	else {
+		printf("Invalid command\n");
+		return 1;
+	}
 }
