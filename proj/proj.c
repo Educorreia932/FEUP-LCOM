@@ -34,16 +34,16 @@ int main(int argc, char *argv[]) {
 }
 
 static int print_usage() {
-  printf("Usage: game\n");
+  printf("Usage: game < player | 1 or 2 >\n        test\n");
 
   return 1;
 }
 
-int proj_game() {
+int proj_game(uint8_t player_number) {
   if (vg_init(0x117) == NULL)
     return 1;
 
-  start_game();
+  start_game(player_number);
 
   vg_exit();
 
@@ -51,11 +51,12 @@ int proj_game() {
 }
 
 int(proj_main_loop)(int argc, char *argv[]) {
-	if (argc != 1)
+	if (argc < 0 || argc > 2)
 		return print_usage();
 
-	if (strcmp(argv[0], "game") == 0)
-		return proj_game();
+	if (strcmp(argv[0], "game") == 0) {
+    	return proj_game((uint8_t) (*argv[1] - '0'));
+	}
 
 	else if (strcmp(argv[0], "test") == 0) {
 		panic("No code to test");

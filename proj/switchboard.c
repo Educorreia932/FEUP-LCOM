@@ -1,0 +1,134 @@
+#include "switchboard.h"
+#include "ui_elements.h"
+#include "sprite.h"
+#include "mouse_cursor.h"
+
+struct SwitchBoard {
+    Sprite_t *background;
+    Button_t *laser_buttons[3];
+    Slider_t *speed_slider, *jump_slider;
+    MouseCursor_t* cursor;
+};
+
+void print_laser1() {
+    printf("Toggled to link id 1\n");
+}
+
+void print_laser2() {
+    printf("Toggled to link id 2\n");
+}
+
+void print_laser3() {
+    printf("Toggled to link id 3\n");
+}
+
+void print_speed_mult(uint8_t speed_mult) {
+    printf("New speed mult is in state: %d\n", speed_mult);
+}
+
+void print_jump_mult(uint8_t jump_mult) {
+    printf("New jump mult is in state: %d\n", jump_mult);
+}
+
+SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
+
+    if (cursor == NULL) {
+        printf("new_switchboard: Cursor cannot be a NULL pointer");
+        return NULL;
+    }
+
+    SwitchBoard_t* s_board = (SwitchBoard_t*) malloc(sizeof(SwitchBoard_t));
+    if (s_board == NULL) {
+        printf("new_switchboard: Failed to allocate memory for Switchboard object\n");
+        return NULL;
+    }
+
+    s_board->cursor = cursor;
+
+    s_board->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/switchboard/switchboard_bg.bmp");
+    if (s_board->background == NULL) {
+        printf("new_switchboard: Failed to create background Sprite\n");
+        free(s_board);
+        return NULL;
+    }
+
+    s_board->laser_buttons[0] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser1, vec2d(840, 180));
+    if (s_board->laser_buttons[0] == NULL) {
+        printf("new_switchboard: Failed to create laser button 0\n");
+        free_sprite(s_board->background);
+        free(s_board);
+        return NULL;
+    }
+    s_board->laser_buttons[1] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser2, vec2d(840, 280));
+    if (s_board->laser_buttons[1] == NULL) {
+        printf("new_switchboard: Failed to create laser button 1\n");
+        free_sprite(s_board->background);
+        free_button(s_board->laser_buttons[0]);
+        free(s_board);
+        return NULL;
+    }
+    s_board->laser_buttons[2] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser3, vec2d(840, 380));
+    if (s_board->laser_buttons[2] == NULL) {
+        printf("new_switchboard: Failed to create laser button 2\n");
+        free_sprite(s_board->background);
+        free_button(s_board->laser_buttons[1]);
+        free_button(s_board->laser_buttons[2]);
+        free(s_board);
+        return NULL;
+    }
+
+    s_board->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/horizontal_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
+    if (s_board->speed_slider == NULL) {
+        printf("new_switchboard: Failed to create horizontal slider\n");
+    }
+
+    s_board->jump_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/vertical_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
+    if (s_board->jump_slider == NULL) {
+        printf("new_switchboard: Failed to create vertical slider\n");
+    }
+
+    return s_board;
+}
+
+void free_switchboard(SwitchBoard_t* s_board) {
+    free(s_board);
+}
+
+void switchboard_set_no_lasers(SwitchBoard_t* s_board) {
+    button_deactivate(s_board->laser_buttons[0]);
+    button_deactivate(s_board->laser_buttons[1]);
+    button_deactivate(s_board->laser_buttons[2]);
+}
+
+void switchboard_set_two_lasers(SwitchBoard_t* s_board) {
+    button_activate(s_board->laser_buttons[0]);
+    button_activate(s_board->laser_buttons[1]);
+    button_deactivate(s_board->laser_buttons[2]);
+}
+
+void switchboard_set_three_lasers(SwitchBoard_t* s_board) {
+    button_activate(s_board->laser_buttons[0]);
+    button_activate(s_board->laser_buttons[1]);
+    button_activate(s_board->laser_buttons[2]);
+}
+
+void update_switchboard(SwitchBoard_t* s_board) {
+
+    update_button(s_board->laser_buttons[0], s_board->cursor);
+    update_button(s_board->laser_buttons[1], s_board->cursor);
+    update_button(s_board->laser_buttons[2], s_board->cursor);
+
+    update_slider(s_board->speed_slider, s_board->cursor);
+    update_slider(s_board->jump_slider, s_board->cursor);
+}
+
+void render_switchboard(SwitchBoard_t* s_board) {
+    draw_sprite_floats(s_board->background, 0, 0, COLOR_NO_MULTIPLY, false);
+    
+    render_button(s_board->laser_buttons[0]);
+    render_button(s_board->laser_buttons[1]);
+    render_button(s_board->laser_buttons[2]);
+    
+    render_slider(s_board->speed_slider);
+    render_slider(s_board->jump_slider);
+}

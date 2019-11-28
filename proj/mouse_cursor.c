@@ -81,3 +81,31 @@ void render_cursor(MouseCursor_t* cursor) {
     if (cursor->rendered)
         draw_sprite_floats(cursor->sprite, cursor->x, cursor->y, COLOR_NO_MULTIPLY, false);
 }
+
+inline bool is_cursor_inside_rect(MouseCursor_t* cursor, Rect_t* rect) {
+    return is_point_inside_rect(rect, cursor->x, cursor->y);
+}
+
+inline bool cursor_left_button_down(MouseCursor_t* cursor) {
+    return cursor->mouse_ev->left_button_down;
+}
+
+inline bool cursor_left_button(MouseCursor_t* cursor) {
+    return cursor->mouse_ev->left_button;
+}
+
+inline bool cursor_right_button_down(MouseCursor_t* cursor) {
+    return cursor->mouse_ev->right_button_down;
+}
+
+inline bool cursor_right_button(MouseCursor_t* cursor) {
+    return cursor->mouse_ev->right_button;
+}
+
+inline float cursor_get_x(MouseCursor_t* cursor) {
+    return cursor->x;
+}
+
+inline float cursor_get_y(MouseCursor_t* cursor) {
+    return cursor->y;
+}

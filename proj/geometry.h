@@ -12,7 +12,11 @@ typedef struct Vec2d{
 Vec2d_t vec2d(float x, float y);
 
 // Vec2d methods
-float point_distance(Vec2d_t *p1, Vec2d_t *p2);
+float point_distance(Vec2d_t p1, Vec2d_t p2);
+
+Vec2d_t multiply_by_scalar_vec2d(Vec2d_t p, float k);
+Vec2d_t sum_vec2d(Vec2d_t p1, Vec2d_t p2);
+Vec2d_t subtract_vec2d(Vec2d_t p1, Vec2d_t p2);
 
 typedef struct Rect {
     float x, y, w, h;
@@ -29,3 +33,5 @@ void free_rect(Rect_t* rect);
 
 // Rect methods
 bool rect_collision(Rect_t *r1, Rect_t *r2);
+bool is_point_inside_rect(Rect_t *r, float x, float y);
+Vec2d_t rect_get_origin(Rect_t* r);
