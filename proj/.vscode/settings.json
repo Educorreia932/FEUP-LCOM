@@ -28,6 +28,9 @@
 		"player.h": "c",
 		"lasers.h": "c",
 		"resistance.h": "c",
-		"ui_elements.h": "c"
+		"ui_elements.h": "c",
+		"utils.h": "c",
+		"rtc.h": "c",
+		"input_events.h": "c"
 	},
 }

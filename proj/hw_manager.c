@@ -3,6 +3,7 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "video.h"
+#include "rtc.h"
 
 // Frame rate
 #define FRAME_PERIOD 2  // 30 fps
@@ -25,10 +26,11 @@
 
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
-uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask) {
+uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask, uint32_t* rtc_mask) {
 	uint8_t timer0_bit_no = TIMER0_IRQ;
 	uint8_t kbd_bit_no = KBD_IRQ;
 	uint8_t mouse_bit_no = MOUSE_IRQ;
+	uint8_t rtc_bit_no = 
 
 	// Set the masks to send outside this function
 	*timer0_mask = BIT(timer0_bit_no);
@@ -45,6 +47,7 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 	// Set mouse to streaming mode with data reporting enabled
 	if (mouse_set_stream_mode())
 		return 1;
+
 	if (mouse_data_reporting_enable())
 	 	return 1;
 
@@ -59,6 +62,10 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 	if (kbd_subscribe_int(&kbd_bit_no))
 		return 1;
 
+	/* ENABLE RTC */
+	if (rtc_subscribe_int(&rtc_bit_no))
+		return 1;
+
 	return 0;
 }
 
@@ -67,6 +74,7 @@ void hw_manager_unsubscribe_int() {
 	kbd_unsubscribe_int();
 	mouse_unsubscribe_int();
 	mouse_data_reporting_disable();
+	rtc_unsubscribe_int();
 }
 
 /* INT HANDLER STUFF */
@@ -191,6 +199,14 @@ void hw_manager_mouse(MouseInputEvents_t* mouse_ev) {
 		is_mouse_packet_complete = false;    
 	}
 
+}
+
+void hw_manager_rtc_ih() {
+	rtc_ih();
+}
+
+void hw_manager_rtc_set_alarm(uint32_t period) {
+	rtc_set_alarm(period);
 }
 
 /* RESETTING NECESSARY INPUTS */

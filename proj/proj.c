@@ -8,6 +8,7 @@
 
 // Any header files included below this line should have been created by you
 #include "game_manager.h"
+#include "rtc.h"
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -50,6 +51,15 @@ int proj_game(uint8_t player_number) {
   return 0;
 }
 
+int test_rtc() {
+	uint16_t period = 5;
+	
+	if (rtc_int(period))
+		return 1;
+
+	return 0;
+}
+
 int(proj_main_loop)(int argc, char *argv[]) {
 	if (argc < 0 || argc > 2)
 		return print_usage();
@@ -63,6 +73,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
 		return 1;
 	}
 	
+	else if (!strcmp(argv[0], "rtc")) {
+		return test_rtc();
+	}
+
 	else {
 		printf("Invalid command\n");
 		return 1;

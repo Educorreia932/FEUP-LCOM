@@ -117,7 +117,6 @@ void update(GameManager_t* gm) {
 }
 
 void render(GameManager_t *gm) {
-
 	if (gm->player_number == 1)
   		render_level(gm->level);
 	else if (gm->player_number == 2)
@@ -141,8 +140,9 @@ uint8_t start_game(uint8_t player_number) {
 	uint32_t kbd_bit_mask;
 	uint32_t timer0_bit_mask;
 	uint32_t mouse_bit_mask;
-
-  	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask))
+	uint32_t rtc_bit_mask;
+	  	
+	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask))
 		printf("start_game: Failed to enable interrupts\n");
   
   	printf("start_game: Subscribed to all interrupts\n");
@@ -153,9 +153,13 @@ uint8_t start_game(uint8_t player_number) {
 	/* GAME LOOP */
   	/* aka interrupt loop */
 	bool is_frame = false;
+	bool quit = false;
+
 	printf("start_game: Entering game loop\n");
 
-	while (!gm->kbd_ev->key_esc_down) {
+	hw_manager_rtc_set_alarm(5);
+
+	while (!gm->kbd_ev->key_esc_down || quit) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
 			continue;
@@ -166,21 +170,24 @@ uint8_t start_game(uint8_t player_number) {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & mouse_bit_mask) {
 						hw_manager_mouse_ih();
+						hw_manager_mouse(gm->mouse_ev);
+					}
 
-			hw_manager_mouse(gm->mouse_ev);
-			
-		}
-
-		if (msg.m_notify.interrupts & kbd_bit_mask) {
-			hw_manager_kbd_ih();
-
-			hw_manager_kbd(gm->kbd_ev);
-		}
+					if (msg.m_notify.interrupts & kbd_bit_mask) {
+						hw_manager_kbd_ih();
+						hw_manager_kbd(gm->kbd_ev);
+					}
 		
-		if (msg.m_notify.interrupts & timer0_bit_mask) {
-			hw_manager_timer0_ih();
-			is_frame = hw_manager_is_frame();
-		}
+					if (msg.m_notify.interrupts & timer0_bit_mask) {
+						hw_manager_timer0_ih();
+						is_frame = hw_manager_is_frame();
+					}
+
+					if (msg.m_notify.interrupts & rtc_bit_mask) {
+						printf("asdasdasd");
+						hw_manager_rtc_ih();
+						quit = true;
+					}
 
 					break;
 				default:
