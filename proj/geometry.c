@@ -4,79 +4,99 @@
 
 // Vec2d constructors
 Vec2d_t vec2d(float x, float y) {
-  const Vec2d_t v = {x, y};
-  return v;
+	const Vec2d_t v = {x, y};
+	return v;
 }
 
 // Vec2d operations
-float point_distance(Vec2d_t *p1, Vec2d_t *p2) {
-  return Q_rsqrt( fsquare(p1->x - p2->x) + fsquare(p1->y - p2->y) );
+float point_distance(Vec2d_t p1, Vec2d_t p2) {
+	return 1 / Q_rsqrt( fsquare(p1.x - p2.x) + fsquare(p1.y - p2.y) );
 }
 
+inline Vec2d_t multiply_by_scalar_vec2d(Vec2d_t p, float k) {
+	return vec2d(p.x * k, p.y * k);
+}
+
+inline Vec2d_t sum_vec2d(Vec2d_t p1, Vec2d_t p2) {
+	return vec2d(p1.x + p2.x, p1.y + p2.y);
+}
+
+inline Vec2d_t subtract_vec2d(Vec2d_t p1, Vec2d_t p2) {
+	return vec2d(p2.x - p1.x, p2.y - p1.y);
+}
 
 /* RECT CONSTRUCTORS */
 
 Rect_t rect(float x, float y, float w, float h) {
-  const Rect_t r = {x, y, w, h};
-  return r;
+	const Rect_t r = {x, y, w, h};
+	return r;
 }
 
 Rect_t rect_from_uints(uint16_t x,uint16_t y, uint16_t w, uint16_t h) {
-  const Rect_t r = {(float) x, (float) y, (float) w, (float) h};
-  return r;
+	const Rect_t r = {(float) x, (float) y, (float) w, (float) h};
+	return r;
 }
 
 Rect_t rect_from_vec2d(Vec2d_t point, Vec2d_t size) {
-  const Rect_t r = {point.x, point.y, size.x, size.y};
-  return r;
+	const Rect_t r = {point.x, point.y, size.x, size.y};
+	return r;
 }
 
 Rect_t rect_from_points(Vec2d_t p1, Vec2d_t p2) {
-  float xmin = fmin(p1.x, p2.x);
-  float xmax = fmax(p1.x, p2.x);
-  float ymin = fmin(p1.y, p2.y);
-  float ymax = fmax(p1.y, p2.y);
+	float xmin = fmin(p1.x, p2.x);
+	float xmax = fmax(p1.x, p2.x);
+	float ymin = fmin(p1.y, p2.y);
+	float ymax = fmax(p1.y, p2.y);
 
-  const Rect_t r = {
-      xmin, 
-      ymin, 
-      fmax(0.0f, xmax - xmin),
-      fmax(0.0f, ymax - ymin)
-    };
+	const Rect_t r = {
+			xmin, 
+			ymin, 
+			fmax(0.0f, xmax - xmin),
+			fmax(0.0f, ymax - ymin)
+		};
 
-  return r;
+	return r;
 }
 
 Rect_t* new_rect(float x, float y, float w, float h) {
-  Rect_t* rect = (Rect_t*) malloc(sizeof(Rect_t));
-  if (rect == NULL) {
-    printf("new_rect: Failed to allocate memory for the Rect object\n");
-    return NULL;
-  }
+	Rect_t* rect = (Rect_t*) malloc(sizeof(Rect_t));
+	if (rect == NULL) {
+		printf("new_rect: Failed to allocate memory for the Rect object\n");
+		return NULL;
+	}
 
-  rect->x = x;
-  rect->y = y;
-  rect->w = w;
-  rect->h = h;
+	rect->x = x;
+	rect->y = y;
+	rect->w = w;
+	rect->h = h;
 
-  return rect;
+	return rect;
 }
 
 void free_rect(Rect_t* rect) {
-  if (rect == NULL) {
-        printf("free_rect: Cannot free a NULL pointer\n");
-        return;
-    }
-  free(rect);
+	if (rect == NULL) {
+				printf("free_rect: Cannot free a NULL pointer\n");
+				return;
+		}
+	free(rect);
 }
 
 /* RECT METHODS */
 
 inline bool rect_collision(Rect_t *r1, Rect_t *r2) {
-  return r1->x < r2->x + r2->w
-    && r1->x + r1->w > r2->x
-    && r1->y < r2->y + r2->h
-    && r1->y + r1->h > r2->y;
+	return r1->x < r2->x + r2->w
+		&& r1->x + r1->w > r2->x
+		&& r1->y < r2->y + r2->h
+		&& r1->y + r1->h > r2->y;
 }
 
+inline bool is_point_inside_rect(Rect_t *r, float x, float y) {
+	return r->x <= x
+		&& r->x + r->w >= x
+		&& r->y <= y
+		&& r->y + r->h >= y;
+}
 
+inline Vec2d_t rect_get_origin(Rect_t* r) {
+	return vec2d(r->x, r->y);
+}

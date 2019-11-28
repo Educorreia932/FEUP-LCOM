@@ -16,6 +16,17 @@ inline float fclamp(float f, float min, float max) {
   return fmax(min, fmin(f, max));
 }
 
+
+
+inline float fround(float f) {
+  float integer_part = (float) (int64_t) f;
+  return f - integer_part >= 0.5f ? integer_part + 1 : integer_part;
+}
+
+inline float ffloor(float f) {
+  return (float) (int64_t) f;
+}
+
 inline float fsign(float f) {
   return f >= 0 ? 1 : -1;
 }

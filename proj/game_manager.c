@@ -2,12 +2,15 @@
 #include "hw_manager.h"
 #include "level.h"
 #include "mouse_cursor.h"
+#include "switchboard.h"
 
 struct GameManager {
 	MouseInputEvents_t *mouse_ev;
 	KbdInputEvents_t *kbd_ev;
 	Level_t *level;
 	MouseCursor_t *cursor;
+	SwitchBoard_t *s_board;
+	uint8_t player_number;
 };
 
 GameManager_t * new_game_manager(const char* background_file_name) {
@@ -44,7 +47,7 @@ GameManager_t * new_game_manager(const char* background_file_name) {
 	return gm;
 }
 
-GameManager_t * new_testing_game_manager() {
+GameManager_t * new_testing_game_manager(uint8_t player_number) {
 	GameManager_t *gm = (GameManager_t*) malloc(sizeof(GameManager_t));
 	if (gm == NULL) {
 		printf("new_testing_game_manager: Failed to allocate memory for GameManager object\n");
@@ -63,16 +66,28 @@ GameManager_t * new_testing_game_manager() {
 		return NULL;
 	}
 
-	gm->level = new_testing_level(true);
-	if (gm->level == NULL) {
-		printf("new_testing_game_manager: Failed to create the Level object\n");
-		return NULL;
-	}
-
 	gm->cursor = new_cursor(gm->mouse_ev, "/home/lcom/labs/proj/assets/cursor.bmp");
 	if (gm->cursor == NULL) {
 		printf("new_testing_game_manager: Failed to create the Cursor object\n");
 		return NULL;
+	}
+
+	gm->player_number = player_number;
+	if (gm->player_number == 1) {
+		gm->s_board = NULL;
+		gm->level = new_testing_level(true);
+		if (gm->level == NULL) {
+			printf("new_testing_game_manager: Failed to create the Level object\n");
+			return NULL;
+		}
+	}
+	else if (gm->player_number == 2) {
+		gm->level = NULL;
+		gm->s_board = new_switchboard(gm->cursor);
+		if (gm->s_board == NULL) {
+			printf("new_testing_game_manager: Failed to create the Switchboard object\n");
+			return NULL;
+		}
 	}
 
 	return gm;
@@ -83,7 +98,10 @@ void free_game_manager(GameManager_t *gm) {
         printf("free_game_manager: Cannot free a NULL pointer\n");
         return;
     }
-	free_level(gm->level);
+	if (gm->level != NULL)
+		free_level(gm->level);
+	if (gm->s_board != NULL)
+		free_switchboard(gm->s_board);
 	free_kbd_input_events(gm->kbd_ev);
 	free_mouse_input_events(gm->mouse_ev);
 	free(gm);
@@ -91,19 +109,27 @@ void free_game_manager(GameManager_t *gm) {
 
 // Update is executed once every frame
 void update(GameManager_t* gm) {
-  	update_level(gm->level, gm->kbd_ev, gm->mouse_ev);
 	update_cursor(gm->cursor);
+	if (gm->player_number == 1)
+  		update_level(gm->level, gm->kbd_ev, gm->mouse_ev);
+	else if (gm->player_number == 2)
+		update_switchboard(gm->s_board);	
 }
 
 void render(GameManager_t *gm) {
-  	render_level(gm->level);
+
+	if (gm->player_number == 1)
+  		render_level(gm->level);
+	else if (gm->player_number == 2)
+		render_switchboard(gm->s_board);	
+
 	render_cursor(gm->cursor);
 }
 
-uint8_t start_game() {  
+uint8_t start_game(uint8_t player_number) {  
 	printf("start_game: Creating GameManager object\n");
 
-	GameManager_t *gm = new_testing_game_manager();
+	GameManager_t *gm = new_testing_game_manager(player_number);
 
 	if (gm == NULL) {
 		printf("start_game: Failed to create GameManager object\n");

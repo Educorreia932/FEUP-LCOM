@@ -27,6 +27,7 @@
 		"math.h": "c",
 		"player.h": "c",
 		"lasers.h": "c",
-		"resistance.h": "c"
+		"resistance.h": "c",
+		"ui_elements.h": "c"
 	},
 }
