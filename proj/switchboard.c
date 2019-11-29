@@ -2,11 +2,13 @@
 #include "ui_elements.h"
 #include "sprite.h"
 #include "mouse_cursor.h"
+#include "math_utils.h"
 
 struct SwitchBoard {
     Sprite_t *background;
     Button_t *laser_buttons[3];
     Slider_t *speed_slider, *jump_slider;
+    Knob_t *gravity_knob;
     MouseCursor_t* cursor;
 };
 
@@ -28,6 +30,10 @@ void print_speed_mult(uint8_t speed_mult) {
 
 void print_jump_mult(uint8_t jump_mult) {
     printf("New jump mult is in state: %d\n", jump_mult);
+}
+
+void print_gravity_time(float f) {
+    printf("Gravity time (rounded to int): %d\n", (int32_t) f);
 }
 
 SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
@@ -87,10 +93,28 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         printf("new_switchboard: Failed to create vertical slider\n");
     }
 
+    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 520.0f), 0, M_2_PI, 100.0f);
+    if (s_board->gravity_knob == NULL) {
+        printf("new_switchboard: Failed to create gravity knob\n");
+        return NULL;
+    }
+
+    switchboard_set_two_lasers(s_board);
+    // slider_deactivate(s_board->jump_slider);
+
     return s_board;
 }
 
 void free_switchboard(SwitchBoard_t* s_board) {
+    free_button(s_board->laser_buttons[0]);
+    free_button(s_board->laser_buttons[1]);
+    free_button(s_board->laser_buttons[2]);
+
+    free_slider(s_board->speed_slider);
+    free_slider(s_board->jump_slider);
+
+    free_knob(s_board->gravity_knob);
+
     free(s_board);
 }
 
@@ -120,6 +144,8 @@ void update_switchboard(SwitchBoard_t* s_board) {
 
     update_slider(s_board->speed_slider, s_board->cursor);
     update_slider(s_board->jump_slider, s_board->cursor);
+
+    update_knob(s_board->gravity_knob, s_board->cursor);
 }
 
 void render_switchboard(SwitchBoard_t* s_board) {
@@ -131,4 +157,6 @@ void render_switchboard(SwitchBoard_t* s_board) {
     
     render_slider(s_board->speed_slider);
     render_slider(s_board->jump_slider);
+
+    render_knob(s_board->gravity_knob);
 }

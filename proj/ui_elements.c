@@ -1,10 +1,10 @@
 #include "ui_elements.h"
-#include "math.h"
+#include "math_utils.h"
 
 /* COLOR CHANGES IN THE UI */
 // TODO: Define a nice kind of greyish tint for these
 #define COLOR_WHEN_HOVERED 0xb5b6
-#define COLOR_INACTIVE 0x6b4d
+#define COLOR_INACTIVE 0x9492
 
 /* BUTTON */
 
@@ -178,7 +178,9 @@ void render_button(Button_t* button) {
     }
 }
 
-/* SLIDER */
+/*----------------*/
+/*---- SLIDER ----*/
+/*----------------*/
 
 struct Slider {
     Vec2d_t bar_pos;
@@ -283,10 +285,10 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
         if (slider->being_moved) {
 
             // Update position
-            slider->handle_rect.x = fclamp(
+            slider->handle_rect.x = fclampf(
                 cursor_get_x(cursor) + slider->cursor_offset.x, slider->start_pos.x, slider->end_pos.x);
             
-            slider->handle_rect.y = fclamp(
+            slider->handle_rect.y = fclampf(
                 cursor_get_y(cursor) + slider->cursor_offset.y,
                 slider->start_pos.y, slider->end_pos.y);
 
@@ -294,11 +296,11 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
 
                 // Get the most appropriate state
                 Vec2d_t p = rect_get_origin(&slider->handle_rect);
-                float endpoint_distace = point_distance(slider->start_pos, slider->end_pos);
-                float distance_to_start = point_distance(slider->start_pos, p);
+                float endpoint_distace = distance_vec2d(slider->start_pos, slider->end_pos);
+                float distance_to_start = distance_vec2d(slider->start_pos, p);
 
                 // Calculate closest possible state
-                slider->state = (uint8_t) ffloor(distance_to_start / endpoint_distace * slider->max_state);
+                slider->state = (uint8_t) floorf(distance_to_start / endpoint_distace * slider->max_state);
 
                 slider->being_moved = false;
                 slider->func(slider->state);
@@ -308,9 +310,11 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
             slider->hovered = true;
             if (cursor_left_button_down(cursor)) {
                 slider->cursor_offset = subtract_vec2d(
+                    rect_get_origin(&slider->handle_rect),
                     vec2d(  cursor_get_x(cursor),
-                            cursor_get_y(cursor)),
-                    rect_get_origin(&slider->handle_rect));
+                            cursor_get_y(cursor)
+                        )
+                    );
 
                 slider->being_moved = true;
             }
@@ -321,7 +325,6 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
 }
 
 void render_slider(Slider_t* slider) {
-
 
     if (slider->shown) {
         if (!slider->is_active) {
@@ -345,33 +348,190 @@ void render_slider(Slider_t* slider) {
     }
 }
 
+/*----------------------------*/
+/*--------    KNOB    --------*/
+/*----------------------------*/
+
+struct Knob {
+    Sprite_t *backdrop_sprite, *knob_sprite;
+    Rect_t backdrop_rect, knob_rect;
+    Vec2d_t center, cursor_offset;
+    bool shown, is_active, being_moved, hovered;
+    float radius, start_angle, end_angle;
+    void (*func)(float);
+};
 
 
+Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {
+    
+    Knob_t* knob = (Knob_t*) malloc(sizeof(Knob_t));
+    if (knob == NULL) {
+        printf("new_knob: Failed to allocate memory for the Knob\n");
+        return NULL;
+    }
+
+    knob->backdrop_sprite = new_sprite(0, 0, 1, backdrop_sprite_file_name);
+    if (knob->backdrop_sprite == NULL) {
+        printf("new_knob: Failed to create Knob's backdrop Sprite\n");
+        free(knob);
+        return NULL;
+    }
+
+    knob->backdrop_rect = rect_from_vec2d(
+        pos,
+        vec2d(
+            sprite_get_width(knob->backdrop_sprite),
+            sprite_get_height(knob->backdrop_sprite)
+            )
+        );
+
+    knob->center = sum_vec2d(pos, vec2d(
+        sprite_get_width(knob->backdrop_sprite) / 2.0f,
+        sprite_get_height(knob->backdrop_sprite) / 2.0f
+        ));
+
+    knob->knob_sprite = new_sprite(0, 0, 1, knob_sprite_file_name);
+    if (knob->knob_sprite == NULL) {
+        printf("new_knob: Failed to create Knob's handle Sprite\n");
+        free_sprite(knob->backdrop_sprite);
+        free(knob);
+        return NULL;
+    }
 
 
+    knob->is_active = true;
+    knob->shown = true;
+    knob->hovered = true;
+    knob->being_moved = false;
 
+    knob->knob_rect = rect_from_vec2d(
+        subtract_vec2d(
+            circumference_vec2d(knob->center, radius, start_angle),
+            vec2d(
+                    sprite_get_width(knob->knob_sprite) / 2.0f,
+                    sprite_get_height(knob->knob_sprite) / 2.0f
+                )
+            ),
+        vec2d(
+            sprite_get_width(knob->knob_sprite),
+            sprite_get_height(knob->knob_sprite)
+            )
+        );
+    
+    printf("Knob size: (%d, %d)\n", (int32_t) (sprite_get_width(knob->knob_sprite) / 2.0f), (int32_t) (sprite_get_height(knob->knob_sprite) / 2.0f));
 
-/* KNOB */
+    knob->radius = radius;
+    knob->start_angle = start_angle;
+    knob->end_angle = end_angle;
+    knob->cursor_offset = vec2d(0.0f, 0.0f);
 
-typedef struct Knob {
-    Rect_t rect;
-    Sprite_t *backdrop, *pointer;
-    bool shown, is_active;
-    void (*func)(uint8_t);
-} Knob_t;
+    if (func == NULL) {
+        printf("new_knob: Function pointer invalid\n");
+        free_sprite(knob->backdrop_sprite);
+        free_sprite(knob->knob_sprite);
+        free(knob);
+        return NULL;
+    }
+    knob->func = func;
 
-Knob_t* new_knob() {
-    return NULL;
+    return knob;
 }
+
 
 void free_knob(Knob_t* knob) {
 
+    if (knob == NULL) {
+        printf("free_knob_and_sprite: Cannot free a NULL pointer\n");
+        return;
+    }
+
+    free_sprite(knob->backdrop_sprite);
+    free_sprite(knob->knob_sprite);
+
+    free(knob);
 }
 
-/* SWITCHBOARD */
+inline void knob_hide(Knob_t* knob) {
+    knob->shown = false;
+}
 
-struct SwitchBoard {
-    Button_t *laser_buttons[3];
-    Slider_t *speed_slider, *jump_slider;
-    Knob_t *gravity_knob;
-};
+inline void knob_show(Knob_t* knob) {
+    knob->shown = true;
+}
+
+inline void knob_activate(Knob_t* knob) {
+    knob->is_active = true;
+}
+
+inline void knob_deactivate (Knob_t* knob) {
+    knob->is_active = false;
+}
+
+void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
+    if (knob->is_active && knob->shown) {
+        if (knob->being_moved) {
+
+            // Update position
+            float angle = angle_vec2d(
+                vec2d(1, 0),
+                subtract_vec2d(cursor_get_pos(cursor), knob->center)
+                );
+
+            if (knob->center.y > cursor_get_y(cursor) + sprite_get_height(knob->knob_sprite))
+                angle = M_2_PI - angle;
+
+            // Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
+            //     fclampf(angle, knob->start_angle, knob->end_angle));
+
+            Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, angle);
+            pos = subtract_vec2d(pos, vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f));
+
+            knob->knob_rect.x = pos.x;
+            knob->knob_rect.y = pos.y;
+
+            if (!cursor_left_button(cursor)) {
+                knob->being_moved = false;
+                knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
+            }
+        }
+        else if (is_cursor_inside_rect(cursor, &knob->backdrop_rect) || is_cursor_inside_rect(cursor, &knob->knob_rect)) {
+            knob->hovered = true;
+            if (cursor_left_button_down(cursor)) {
+                knob->cursor_offset = subtract_vec2d(
+                    rect_get_origin(&knob->knob_rect),
+                    vec2d(  cursor_get_x(cursor),
+                            cursor_get_y(cursor)
+                        )
+                    );
+
+                knob->being_moved = true;
+            }
+        }
+        else
+            knob->hovered = false;
+    }
+}
+
+void render_knob(Knob_t* knob) {
+
+    if (knob->shown) {
+        if (!knob->is_active) {
+            // Draw default bar
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_INACTIVE, false);
+            // Draw handle
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_INACTIVE, false);
+        }
+        else if (knob->hovered) {
+            // Draw default bar
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_WHEN_HOVERED, false);
+            // Draw handle
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_WHEN_HOVERED, false);
+        }
+        else {
+            // Draw default bar
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_NO_MULTIPLY, false);
+            // Draw handle
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_NO_MULTIPLY, false);
+        }
+    }
+}

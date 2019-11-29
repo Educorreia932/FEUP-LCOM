@@ -149,11 +149,11 @@ void* (vg_init)(uint16_t mode) {
 }
 
 void vg_fill_black() {
-	memset(buffer_base, 0, vg_info.x_res * vg_info.y_res * vg_info.bytes_per_pixel);
+	memset(double_buffer_base, 0, vg_info.x_res * vg_info.y_res * vg_info.bytes_per_pixel);
 }
 
 void vg_fill_color_rgb_565(uint16_t color) {
-	uint16_t* buffer = (uint16_t*) buffer_base;
+	uint16_t* buffer = (uint16_t*) double_buffer_base;
 	for (uint32_t i = 0; i < vg_info.x_res * vg_info.y_res; ++i) {
 		*buffer = color;
 		++buffer;

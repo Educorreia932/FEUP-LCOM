@@ -31,6 +31,7 @@
 		"ui_elements.h": "c",
 		"utils.h": "c",
 		"rtc.h": "c",
-		"input_events.h": "c"
+		"input_events.h": "c",
+		"locale": "c"
 	},
 }
