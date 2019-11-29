@@ -49,3 +49,23 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor);
 
 void render_slider(Slider_t* slider);
 
+
+/*----------------------------*/
+/*--------    KNOB    --------*/
+/*----------------------------*/
+
+typedef struct Knob Knob_t;
+
+
+Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius);
+
+void free_knob(Knob_t* knob);
+
+void knob_hide(Knob_t* knob);
+void knob_show(Knob_t* knob);
+void knob_activate(Knob_t* knob);
+void knob_deactivate (Knob_t* knob);
+
+void update_knob(Knob_t* knob, MouseCursor_t* cursor);
+
+void render_knob(Knob_t* knob);

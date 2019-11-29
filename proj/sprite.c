@@ -73,9 +73,13 @@ void free_sprite(Sprite_t *s) {
   free(s);
 }
 
-// TODO: Argument (reversed)
+
 inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed) {
 	draw_sprite_floats(s, r->x, r->y, color_to_multiply, reversed);
+}
+
+inline void draw_sprite_vec2d(Sprite_t *s, Vec2d_t v, uint32_t color_to_multiply, bool reversed) {
+  draw_sprite_floats(s, v.x, v.y, color_to_multiply, reversed);
 }
 
 void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, bool reversed) {

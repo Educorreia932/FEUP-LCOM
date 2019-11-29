@@ -1,6 +1,6 @@
 #include "player.h"
 #include "geometry.h"
-#include "math.h"
+#include "math_utils.h"
 #include "sprite.h"
 
 /* PHYSICS STUFF */
@@ -11,7 +11,7 @@
 #define IS_GROUNDED_MARGIN 8.0f
 
 /* PLAYER CONSTANTS */
-#define PLAYER_BASE_SPEED 8.0f // Raw pixels
+#define PLAYER_BASE_SPEED 230.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
 
 struct Player {
@@ -109,12 +109,12 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 	float h_delta = 0;
 
 	if (kbd_ev->right_arrow) {
-		h_delta = PLAYER_BASE_SPEED * player->speed_mult;
+		h_delta = DELTATIME * PLAYER_BASE_SPEED * player->speed_mult;
 		player->heading_right = true;
 	}
 	
 	if (kbd_ev->left_arrow) {
-		h_delta = -PLAYER_BASE_SPEED * player->speed_mult;
+		h_delta = DELTATIME * -PLAYER_BASE_SPEED * player->speed_mult;
 		player->heading_right = false;
 	}
 
@@ -159,10 +159,10 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 			player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
 
 	// Kinda like terminal velocity
-	player->y_speed = fclamp(player->y_speed, -MAX_VELOCITY, MAX_VELOCITY);
+	player->y_speed = fclampf(player->y_speed, -MAX_VELOCITY, MAX_VELOCITY);
 
 	player->rect.y += player->y_speed * DELTATIME
-		+ 0.5f * fsquare(DELTATIME) * player->gravity;
+		+ 0.5f * powf(DELTATIME, 2) * player->gravity;
 	
 	if (does_collide_platforms(plat, &player->rect)) {
 		player->rect = previous_rect;

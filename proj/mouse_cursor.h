@@ -31,3 +31,4 @@ bool cursor_right_button_down(MouseCursor_t* cursor);
 bool cursor_right_button(MouseCursor_t* cursor);
 float cursor_get_x(MouseCursor_t* cursor);
 float cursor_get_y(MouseCursor_t* cursor);
+Vec2d_t cursor_get_pos(MouseCursor_t* cursor);

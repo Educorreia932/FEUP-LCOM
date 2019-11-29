@@ -6,7 +6,7 @@
 #include "rtc.h"
 
 // Frame rate
-#define FRAME_PERIOD 2  // 30 fps
+#define FRAME_PERIOD 1  // 60 fps
 
 // 1 byte scancodes
 #define KBD_ESC_MAKECODE 0x01
