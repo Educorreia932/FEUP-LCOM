@@ -232,8 +232,8 @@ Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite
     slider->cursor_offset = vec2d(0.0f, 0.0f);
 
     slider->handle_rect = rect(
-        start_pos.x,
-        start_pos.y,
+        start_pos.x + (end_pos.x - start_pos.x) / 2.0f,
+        start_pos.y + (end_pos.y - start_pos.y) / 2.0f,
         sprite_get_width(slider->handle_sprite),
         sprite_get_height(slider->handle_sprite)
     );
@@ -404,9 +404,14 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
     knob->hovered = true;
     knob->being_moved = false;
 
+    knob->radius = radius;
+    knob->start_angle = start_angle * (2 * M_PI) / 360.0f;
+    knob->end_angle = end_angle * (2 * M_PI) / 360.0f;
+    knob->angle_offset = 0.0f;
+
     knob->knob_rect = rect_from_vec2d(
         subtract_vec2d(
-            circumference_vec2d(knob->center, radius, start_angle),
+            circumference_vec2d(knob->center, radius, knob->start_angle),
             vec2d(
                     sprite_get_width(knob->knob_sprite) / 2.0f,
                     sprite_get_height(knob->knob_sprite) / 2.0f
@@ -417,13 +422,6 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
             sprite_get_height(knob->knob_sprite)
             )
         );
-    
-    printf("Knob size: (%d, %d)\n", (int32_t) (sprite_get_width(knob->knob_sprite) / 2.0f), (int32_t) (sprite_get_height(knob->knob_sprite) / 2.0f));
-
-    knob->radius = radius;
-    knob->start_angle = start_angle;
-    knob->end_angle = end_angle;
-    knob->angle_offset = 0.0f;
 
     if (func == NULL) {
         printf("new_knob: Function pointer invalid\n");
@@ -479,16 +477,16 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
                         knob->center
                     )
                 );
-
-            if (knob->center.y > cursor_get_y(cursor))
-                angle = 2 * M_PI - angle;
-
+            
             angle += knob->angle_offset;
 
-            // Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
-            //     fclampf(angle, knob->start_angle, knob->end_angle));
+            if (knob->center.y > cursor_get_y(cursor) + (knob->radius * sinf(knob->angle_offset)))
+                angle = 2 * M_PI - angle;
 
-            Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, angle);
+            Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
+                fclampf(angle, knob->start_angle, knob->end_angle));
+            // Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, angle);
+
             pos = subtract_vec2d(pos, vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f));
 
             knob->knob_rect.x = pos.x;
@@ -529,7 +527,7 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
                 if (knob->center.y > cursor_get_y(cursor))
                     cursor_angle = 2 * M_PI - cursor_angle;
 
-                knob->angle_offset = cur_angle - cursor_angle;
+                knob->angle_offset = cursor_angle - cur_angle;
 
                 knob->being_moved = true;
             }
