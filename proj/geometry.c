@@ -12,7 +12,7 @@ inline float norm_vec2d(Vec2d_t v) {
 	return sqrtf(powf(v.x, 2) + powf(v.y, 2));
 }
 
-inline float reverse_norm_vec2d(Vec2d_t v) {
+inline float inverse_norm_vec2d(Vec2d_t v) {
 	return Q_rsqrt(powf(v.x, 2) + powf(v.y, 2));
 }
 
@@ -24,10 +24,10 @@ inline float angle_vec2d(Vec2d_t v1, Vec2d_t v2) {
 }
 
 inline Vec2d_t normalize_vec2d(Vec2d_t v) {
-	return multiply_by_scalar_vec2d(v, reverse_norm_vec2d(v));
+	return multiply_by_scalar_vec2d(v, inverse_norm_vec2d(v));
 }
 
-inline float reverse_distance_vec2d(Vec2d_t v1, Vec2d_t v2) {
+inline float inverse_distance_vec2d(Vec2d_t v1, Vec2d_t v2) {
 	return Q_rsqrt( powf(v1.x - v2.x, 2) + powf(v1.y - v2.y, 2) );
 }
 
