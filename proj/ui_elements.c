@@ -355,9 +355,9 @@ void render_slider(Slider_t* slider) {
 struct Knob {
     Sprite_t *backdrop_sprite, *knob_sprite;
     Rect_t backdrop_rect, knob_rect;
-    Vec2d_t center, cursor_offset;
+    Vec2d_t center;
     bool shown, is_active, being_moved, hovered;
-    float radius, start_angle, end_angle;
+    float radius, start_angle, end_angle, angle_offset;
     void (*func)(float);
 };
 
@@ -423,7 +423,7 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
     knob->radius = radius;
     knob->start_angle = start_angle;
     knob->end_angle = end_angle;
-    knob->cursor_offset = vec2d(0.0f, 0.0f);
+    knob->angle_offset = 0.0f;
 
     if (func == NULL) {
         printf("new_knob: Function pointer invalid\n");
@@ -474,11 +474,16 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
             // Update position
             float angle = angle_vec2d(
                 vec2d(1, 0),
-                subtract_vec2d(cursor_get_pos(cursor), knob->center)
+                subtract_vec2d(
+                        cursor_get_pos(cursor),
+                        knob->center
+                    )
                 );
 
-            if (knob->center.y > cursor_get_y(cursor) + sprite_get_height(knob->knob_sprite))
-                angle = M_2_PI - angle;
+            if (knob->center.y > cursor_get_y(cursor))
+                angle = 2 * M_PI - angle;
+
+            angle += knob->angle_offset;
 
             // Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
             //     fclampf(angle, knob->start_angle, knob->end_angle));
@@ -494,15 +499,37 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
                 knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
             }
         }
-        else if (is_cursor_inside_rect(cursor, &knob->backdrop_rect) || is_cursor_inside_rect(cursor, &knob->knob_rect)) {
+        else if (is_cursor_inside_rect(cursor, &knob->knob_rect) || is_cursor_inside_rect(cursor, &knob->backdrop_rect)) {
             knob->hovered = true;
+
             if (cursor_left_button_down(cursor)) {
-                knob->cursor_offset = subtract_vec2d(
-                    rect_get_origin(&knob->knob_rect),
-                    vec2d(  cursor_get_x(cursor),
-                            cursor_get_y(cursor)
-                        )
-                    );
+                float cur_angle = angle_vec2d(
+                    vec2d(1, 0),
+                    subtract_vec2d(
+                        sum_vec2d(
+                            rect_get_origin(&knob->knob_rect),
+                            vec2d(
+                                sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f
+                            )
+                        ),
+                    knob->center
+                    )
+                );
+                if (knob->center.y > knob->knob_rect.y + sprite_get_height(knob->knob_sprite) / 2.0f)
+                    cur_angle = 2 * M_PI - cur_angle;
+
+                float cursor_angle = angle_vec2d(
+                    vec2d(1, 0),
+                    subtract_vec2d(
+                        cursor_get_pos(cursor),
+                        knob->center
+                    )
+                );
+
+                if (knob->center.y > cursor_get_y(cursor))
+                    cursor_angle = 2 * M_PI - cursor_angle;
+
+                knob->angle_offset = cur_angle - cursor_angle;
 
                 knob->being_moved = true;
             }
