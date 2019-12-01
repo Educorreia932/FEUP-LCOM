@@ -51,7 +51,7 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
 
     s_board->cursor = cursor;
 
-    s_board->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/switchboard/switchboard_bg.bmp");
+    s_board->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/switchboard/switch_board.bmp");
     if (s_board->background == NULL) {
         printf("new_switchboard: Failed to create background Sprite\n");
         free(s_board);
@@ -83,17 +83,17 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         return NULL;
     }
 
-    s_board->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/horizontal_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
+    s_board->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/speed_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/speed_slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
     if (s_board->speed_slider == NULL) {
         printf("new_switchboard: Failed to create horizontal slider\n");
     }
 
-    s_board->jump_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/vertical_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
+    s_board->jump_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/jump_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/jump_slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
     if (s_board->jump_slider == NULL) {
         printf("new_switchboard: Failed to create vertical slider\n");
     }
 
-    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 520.0f), 0, M_2_PI, 100.0f);
+    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 540.0f), 210.0f, 330.0f, 100.0f);
     if (s_board->gravity_knob == NULL) {
         printf("new_switchboard: Failed to create gravity knob\n");
         return NULL;
