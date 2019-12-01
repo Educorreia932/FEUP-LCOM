@@ -32,6 +32,7 @@
 		"utils.h": "c",
 		"rtc.h": "c",
 		"input_events.h": "c",
-		"locale": "c"
+		"locale": "c",
+		"i8042.h": "c"
 	},
 }

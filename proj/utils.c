@@ -70,8 +70,7 @@ uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd) {
     return 0;
 }
 
-uint8_t kbc_read_outbf(uint8_t port, uint8_t *content, bool isMouse)
-{
+uint8_t kbc_read_outbf(uint8_t port, uint8_t *content, bool isMouse) {
 	// This section waits until there is something
 	// to read from the output buffer
 	// or it reaches a time out state
@@ -107,7 +106,7 @@ uint8_t kbc_read_outbf(uint8_t port, uint8_t *content, bool isMouse)
 
 }
 
-// Restore KBC byte to default state (returned by minix_get_dflt_kbc_byte())
+/** @brief Restore KBC byte to default state (returned by minix_get_dflt_kbc_byte()) */
 uint8_t restore_kbc_byte() {
 	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE))
 		return 1;

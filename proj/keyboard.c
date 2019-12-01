@@ -1,14 +1,18 @@
 #include "keyboard.h"
 
+/** @defgroup kbd Keyboard
+ *  @{
+ */
+
 static uint8_t scancode_bytes[2], st, valid_scancode=0;
 uint8_t scancode, is_scancode_complete=1, scancode_no_bytes;
 static int kbd_hook_id;
 
-// Sends the bit number for the interrupt through bit_no
-// and saves the hook id on kbd_hook_id to be used
-// later for unsubscribing and other actions
+/** @brief Subscribes keyboard interrupts 
+ * Sends the bit number for the interrupt through bit_no and saves the hook id on kbd_hook_id to be used later for unsubscribing and other actions.
+ * @return 0 on success, non-zero otherwise
+*/
 int (kbd_subscribe_int)(uint8_t *bit_no) {
-
 	if (!bit_no) // Check if pointer is NULL
 		return 1;
 
@@ -21,7 +25,9 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
 	return 0;
 }
 
-// Unsubscribes the keyboard interrupts
+/** @brief Unsubscribes keyboard interrupts 
+ * @return 0 on success, non-zero otherwise
+*/
 int(kbd_unsubscribe_int)() {
 	if (sys_irqrmpolicy(&kbd_hook_id))
 		return 1;
@@ -29,20 +35,16 @@ int(kbd_unsubscribe_int)() {
 	return 0;
 }
 
-// Reads a scancode from the kbc output buffer
-// Supports 2 byte scancodes, but it will wait
-// for the second call to recognize the full scancode
+/** @returns 0 upon success, 1 otherwise
+ */
 int kbc_get_scancode() {
-
-	if (util_sys_inb(STAT_REG, &st))
-	{
+	if (util_sys_inb(STAT_REG, &st)) {
 		valid_scancode = 0;
 		return 1;
 	}
 
 	// Check if output buffer is full
-	if (!(st & ST_OUT_BUF))
-	{
+	if (!(st & ST_OUT_BUF))	{
 		valid_scancode = 0;
 		return 1;
 	}
@@ -69,7 +71,6 @@ void kbd_ih() {
 	kbc_get_scancode();
 }
 
-// It's sole purpose is to parse both 1 & 2 byte scancodes
 void analyse_scancode() {
 	if (valid_scancode) { // Checks if the current scancode was invalid (error in the read operation)
 		// Whenever is_scancode_complete is false,
@@ -96,12 +97,8 @@ void analyse_scancode() {
 	}
 }
 
-// Reenables the keyboard interrupts
-// Avoids having to call the executable from a remote shell
-// to restore the keyboard interrupts
-// IMPORTANT:
-// This is only meant to be called when interrupts are disabled
-// Otherwise, the ih may "steal" our response and ruin everything
+/** @returns 0 upon success, 1 otherwise
+ */
 int kbc_reenable_default_int() {
 	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE))
 		return 1;
@@ -121,3 +118,5 @@ int kbc_reenable_default_int() {
 
 	return 0;
 }
+
+/** @} end of Keyboard */

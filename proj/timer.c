@@ -3,52 +3,52 @@
 
 #include "timer.h"
 
+/** @defgroup timer Timer
+ *  @{
+ */
+
 static int timer0_hook_id;
 unsigned long int global_timer0_counter = 0;
 
-// Sets the corresponding timer bits on the control word
-int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd)
-{
+/** @brief Sets the corresponding timer bits on the control word */
+int timer_set_control_word_timer(uint8_t timer, uint8_t *cmd) {
   if (!cmd) // Check if pointer is NULL
     return 1;
 
-  switch (timer)
-  {
-  case 0:
-    *cmd |= TIMER_SEL0;
-    return 0;
-  case 1:
-    *cmd |= TIMER_SEL1;
-    return 0;
-  case 2:
-    *cmd |= TIMER_SEL2;
-    return 0;
-  default:
-    return 1;
-  }
-}
-
-// Sets timer_port to the correct port of the timer
-// Returns 0 if timer is between 0 and 2, returns 1 otherwise
-int timer_get_port(uint8_t timer, uint8_t *timer_port)
-{
-  if (!timer_port) // Check if pointer is NULL
-    return 1;
-
-  switch (timer)
-  {
+  switch (timer) {
     case 0:
-      *timer_port = TIMER_0;
+      *cmd |= TIMER_SEL0;
       return 0;
     case 1:
-      *timer_port = TIMER_1;
+      *cmd |= TIMER_SEL1;
       return 0;
     case 2:
-      *timer_port = TIMER_2;
+      *cmd |= TIMER_SEL2;
       return 0;
     default:
       return 1;
   }
+}
+
+/** @brief Sets timer_port to the correct port of the timer
+ * @returns 0 if timer is between 0 and 2, returns 1 otherwise */
+int timer_get_port(uint8_t timer, uint8_t *timer_port) {
+	if (!timer_port) // Check if pointer is NULL
+		return 1;
+
+  	switch (timer)  {
+		case 0:
+		*timer_port = TIMER_0;
+		return 0;
+		case 1:
+		*timer_port = TIMER_1;
+		return 0;
+		case 2:
+		*timer_port = TIMER_2;
+		return 0;
+		default:
+		return 1;
+	}
 }
 
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
@@ -100,9 +100,9 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   return 0;
 }
 
-// Sends the bit number for the interrupt through bit_no
-// and saves the hook id on timer0_hook_id to be used
-// later for unsubscribing and other actions
+/** @brief Subscribes and enables Timer 0 interrupts. 
+ * Sends the bit number for the interrupt through bit_no and saves the hook id on timer0_hook_id to be used later for unsubscribing and other actions 
+ */
 int (timer_subscribe_int)(uint8_t *bit_no) {
 
   if (!bit_no) // Check if pointer is NULL
@@ -115,91 +115,43 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
   if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
     return 1;
 
-  // Is not necessary but gives a fun message if uncommented :D
-  // if (sys_irqenable(&timer0_hook_id) != OK)
-  //   return 1;
-
   return 0;
 }
 
+/** @brief Unsubscribes Timer 0 interrupts.
+ * @returns 0 upon success, 1 otherwise
+ */
 int (timer_unsubscribe_int)() {
-  if (sys_irqrmpolicy(&timer0_hook_id) != OK)
-    return 1;
-  return 0;
+	if (sys_irqrmpolicy(&timer0_hook_id) != OK)
+		return 1;
+
+  	return 0;
 }
 
+/** @brief Increments the number of times that the timer sent an interrupt */
 void (timer_int_handler)() {
   ++global_timer0_counter;
 }
 
-
+/** @brief Reads the input timer configuration (status) via read-back command.
+ * @param timer Timer whose configuration to read (Ranges from 0 to 2)
+ * @param st Address of memory position to be filled with the timer config
+ * @returns 0 upon success, 1 otherwise
+ */
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
+	if (!st) // Checks if pointer is NULL
+		return 1;
 
-  if (!st) // Checks if pointer is NULL
-    return 1;
-
-  uint8_t timer_port;
-  // Need to set the RB_COUNT to 1, otherwise the status will not be correct
-  uint8_t cmd = (uint8_t) (TIMER_RB_SEL(timer) |
-    TIMER_RB_CMD | TIMER_RB_COUNT_);
-  
-  if (timer_get_port(timer, &timer_port))
-    return 1;
-  
-  if (sys_outb(TIMER_CTRL, cmd))
-    return 1;
-  
-  return(util_sys_inb(timer_port, st));
-}
-
-int (timer_display_conf)(uint8_t timer, uint8_t st,
-                        enum timer_status_field field) {
-  
-  // Check if timer is within range
-  if (timer > 2)
-    return 1;
-
-  union timer_status_field_val field_val;
-  if (field == 0) // aka "all"
-  {
-    field_val.byte = st;
-
-  } else if (field == 1) // aka counting "mode" (0 - 5)
-  {
-    //  Selects only the counting mode bits and shifts them to get simpler numbers
-    st = (st & TIMER_STATUS_TYPE_OF_ACCESS) >> 4;
-    switch (st)
-    {
-      case INVAL_val: // 000
-      case LSB_only: // 001
-      case MSB_only: // 010
-      case MSB_after_LSB: // 011
-        field_val.in_mode = st; break;
-      default: // If not a valid value, returns 1
-        return 1;
-    }
-
-  } else if (field == 2) // aka "init"ialization mode (LSB and MSB related)
-  {
-    // >> 1 Because the programmed mode is in binary representraion,
-    // but on the bits 1, 2 and 3 (if the TIMER_STATUS_PROGRAMMED_MODE is unchanged)
-    field_val.count_mode = (st & TIMER_STATUS_PROGRAMMED_MODE) >> 1;
-    // If mode = {2, 3} it would read {6, 7}, so this fixes that
-    if (field_val.count_mode & BIT(1))
-    {
-      field_val.count_mode &= ~BIT(2); // Sets BIT 2 to 0
-    }
-
-  } else if (field == 3) // aka counting "base"
-  {
-    // VGets the counting base and sends the result to the field_val bool
-    if (st & TIMER_STATUS_BCD)
-      field_val.bcd = true;
-    else
-      field_val.bcd = false;
-
-  } else
-      return 1;
-
-  return timer_print_config(timer, field, field_val);
+	uint8_t timer_port;
+	// Need to set the RB_COUNT to 1, otherwise the status will not be correct
+	uint8_t cmd = (uint8_t) (TIMER_RB_SEL(timer) |
+		TIMER_RB_CMD | TIMER_RB_COUNT_);
+	
+	if (timer_get_port(timer, &timer_port))
+		return 1;
+	
+	if (sys_outb(TIMER_CTRL, cmd))
+		return 1;
+	
+	return(util_sys_inb(timer_port, st));
 }

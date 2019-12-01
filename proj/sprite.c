@@ -73,7 +73,6 @@ void free_sprite(Sprite_t *s) {
   free(s);
 }
 
-
 inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed) {
 	draw_sprite_floats(s, r->x, r->y, color_to_multiply, reversed);
 }

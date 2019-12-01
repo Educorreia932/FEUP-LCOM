@@ -40,7 +40,7 @@ Player_t* new_testing_player(bool is_single_player) {
 
 	printf("new_testing_player: Creating player sprite\n");
 
-	player->sprite = new_sprite(0, 0, 2, "/home/lcom/labs/proj/assets/watt_tmp.bmp", "/home/lcom/labs/proj/assets/watt_left.bmp");
+	player->sprite = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/watt_tmp.bmp");
 
 	if (player->sprite == NULL) {
 		printf("new_testing_player: Failed to create the Sprite object\n");

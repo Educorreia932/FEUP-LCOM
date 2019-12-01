@@ -1,5 +1,9 @@
 #include "video.h"
 
+/** @defgroup video_gr Graphics
+ * @{
+ */
+
 vbe_mode_info_summary_t vg_info;
 
 void* buffer_base = NULL;
@@ -17,8 +21,9 @@ void privctl(phys_bytes mr_base, size_t size) {
 		panic("sys_privctl (ADD_MEM) failed: %d\n", r);
 }
 
+/** @returns 0 on success, non-zero otherwise
+ */
 int vg_set_mode(uint16_t mode) {
-
 	reg86_t reg;
 	memset(&reg, 0, sizeof(reg86_t));	
 
@@ -41,6 +46,12 @@ int vg_set_mode(uint16_t mode) {
 	return 0;
 }
 
+/** @brief Returns information on the input VBE mode, including screen dimensions, color depth and VRAM physical address.
+ * Initializes packed vbe_mode__info_t structure passed as an address with the VBE information on the input mode, by calling VBE function 0x01, Return VBE Mode Information, and copying the ModeInfoBlock struct returned by that function.
+ * @param mode mode whose information should be returned
+ * @param vbe_info address of vbe_mode_info_t structure to be initialized
+ * @returns 0 on success, non-zero otherwise
+ */
 int vbe_get_mode_info_ours(uint16_t mode, vbe_mode_info_t *vbe_info) {
 
 	privctl(BASE_PHYS_ADDRESS, MiB);
@@ -86,12 +97,15 @@ int vbe_get_mode_info_ours(uint16_t mode, vbe_mode_info_t *vbe_info) {
 	return 0;
 }
 
+/** @brief Initializes the video module in graphics mode.
+ * @param mode 	16-bit VBE mode to set
+ * @returns Virtual address VRAM was mapped to. NULL, upon failure.
+ */
 void* (vg_init)(uint16_t mode) {
 	vbe_mode_info_t vbe_info;
 
-	if (vbe_get_mode_info_ours(mode, &vbe_info)) {
+	if (vbe_get_mode_info_ours(mode, &vbe_info))
 		return NULL;
-	}
 
 	// According to the VBE standard bit 0 of ModeAttributes set to 0
 	// means the mode is not supported by the hardware (1 means supported)
@@ -210,7 +224,10 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 }
 
+/** @brief Copies the double buffer data to the vram */
 void switch_double_buffer() {
 	// Copying values, since page flipping isn't possible
 	memcpy(buffer_base, double_buffer_base, size);
 }
+
+/** @} end of Graphics */

@@ -11,6 +11,7 @@ typedef struct Button Button_t;
 
 // Empty string to not have (and never draw) a sprite
 Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect);
+
 // Auto sizes the button, must have a Sprite
 Button_t* new_button_auto_size(const char* sprite_file_name, void (*func)(), Vec2d_t pos);
 // Reuses a Sprite_t from somewhere else
@@ -29,11 +30,9 @@ void button_deactivate (Button_t* button);
 void update_button(Button_t* button, MouseCursor_t* cursor);
 void render_button(Button_t* button);
 
-
 /* SLIDERS */
 
 typedef struct Slider Slider_t;
-
 
 Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite_file_name, void (*func)(uint8_t), Vec2d_t bar_pos, uint8_t max_state, Vec2d_t start_pos, Vec2d_t end_pos);
 

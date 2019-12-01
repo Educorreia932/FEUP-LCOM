@@ -6,11 +6,11 @@
 #define WALLS_COLOR 0x11e2
 
 struct Platforms {
+	SpriteDynamic_t* platform;
+    SpriteDynamic_t* wall;
     Rect_t* rects;
     bool* is_wall;
-    uint8_t size;
-    SpriteDynamic_t* platform;
-    SpriteDynamic_t* wall;
+    uint8_t size;    
 };
 
 // TODO: ALL OF THIS
@@ -78,15 +78,16 @@ Platforms_t* new_testing_platforms() {
 }
 
 void free_platforms(Platforms_t *plat) {
-  if (plat == NULL) {
-		printf("free_platforms: Cannot free a NULL pointer\n");
-		return;
-  }
-  free(plat->rects);
-  free(plat->is_wall);
-  free_sprite_dynamic(plat->platform);
-  free_sprite_dynamic(plat->wall);
-  free(plat);
+	if (plat == NULL) {
+			printf("free_platforms: Cannot free a NULL pointer\n");
+			return;
+	}
+	
+	free(plat->rects);
+	free(plat->is_wall);
+	free_sprite_dynamic(plat->platform);
+	free_sprite_dynamic(plat->wall);
+	free(plat);
 }
 
 // Actual platform stuff
@@ -110,9 +111,10 @@ void render_platforms(Platforms_t *plat) {
 
 	for (uint32_t i = 0; i < plat->size; ++i) {
 		if (*are_walls)
-		draw_sprite_dynamic(plat->wall, rects, WALLS_COLOR);
+			draw_sprite_dynamic(plat->wall, rects, WALLS_COLOR);
+		
 		else
-		draw_sprite_dynamic(plat->platform, rects, PLATFORMS_COLOR);
+			draw_sprite_dynamic(plat->platform, rects, PLATFORMS_COLOR);
 		
 		++rects;
 		++are_walls;
