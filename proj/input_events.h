@@ -5,7 +5,7 @@
 /* INPUT EVENT STUFF */
 
 typedef struct KbdInputEvents {
-    bool right_arrow_down; // true only the frame the user pressed the key
+    bool right_arrow_down; /** @brief true only the frame the user pressed the key */
     bool right_arrow;
     bool left_arrow_down;
     bool left_arrow;

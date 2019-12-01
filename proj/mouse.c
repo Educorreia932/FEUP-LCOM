@@ -1,5 +1,9 @@
 #include "mouse.h"
 
+/** @defgroup mouse Mouse
+ * @{
+ */
+
 // Global variables
 bool mouse_ih_error = false, is_mouse_packet_complete = false;
 struct packet mouse_parsed_packet;
@@ -10,6 +14,7 @@ static uint8_t st, counter = 0;
 static uint8_t packet_bytes[3];
 static bool found_first_byte = false;
 
+/** @brief Susbcribes mouse interrupts */
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
         return 1;
@@ -20,20 +25,30 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
 
+/** @brief Unsubcribes mouse interrupts
+ * @returns 0 on success, 1 otherwise
+ */
 uint8_t (mouse_unsubscribe_int)() {
     return sys_irqrmpolicy(&mouse_hook_id);
 }
 
+/** @brief Enables mouse interrupts 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_enable_int() {
     return sys_irqenable(&mouse_hook_id);
 }
 
+/** @brief Disables mouse interrupts 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_disable_int() {
     return sys_irqdisable(&mouse_hook_id);
 }
 
-// Has a more complicated structure than simple KBC commands,
-// so this function handles that interaction
+/** @brief Has a more complicated structure than simple KBC commands, so this function handles that interaction 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_send_cmd(uint8_t cmd) {
 
     // If a command's response is NACK, we need to retry all over again
@@ -70,12 +85,17 @@ uint8_t mouse_send_cmd(uint8_t cmd) {
     return 1;
 }
 
-// Enables mouse data reporting
+/** @brief Enables stream mode data reporting
+ * by sending the respective command to the mouse.
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_data_reporting_enable() {
     return mouse_send_cmd(MOUSE_CMD_ENABLE_DATA_REPORT);
 }
 
-// Disables mosue data reporting
+/** @brief Disables mouse data reporting 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_data_reporting_disable() {
     return mouse_send_cmd(MOUSE_CMD_DISABLE_DATA_REPORT);
 }
@@ -92,16 +112,24 @@ uint8_t mouse_send_cmd_stream_mode(uint8_t cmd) {
     return 0;
 }
 
-// Sets mouse to stream mode
+/** @brief Sets mouse to stream mode 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_set_stream_mode() {
     return mouse_send_cmd(MOUSE_CMD_STREAM_MODE);
 }
 
-// Sends cmd to mouse signaling we want to read a packet
+/** @brief Sends cmd to mouse signaling we want to read a packet 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_read_data() {
     return mouse_send_cmd(MOUSE_CMD_READ_DATA);
 }
 
+/** @brief Handles mouse interrutps.
+ * Reads the status register and the output buffer (OB).
+ * If there was some error, the byte read from the OB should be discarded.
+ */
 void (mouse_ih)() {
     if (util_sys_inb(STAT_REG, &st)) {
         mouse_ih_error = 1;
@@ -153,11 +181,9 @@ void (parse_packet)() {
 
     mouse_parsed_packet.x_ov = packet_bytes[0] & MOUSE_PARSE_X_OVERFLOW;
     mouse_parsed_packet.y_ov = packet_bytes[0] & MOUSE_PARSE_Y_OVERFLOW;
-
 }
 
-uint8_t mouse_data_handler() {
-    
+uint8_t mouse_data_handler() {    
     if (!found_first_byte) { // Business as usual
         ++counter;
 
@@ -179,6 +205,7 @@ uint8_t mouse_data_handler() {
         // Assume that if that bit is 1, it's the first byte/ We need to find out the first byte
         // Assume that if that bit is 1, it's the first byte
         is_mouse_packet_complete = false;
+
         if (packet_bytes[counter] & MOUSE_PARSE_FIRST_PACKET_IDENTIFIER) {
             packet_bytes[0] = packet_bytes[counter];
             found_first_byte = true;
@@ -187,3 +214,5 @@ uint8_t mouse_data_handler() {
         return 0;
     }
 }
+
+/** @} end of Mouse */

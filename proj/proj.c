@@ -51,15 +51,6 @@ int proj_game(uint8_t player_number) {
   return 0;
 }
 
-int test_rtc() {
-	uint16_t period = 5;
-	
-	if (rtc_int(period))
-		return 1;
-
-	return 0;
-}
-
 int(proj_main_loop)(int argc, char *argv[]) {
 	if (argc < 0 || argc > 2)
 		return print_usage();
@@ -71,10 +62,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
 	else if (strcmp(argv[0], "test") == 0) {
 		panic("No code to test");
 		return 1;
-	}
-	
-	else if (!strcmp(argv[0], "rtc")) {
-		return test_rtc();
 	}
 
 	else {

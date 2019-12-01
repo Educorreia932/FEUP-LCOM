@@ -13,6 +13,5 @@ void switchboard_set_no_lasers(SwitchBoard_t* s_board);
 void switchboard_set_two_lasers(SwitchBoard_t* s_board);
 void switchboard_set_three_lasers(SwitchBoard_t* s_board);
 
-
 void update_switchboard(SwitchBoard_t* s_board);
 void render_switchboard(SwitchBoard_t* s_board);

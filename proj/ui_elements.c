@@ -15,7 +15,9 @@ struct Button {
     void (*func)();
 };
 
-// Empty string to not draw a sprite
+/**
+ * @param sprite_file_name Empty string to not draw a sprite
+ */
 Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect) {
     
     Button_t* button = (Button_t*) malloc(sizeof(Button_t));
@@ -178,9 +180,8 @@ void render_button(Button_t* button) {
     }
 }
 
-/*----------------*/
-/*---- SLIDER ----*/
-/*----------------*/
+/** @name Slider */
+///@{
 
 struct Slider {
     Vec2d_t bar_pos;
@@ -348,9 +349,10 @@ void render_slider(Slider_t* slider) {
     }
 }
 
-/*----------------------------*/
-/*--------    KNOB    --------*/
-/*----------------------------*/
+///@}
+
+/** @name Knob */
+///@{
 
 struct Knob {
     Sprite_t *backdrop_sprite, *knob_sprite;
@@ -360,7 +362,6 @@ struct Knob {
     float radius, start_angle, end_angle, angle_offset;
     void (*func)(float);
 };
-
 
 Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {
     
@@ -538,7 +539,6 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
 }
 
 void render_knob(Knob_t* knob) {
-
     if (knob->shown) {
         if (!knob->is_active) {
             // Draw default bar
@@ -560,3 +560,5 @@ void render_knob(Knob_t* knob) {
         }
     }
 }
+
+///@}

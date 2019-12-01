@@ -6,11 +6,12 @@ typedef struct {
 	uint16_t seconds, minutes, hour;
 } date_t;
 
-#define RTC_IRQ 8 //RTC IRQ
-#define RTC_ADDR_REG 0x70 //RTC Address Port
-#define RTC_DATA_REG 0x71 //RTC Data Port
+#define RTC_IRQ 8 /** @brief RTC IRQ line */
+#define RTC_ADDR_REG 0x70 /** @brief RTC Address Port **/
+#define RTC_DATA_REG 0x71 /** @brief RTC Data Port **/
 
-// RTC Address Related
+/*! @name RTC Address Related */
+///@{
 #define RTC_REG_SECONDS 0
 #define RTC_REG_A_SECONDS 1
 #define RTC_REG_MINUTES 2
@@ -24,13 +25,16 @@ typedef struct {
 #define RTC_REG_B 11
 #define RTC_REG_C 12
 #define RTC_REG_D 13
+///@}
 
-// Interrupt bits
+/*! @name Interrupt bits */
+///@{
 #define RTC_UIE BIT(4)
 #define RTC_AIE BIT(5)
 #define RTC_PIE BIT(6)
+///@}
 
-date_t get_date();
+date_t get_date(); 
 
 int rtc_enable_alarm_int();
 

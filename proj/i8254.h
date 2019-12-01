@@ -3,10 +3,11 @@
 
 #include <lcom/lcf.h>
 
-/** @defgroup i8254 i8254
- * @{
- *
- * Constants for programming the i8254 Timer. Needs to be completed.
+// Constants for programming the i8254 Timer. Needs to be completed.
+
+
+/** @defgroup timer Timer
+ *  @{
  */
 
 #define TIMER_FREQ 1193182 /**< @brief clock frequency for timer in PC and AT */
@@ -48,19 +49,21 @@
 
 /* READ-BACK COMMAND FORMAT */
 
-#define TIMER_RB_COUNT_  BIT(5)
+#define TIMER_RB_COUNT_  BIT(5) 
 #define TIMER_RB_STATUS_ BIT(4)
-#define TIMER_RB_SEL(n)  BIT((n) + 1)
+#define TIMER_RB_SEL(n) BIT((n) + 1)
 
-/* Status Related Macros */
-/* Used to "filter" the relevant bits from the status byte */
-
+/** @name Status Related Macros 
+ * Used to "filter" the relevant bits from the status byte
+*/
+///@{
 #define TIMER_STATUS_OUTPUT BIT(7)
 #define TIMER_STATUS_NULL_COUNT BIT(6)
 #define TIMER_STATUS_TYPE_OF_ACCESS (BIT(5) | BIT(4))
 #define TIMER_STATUS_PROGRAMMED_MODE (BIT(3) | BIT(2) | BIT(1))
 #define TIMER_STATUS_BCD BIT(0)
-
-/**@}*/
+///@}
 
 #endif /* _LCOM_I8254_H */
+
+/** @} end of Timer */

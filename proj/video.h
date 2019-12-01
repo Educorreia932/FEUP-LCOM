@@ -3,8 +3,13 @@
 #include <lcom/lcf.h>
 #include "video_macros.h"
 
+/** @defgroup video_gr Graphics
+ * @{
+ */
+
 typedef struct {
-	uint16_t x_res, y_res;
+	uint16_t x_res; /** @brief Horizontal resolution in pixels/characters */
+	uint16_t y_res; /** @brief Vertical resolution in pixels/characters */
 	uint8_t bits_per_pixel, bytes_per_pixel, vg_mode;
 	uint32_t red_mask, green_mask, blue_mask;
 	uint8_t red_field_position, green_field_position, blue_field_position;
@@ -19,7 +24,7 @@ typedef struct {
 	uint32_t oem_string_ptr;
 	uint8_t vbe_capabilities[4];
 	uint32_t video_mode_list_ptr;
-	uint16_t total_memory; //number of 64kb memory blocks
+	uint16_t total_memory; /** @brief number of 64kb memory blocks */
 
 	uint16_t oem_software_rev;
 	uint32_t vendor_name_ptr;
@@ -36,7 +41,6 @@ void privctl();
 void vg_fill_black();
 void vg_fill_color_rgb_565(uint16_t color);
 
-uint8_t vg_draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y);
-uint8_t vg_update_xpm(xpm_map_t xpm, uint16_t old_x, uint16_t old_y, uint16_t new_x, uint16_t new_y);
-
 void switch_double_buffer();
+
+/** @} end of Graphics */
