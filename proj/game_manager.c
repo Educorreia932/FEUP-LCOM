@@ -4,6 +4,7 @@
 #include "mouse_cursor.h"
 #include "switchboard.h"
 
+
 struct GameManager {
 	MouseInputEvents_t *mouse_ev;
 	KbdInputEvents_t *kbd_ev;
@@ -162,7 +163,7 @@ uint8_t start_game(uint8_t player_number) {
 	uint32_t timer0_bit_mask;
 	uint32_t mouse_bit_mask;
 	uint32_t rtc_bit_mask;
-	  	
+	
 	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask))
 		printf("start_game: Failed to enable interrupts\n");
   
@@ -174,13 +175,12 @@ uint8_t start_game(uint8_t player_number) {
 	/* GAME LOOP */
   	/* aka interrupt loop */
 	bool is_frame = false;
-	bool quit = false;
 
 	printf("start_game: Entering game loop\n");
 
 	hw_manager_rtc_set_alarm(5);
 
-	while (!gm->kbd_ev->key_esc_down || quit) {
+	while (!gm->kbd_ev->key_esc_down) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
 			continue;
@@ -205,9 +205,8 @@ uint8_t start_game(uint8_t player_number) {
 					}
 
 					if (msg.m_notify.interrupts & rtc_bit_mask) {
-						printf("asdasdasd");
+						printf("RTC\n");
 						hw_manager_rtc_ih();
-						quit = true;
 					}
 
 					break;
@@ -221,6 +220,7 @@ uint8_t start_game(uint8_t player_number) {
 			update(gm);
 			render(gm);
 			hw_manager_switch_double_buffer();
+			//reset rtc
 			reset_inputs(gm->kbd_ev, gm->mouse_ev);
 
 			is_frame = false;

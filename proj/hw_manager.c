@@ -30,12 +30,13 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 	uint8_t timer0_bit_no = TIMER0_IRQ;
 	uint8_t kbd_bit_no = KBD_IRQ;
 	uint8_t mouse_bit_no = MOUSE_IRQ;
-	uint8_t rtc_bit_no = 
+	uint8_t rtc_bit_no = RTC_IRQ;
 
 	// Set the masks to send outside this function
 	*timer0_mask = BIT(timer0_bit_no);
 	*kbd_mask = BIT(kbd_bit_no);
 	*mouse_mask = BIT(mouse_bit_no);
+	*rtc_mask = BIT(rtc_bit_no);
 
 	/* ENABLE MOUSE STUFF */
 	if (mouse_subscribe_int(&mouse_bit_no))
@@ -59,10 +60,17 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 		return 1;
 
 	/* ENABLE KEYBOARD */
-	if (kbd_subscribe_int(&kbd_bit_no))
+	if (kbd_subscribe_int(&kbd_bit_no)) 
 		return 1;
 
 	/* ENABLE RTC */
+	// Read C register 
+	uint32_t reg_c = 0;
+
+	rtc_read_register(RTC_REG_C, &reg_c);
+
+	printf("%x\n", reg_c);
+
 	if (rtc_subscribe_int(&rtc_bit_no))
 		return 1;
 
@@ -74,6 +82,15 @@ void hw_manager_unsubscribe_int() {
 	kbd_unsubscribe_int();
 	mouse_unsubscribe_int();
 	mouse_data_reporting_disable();
+
+	uint32_t data;
+
+	rtc_read_register(RTC_REG_B, &data);
+
+	data &= ~RTC_AIE;
+
+	rtc_write_register(RTC_DATA_REG, data);
+
 	rtc_unsubscribe_int();
 }
 

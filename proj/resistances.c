@@ -35,7 +35,7 @@ Resistances_t* new_testing_resistances() {
     resistances->rects = (Rect_t*) malloc(sizeof(Rect_t) * resistances->num_resistances);
     resistances->orientation = (bool*) malloc(sizeof(bool) * resistances->num_resistances);
 
-    resistances->rects[0] = rect(830, 500, 132, 44);
+    resistances->rects[0] = rect(820, 500, 132, 44);
     resistances->orientation[0] = false;
 
     resistances->rects[1] = rect(400, 200, 44, 132); 
