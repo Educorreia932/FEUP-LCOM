@@ -31,10 +31,7 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
  * @returns 0 on success, 1 otherwise
  */
 int(kbd_unsubscribe_int)() {
-	if (sys_irqrmpolicy(&kbd_hook_id))
-		return 1;
-
-	return 0;
+	return sys_irqrmpolicy(&kbd_hook_id);
 }
 
 /** @brief Reads a scancode from the kbc output buffer

@@ -85,7 +85,7 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
     if (s_board->jump_slider == NULL) {
         printf("new_switchboard: Failed to create vertical slider\n");
     }
-    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 540.0f), 135.0f, 405.0f, 100.0f);
+    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 540.0f), 210.0f, 330.0f, 100.0f);
     if (s_board->gravity_knob == NULL) {
         printf("new_switchboard: Failed to create gravity knob\n");
         return NULL;

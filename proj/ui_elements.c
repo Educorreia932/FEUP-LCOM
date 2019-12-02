@@ -470,8 +470,10 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
             }
         }
 
-        else
+        else  {
             knob->hovered = false;
+            
+        }
     }
 }
 
