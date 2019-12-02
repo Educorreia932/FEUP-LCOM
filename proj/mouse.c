@@ -25,39 +25,43 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
 
-/** @brief Unsubcribes mouse interrupts
+/**
+ * @brief Unsubcribes mouse interrupts
  * @returns 0 on success, 1 otherwise
  */
 uint8_t (mouse_unsubscribe_int)() {
     return sys_irqrmpolicy(&mouse_hook_id);
 }
 
-/** @brief Enables mouse interrupts 
+/** 
+ * @brief Enables mouse interrupts 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_enable_int() {
     return sys_irqenable(&mouse_hook_id);
 }
 
-/** @brief Disables mouse interrupts 
+/** 
+ * @brief Disables mouse interrupts 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_disable_int() {
     return sys_irqdisable(&mouse_hook_id);
 }
 
-/** @brief Has a more complicated structure than simple KBC commands, so this function handles that interaction 
+/** 
+ * @brief Has a more complicated structure than simple KBC commands, so this function handles that interaction 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_send_cmd(uint8_t cmd) {
-
     // If a command's response is NACK, we need to retry all over again
     uint8_t attempts = 3;
-    while (attempts) {
 
+    while (attempts) {
         // Write cmd to tell the KBC that we'll send a mouse cmd
         if (kbc_send_cmd(MOUSE_CTRL_REG, KBC_WRITE_BYTE_TO_MOUSE))
             return 1;
+
         // Write the cmd that will be sent to the mouse itself
         if (kbc_send_cmd(MOUSE_IN_BUF, cmd))
             return 1;
@@ -73,27 +77,27 @@ uint8_t mouse_send_cmd(uint8_t cmd) {
         
         // If NACK, retry again
         if (byte_received == MOUSE_CTRL_NACK) {
-            --attempts;
+            attempts--;
             continue;
         }
         
-        // If it was MOUSE_CTR_ERROR or
-        // if it was anything else... Something is REALLY wrong, return 1
+        // If it was MOUSE_CTR_ERROR or if it was anything else... Something is REALLY wrong, return 1
         return 1;
     }
 
     return 1;
 }
 
-/** @brief Enables stream mode data reporting
- * by sending the respective command to the mouse.
+/** 
+ * @brief Enables stream mode data reporting by sending the respective command to the mouse.
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_data_reporting_enable() {
     return mouse_send_cmd(MOUSE_CMD_ENABLE_DATA_REPORT);
 }
 
-/** @brief Disables mouse data reporting 
+/** 
+ * @brief Disables mouse data reporting 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_data_reporting_disable() {
@@ -112,23 +116,26 @@ uint8_t mouse_send_cmd_stream_mode(uint8_t cmd) {
     return 0;
 }
 
-/** @brief Sets mouse to stream mode 
+/** 
+ * @brief Sets mouse to stream mode 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_set_stream_mode() {
     return mouse_send_cmd(MOUSE_CMD_STREAM_MODE);
 }
 
-/** @brief Sends cmd to mouse signaling we want to read a packet 
+/** 
+ * @brief Sends cmd to mouse signaling we want to read a packet 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_read_data() {
     return mouse_send_cmd(MOUSE_CMD_READ_DATA);
 }
 
-/** @brief Handles mouse interrutps.
+/** 
+ * @brief Handles mouse interrutps.
  * Reads the status register and the output buffer (OB).
- * If there was some error, the byte read from the OB should be discarded.
+ * @note If there was some error, the byte read from the OB should be discarded.
  */
 void (mouse_ih)() {
     if (util_sys_inb(STAT_REG, &st)) {
@@ -152,6 +159,9 @@ void (mouse_ih)() {
     }
 }
 
+/** 
+ * @brief Parses the content of a mouse packet, reading it to a mouse_parsed_packet struct
+ */
 void (parse_packet)() {
     // Copy raw bytes to the struct
     mouse_parsed_packet.bytes[0] = packet_bytes[0];
@@ -183,9 +193,12 @@ void (parse_packet)() {
     mouse_parsed_packet.y_ov = packet_bytes[0] & MOUSE_PARSE_Y_OVERFLOW;
 }
 
+/** 
+ * @returns 0 on success, 1 otherwise
+ */ 
 uint8_t mouse_data_handler() {    
     if (!found_first_byte) { // Business as usual
-        ++counter;
+        counter++;
 
         if (counter > 2) {
             is_mouse_packet_complete = true;
@@ -201,11 +214,10 @@ uint8_t mouse_data_handler() {
         return 0;
     }
 
-    else { // We need to find out the first byte
-        // Assume that if that bit is 1, it's the first byte/ We need to find out the first byte
-        // Assume that if that bit is 1, it's the first byte
+    else { 
         is_mouse_packet_complete = false;
 
+        // We need to find out the first byte. Assume that if that bit is 1, it's the first byte
         if (packet_bytes[counter] & MOUSE_PARSE_FIRST_PACKET_IDENTIFIER) {
             packet_bytes[0] = packet_bytes[counter];
             found_first_byte = true;

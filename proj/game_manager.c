@@ -47,43 +47,54 @@ GameManager_t * new_game_manager(const char* background_file_name) {
 	return gm;
 }
 
+/** 
+ * @param player_number Number of the player that's playing 
+ */
 GameManager_t * new_testing_game_manager(uint8_t player_number) {
 	GameManager_t *gm = (GameManager_t*) malloc(sizeof(GameManager_t));
+	
 	if (gm == NULL) {
 		printf("new_testing_game_manager: Failed to allocate memory for GameManager object\n");
 		return NULL;
 	}
 
 	gm->kbd_ev = new_kbd_input_events();
+	
 	if (gm->kbd_ev == NULL) {
 		printf("new_testing_game_manager: Failed to create the Keyboard Input Events object\n");
 		return NULL;
 	}
 
 	gm->mouse_ev = new_mouse_input_events();
+
 	if (gm->mouse_ev == NULL) {
 		printf("new_testing_game_manager: Failed to create the Mouse Input Events object\n");
 		return NULL;
 	}
 
 	gm->cursor = new_cursor(gm->mouse_ev, "/home/lcom/labs/proj/assets/cursor.bmp");
+	
 	if (gm->cursor == NULL) {
 		printf("new_testing_game_manager: Failed to create the Cursor object\n");
 		return NULL;
 	}
 
 	gm->player_number = player_number;
+
 	if (gm->player_number == 1) {
 		gm->s_board = NULL;
 		gm->level = new_testing_level(true);
+		
 		if (gm->level == NULL) {
 			printf("new_testing_game_manager: Failed to create the Level object\n");
 			return NULL;
 		}
 	}
+
 	else if (gm->player_number == 2) {
 		gm->level = NULL;
 		gm->s_board = new_switchboard(gm->cursor);
+		
 		if (gm->s_board == NULL) {
 			printf("new_testing_game_manager: Failed to create the Switchboard object\n");
 			return NULL;
@@ -98,16 +109,21 @@ void free_game_manager(GameManager_t *gm) {
         printf("free_game_manager: Cannot free a NULL pointer\n");
         return;
     }
+
 	if (gm->level != NULL)
+	
 		free_level(gm->level);
 	if (gm->s_board != NULL)
 		free_switchboard(gm->s_board);
+	
 	free_kbd_input_events(gm->kbd_ev);
 	free_mouse_input_events(gm->mouse_ev);
 	free(gm);
 }
 
-// Update is executed once every frame
+/** 
+ * @note Update is executed once every frame
+ */
 void update(GameManager_t* gm) {
 	update_cursor(gm->cursor);
 	if (gm->player_number == 1)
@@ -125,6 +141,11 @@ void render(GameManager_t *gm) {
 	render_cursor(gm->cursor);
 }
 
+/** 
+ * @brief Starts the game
+ * @param player_number Number of the player that's playing (1 to control Watt, 2 to control the switchboard)
+ * @returns 0 on success, 1 otherwise
+ */
 uint8_t start_game(uint8_t player_number) {  
 	printf("start_game: Creating GameManager object\n");
 

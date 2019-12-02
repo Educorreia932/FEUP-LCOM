@@ -14,13 +14,10 @@ int (kbd_subscribe_int)(uint8_t *bit_no);
 
 int (kbd_unsubscribe_int)();
 
-/** @brief Reads a scancode from the kbc output buffer
- * Supports 2 byte scancodes, but it will wait for the second call to recognize the full scancode
- */
+
 int kbc_get_scancode();
 void kbd_ih();
 
-/** @brief It's sole purpose is to parse both 1 & 2 byte scancodes */
 void analyse_scancode();
 
 /** @brief Reenables the keyboard interrupts 
