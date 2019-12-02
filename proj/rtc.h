@@ -47,3 +47,6 @@ void rtc_set_alarm(uint32_t period);
 int rtc_subscribe_int();
 
 int rtc_unsubscribe_int();
+
+int rtc_read_register(uint32_t addr, uint32_t* data);
+int rtc_write_register(uint32_t addr, uint32_t data);

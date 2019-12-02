@@ -100,8 +100,9 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
   return 0;
 }
 
-/** @brief Subscribes and enables Timer 0 interrupts. 
- * Sends the bit number for the interrupt through bit_no and saves the hook id on timer0_hook_id to be used later for unsubscribing and other actions 
+/** 
+ * @brief Subscribes and enables Timer 0 interrupts. 
+ * @details Sends the bit number for the interrupt through bit_no and saves the hook id on timer0_hook_id to be used later for unsubscribing and other actions 
  */
 int (timer_subscribe_int)(uint8_t *bit_no) {
 
@@ -118,7 +119,8 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
   return 0;
 }
 
-/** @brief Unsubscribes Timer 0 interrupts.
+/** 
+ * @brief Unsubscribes Timer 0 interrupts.
  * @returns 0 upon success, 1 otherwise
  */
 int (timer_unsubscribe_int)() {
@@ -130,7 +132,8 @@ void (timer_int_handler)() {
   ++global_timer0_counter;
 }
 
-/** @brief Reads the input timer configuration (status) via read-back command.
+/** 
+ * @brief Reads the input timer configuration (status) via read-back command.
  * @param timer Timer whose configuration to read (Ranges from 0 to 2)
  * @param st Address of memory position to be filled with the timer config
  * @returns 0 upon success, 1 otherwise

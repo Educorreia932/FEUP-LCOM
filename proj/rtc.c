@@ -42,9 +42,7 @@ int rtc_write_register(uint32_t addr, uint32_t data) {
 	if (sys_outb(RTC_DATA_REG, data))
 		return 1;
 
-	return 0;	
-
-  return 0;
+  	return 0;
 }
 
 date_t get_date() {
@@ -76,7 +74,9 @@ int (rtc_subscribe_int)(uint8_t *bit_no) {
 	return 0;
 }
 
-// Unsubscribes the RTC interrupts
+/** 
+ * @brief Unsubscribes the RTC interrupts
+ */
 int (rtc_unsubscribe_int)() {
 	return sys_irqrmpolicy(&rtc_hook_id);
 }
@@ -130,8 +130,6 @@ int rtc_disable_alarm_int() {
 }
 
 void rtc_set_alarm(uint32_t period) {
-	rtc_enable_alarm_int();
-
 	date_t t = get_date();
 
 	t.seconds += period;
@@ -142,8 +140,10 @@ void rtc_set_alarm(uint32_t period) {
 	t.hour = t.hour % 24;
 
 	rtc_write_register(RTC_REG_A_SECONDS, dec_to_bcd(t.seconds));
-	rtc_write_register(RTC_REG_A_MINUTES, 0xFF); // Don't care value
-	rtc_write_register(RTC_REG_A_HOURS, 0xFF);
+	rtc_write_register(RTC_REG_A_MINUTES, dec_to_bcd(t.minutes)); 
+	rtc_write_register(RTC_REG_A_HOURS, dec_to_bcd(t.hour));
+
+	rtc_enable_alarm_int();
 
 	printf("Alarm set to: %x:%x:%x\n", dec_to_bcd(t.hour), dec_to_bcd(t.minutes), dec_to_bcd(t.seconds));
 }
@@ -157,7 +157,7 @@ int rtc_int(uint16_t period) {
 
 	rtc_set_alarm(period);
 
-	uint8_t bit_no = RTC_IRQ;
+	uint8_t bit_no = 0;
         
 	// Only avoids making this operation on every notification
 	int rtc_bit_mask = BIT(bit_no);
@@ -170,7 +170,7 @@ int rtc_int(uint16_t period) {
 
 	// Interrupt loop
 	while (true) {		
-		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) { // TODO: It's breaking here
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
 			continue;
 		}
@@ -202,7 +202,7 @@ int rtc_int(uint16_t period) {
 	data &= ~RTC_AIE;
 
 	if (rtc_write_register(RTC_DATA_REG, data))
-		return 1;;
+		return 1;
 
 	if (rtc_unsubscribe_int()) 
 		return 1; 
