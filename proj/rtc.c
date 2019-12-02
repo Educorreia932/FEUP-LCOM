@@ -78,10 +78,7 @@ int (rtc_subscribe_int)(uint8_t *bit_no) {
 
 // Unsubscribes the RTC interrupts
 int (rtc_unsubscribe_int)() {
-	if (sys_irqrmpolicy(&rtc_hook_id))
-		return 1;
-		
-	return 0;
+	return sys_irqrmpolicy(&rtc_hook_id);
 }
 
 void rtc_ih() {

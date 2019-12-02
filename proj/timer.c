@@ -122,10 +122,7 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
  * @returns 0 upon success, 1 otherwise
  */
 int (timer_unsubscribe_int)() {
-	if (sys_irqrmpolicy(&timer0_hook_id) != OK)
-		return 1;
-
-  	return 0;
+	return sys_irqrmpolicy(&timer0_hook_id) != OK;
 }
 
 /** @brief Increments the number of times that the timer sent an interrupt */
