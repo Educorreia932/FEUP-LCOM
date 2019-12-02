@@ -2,10 +2,10 @@
 #include "sprite.h"
 
 struct Resistances {
-    SpriteDynamic_t* sprite_horizontal;
-    SpriteDynamic_t* sprite_vertical;
-    uint8_t num_resistances;
-    Rect_t* rects;
+    SpriteDynamic_t* sprite_vertical; /** Vertical sprite of a resistance */
+    SpriteDynamic_t* sprite_horizontal; /** Horizontal sprite of a resistance */
+    uint8_t num_resistances; /**< Number of resistances present on the level */
+    Rect_t* rects; /**< "Hitboxes" of the various resistances of a level */
     bool* orientation; /**< Orientation in which the resistance will be rendered. True for vertical, false for horizontal */
 };
 
@@ -55,6 +55,7 @@ void render_resistances(Resistances_t* resistances) {
             draw_sprite_dynamic(resistances->sprite_horizontal, &resistances->rects[i], COLOR_NO_MULTIPLY);
 }
 
+/** @returns true if the player "hitbox" is olliding with a resistance, false otherwise */
 bool player_touches_resistance(Resistances_t* resistances, Rect_t* player) {
     for (uint32_t i = 0; i < resistances->num_resistances; i++) {
         if (rect_collision(&resistances->rects[i], player))

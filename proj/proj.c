@@ -41,14 +41,14 @@ static int print_usage() {
 }
 
 int proj_game(uint8_t player_number) {
-  if (vg_init(0x117) == NULL)
-    return 1;
+	if (vg_init(0x117) == NULL)
+		return 1;
 
-  start_game(player_number);
+	start_game(player_number);
 
-  vg_exit();
+	vg_exit();
 
-  return 0;
+	return 0;
 }
 
 int(proj_main_loop)(int argc, char *argv[]) {

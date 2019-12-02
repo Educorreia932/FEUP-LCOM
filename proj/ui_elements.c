@@ -1,12 +1,12 @@
 #include "ui_elements.h"
 #include "math_utils.h"
-
 /* COLOR CHANGES IN THE UI */
 // TODO: Define a nice kind of greyish tint for these
 #define COLOR_WHEN_HOVERED 0xb5b6
 #define COLOR_INACTIVE 0x9492
 
-/* BUTTON */
+/** @name Button */
+///@{
 
 struct Button {
     Rect_t rect;
@@ -19,38 +19,41 @@ struct Button {
  * @param sprite_file_name Empty string to not draw a sprite
  */
 Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect) {
-    
     Button_t* button = (Button_t*) malloc(sizeof(Button_t));
+    
     if (button == NULL) {
         printf("new_button: Failed to allocate memory for the Button\n");
         return NULL;
     }
-
+    
     button->rect = rect;
-
+    
     if (strcmp("", sprite_file_name) == 0)
         button->sprite = NULL;
+    
     else {
         button->sprite = new_sprite(0, 0, 1, sprite_file_name);
+    
         if (button->sprite == NULL) {
             printf("new_button: Failed to create Button's Sprite\n");
             free(button);
             return NULL;
         }
     }
-
+    
     button->is_active = true;
     button->shown = true;
     button->hovered = false;
-
+    
     if (func == NULL) {
         printf("new_button: Function pointer invalid\n");
         free_sprite(button->sprite);
         free(button);
         return NULL;
     }
+    
     button->func = func;
-
+    
     return button;
 }
 
@@ -61,20 +64,16 @@ Button_t* new_button_auto_size(const char* sprite_file_name, void (*func)(), Vec
         printf("new_button: Failed to allocate memory for the Button\n");
         return NULL;
     }
-
     button->sprite = new_sprite(0, 0, 1, sprite_file_name);
     if (button->sprite == NULL) {
         printf("new_button: Failed to create Button's Sprite\n");
         free(button);
         return NULL;
     }
-
     button->rect = rect(pos.x, pos.y, sprite_get_width(button->sprite), sprite_get_height(button->sprite));
-
     button->is_active = true;
     button->shown = true;
     button->hovered = false;
-
     if (func == NULL) {
         printf("new_button: Function pointer invalid\n");
         free_sprite(button->sprite);
@@ -82,7 +81,6 @@ Button_t* new_button_auto_size(const char* sprite_file_name, void (*func)(), Vec
         return NULL;
     }
     button->func = func;
-
     return button;
 }
 
@@ -94,40 +92,32 @@ Button_t* new_button_existing_sprite(Sprite_t *sprite, void (*func)(), Rect_t re
         printf("new_button_existing_sprite: Failed to allocate memory for the Button\n");
         return NULL;
     }
-
     button->rect = rect;
-
     if (sprite == NULL) {
         printf("new_button_existing_sprite: Sprite cannot be a NULL pointer\n");
         free(button);
         return NULL;
     }
     button->sprite = sprite;
-
     button->is_active = true;
     button->shown = true;
     button->hovered = false;
-
     if (func == NULL) {
         printf("new_button_existing_sprite: Function pointer invalid\n");
         free(button);
         return NULL;
     }
     button->func = func;
-
     return button;
 }
 
 void free_button(Button_t* button) {
-
     if (button == NULL) {
         printf("free_button_and_sprite: Cannot free a NULL pointer\n");
         return;
     }
-
     if (button->sprite != NULL)
         free_sprite(button->sprite);
-
     free(button);
 }
 
@@ -136,10 +126,8 @@ void free_button_without_sprite(Button_t* button) {
         printf("free_button: Cannot free a NULL pointer\n");
         return;
     }
-
     free(button);
 }
-
 
 inline void button_hide(Button_t* button) {
     button->shown = false;
@@ -180,6 +168,8 @@ void render_button(Button_t* button) {
     }
 }
 
+///@}
+
 /** @name Slider */
 ///@{
 
@@ -194,7 +184,6 @@ struct Slider {
     void (*func)(uint8_t);
 };
 
-
 Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite_file_name, void (*func)(uint8_t), Vec2d_t bar_pos, uint8_t max_state, Vec2d_t start_pos, Vec2d_t end_pos) {
     
     Slider_t* slider = (Slider_t*) malloc(sizeof(Slider_t));
@@ -202,16 +191,13 @@ Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite
         printf("new_slider: Failed to allocate memory for the Slider\n");
         return NULL;
     }
-
     slider->bar_pos = bar_pos;
-
     slider->bar_sprite = new_sprite(0, 0, 1, bar_sprite_file_name);
     if (slider->bar_sprite == NULL) {
         printf("new_slider: Failed to create Slider's bar Sprite\n");
         free(slider);
         return NULL;
     }
-
     slider->handle_sprite = new_sprite(0, 0, 1, handle_sprite_file_name);
     if (slider->handle_sprite == NULL) {
         printf("new_slider: Failed to create Slider's handle Sprite\n");
@@ -219,26 +205,21 @@ Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite
         free(slider);
         return NULL;
     }
-
     slider->is_active = true;
     slider->shown = true;
     slider->hovered = true;
     slider->being_moved = false;
-
     slider->state = 0;
     slider->max_state = max_state;
-
     slider->start_pos = start_pos;
     slider->end_pos = end_pos;
     slider->cursor_offset = vec2d(0.0f, 0.0f);
-
     slider->handle_rect = rect(
         start_pos.x + (end_pos.x - start_pos.x) / 2.0f,
         start_pos.y + (end_pos.y - start_pos.y) / 2.0f,
         sprite_get_width(slider->handle_sprite),
         sprite_get_height(slider->handle_sprite)
     );
-
     if (func == NULL) {
         printf("new_slider: Function pointer invalid\n");
         free_sprite(slider->bar_sprite);
@@ -247,21 +228,16 @@ Slider_t* new_slider(const char* bar_sprite_file_name, const char* handle_sprite
         return NULL;
     }
     slider->func = func;
-
     return slider;
 }
 
-
 void free_slider(Slider_t* slider) {
-
     if (slider == NULL) {
         printf("free_slider_and_sprite: Cannot free a NULL pointer\n");
         return;
     }
-
     free_sprite(slider->bar_sprite);
     free_sprite(slider->handle_sprite);
-
     free(slider);
 }
 
@@ -284,7 +260,6 @@ inline void slider_deactivate (Slider_t* slider) {
 void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
     if (slider->is_active && slider->shown) {
         if (slider->being_moved) {
-
             // Update position
             slider->handle_rect.x = fclampf(
                 cursor_get_x(cursor) + slider->cursor_offset.x, slider->start_pos.x, slider->end_pos.x);
@@ -292,17 +267,13 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
             slider->handle_rect.y = fclampf(
                 cursor_get_y(cursor) + slider->cursor_offset.y,
                 slider->start_pos.y, slider->end_pos.y);
-
             if (!cursor_left_button(cursor)) {
-
                 // Get the most appropriate state
                 Vec2d_t p = rect_get_origin(&slider->handle_rect);
                 float endpoint_distace = distance_vec2d(slider->start_pos, slider->end_pos);
                 float distance_to_start = distance_vec2d(slider->start_pos, p);
-
                 // Calculate closest possible state
                 slider->state = (uint8_t) floorf(distance_to_start / endpoint_distace * slider->max_state);
-
                 slider->being_moved = false;
                 slider->func(slider->state);
             }
@@ -316,7 +287,6 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
                             cursor_get_y(cursor)
                         )
                     );
-
                 slider->being_moved = true;
             }
         }
@@ -326,7 +296,6 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
 }
 
 void render_slider(Slider_t* slider) {
-
     if (slider->shown) {
         if (!slider->is_active) {
             // Draw default bar
@@ -363,21 +332,19 @@ struct Knob {
     void (*func)(float);
 };
 
-Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {
-    
+
+Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {    
     Knob_t* knob = (Knob_t*) malloc(sizeof(Knob_t));
     if (knob == NULL) {
         printf("new_knob: Failed to allocate memory for the Knob\n");
         return NULL;
     }
-
     knob->backdrop_sprite = new_sprite(0, 0, 1, backdrop_sprite_file_name);
     if (knob->backdrop_sprite == NULL) {
         printf("new_knob: Failed to create Knob's backdrop Sprite\n");
         free(knob);
         return NULL;
     }
-
     knob->backdrop_rect = rect_from_vec2d(
         pos,
         vec2d(
@@ -385,12 +352,10 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
             sprite_get_height(knob->backdrop_sprite)
             )
         );
-
     knob->center = sum_vec2d(pos, vec2d(
         sprite_get_width(knob->backdrop_sprite) / 2.0f,
         sprite_get_height(knob->backdrop_sprite) / 2.0f
         ));
-
     knob->knob_sprite = new_sprite(0, 0, 1, knob_sprite_file_name);
     if (knob->knob_sprite == NULL) {
         printf("new_knob: Failed to create Knob's handle Sprite\n");
@@ -398,18 +363,14 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
         free(knob);
         return NULL;
     }
-
-
     knob->is_active = true;
     knob->shown = true;
     knob->hovered = true;
     knob->being_moved = false;
-
     knob->radius = radius;
     knob->start_angle = start_angle * (2 * M_PI) / 360.0f;
     knob->end_angle = end_angle * (2 * M_PI) / 360.0f;
     knob->angle_offset = 0.0f;
-
     knob->knob_rect = rect_from_vec2d(
         subtract_vec2d(
             circumference_vec2d(knob->center, radius, knob->start_angle),
@@ -423,7 +384,6 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
             sprite_get_height(knob->knob_sprite)
             )
         );
-
     if (func == NULL) {
         printf("new_knob: Function pointer invalid\n");
         free_sprite(knob->backdrop_sprite);
@@ -432,21 +392,16 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
         return NULL;
     }
     knob->func = func;
-
     return knob;
 }
 
-
 void free_knob(Knob_t* knob) {
-
     if (knob == NULL) {
         printf("free_knob_and_sprite: Cannot free a NULL pointer\n");
         return;
     }
-
     free_sprite(knob->backdrop_sprite);
     free_sprite(knob->knob_sprite);
-
     free(knob);
 }
 
@@ -468,16 +423,10 @@ inline void knob_deactivate (Knob_t* knob) {
 
 void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
     if (knob->is_active && knob->shown) {
+        // Knob is in movement
         if (knob->being_moved) {
-
             // Update position
-            float angle = angle_vec2d(
-                vec2d(1, 0),
-                subtract_vec2d(
-                        cursor_get_pos(cursor),
-                        knob->center
-                    )
-                );
+            float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(cursor), knob->center));
             
             angle += knob->angle_offset;
 
@@ -486,53 +435,41 @@ void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
 
             Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
                 fclampf(angle, knob->start_angle, knob->end_angle));
-            // Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, angle);
 
             pos = subtract_vec2d(pos, vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f));
 
             knob->knob_rect.x = pos.x;
             knob->knob_rect.y = pos.y;
-
+            
             if (!cursor_left_button(cursor)) {
                 knob->being_moved = false;
                 knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
             }
         }
+
+        // Mouse is hovering on the knob
         else if (is_cursor_inside_rect(cursor, &knob->knob_rect) || is_cursor_inside_rect(cursor, &knob->backdrop_rect)) {
             knob->hovered = true;
 
             if (cursor_left_button_down(cursor)) {
-                float cur_angle = angle_vec2d(
-                    vec2d(1, 0),
-                    subtract_vec2d(
-                        sum_vec2d(
-                            rect_get_origin(&knob->knob_rect),
-                            vec2d(
-                                sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f
-                            )
-                        ),
-                    knob->center
-                    )
-                );
+                float cur_angle = angle_vec2d(vec2d(1, 0),
+                    subtract_vec2d(sum_vec2d(rect_get_origin(&knob->knob_rect),
+                    vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f)), knob->center));
+
                 if (knob->center.y > knob->knob_rect.y + sprite_get_height(knob->knob_sprite) / 2.0f)
                     cur_angle = 2 * M_PI - cur_angle;
-
-                float cursor_angle = angle_vec2d(
-                    vec2d(1, 0),
-                    subtract_vec2d(
-                        cursor_get_pos(cursor),
-                        knob->center
-                    )
-                );
-
+                
+                float cursor_angle = angle_vec2d(vec2d(1, 0),
+                    subtract_vec2d(cursor_get_pos(cursor),                        knob->center));
+                
                 if (knob->center.y > cursor_get_y(cursor))
                     cursor_angle = 2 * M_PI - cursor_angle;
-
+                
                 knob->angle_offset = cursor_angle - cur_angle;
-
                 knob->being_moved = true;
             }
         }
+
         else
             knob->hovered = false;
     }
@@ -546,12 +483,14 @@ void render_knob(Knob_t* knob) {
             // Draw handle
             draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_INACTIVE, false);
         }
+
         else if (knob->hovered) {
             // Draw default bar
             draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_WHEN_HOVERED, false);
             // Draw handle
             draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_WHEN_HOVERED, false);
         }
+
         else {
             // Draw default bar
             draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_NO_MULTIPLY, false);

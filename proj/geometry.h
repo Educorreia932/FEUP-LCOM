@@ -157,14 +157,10 @@ Vec2d_t circumference_vec2d(Vec2d_t center, float radius, float angle);
  * 
  */
 typedef struct Rect {
-    /**@brief The x coordinate of the top leftmost point*/
-    float x;
-    /**@brief The y coordinate of the top leftmost point*/
-    float y;
-    /**@brief The width of the rectangle*/
-    float w;
-    /**@brief The height of the rectangle*/
-    float h;
+    float x; /**< @brief The x coordinate of the top leftmost point*/
+    float y; /**< @brief The y coordinate of the top leftmost point*/
+    float w; /**< @brief The width of the rectangle*/
+    float h; /**< @brief The height of the rectangle*/
 } Rect_t;
 
 /* CONSTRUCTORS */

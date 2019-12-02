@@ -8,9 +8,10 @@ static uint8_t scancode_bytes[2], st, valid_scancode=0;
 uint8_t scancode, is_scancode_complete=1, scancode_no_bytes;
 static int kbd_hook_id;
 
-/** @brief Subscribes keyboard interrupts 
+/**
+ * @brief Subscribes keyboard interrupts 
  * Sends the bit number for the interrupt through bit_no and saves the hook id on kbd_hook_id to be used later for unsubscribing and other actions.
- * @return 0 on success, non-zero otherwise
+ * @return 0 on success, 1 otherwise
 */
 int (kbd_subscribe_int)(uint8_t *bit_no) {
 	if (!bit_no) // Check if pointer is NULL
@@ -25,9 +26,10 @@ int (kbd_subscribe_int)(uint8_t *bit_no) {
 	return 0;
 }
 
-/** @brief Unsubscribes keyboard interrupts 
- * @return 0 on success, non-zero otherwise
-*/
+/** 
+ * @brief Unsubscribes keyboard interrupts 
+ * @returns 0 on success, 1 otherwise
+ */
 int(kbd_unsubscribe_int)() {
 	if (sys_irqrmpolicy(&kbd_hook_id))
 		return 1;
@@ -35,9 +37,12 @@ int(kbd_unsubscribe_int)() {
 	return 0;
 }
 
-/** @returns 0 upon success, 1 otherwise
+/** @brief Reads a scancode from the kbc output buffer
+ * @note Supports 2 byte scancodes, but it will wait for the second call to recognize the full scancode
+ * @returns 0 upon success, 1 otherwise
  */
 int kbc_get_scancode() {
+	// Read status
 	if (util_sys_inb(STAT_REG, &st)) {
 		valid_scancode = 0;
 		return 1;
@@ -49,15 +54,14 @@ int kbc_get_scancode() {
 		return 1;
 	}
 
-	if (util_sys_inb(OUT_BUF, &scancode)) // Read scancode
-	{
+	// Read scancode
+	if (util_sys_inb(OUT_BUF, &scancode)) { 
 		valid_scancode = 0;
 		return 1;
 	}
 
 	// If either one is set to 1, there's an error
-	if (st & (ST_PAR_ERR | ST_TO_ERR | ST_MOUSE_DATA))
-	{
+	if (st & (ST_PAR_ERR | ST_TO_ERR | ST_MOUSE_DATA)) {
 		valid_scancode = 0;
 		return 1;
 	}
@@ -71,12 +75,14 @@ void kbd_ih() {
 	kbc_get_scancode();
 }
 
+/** 
+ * @brief It's sole purpose is to parse both 1 & 2 byte scancodes 
+ */
 void analyse_scancode() {
 	if (valid_scancode) { // Checks if the current scancode was invalid (error in the read operation)
 		// Whenever is_scancode_complete is false,
 		// a 2 byte scancode is being read
-		if (is_scancode_complete)
-		{
+		if (is_scancode_complete) {
 			scancode_bytes[0] = scancode;
 			if (scancode == SCANCODE_TWO_BYTES)
 			{ // Will have to wait for the second byte
@@ -97,7 +103,8 @@ void analyse_scancode() {
 	}
 }
 
-/** @returns 0 upon success, 1 otherwise
+/** 
+ * @returns 0 upon success, 1 otherwise
  */
 int kbc_reenable_default_int() {
 	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE))

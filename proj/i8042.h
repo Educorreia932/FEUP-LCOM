@@ -9,37 +9,36 @@
  *  @{
  */
 
-/** @brief Keyboard IRQ line */
-#define KBD_IRQ 1 
+#define KBD_IRQ 1 /**< @brief Keyboard IRQ line */
 
-/** @name Time outs */
+/** @name Timeouts */
 ///@{
-#define TIMEOUT_ATTEMPTS 5 // At a rate of 10ms per attempt, it will timeout in 50ms
-#define KBC_WAIT 10000 // Will wait for 10ms
+#define TIMEOUT_ATTEMPTS 5 /**< @brief At a rate of 10ms per attempt, it will timeout in 50ms */
+#define KBC_WAIT 10000 /**< @brief Will wait for 10ms */
 ///@}
 
 /** @name I/O Port Addresses */
 ///@{
-#define OUT_BUF 0x60
-#define IN_BUF_CMD 0x64
-#define IN_BUF_ARGS 0x60
-#define STAT_REG 0x64
+#define OUT_BUF 0x60 /**< @brief Output buffer port */
+#define IN_BUF_CMD 0x64 /**< @brief Input buffer port */
+#define IN_BUF_ARGS 0x60 
+#define STAT_REG 0x64 /**< @brief Status register*/
 ///@}
 
 /** @name KBD Commands */
 ///@{
-#define READ_CMD_BYTE 0x20
-#define WRITE_CMD_BYTE 0x60
-#define SELF_TEST 0xAA
-#define CHECK_KBD_INTERFACE 0xAB
+#define READ_CMD_BYTE 0x20 /**< @brief Read command byte */
+#define WRITE_CMD_BYTE 0x60 /**< @brief Write command byte */
+#define SELF_TEST 0xAA /**< @brief Check KBC (Self-test) */
+#define CHECK_KBD_INTERFACE 0xAB /**< @brief Check keyboard interface */
 #define ENABLE_KBD_INTERFACE 0xAD
 #define DISABLE_KBD_INTERFACE 0xAE
 ///@}
 
 /** @name KBD Command Byte */
 ///@{
-#define CMD_BYTE_DISABLE_MOUSE BIT(5)
-#define CMD_BYTE_DISABLE_KBD_INTERFACE BIT(4)
+#define CMD_BYTE_DISABLE_MOUSE BIT(5) /**< @brief Disable mouse */
+#define CMD_BYTE_DISABLE_KBD_INTERFACE BIT(4) /**< @brief Disable keyboard interface */
 #define CMD_BYTE_ENABLE_INT_MOUSE BIT(1)
 #define CMD_BYTE_ENABLE_INT_KBD BIT(0)
 ///@}
@@ -50,21 +49,18 @@
 ///@{
 
 /* Input buffer full */
-#define ST_OUT_BUF BIT(0)
+#define ST_OUT_BUF BIT(0) 
 #define ST_IN_BUF BIT(1)
 
-#define ST_MOUSE_DATA BIT(5) /** @brief Is the output buffer filled with mouse data */
+#define ST_MOUSE_DATA BIT(5) /**< @brief Indicates wheter the output buffer is filled with mouse data or not*/
 
-/** @name Error selection */
-///@{
 #define ST_PAR_ERR BIT(7) 
 #define ST_TO_ERR BIT(6)
-///@}
 ///@}
 
 /** @name Scancode Related Macros */
 ///@{
-#define MAKE_TO_BREAK 0x80 /** @brief Difference between the breakcode and the makecode */
+#define MAKE_TO_BREAK 0x80 /**< @brief Difference between the breakcode and the makecode */
 #define SCANCODE_TWO_BYTES 0xE0
 ///@}
 

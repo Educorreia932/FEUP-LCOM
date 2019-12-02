@@ -59,8 +59,6 @@ Vec2d_t circumference_vec2d(Vec2d_t center, float radius, float angle) {
 	);
 }
 
-
-
 /* RECT CONSTRUCTORS */
 
 Rect_t rect(float x, float y, float w, float h) {
