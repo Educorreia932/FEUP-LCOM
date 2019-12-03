@@ -14,6 +14,15 @@
 #define PLAYER_BASE_SPEED 230.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
 
+#define PLAYER_DEFAULT_SPEED_MULT 1.0f
+#define PLAYER_MIN_SPEED_MULT 0.4f
+#define PLAYER_MAX_SPEED_MULT 1.6f
+#define PLAYER_SPEED_MULT_STEP 0.1f
+#define PLAYER_DEFAULT_JUMP_MULT 1.0f
+#define PLAYER_MIN_JUMP_MULT 0.4f
+#define PLAYER_MAX_JUMP_MULT 1.6f
+#define PLAYER_JUMP_MULT_STEP 0.1f
+
 struct Player {
 		Rect_t rect;
 		Sprite_t *sprite;
@@ -56,8 +65,8 @@ Player_t* new_testing_player(bool is_single_player) {
 	);
 
 	printf("new_testing_player: Customizing player stats\n");
-	player->speed_mult = 1.0f;
-	player->jump_mult = 1.0f;
+	player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
+	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->y_speed = 0.0f;
 	player->gravity = BASE_GRAVITY;
 	player->x_spawn = 200;
@@ -137,11 +146,18 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 	}
 
 	if (player->is_single_player) {
-		if (get_key_down(kbd_ev, KBD_C)) {
+		if (get_key_down(kbd_ev, KBD_C))
 			lasers_cycle_link_id(lasers);
-		}
 		if (get_key_down(kbd_ev, KBD_X))
 			player->gravity *= -1;
+		if (get_key_down(kbd_ev, KBD_Q))
+			player->jump_mult = fclampf(player->jump_mult - PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
+		if (get_key_down(kbd_ev, KBD_W))
+			player->jump_mult = fclampf(player->jump_mult + PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
+		if (get_key_down(kbd_ev, KBD_A))
+			player->speed_mult = fclampf(player->speed_mult - PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
+		if (get_key_down(kbd_ev, KBD_S))
+			player->speed_mult = fclampf(player->speed_mult + PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
 	}
 
 	// Vertical Movement
