@@ -8,21 +8,13 @@
 // Frame rate
 #define FRAME_PERIOD 1  // 60 fps
 
-// 1 byte scancodes
-#define KBD_ESC_MAKECODE 0x01
-#define KBD_ESC_BREAKCODE 0x81
-#define KBD_Z_MAKECODE 0x2c
-#define KBD_Z_BREAKCODE 0xac
-#define KBD_X_MAKECODE 0x2d
-#define KBD_X_BREAKCODE 0xad
-#define KBD_C_MAKECODE 0x2e
-#define KBD_C_BREAKCODE 0xae
-
 // 2 byte scancodes, but we only need to compare the second one
 #define KBD_ARROW_LEFT_MAKECODE 0x4b
-#define KBD_ARROW_LEFT_BREAKCODE 0xcb
 #define KBD_ARROW_RIGHT_MAKECODE 0x4d
-#define KBD_ARROW_RIGHT_BREAKCODE 0xcd
+#define KBD_ARROW_DOWN_MAKECODE 0x48
+#define KBD_ARROW_UP_MAKECODE 0x50
+#define KBD_DELETE_MAKECODE 0x53
+#define KBD_SUPER_MAKECODE 0x5B
 
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
@@ -114,69 +106,50 @@ inline void hw_manager_kbd_ih() {
 }
 
 void hw_manager_kbd(KbdInputEvents_t* kbd_ev) {
-  analyse_scancode();
-  if (is_scancode_complete) {
-    if (scancode_no_bytes == 1) {
-      // 1 byte scancodes
-      switch (scancode) {
-        case KBD_ESC_MAKECODE:
-			if (!kbd_ev->key_esc)
-				kbd_ev->key_esc_down = true;
-			kbd_ev->key_esc = true;
-			break;
-        case KBD_ESC_BREAKCODE:
-			kbd_ev->key_esc = false;
-			break;
-        case KBD_Z_MAKECODE:
-			if (!kbd_ev->key_z)
-				kbd_ev->key_z_down = true;
-			kbd_ev->key_z = true;
-			break;
-        case KBD_Z_BREAKCODE:
-			kbd_ev->key_z = false;
-			break;
-        case KBD_X_MAKECODE:
-          	if (!kbd_ev->key_x)
-            	kbd_ev->key_x_down = true;
-          	kbd_ev->key_x = true;
-          	break;
-        case KBD_X_BREAKCODE:
-          	kbd_ev->key_x = false;
-			break;
-		case KBD_C_MAKECODE:
-			if (!kbd_ev->key_c)
-				kbd_ev->key_c_down = true;
-			kbd_ev->key_c = true;
-			break;
-		case KBD_C_BREAKCODE:
-			kbd_ev->key_c = false;
-			break;
-        // No need for a default
-      }
-    }
-    else {
-      // 2 byte scancodes
-      switch (scancode) {
-        case KBD_ARROW_LEFT_MAKECODE:
-			if (!kbd_ev->left_arrow)
-				kbd_ev->left_arrow_down = true;
-			kbd_ev->left_arrow = true;
-			break;
-        case KBD_ARROW_LEFT_BREAKCODE:
-			kbd_ev->left_arrow = false;
-			break;
-        case KBD_ARROW_RIGHT_MAKECODE:
-			if (!kbd_ev->right_arrow)
-				kbd_ev->right_arrow_down = true;
-			kbd_ev->right_arrow = true;          
-			break;
-        case KBD_ARROW_RIGHT_BREAKCODE:
-			kbd_ev->right_arrow = false;
-			break;
-        // No need for a default
-      }
-    }
-  }
+  	analyse_scancode();
+	  
+  	if (is_scancode_complete) {
+
+		// This aux_scancode will already have the positions in the array
+		// We only need to verify if it was a make or breack code later on
+		uint8_t aux_scancode = scancode & (~MAKE_TO_BREAK);
+
+		if (scancode_no_bytes == 2) {
+			// Two bytes, it's the special case...
+			switch (aux_scancode) {
+				case KBD_ARROW_LEFT_MAKECODE:
+					aux_scancode = KBD_ARROW_LEFT;
+					break;
+				case KBD_ARROW_RIGHT_MAKECODE:
+					aux_scancode = KBD_ARROW_RIGHT;
+					break;
+				case KBD_ARROW_UP_MAKECODE:
+					aux_scancode = KBD_ARROW_UP;
+					break;
+				case KBD_ARROW_DOWN_MAKECODE:
+					aux_scancode = KBD_ARROW_DOWN;
+					break;
+				case KBD_DELETE_MAKECODE:
+					aux_scancode = KBD_DELETE;
+					break;
+				case KBD_SUPER_MAKECODE:
+					aux_scancode = KBD_SUPER;
+					break;
+			}
+		}
+
+		if (scancode & MAKE_TO_BREAK) {
+			// It was a breakcode
+			kbd_ev->key[aux_scancode] = false;
+		}
+		else {
+			// It was a makecode
+			if (!kbd_ev->key[aux_scancode])
+				kbd_ev->key_down[aux_scancode] = true;
+			kbd_ev->key[aux_scancode] = true;
+		}
+
+	} // End of is_scancode_complete
 }
 
 inline void hw_manager_mouse_ih() {
@@ -224,25 +197,6 @@ void hw_manager_rtc_ih() {
 
 void hw_manager_rtc_set_alarm(uint32_t period) {
 	rtc_set_alarm(period);
-}
-
-/* RESETTING NECESSARY INPUTS */
-
-void reset_inputs(KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
-  
-  // Reset kbd
-  kbd_ev->key_esc_down = false;
-  kbd_ev->key_z_down = false;
-  kbd_ev->key_x_down = false;
-  kbd_ev->key_c_down = false;
-  kbd_ev->left_arrow_down = false;
-  kbd_ev->right_arrow_down = false;
-
-	// Reset mouse
-	mouse_ev->left_button_down = false;
-	mouse_ev->right_button_down = false;
-	mouse_ev->x_delta = 0;
-	mouse_ev->y_delta = 0;
 }
 
 /* VIDEO WRAPPERS */

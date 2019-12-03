@@ -2,8 +2,11 @@
 #include "math_utils.h"
 /* COLOR CHANGES IN THE UI */
 // TODO: Define a nice kind of greyish tint for these
-#define COLOR_WHEN_HOVERED 0xb5b6
+#define COLOR_WHEN_HOVERED 0xef5d
 #define COLOR_INACTIVE 0x9492
+
+#define KNOB_ANGLE_PRECISION 0.1f
+#define KNOB_ANGLE_SETBACK 0.006f
 
 /** @name Button */
 ///@{
@@ -421,58 +424,91 @@ inline void knob_deactivate (Knob_t* knob) {
     knob->is_active = false;
 }
 
-void update_knob(Knob_t* knob, MouseCursor_t* cursor) {
+float knob_get_cursor_angle(Knob_t *knob, MouseCursor_t *cursor) {
+    float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(cursor), knob->center));
+    
+    angle += knob->angle_offset;
+
+    if (knob->center.y > cursor_get_y(cursor) + (knob->radius * sinf(knob->angle_offset)))
+        angle = 2 * M_PI - angle;
+    
+    return angle;
+}
+
+float knob_get_cur_angle(Knob_t *knob) {
+
+    float cur_angle = angle_vec2d(
+        vec2d(1, 0),
+        subtract_vec2d(
+            sum_vec2d(
+                rect_get_origin(&knob->knob_rect),
+                vec2d(
+                    sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f)
+                ),
+            knob->center
+        )
+    );
+
+    if (knob->center.y > knob->knob_rect.y + sprite_get_height(knob->knob_sprite) / 2.0f)
+        cur_angle = 2 * M_PI - cur_angle;
+    
+    return cur_angle;
+}
+
+void knob_update_pos(Knob_t *knob, float angle) {
+
+    Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
+                fclampf(angle, knob->start_angle, knob->end_angle));
+
+    pos = subtract_vec2d(pos, vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f));
+
+    knob->knob_rect.x = pos.x;
+    knob->knob_rect.y = pos.y;
+
+}
+
+void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
     if (knob->is_active && knob->shown) {
         // Knob is in movement
         if (knob->being_moved) {
             // Update position
-            float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(cursor), knob->center));
-            
-            angle += knob->angle_offset;
 
-            if (knob->center.y > cursor_get_y(cursor) + (knob->radius * sinf(knob->angle_offset)))
-                angle = 2 * M_PI - angle;
+            float angle = knob_get_cursor_angle(knob, cursor);
 
-            Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
-                fclampf(angle, knob->start_angle, knob->end_angle));
-
-            pos = subtract_vec2d(pos, vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f));
-
-            knob->knob_rect.x = pos.x;
-            knob->knob_rect.y = pos.y;
+            knob_update_pos(knob, fclampf(angle, knob->start_angle, knob->end_angle));
             
             if (!cursor_left_button(cursor)) {
                 knob->being_moved = false;
                 knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
             }
         }
+        else {
 
-        // Mouse is hovering on the knob
-        else if (is_cursor_inside_rect(cursor, &knob->knob_rect) || is_cursor_inside_rect(cursor, &knob->backdrop_rect)) {
-            knob->hovered = true;
-
-            if (cursor_left_button_down(cursor)) {
-                float cur_angle = angle_vec2d(vec2d(1, 0),
-                    subtract_vec2d(sum_vec2d(rect_get_origin(&knob->knob_rect),
-                    vec2d(sprite_get_width(knob->knob_sprite) / 2.0f, sprite_get_height(knob->knob_sprite) / 2.0f)), knob->center));
-
-                if (knob->center.y > knob->knob_rect.y + sprite_get_height(knob->knob_sprite) / 2.0f)
-                    cur_angle = 2 * M_PI - cur_angle;
-                
-                float cursor_angle = angle_vec2d(vec2d(1, 0),
-                    subtract_vec2d(cursor_get_pos(cursor),                        knob->center));
-                
-                if (knob->center.y > cursor_get_y(cursor))
-                    cursor_angle = 2 * M_PI - cursor_angle;
-                
-                knob->angle_offset = cursor_angle - cur_angle;
-                knob->being_moved = true;
+            float cur_angle = knob_get_cur_angle(knob);
+            if (fabs(cur_angle) > fabs(knob->start_angle) + KNOB_ANGLE_PRECISION) {
+                cur_angle -= KNOB_ANGLE_SETBACK;
+                knob_update_pos(knob, fmaxf(cur_angle, knob->start_angle));
             }
-        }
+            else if (is_cursor_inside_rect(cursor, &knob->knob_rect)
+                || is_cursor_inside_rect(cursor, &knob->backdrop_rect)) {
 
-        else  {
-            knob->hovered = false;
-            
+                // Mouse is hovering on the knob
+                knob->hovered = true;
+
+                if (cursor_left_button_down(cursor)) {
+
+                    // cur_angle was calculated just before
+                    
+                    float cursor_angle = angle_vec2d(vec2d(1, 0),
+                        subtract_vec2d(cursor_get_pos(cursor),                        knob->center));
+                    
+                    if (knob->center.y > cursor_get_y(cursor))
+                        cursor_angle = 2 * M_PI - cursor_angle;
+                    
+                    knob->angle_offset = cursor_angle - cur_angle;
+                    knob->being_moved = true;
+                }
+            }
         }
     }
 }

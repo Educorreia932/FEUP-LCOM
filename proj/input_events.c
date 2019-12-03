@@ -19,6 +19,21 @@ void free_kbd_input_events(KbdInputEvents_t* kbd_input_ev) {
   	free(kbd_input_ev);
 }
 
+inline bool get_key(KbdInputEvents_t *kbd_ev, KeyboardMap_t map) {
+	if (map > LARGEST_MAKECODE + EXTRA_MAKECODES) {
+		printf("get_key: Invalid KeyboardMap value\n");
+		return false;
+	}
+	return kbd_ev->key[map];
+}
+
+inline bool get_key_down(KbdInputEvents_t *kbd_ev, KeyboardMap_t map) {
+	if (map > LARGEST_MAKECODE + EXTRA_MAKECODES) {
+		printf("get_key: Invalid KeyboardMap value\n");
+		return false;
+	}
+	return kbd_ev->key_down[map];
+}
 
 /* MOUSE EVENTS */
 
@@ -37,4 +52,19 @@ void free_mouse_input_events(MouseInputEvents_t* mouse_input_ev) {
 		return;
   	}
   	free(mouse_input_ev);
+}
+
+
+/* RESETTING NECESSARY INPUTS */
+
+void reset_inputs(KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
+  
+  	// Reset kbd key downs
+  	memset(kbd_ev->key_down, 0, sizeof(kbd_ev->key_down));
+
+	// Reset mouse
+	mouse_ev->left_button_down = false;
+	mouse_ev->right_button_down = false;
+	mouse_ev->x_delta = 0;
+	mouse_ev->y_delta = 0;
 }

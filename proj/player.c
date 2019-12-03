@@ -108,12 +108,12 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 	// Horizontal Movement
 	float h_delta = 0;
 
-	if (kbd_ev->right_arrow) {
+	if (get_key(kbd_ev, KBD_ARROW_RIGHT)) {
 		h_delta = DELTATIME * PLAYER_BASE_SPEED * player->speed_mult;
 		player->heading_right = true;
 	}
 	
-	if (kbd_ev->left_arrow) {
+	if (get_key(kbd_ev, KBD_ARROW_LEFT)) {
 		h_delta = DELTATIME * -PLAYER_BASE_SPEED * player->speed_mult;
 		player->heading_right = false;
 	}
@@ -137,10 +137,10 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 	}
 
 	if (player->is_single_player) {
-		if (kbd_ev->key_c_down) {
+		if (get_key_down(kbd_ev, KBD_C)) {
 			lasers_cycle_link_id(lasers);
 		}
-		if (kbd_ev->key_x_down)
+		if (get_key_down(kbd_ev, KBD_X))
 			player->gravity *= -1;
 	}
 
@@ -154,7 +154,7 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 		player->y_speed += DELTATIME * FALLING_MULT * player->gravity;
 
 	// Jump button
-	if (kbd_ev->key_z_down)
+	if (get_key_down(kbd_ev, KBD_Z))
 		if (player_is_grounded(player, plat))
 			player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
 
