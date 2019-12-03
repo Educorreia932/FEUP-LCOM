@@ -27,8 +27,6 @@ void hw_manager_rtc_set_alarm(uint32_t period);
 
 void hw_manager_rtc_ih();
 
-void reset_inputs(KbdInputEvents_t* kbd_eb, MouseInputEvents_t* mouse_ev);
-
 /* VIDEO WRAPPERS */
 
 void hw_manager_switch_double_buffer();

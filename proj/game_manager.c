@@ -180,7 +180,7 @@ uint8_t start_game(uint8_t player_number) {
 
 	hw_manager_rtc_set_alarm(5);
 
-	while (!gm->kbd_ev->key_esc_down) {
+	while (!get_key(gm->kbd_ev, KBD_ESC)) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
 			continue;
