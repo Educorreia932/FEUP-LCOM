@@ -11,7 +11,7 @@
 #define IS_GROUNDED_MARGIN 8.0f
 
 /* PLAYER CONSTANTS */
-#define PLAYER_RESPAWN_TIME 60 // Frames
+#define PLAYER_RESPAWN_TIME 30 // Frames
 #define PLAYER_BASE_SPEED 230.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
 
@@ -25,14 +25,14 @@
 #define PLAYER_JUMP_MULT_STEP 0.1f
 
 struct Player {
-		Rect_t rect;
-		Sprite_t *sprite;
-		float speed_mult, jump_mult;
-		float y_speed, gravity;
-		float x_spawn, y_spawn;
-		bool heading_right;
-		bool is_single_player;
-		uint8_t respawn_timer; // If != 0, player is dead
+	Rect_t rect;
+	Sprite_t *sprite;
+	float speed_mult, jump_mult;
+	float y_speed, gravity;
+	float x_spawn, y_spawn;
+	bool heading_right;
+	bool is_single_player;
+	uint8_t respawn_timer; // If != 0, player is dead
 };
 
 // TODO: ALL OF THIS
@@ -126,6 +126,7 @@ inline void player_respawn(Player_t *player) {
 inline void player_death_cycle(Player_t *player) {
 	if (player->respawn_timer != 1)
 		--player->respawn_timer;
+	
 	else
 		player_respawn(player);
 }
