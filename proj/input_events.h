@@ -12,7 +12,7 @@
 #define EXTRA_MAKECODES 6
 
 /**
- * @brief This
+ * @brief This has all possible keys
  * 
  */
 typedef enum KeyboardMap {

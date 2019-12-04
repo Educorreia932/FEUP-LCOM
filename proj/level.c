@@ -61,6 +61,8 @@ void free_level(Level_t *level) {
 	free_platforms(level->platforms);
 	free_player(level->player);
 	free_lasers(level->lasers);
+	free_resistances(level->resistances);
+	free_spikes(level->spikes);
 	free(level);
 }
 

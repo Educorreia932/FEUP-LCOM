@@ -43,9 +43,9 @@ Lasers_t* prototype_lasers() {
 
     lasers->colors = (uint16_t*) malloc(sizeof(uint16_t) * lasers->num_lasers);
 
-    lasers->colors[0] = RED;
-    lasers->colors[1] = BLUE;
-    lasers->colors[2] = PINK;
+    lasers->colors[0] = COLOR_RED;
+    lasers->colors[1] = COLOR_BLUE;
+    lasers->colors[2] = COLOR_PINK;
 
     return lasers;
 }
