@@ -4,9 +4,9 @@
 #include "geometry.h"
 
 #define COLOR_NO_MULTIPLY 0xFFFF
-#define RED 0xF800
-#define BLUE 0x001F
-#define PINK 0xFB39
+#define COLOR_RED 0xF800
+#define COLOR_BLUE 0x001F
+#define COLOR_PINK 0xFB39
 
 typedef struct Sprite Sprite_t;
 

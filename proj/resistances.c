@@ -27,6 +27,14 @@ Resistances_t* prototype_resistances() {
     return resistances;
 }
 
+void free_resistances(Resistances_t* resistances) {
+    free_sprite_dynamic(resistances->sprite_horizontal);
+    free_sprite_dynamic(resistances->sprite_vertical);
+    free(resistances->rects);
+    free(resistances->orientation);
+    free(resistances);
+}
+
 void render_resistances(Resistances_t* resistances) {
     bool* orientation = (bool*) resistances->orientation;
 

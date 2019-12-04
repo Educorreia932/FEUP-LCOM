@@ -11,6 +11,7 @@
 #define IS_GROUNDED_MARGIN 8.0f
 
 /* PLAYER CONSTANTS */
+#define PLAYER_RESPAWN_TIME 60 // Frames
 #define PLAYER_BASE_SPEED 230.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
 
@@ -31,6 +32,7 @@ struct Player {
 		float x_spawn, y_spawn;
 		bool heading_right;
 		bool is_single_player;
+		uint8_t respawn_timer; // If != 0, player is dead
 };
 
 // TODO: ALL OF THIS
@@ -56,22 +58,22 @@ Player_t* new_testing_player(bool is_single_player) {
 		return NULL;
 	}
 
-	printf("new_testing_player: Customizing player Rect\n");
-	player->rect = rect_from_uints(
-		200.0f,
-		200.0f, 
-		sprite_get_width(player->sprite), 
-		sprite_get_height(player->sprite)
-	);
-
 	printf("new_testing_player: Customizing player stats\n");
 	player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
 	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->y_speed = 0.0f;
 	player->gravity = BASE_GRAVITY;
-	player->x_spawn = 60;
-	player->y_spawn = 704;
+	player->x_spawn = 60.0f;
+	player->y_spawn = 704.0f;
 	player->heading_right = true;
+
+	printf("new_testing_player: Customizing player Rect\n");
+	player->rect = rect(
+		player->x_spawn,
+		player->y_spawn, 
+		(float) sprite_get_width(player->sprite), 
+		(float) sprite_get_height(player->sprite)
+	);
 
 	player->is_single_player = is_single_player;
 
@@ -110,6 +112,28 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 	return does_collide_platforms(plat, &r);
 }
 
+inline void player_respawn(Player_t *player) {
+	player->rect.x = player->x_spawn;
+	player->rect.y = player->y_spawn;
+	player->y_speed = 0;
+	player->gravity = BASE_GRAVITY;
+	player->heading_right = true;
+	player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
+	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
+	player->respawn_timer = 0;
+}
+
+inline void player_death_cycle(Player_t *player) {
+	if (player->respawn_timer != 1)
+		--player->respawn_timer;
+	else
+		player_respawn(player);
+}
+
+inline void player_start_death(Player_t *player) {
+	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
+}
+
 // TODO: Implement animations depending on movement
 void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 	Rect_t previous_rect = player->rect;
@@ -117,14 +141,36 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 	// Horizontal Movement
 	float h_delta = 0;
 
-	if (get_key(kbd_ev, KBD_ARROW_RIGHT)) {
-		h_delta = DELTATIME * PLAYER_BASE_SPEED * player->speed_mult;
-		player->heading_right = true;
-	}
-	
-	if (get_key(kbd_ev, KBD_ARROW_LEFT)) {
-		h_delta = DELTATIME * -PLAYER_BASE_SPEED * player->speed_mult;
-		player->heading_right = false;
+	if (player->respawn_timer == 0) {
+
+		if (player->is_single_player) {
+			if (get_key_down(kbd_ev, KBD_KEY_1))
+				lasers_set_link_id(lasers, 0);
+			if (get_key_down(kbd_ev, KBD_KEY_2))
+				lasers_set_link_id(lasers, 1);
+			if (get_key_down(kbd_ev, KBD_KEY_3))
+				lasers_set_link_id(lasers, 2);
+			if (get_key_down(kbd_ev, KBD_X))
+				player->gravity *= -1;
+			if (get_key_down(kbd_ev, KBD_Q))
+				player->jump_mult = fclampf(player->jump_mult - PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
+			if (get_key_down(kbd_ev, KBD_W))
+				player->jump_mult = fclampf(player->jump_mult + PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
+			if (get_key_down(kbd_ev, KBD_A))
+				player->speed_mult = fclampf(player->speed_mult - PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
+			if (get_key_down(kbd_ev, KBD_S))
+				player->speed_mult = fclampf(player->speed_mult + PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
+		}
+
+		if (get_key(kbd_ev, KBD_ARROW_RIGHT)) {
+			h_delta = DELTATIME * PLAYER_BASE_SPEED * player->speed_mult;
+			player->heading_right = true;
+		}
+		
+		if (get_key(kbd_ev, KBD_ARROW_LEFT)) {
+			h_delta = DELTATIME * -PLAYER_BASE_SPEED * player->speed_mult;
+			player->heading_right = false;
+		}
 	}
 
 	if (h_delta != 0) {
@@ -145,21 +191,6 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 		}
 	}
 
-	if (player->is_single_player) {
-		if (get_key_down(kbd_ev, KBD_C))
-			lasers_cycle_link_id(lasers);
-		if (get_key_down(kbd_ev, KBD_X))
-			player->gravity *= -1;
-		if (get_key_down(kbd_ev, KBD_Q))
-			player->jump_mult = fclampf(player->jump_mult - PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
-		if (get_key_down(kbd_ev, KBD_W))
-			player->jump_mult = fclampf(player->jump_mult + PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
-		if (get_key_down(kbd_ev, KBD_A))
-			player->speed_mult = fclampf(player->speed_mult - PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
-		if (get_key_down(kbd_ev, KBD_S))
-			player->speed_mult = fclampf(player->speed_mult + PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
-	}
-
 	// Vertical Movement
 	previous_rect = player->rect;
 
@@ -170,9 +201,10 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 		player->y_speed += DELTATIME * FALLING_MULT * player->gravity;
 
 	// Jump button
-	if (get_key_down(kbd_ev, KBD_Z))
-		if (player_is_grounded(player, plat))
-			player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
+	if (player->respawn_timer == 0)
+		if (get_key_down(kbd_ev, KBD_Z))
+			if (player_is_grounded(player, plat))
+				player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
 
 	// Kinda like terminal velocity
 	player->y_speed = fclampf(player->y_speed, -MAX_VELOCITY, MAX_VELOCITY);
@@ -185,15 +217,21 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 		player->y_speed /= 3;
 	}
 
-	if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) {
-		player->rect.x = player->x_spawn;
-		player->rect.y = player->y_spawn;
-		player->y_speed = 0;
+	if (player->respawn_timer == 0) {
+		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))
+			player_start_death(player);
 	}
+	else
+		player_death_cycle(player);
+	
+
 
 }
 
 void render_player(Player_t* player) {
-	draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY, !player->heading_right);
+	if (player->respawn_timer == 0)
+		draw_sprite(player->sprite, &player->rect, COLOR_NO_MULTIPLY, !player->heading_right);
+	else
+		draw_sprite(player->sprite, &player->rect, COLOR_RED, !player->heading_right);
 }
 
