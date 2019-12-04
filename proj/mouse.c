@@ -14,7 +14,7 @@ static uint8_t st, counter = 0;
 static uint8_t packet_bytes[3];
 static bool found_first_byte = false;
 
-/** @brief Susbcribes mouse interrupts */
+
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
         return 1;
@@ -25,26 +25,15 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
 
-/**
- * @brief Unsubcribes mouse interrupts
- * @returns 0 on success, 1 otherwise
- */
+
 uint8_t (mouse_unsubscribe_int)() {
     return sys_irqrmpolicy(&mouse_hook_id);
 }
 
-/** 
- * @brief Enables mouse interrupts 
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_enable_int() {
     return sys_irqenable(&mouse_hook_id);
 }
 
-/** 
- * @brief Disables mouse interrupts 
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_disable_int() {
     return sys_irqdisable(&mouse_hook_id);
 }
@@ -132,11 +121,6 @@ uint8_t mouse_read_data() {
     return mouse_send_cmd(MOUSE_CMD_READ_DATA);
 }
 
-/** 
- * @brief Handles mouse interrutps.
- * Reads the status register and the output buffer (OB).
- * @note If there was some error, the byte read from the OB should be discarded.
- */
 void (mouse_ih)() {
     if (util_sys_inb(STAT_REG, &st)) {
         mouse_ih_error = 1;
@@ -193,9 +177,6 @@ void (parse_packet)() {
     mouse_parsed_packet.y_ov = packet_bytes[0] & MOUSE_PARSE_Y_OVERFLOW;
 }
 
-/** 
- * @returns 0 on success, 1 otherwise
- */ 
 uint8_t mouse_data_handler() {    
     if (!found_first_byte) { // Business as usual
         counter++;

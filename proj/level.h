@@ -7,6 +7,7 @@
 #include "sprite.h"
 #include "input_events.h"
 #include "resistances.h"
+#include "spikes.h"
 
 typedef struct Level {
     Sprite_t *background;
@@ -14,12 +15,13 @@ typedef struct Level {
     Player_t* player;
     Lasers_t *lasers;
     Resistances_t* resistances;
+    Spikes_t* spikes;
 } Level_t;
 
 // typedef struct Level Level_t;
 
 Level_t* new_level(const char* background_file_name);
-Level_t* new_testing_level(bool is_single_player);
+Level_t* prototype_level(bool is_single_player);
 void free_level(Level_t *level);
 
 // Actual level stuff

@@ -7,7 +7,7 @@ typedef struct Laser Laser_t;
 
 typedef struct Lasers Lasers_t;
 
-Lasers_t* new_testing_lasers();
+Lasers_t* prototype_lasers();
 void free_lasers(Lasers_t* lasers);
 
 // Returns false if not successful

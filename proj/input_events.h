@@ -4,8 +4,11 @@
 
 /* INPUT EVENT STUFF */
 
-// 8 bit number where the msb represents make or break code, so we only have 0x7F possibilites
-#define LARGEST_MAKECODE 0x7F
+/** 
+ * @brief 8 bit number where the MSB represents make or break code.
+ * @details So we only have 0x7F possibilites
+ */
+#define LARGEST_MAKECODE 0x7F 
 #define EXTRA_MAKECODES 6
 
 /**
@@ -104,7 +107,6 @@ typedef struct KbdInputEvents {
 
 bool get_key(KbdInputEvents_t *kbd_ev, KeyboardMap_t map);
 bool get_key_down(KbdInputEvents_t *kbd_ev, KeyboardMap_t map);
-
 
 typedef struct MouseInputEvents {
     bool left_button_down; // Left button
