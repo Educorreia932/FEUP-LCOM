@@ -18,7 +18,7 @@ Spikes_t* prototype_spikes() {
     // Sprite
     spikes->sprite = new_sprite_dynamic("/home/lcom/labs/proj/assets/spike.bmp", 8, 0, 0);
 
-    spikes->num_spikes = 4;
+    spikes->num_spikes = 9;
 
     // Rects
 	spikes->render_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
@@ -27,6 +27,11 @@ Spikes_t* prototype_spikes() {
     spikes->render_rects[1] = rect(296, 732, 120, 72);
     spikes->render_rects[2] = rect(404, 368, 72, 120);
     spikes->render_rects[3] = rect(476, 368, 72, 264);
+    spikes->render_rects[4] = rect(644, 488, 72, 144);
+    spikes->render_rects[5] = rect(536, 164, 120, 72);
+    spikes->render_rects[6] = rect(872, 24, 48, 324);
+    spikes->render_rects[7] = rect(656, 476, 98, 72);
+    spikes->render_rects[8] = rect(738, 476, 272, 72);
 
     spikes->collision_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
     if (spikes->collision_rects == NULL) {
@@ -51,6 +56,7 @@ void free_spikes(Spikes_t* spikes) {
         printf("free_spikes: Cannot free a NULL pointer\n");
         return;
     }
+
     free_sprite_dynamic(spikes->sprite);
     free(spikes->render_rects);
     free(spikes->collision_rects);

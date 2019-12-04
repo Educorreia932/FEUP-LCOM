@@ -26,7 +26,7 @@ Platforms_t* prototype_platforms() {
 
 	plat->platform = new_sprite_dynamic("/home/lcom/labs/proj/assets/platform_dynamic.bmp", 8, 0, 0);
 
-	plat->size = 10;
+	plat->size = 13;
 
 	// Rects
 	plat->rects = (Rect_t*) malloc(sizeof(Rect_t) * plat->size);
@@ -51,9 +51,12 @@ Platforms_t* prototype_platforms() {
 	plat->rects[4] = rect(176, 560, 120, 72);
 	plat->rects[5] = rect(296, 464, 120, 168);
 	plat->rects[6] = rect(416, 368, 120, 264);
-	plat->rects[7] = rect(504, 24, 48, 200);
+	plat->rects[7] = rect(504, 24, 152, 200);
 	plat->rects[8] = rect(24, 148, 96, 24);
 	plat->rects[9] = rect(656, 488, 344, 144);
+	plat->rects[10] = rect(772, 24, 96, 124);
+	plat->rects[11] = rect(728, 308, 24, 180);
+	plat->rects[12] = rect(728, 284, 72, 24);
 
 	return plat;
 }
