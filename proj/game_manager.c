@@ -84,7 +84,7 @@ GameManager_t * new_testing_game_manager(uint8_t player_number) {
 
 	if (gm->player_number == 1) {
 		gm->s_board = NULL;
-		gm->level = new_testing_level(true);
+		gm->level = prototype_level(true);
 		
 		if (gm->level == NULL) {
 			printf("new_testing_game_manager: Failed to create the Level object\n");

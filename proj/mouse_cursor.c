@@ -74,6 +74,9 @@ void update_cursor(MouseCursor_t* cursor) {
         0,
         768
     );
+
+    if (cursor->mouse_ev->right_button_down)
+        printf("x: %u, y: %u \n", (int) cursor->pos.x, (int) cursor->pos.y);
 }
 
 void render_cursor(MouseCursor_t* cursor) {

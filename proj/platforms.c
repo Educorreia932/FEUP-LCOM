@@ -18,36 +18,22 @@ Platforms_t* new_platforms() {
   	return NULL;
 }
 
-Platforms_t* new_testing_platforms() {
+Platforms_t* prototype_platforms() {
 	Platforms_t *plat = (Platforms_t*) malloc(sizeof(Platforms_t));
-	
+
+	// Sprites
 	plat->wall = new_sprite_dynamic("/home/lcom/labs/proj/assets/wall_dynamic.bmp" , 8, 0, 0);
-	if (plat->wall == NULL) {
-		printf("new_testing_platforms: Failed to load wall dynamic sprite\n");
-		return NULL;
-	}
 
 	plat->platform = new_sprite_dynamic("/home/lcom/labs/proj/assets/platform_dynamic.bmp", 8, 0, 0);
-	if (plat->wall == NULL) {
-		printf("new_testing_platforms: Failed to load platform dynamic sprite\n");
-		return NULL;
-	}
 
-	plat->size = 8;
+	plat->size = 10;
 
+	// Rects
 	plat->rects = (Rect_t*) malloc(sizeof(Rect_t) * plat->size);
-	if (plat->wall == NULL) {
-		printf("new_testing_platforms: Failed to allocate memory for the Rect objects\n");
-		return NULL;
-	}
 
+	// Walls	
 	plat->is_wall = (bool*) malloc(sizeof(bool) * plat->size);
-	if (plat->wall == NULL) {
-		printf("new_testing_platforms: Failed to allocate memory for the is_wall bools\n");
-		return NULL;
-	}
-
-	/* TESTING PLATFORMS & WALLS */
+	memset(plat->is_wall, false, plat->size);
 
 	// Top wall
 	plat->rects[0] = rect(0, 0, 1024, 24);
@@ -62,19 +48,14 @@ Platforms_t* new_testing_platforms() {
 	plat->rects[3] = rect(1024 - 24, 24, 24, 768 - 24*2 + 1);
 	plat->is_wall[3] = true;
 
-	plat->rects[4] = rect(400, 700, 200, 16);
-	plat->is_wall[4] = false;
+	plat->rects[4] = rect(176, 560, 120, 72);
+	plat->rects[5] = rect(296, 464, 120, 168);
+	plat->rects[6] = rect(416, 368, 120, 264);
+	plat->rects[7] = rect(504, 24, 48, 200);
+	plat->rects[8] = rect(24, 148, 96, 24);
+	plat->rects[9] = rect(656, 488, 344, 144);
 
-	plat->rects[5] = rect(200, 600, 200, 16);
-	plat->is_wall[5] = false;
-
-	plat->rects[6] = rect(500, 500, 100, 100);
-	plat->is_wall[6] = false;
-
-	plat->rects[7] = rect(40, 400, 148, 120);
-	plat->is_wall[7] = false;
-
-	return plat; 
+	return plat;
 }
 
 void free_platforms(Platforms_t *plat) {

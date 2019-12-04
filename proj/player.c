@@ -16,7 +16,7 @@
 
 #define PLAYER_DEFAULT_SPEED_MULT 1.0f
 #define PLAYER_MIN_SPEED_MULT 0.4f
-#define PLAYER_MAX_SPEED_MULT 1.6f
+#define PLAYER_MAX_SPEED_MULT 3.0f
 #define PLAYER_SPEED_MULT_STEP 0.1f
 #define PLAYER_DEFAULT_JUMP_MULT 1.0f
 #define PLAYER_MIN_JUMP_MULT 0.4f
@@ -69,8 +69,8 @@ Player_t* new_testing_player(bool is_single_player) {
 	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->y_speed = 0.0f;
 	player->gravity = BASE_GRAVITY;
-	player->x_spawn = 200;
-	player->y_spawn = 200;
+	player->x_spawn = 60;
+	player->y_spawn = 704;
 	player->heading_right = true;
 
 	player->is_single_player = is_single_player;
@@ -111,7 +111,7 @@ bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 }
 
 // TODO: Implement animations depending on movement
-void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resistances_t * resistances, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
+void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
 	Rect_t previous_rect = player->rect;
 
 	// Horizontal Movement
@@ -185,7 +185,7 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Resi
 		player->y_speed /= 3;
 	}
 
-	if (player_is_dead(lasers, &player->rect) || player_touches_resistance(resistances, &player->rect)) {
+	if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) {
 		player->rect.x = player->x_spawn;
 		player->rect.y = player->y_spawn;
 		player->y_speed = 0;

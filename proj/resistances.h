@@ -7,6 +7,7 @@
 typedef struct Resistances Resistances_t;
 
 Resistances_t* new_testing_resistances();
+Resistances_t* prototype_resistances();
 
 void render_resistances(Resistances_t* resistances);
 
