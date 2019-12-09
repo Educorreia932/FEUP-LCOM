@@ -6,7 +6,8 @@
 #define COLOR_INACTIVE 0x9492
 
 #define KNOB_ANGLE_PRECISION 0.1f
-#define KNOB_ANGLE_SETBACK 0.006f
+#define KNOB_ANGLE_SETBACK 0.01f
+#define KNOB_ANGLE_RETAKE_CONTROL_PRECISION 0.25f
 
 /** @name Button */
 ///@{
@@ -326,12 +327,19 @@ void render_slider(Slider_t* slider) {
 /** @name Knob */
 ///@{
 
+enum KnobAngleLock {
+    ANGLE_NO_LOCK = 0,
+    ANGLE_LOCK_START,
+    ANGLE_LOCK_END
+};
+
 struct Knob {
     Sprite_t *backdrop_sprite, *knob_sprite;
     Rect_t backdrop_rect, knob_rect;
     Vec2d_t center;
     bool shown, is_active, being_moved, hovered;
     float radius, start_angle, end_angle, angle_offset;
+    enum KnobAngleLock angle_lock;
     void (*func)(float);
 };
 
@@ -374,6 +382,7 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
     knob->start_angle = start_angle * (2 * M_PI) / 360.0f;
     knob->end_angle = end_angle * (2 * M_PI) / 360.0f;
     knob->angle_offset = 0.0f;
+    knob->angle_lock = ANGLE_NO_LOCK;
     knob->knob_rect = rect_from_vec2d(
         subtract_vec2d(
             circumference_vec2d(knob->center, radius, knob->start_angle),
@@ -472,13 +481,41 @@ void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
         // Knob is in movement
         if (knob->being_moved) {
             // Update position
-
             float angle = knob_get_cursor_angle(knob, cursor);
 
-            knob_update_pos(knob, fclampf(angle, knob->start_angle, knob->end_angle));
+            if (knob->angle_lock == ANGLE_NO_LOCK) {
+                if (angle <= knob->start_angle)
+                    knob->angle_lock = ANGLE_LOCK_START;
+                else if (angle >= knob->end_angle)
+                    knob->angle_lock = ANGLE_LOCK_END;
+                else
+                    angle = fclampf(angle, knob->start_angle, knob->end_angle);
+            }
+            
+            if (knob->angle_lock != ANGLE_NO_LOCK) {
+                if (knob->angle_lock == ANGLE_LOCK_START) {
+                    if (fabs(knob->start_angle - angle) <= KNOB_ANGLE_RETAKE_CONTROL_PRECISION) {
+                        knob->angle_lock = ANGLE_NO_LOCK;
+                        angle = fclampf(angle, knob->start_angle, knob->end_angle);
+                    }
+                    else
+                        angle = knob->start_angle;
+                }
+                else {
+                    if (fabs(knob->end_angle - angle) <= KNOB_ANGLE_RETAKE_CONTROL_PRECISION) {
+                        knob->angle_lock = ANGLE_NO_LOCK;
+                        angle = fclampf(angle, knob->start_angle, knob->end_angle);
+                    }
+                    else
+                        angle = knob->end_angle;   
+                }
+            }
+            
+            knob_update_pos(knob, angle);
             
             if (!cursor_left_button(cursor)) {
                 knob->being_moved = false;
+                knob->angle_lock = ANGLE_NO_LOCK;
                 knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
             }
         }
@@ -486,11 +523,11 @@ void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
 
             float cur_angle = knob_get_cur_angle(knob);
             if (fabs(cur_angle) > fabs(knob->start_angle) + KNOB_ANGLE_PRECISION) {
+                // If we want to reset dynamically, change this place here
                 cur_angle -= KNOB_ANGLE_SETBACK;
                 knob_update_pos(knob, fmaxf(cur_angle, knob->start_angle));
             }
-            else if (is_cursor_inside_rect(cursor, &knob->knob_rect)
-                || is_cursor_inside_rect(cursor, &knob->backdrop_rect)) {
+            else if (is_cursor_inside_rect(cursor, &knob->knob_rect)) {
 
                 // Mouse is hovering on the knob
                 knob->hovered = true;
