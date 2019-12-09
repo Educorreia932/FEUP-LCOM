@@ -73,7 +73,7 @@ GameManager_t * new_testing_game_manager(uint8_t player_number) {
 		return NULL;
 	}
 
-	gm->cursor = new_cursor(gm->mouse_ev, "/home/lcom/labs/proj/assets/cursor.bmp");
+	gm->cursor = new_cursor(gm->mouse_ev, "/home/lcom/labs/proj/assets/wrench_cursor.bmp");
 	
 	if (gm->cursor == NULL) {
 		printf("new_testing_game_manager: Failed to create the Cursor object\n");
