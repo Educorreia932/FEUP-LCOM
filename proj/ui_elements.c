@@ -1,7 +1,7 @@
 #include "ui_elements.h"
 #include "math_utils.h"
+
 /* COLOR CHANGES IN THE UI */
-// TODO: Define a nice kind of greyish tint for these
 #define COLOR_WHEN_HOVERED 0xef5d
 #define COLOR_INACTIVE 0x9492
 

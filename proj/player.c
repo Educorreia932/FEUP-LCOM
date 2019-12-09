@@ -18,11 +18,11 @@
 #define PLAYER_DEFAULT_SPEED_MULT 1.0f
 #define PLAYER_MIN_SPEED_MULT 0.4f
 #define PLAYER_MAX_SPEED_MULT 3.0f
-#define PLAYER_SPEED_MULT_STEP 0.1f
+#define PLAYER_SPEED_MULT_STEP 0.01f
 #define PLAYER_DEFAULT_JUMP_MULT 1.0f
 #define PLAYER_MIN_JUMP_MULT 0.4f
 #define PLAYER_MAX_JUMP_MULT 1.6f
-#define PLAYER_JUMP_MULT_STEP 0.1f
+#define PLAYER_JUMP_MULT_STEP 0.01f
 
 struct Player {
 	Rect_t rect;
@@ -118,8 +118,8 @@ inline void player_respawn(Player_t *player) {
 	player->y_speed = 0;
 	player->gravity = BASE_GRAVITY;
 	player->heading_right = true;
-	player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
-	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
+	// player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
+	// player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->respawn_timer = 0;
 }
 
@@ -153,13 +153,13 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 				lasers_set_link_id(lasers, 2);
 			if (get_key_down(kbd_ev, KBD_X))
 				player->gravity *= -1;
-			if (get_key_down(kbd_ev, KBD_Q))
+			if (get_key(kbd_ev, KBD_Q))
 				player->jump_mult = fclampf(player->jump_mult - PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
-			if (get_key_down(kbd_ev, KBD_W))
+			if (get_key(kbd_ev, KBD_W))
 				player->jump_mult = fclampf(player->jump_mult + PLAYER_JUMP_MULT_STEP, PLAYER_MIN_JUMP_MULT, PLAYER_MAX_JUMP_MULT);
-			if (get_key_down(kbd_ev, KBD_A))
+			if (get_key(kbd_ev, KBD_A))
 				player->speed_mult = fclampf(player->speed_mult - PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
-			if (get_key_down(kbd_ev, KBD_S))
+			if (get_key(kbd_ev, KBD_S))
 				player->speed_mult = fclampf(player->speed_mult + PLAYER_SPEED_MULT_STEP, PLAYER_MIN_SPEED_MULT, PLAYER_MAX_SPEED_MULT);
 		}
 
@@ -203,7 +203,7 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 
 	// Jump button
 	if (player->respawn_timer == 0)
-		if (get_key_down(kbd_ev, KBD_Z))
+		if (get_key_down(kbd_ev, KBD_Z) || get_key_down(kbd_ev, KBD_SPACEBAR))
 			if (player_is_grounded(player, plat))
 				player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
 
