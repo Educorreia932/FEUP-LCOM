@@ -2,9 +2,28 @@
 
 #include <lcom/lcf.h>
 
-typedef struct GameManager GameManager_t;
-GameManager_t* new_game_manager(const char* background_file_name);
-GameManager_t* new_testing_game_manager(uint8_t player_number);
-void free_game_manager(GameManager_t *gm);
+#include "level.h"
+#include "input_events.h"
+#include "mouse_cursor.h"
+#include "switchboard.h"
 
-uint8_t start_game(uint8_t player_number);
+enum PlayerNumber {
+    PLAYER_1 = 1,
+    PLAYER_2 = 2,
+    SINGLEPLAYER = 4
+};
+
+// Fake singleton but kinda
+typedef struct GameManager {
+	MouseInputEvents_t *mouse_ev;
+	KbdInputEvents_t *kbd_ev;
+	Level_t *level;
+	MouseCursor_t *cursor;
+	SwitchBoard_t *s_board;
+	enum PlayerNumber player_number;
+} GameManager_t;
+
+// Please only call when start_game has already been called
+GameManager_t* get_game_manager();
+
+uint8_t start_game(enum PlayerNumber);

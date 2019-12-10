@@ -35,12 +35,12 @@ int main(int argc, char *argv[]) {
 }
 
 static int print_usage() {
-  printf("Usage: game < player | 1 or 2 >\n        test\n");
+  printf("Usage: game < player number >\n            0 - Singleplayer\n            1 - Player 1 (platformer)\n            2 - Player 2 (switchboard)\n        test\n");
 
   return 1;
 }
 
-int proj_game(uint8_t player_number) {
+int proj_game(enum PlayerNumber player_number) {
 	if (vg_init(0x117) == NULL)
 		return 1;
 
@@ -52,11 +52,23 @@ int proj_game(uint8_t player_number) {
 }
 
 int(proj_main_loop)(int argc, char *argv[]) {
-	if (argc < 0 || argc > 2)
+	if (argc <= 0 || argc > 2)
 		return print_usage();
 
 	if (strcmp(argv[0], "game") == 0) {
-    	return proj_game((uint8_t) (*argv[1] - '0'));
+      enum PlayerNumber pn = SINGLEPLAYER;
+      uint8_t selected_player = (uint8_t) (*argv[1] - '0');
+      if (selected_player == 0)
+        pn = SINGLEPLAYER;
+      else if (selected_player == 1)
+        pn = PLAYER_1;
+      else if (selected_player == 2)
+        pn = PLAYER_2;
+      else {
+        printf("Invalid player number\n");
+        return 1;
+      }
+    	return proj_game(pn);
 	}
 
 	else if (strcmp(argv[0], "test") == 0) {
