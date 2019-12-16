@@ -3,6 +3,9 @@
 
 static GameManager_t* gm;
 
+// const char* assets_rel_path = "/home/lcom/labs/proj/assets/";
+
+// Add move verification here
 GameManager_t* get_game_manager() {
 	return gm;
 }
