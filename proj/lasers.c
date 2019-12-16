@@ -29,7 +29,7 @@ Lasers_t* prototype_lasers() {
     lasers->sprite = new_sprite_dynamic("/home/lcom/labs/proj/assets/laser.bmp", 8, 0, 0);
 
     lasers->num_lasers = 4;
-    lasers->cur_link_id = 2;
+    lasers->cur_link_id = 0;
 
     lasers->lasers = (Laser_t*) malloc(sizeof(Laser_t) * lasers->num_lasers);
 

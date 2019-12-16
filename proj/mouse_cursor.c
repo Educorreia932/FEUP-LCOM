@@ -57,7 +57,7 @@ inline void cursor_show(MouseCursor_t* cursor) {
     cursor->rendered = true;
 }
 
-inline bool cursor_is_active(MouseCursor_t* cursor) {
+inline bool cursor_is_shown(MouseCursor_t* cursor) {
     return cursor->rendered;
 }
 

@@ -1,4 +1,5 @@
 #include "player.h"
+#include "level.h"
 #include "geometry.h"
 #include "math_utils.h"
 #include "sprite.h"
@@ -14,12 +15,12 @@
 
 /* PLAYER CONSTANTS */
 #define PLAYER_RESPAWN_TIME 30 // Frames
-#define PLAYER_BASE_SPEED 280.0f // Raw pixels
+#define PLAYER_BASE_SPEED 300.0f // Raw pixels
 #define PLAYER_BASE_JUMP 575.0f
 
 #define PLAYER_DEFAULT_SPEED_MULT 1.0f
-#define PLAYER_MIN_SPEED_MULT 0.0f
-#define PLAYER_MAX_SPEED_MULT 2.0f
+#define PLAYER_MIN_SPEED_MULT 0.2f
+#define PLAYER_MAX_SPEED_MULT 1.8f
 #define PLAYER_SPEED_MULT_STEP 0.01f
 #define PLAYER_DEFAULT_JUMP_MULT 1.0f
 #define PLAYER_MIN_JUMP_MULT 0.4f
@@ -38,6 +39,7 @@ struct Player {
 
 	// Single Player UI ~ NULL ptr if multiplayer
 	Slider_t *jump_slider, *speed_slider;
+	Button_t **laser_buttons;
 };
 
 void player_set_speed(uint8_t speed) {
@@ -64,6 +66,18 @@ void player_set_jump(uint8_t jump) {
 
 	p->jump_mult = mult;
 
+}
+
+void player_set_laser_0() {
+	lasers_set_link_id(get_game_manager()->level->lasers, 0);
+}
+
+void player_set_laser_1() {
+	lasers_set_link_id(get_game_manager()->level->lasers, 1);
+}
+
+void player_set_laser_2() {
+	lasers_set_link_id(get_game_manager()->level->lasers, 2);
 }
 
 Player_t* new_player() {
@@ -126,6 +140,51 @@ Player_t* new_testing_player(bool is_single_player) {
 			free(player);
 			return NULL;
 		}
+
+		player->laser_buttons = (Button_t**) malloc(sizeof(Button_t*) * 3);
+		if (player->laser_buttons == NULL) {
+			printf("new_testing_player: Failed to allocate memory for the three buttons\n");
+			free_sprite(player->sprite);
+			free_slider(player->jump_slider);
+			free_slider(player->speed_slider);
+			free(player);
+			return NULL;
+		}
+
+		player->laser_buttons[0] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_red.bmp", player_set_laser_0, rect(130.0f, 4.0f, 16.0f, 16.0f));
+		if (player->laser_buttons[0] == NULL) {
+			printf("new_testing_player: Failed to create red laser button\n");
+			free_sprite(player->sprite);
+			free_slider(player->jump_slider);
+			free_slider(player->speed_slider);
+			free(player->laser_buttons);
+			free(player);
+			return NULL;
+		}
+		player->laser_buttons[1] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_blue.bmp", player_set_laser_1, rect(160.0f, 4.0f, 16.0f, 16.0f));
+				if (player->laser_buttons[0] == NULL) {
+			printf("new_testing_player: Failed to create red laser button\n");
+			free_sprite(player->sprite);
+			free_slider(player->jump_slider);
+			free_slider(player->speed_slider);
+			free_button(player->laser_buttons[0]);
+			free(player->laser_buttons);
+			free(player);
+			return NULL;
+		}
+		player->laser_buttons[2] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_pink.bmp", player_set_laser_2, rect(190.0f, 4.0f, 16.0f, 16.0f));
+		if (player->laser_buttons[0] == NULL) {
+			printf("new_testing_player: Failed to create red laser button\n");
+			free_sprite(player->sprite);
+			free_slider(player->jump_slider);
+			free_slider(player->speed_slider);
+			free_button(player->laser_buttons[0]);
+			free_button(player->laser_buttons[1]);
+			free(player->laser_buttons);
+			free(player);
+			return NULL;
+		}
+
 	}
 
 	printf("new_testing_player: Finished making player\n");
@@ -138,8 +197,17 @@ void free_player(Player_t* player) {
 		return;
   	}
 	free_sprite(player->sprite);
-	free_slider(player->jump_slider);
-	free_slider(player->speed_slider);
+
+	if (player->is_single_player) {
+		free_slider(player->jump_slider);
+		free_slider(player->speed_slider);
+
+		free_button(player->laser_buttons[0]);
+		free_button(player->laser_buttons[1]);
+		free_button(player->laser_buttons[2]);
+
+		free(player->laser_buttons);
+	}
 	free(player);
 }
 
@@ -205,12 +273,10 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 			update_slider(player->jump_slider, gm->cursor);
 			update_slider(player->speed_slider, gm->cursor);
 
-			if (get_key_down(kbd_ev, KBD_KEY_1))
-				lasers_set_link_id(lasers, 0);
-			if (get_key_down(kbd_ev, KBD_KEY_2))
-				lasers_set_link_id(lasers, 1);
-			if (get_key_down(kbd_ev, KBD_KEY_3))
-				lasers_set_link_id(lasers, 2);
+			update_button(player->laser_buttons[0], gm->cursor);
+			update_button(player->laser_buttons[1], gm->cursor);
+			update_button(player->laser_buttons[2], gm->cursor);
+
 			if (get_key_down(kbd_ev, KBD_X))
 				player->gravity *= -1;
 		}
@@ -290,6 +356,10 @@ void render_player(Player_t* player) {
 	if (player->is_single_player) {
 		render_slider(player->speed_slider);
 		render_slider(player->jump_slider);
+
+		render_button(player->laser_buttons[0]);
+		render_button(player->laser_buttons[1]);
+		render_button(player->laser_buttons[2]);
 	}
 }
 

@@ -16,7 +16,7 @@ void free_cursor(MouseCursor_t* cursor);
 void cursor_hide(MouseCursor_t* cursor);
 void cursor_show(MouseCursor_t* cursor);
 // Returns true if the cursor is currently being rendered
-bool cursor_is_active(MouseCursor_t* cursor);
+bool cursor_is_shown(MouseCursor_t* cursor);
 
 
 /* CURSOR METHODS */

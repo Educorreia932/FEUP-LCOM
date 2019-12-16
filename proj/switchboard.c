@@ -4,6 +4,60 @@
 #include "mouse_cursor.h"
 #include "math_utils.h"
 
+/* SWITCHBOARD MINIGAMES */
+
+#define MINIGAME1_MAX_BUTTONS 7
+
+#define MINIGAME2_MIN_COOLDOWN 2
+#define MINIGAME2_MAX_COOLDOWN 8
+#define MINIGAME2_REACTION_TIME 2
+#define MINIGAME2_STATE1_X 0
+#define MINIGAME2_STATE1_Y 0
+#define MINIGAME2_STATE2_X 0
+#define MINIGAME2_STATE2_Y 0
+
+
+struct Minigame1 {
+    SwitchBoard_t* sb; // Only a reference
+    Sprite_t *sprite;
+    Button_t **buttons; // Fixed size though
+    void (*func)();
+};
+
+struct Minigame1* new_minigame1() {
+    return NULL;
+}
+
+void free_minigame1(struct Minigame1* mg) {
+    free_sprite(mg->sprite);
+    Button_t **ptr = mg->buttons;
+    for (uint8_t i = 0; i < MINIGAME1_MAX_BUTTONS; ++i) {
+        if (*ptr != NULL)
+            free_button_without_sprite(*ptr);
+        ++ptr;
+    }
+}
+
+void update_minigame1(struct Minigame1* mg) {
+
+}
+
+void render_minigame1(struct Minigame1* mg) {
+    
+}
+
+/* MINIGAME 2 */
+/* Connect them wires bro */
+
+struct Minigame2 {
+    Button_t *button;
+    Sprite_t *state1_sprite, *state2_sprite, *warning_sprite;
+
+};
+
+
+/* SWITCHBOARD ITSELF */
+
 struct SwitchBoard {
     Sprite_t *background;
     Button_t *laser_buttons[3];
@@ -53,14 +107,15 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[0] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser1, vec2d(840, 180));
+
+    s_board->laser_buttons[0] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_red.bmp", print_laser1, vec2d(840, 180));
     if (s_board->laser_buttons[0] == NULL) {
         printf("new_switchboard: Failed to create laser button 0\n");
         free_sprite(s_board->background);
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[1] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser2, vec2d(840, 280));
+    s_board->laser_buttons[1] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_blue.bmp", print_laser2, vec2d(840, 280));
     if (s_board->laser_buttons[1] == NULL) {
         printf("new_switchboard: Failed to create laser button 1\n");
         free_sprite(s_board->background);
@@ -68,7 +123,7 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[2] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/button.bmp", print_laser3, vec2d(840, 380));
+    s_board->laser_buttons[2] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_pink.bmp", print_laser3, vec2d(840, 380));
     if (s_board->laser_buttons[2] == NULL) {
         printf("new_switchboard: Failed to create laser button 2\n");
         free_sprite(s_board->background);
@@ -77,6 +132,7 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         free(s_board);
         return NULL;
     }
+
     s_board->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/speed_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/speed_slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
     if (s_board->speed_slider == NULL) {
         printf("new_switchboard: Failed to create horizontal slider\n");
