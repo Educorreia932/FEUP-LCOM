@@ -101,21 +101,21 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         return NULL;
     }
     s_board->cursor = cursor;
-    s_board->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/switchboard/switch_board.bmp");
+    s_board->background = new_sprite(0, 0, 1, "ui/switch_board.bmp");
     if (s_board->background == NULL) {
         printf("new_switchboard: Failed to create background Sprite\n");
         free(s_board);
         return NULL;
     }
 
-    s_board->laser_buttons[0] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_red.bmp", print_laser1, vec2d(840, 180));
+    s_board->laser_buttons[0] = new_button_auto_size("ui/laser_button_red.bmp", print_laser1, vec2d(840, 180));
     if (s_board->laser_buttons[0] == NULL) {
         printf("new_switchboard: Failed to create laser button 0\n");
         free_sprite(s_board->background);
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[1] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_blue.bmp", print_laser2, vec2d(840, 280));
+    s_board->laser_buttons[1] = new_button_auto_size("ui/laser_button_blue.bmp", print_laser2, vec2d(840, 280));
     if (s_board->laser_buttons[1] == NULL) {
         printf("new_switchboard: Failed to create laser button 1\n");
         free_sprite(s_board->background);
@@ -123,7 +123,7 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[2] = new_button_auto_size("/home/lcom/labs/proj/assets/switchboard/laser_button_pink.bmp", print_laser3, vec2d(840, 380));
+    s_board->laser_buttons[2] = new_button_auto_size("ui/laser_button_pink.bmp", print_laser3, vec2d(840, 380));
     if (s_board->laser_buttons[2] == NULL) {
         printf("new_switchboard: Failed to create laser button 2\n");
         free_sprite(s_board->background);
@@ -133,15 +133,15 @@ SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
         return NULL;
     }
 
-    s_board->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/speed_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/speed_slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
+    s_board->speed_slider = new_slider("ui/speed_slider.bmp", "ui/speed_slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
     if (s_board->speed_slider == NULL) {
         printf("new_switchboard: Failed to create horizontal slider\n");
     }
-    s_board->jump_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/jump_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/jump_slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
+    s_board->jump_slider = new_slider("ui/jump_slider.bmp", "ui/jump_slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
     if (s_board->jump_slider == NULL) {
         printf("new_switchboard: Failed to create vertical slider\n");
     }
-    s_board->gravity_knob = new_knob("/home/lcom/labs/proj/assets/switchboard/large_knob.bmp", "/home/lcom/labs/proj/assets/switchboard/small_knob.bmp", print_gravity_time, vec2d(780.0f, 540.0f), 210.0f, 330.0f, 100.0f);
+    s_board->gravity_knob = new_knob("ui/large_knob.bmp", "ui/small_knob.bmp", print_gravity_time, vec2d(780.0f, 540.0f), 210.0f, 330.0f, 100.0f);
     if (s_board->gravity_knob == NULL) {
         printf("new_switchboard: Failed to create gravity knob\n");
         return NULL;

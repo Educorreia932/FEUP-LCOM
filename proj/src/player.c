@@ -93,9 +93,9 @@ Player_t* new_testing_player(bool is_single_player) {
 		return NULL;
 	}
 
-	printf("new_testing_player: Creating player sprite\n");
+	// printf("new_testing_player: Creating player sprite\n");
 
-	player->sprite = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/watt_tmp.bmp");
+	player->sprite = new_sprite(0, 0, 1, "watt_tmp.bmp");
 
 	if (player->sprite == NULL) {
 		printf("new_testing_player: Failed to create the Sprite object\n");
@@ -103,7 +103,7 @@ Player_t* new_testing_player(bool is_single_player) {
 		return NULL;
 	}
 
-	printf("new_testing_player: Customizing player stats\n");
+	// printf("new_testing_player: Customizing player stats\n");
 	player->speed_mult = PLAYER_DEFAULT_SPEED_MULT;
 	player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->y_speed = 0.0f;
@@ -112,7 +112,7 @@ Player_t* new_testing_player(bool is_single_player) {
 	player->y_spawn = 704.0f;
 	player->heading_right = true;
 
-	printf("new_testing_player: Customizing player Rect\n");
+	// printf("new_testing_player: Customizing player Rect\n");
 	player->rect = rect(
 		player->x_spawn,
 		player->y_spawn, 
@@ -124,7 +124,7 @@ Player_t* new_testing_player(bool is_single_player) {
 
 	if (is_single_player) {
 
-		player->jump_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/small_vertical_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/small_slider_handle.bmp", player_set_jump, vec2d(2, 20), 255, vec2d(4, 25), vec2d(4, 90));
+		player->jump_slider = new_slider("ui/small_vertical_slider.bmp", "ui/small_slider_handle.bmp", player_set_jump, vec2d(2, 20), 255, vec2d(4, 25), vec2d(4, 90));
 		if (player->jump_slider == NULL) {
 			printf("new_testing_player: Failed to create jump slider\n");
 			free_sprite(player->sprite);
@@ -132,7 +132,7 @@ Player_t* new_testing_player(bool is_single_player) {
 			return NULL;
 		}
 
-		player->speed_slider = new_slider("/home/lcom/labs/proj/assets/switchboard/small_horizontal_slider.bmp", "/home/lcom/labs/proj/assets/switchboard/small_slider_handle.bmp", player_set_speed, vec2d(20, 2), 255, vec2d(25, 4), vec2d(90, 4));
+		player->speed_slider = new_slider("ui/small_horizontal_slider.bmp", "ui/small_slider_handle.bmp", player_set_speed, vec2d(20, 2), 255, vec2d(25, 4), vec2d(90, 4));
 		if (player->speed_slider == NULL) {
 			printf("new_testing_player: Failed to create speed slider\n");
 			free_sprite(player->sprite);
@@ -151,7 +151,7 @@ Player_t* new_testing_player(bool is_single_player) {
 			return NULL;
 		}
 
-		player->laser_buttons[0] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_red.bmp", player_set_laser_0, rect(130.0f, 4.0f, 16.0f, 16.0f));
+		player->laser_buttons[0] = new_button("ui/small_laser_button_red.bmp", player_set_laser_0, rect(130.0f, 4.0f, 16.0f, 16.0f));
 		if (player->laser_buttons[0] == NULL) {
 			printf("new_testing_player: Failed to create red laser button\n");
 			free_sprite(player->sprite);
@@ -161,7 +161,7 @@ Player_t* new_testing_player(bool is_single_player) {
 			free(player);
 			return NULL;
 		}
-		player->laser_buttons[1] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_blue.bmp", player_set_laser_1, rect(160.0f, 4.0f, 16.0f, 16.0f));
+		player->laser_buttons[1] = new_button("ui/small_laser_button_blue.bmp", player_set_laser_1, rect(160.0f, 4.0f, 16.0f, 16.0f));
 				if (player->laser_buttons[0] == NULL) {
 			printf("new_testing_player: Failed to create red laser button\n");
 			free_sprite(player->sprite);
@@ -172,7 +172,7 @@ Player_t* new_testing_player(bool is_single_player) {
 			free(player);
 			return NULL;
 		}
-		player->laser_buttons[2] = new_button("/home/lcom/labs/proj/assets/switchboard/small_laser_button_pink.bmp", player_set_laser_2, rect(190.0f, 4.0f, 16.0f, 16.0f));
+		player->laser_buttons[2] = new_button("ui/small_laser_button_pink.bmp", player_set_laser_2, rect(190.0f, 4.0f, 16.0f, 16.0f));
 		if (player->laser_buttons[0] == NULL) {
 			printf("new_testing_player: Failed to create red laser button\n");
 			free_sprite(player->sprite);
@@ -187,7 +187,7 @@ Player_t* new_testing_player(bool is_single_player) {
 
 	}
 
-	printf("new_testing_player: Finished making player\n");
+	// printf("new_testing_player: Finished making player\n");
 	return player;
 }
 

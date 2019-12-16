@@ -3,7 +3,7 @@
 
 static GameManager_t* gm;
 
-// const char* assets_rel_path = "/home/lcom/labs/proj/assets/";
+const char* assets_rel_path = "home/lcom/labs/proj/assets/";
 
 // Add move verification here
 GameManager_t* get_game_manager() {
@@ -35,7 +35,7 @@ GameManager_t * new_testing_game_manager(enum PlayerNumber player_number) {
 		return NULL;
 	}
 
-	game_manager->cursor = new_cursor(game_manager->mouse_ev, "/home/lcom/labs/proj/assets/wrench_cursor.bmp");
+	game_manager->cursor = new_cursor(game_manager->mouse_ev);
 	
 	if (game_manager->cursor == NULL) {
 		printf("new_testing_game_manager: Failed to create the Cursor object\n");
@@ -106,6 +106,7 @@ void update() {
 }
 
 void render() {
+	printf("Render level\n");
 	if (gm->player_number & SINGLEPLAYER)
   		render_level(gm->level);
 	else if (gm->player_number & PLAYER_1)
@@ -113,6 +114,7 @@ void render() {
 	else if (gm->player_number & PLAYER_2)
 		render_switchboard(gm->s_board);	
 
+	printf("Render cursor\n");
 	render_cursor(gm->cursor);
 }
 
