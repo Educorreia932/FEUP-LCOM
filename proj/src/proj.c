@@ -53,19 +53,18 @@ int proj_game(enum PlayerNumber player_number) {
 
 int test_uart(uint8_t tx) {
     uint16_t base_addr = COM1;
-    printf("ADDR: %x\n", COM1);
 
-    if (ser_test_set(base_addr, 1, 3, 0, 10))
+    if (uart_test_set(base_addr, 8, 2, 0, 10))
         return 1;
 
     printf("\n");
 
-    if (ser_test_conf(base_addr))
+    if (uart_test_conf(base_addr))
         return 1;
     
-    char* strings[3] = {"a."};
+    char* strings[3] = {"A."};
 
-    if (ser_test_poll(base_addr, tx, 8, 2, -1, 100, 1, strings))
+    if (uart_test_poll(base_addr, tx, 8, 2, -1, 100, 1, strings))
         return 1;
 
     return 0;

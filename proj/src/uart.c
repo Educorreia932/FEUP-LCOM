@@ -2,7 +2,7 @@
 
 static int ser_hook_id;
 
-uint8_t (ser_subscribe_int)(uint8_t *bit_no) {
+uint8_t (uart_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
         return 1;
 
@@ -12,11 +12,11 @@ uint8_t (ser_subscribe_int)(uint8_t *bit_no) {
     return sys_irqsetpolicy(SER_1_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &ser_hook_id);
 }
 
-uint8_t (ser_unsubscribe_int)() {
+uint8_t (uart_unsubscribe_int)() {
     return sys_irqrmpolicy(&ser_hook_id);
 }
 
-int ser_test_conf(uint16_t base_addr) {
+int uart_test_conf(uint16_t base_addr) {
     uint8_t lcr, ier;
 
     if (util_sys_inb(base_addr + LCR, &lcr))
@@ -96,13 +96,11 @@ int ser_test_conf(uint16_t base_addr) {
     return 0;
 }
 
-int ser_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate) {
+int uart_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate) {
     uint8_t lcr;
 
     if (util_sys_inb(base_addr + LCR, &lcr))
             return 1;
-
-    lcr &= 0xC0; // We don't to change bits 6 and 7
 
     // Parity
 
@@ -118,9 +116,32 @@ int ser_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, 
             break;
     }
 
-    // TODO: Rate
+    // Rate
+
+    uint8_t dll, dlm;
 
     rate = 115200 / rate;
+
+    dll = rate % 256;
+	dlm = rate / 256;
+
+	if (util_sys_inb(base_addr + LCR, &lcr) != OK)
+		return 1;
+
+	lcr |= DLAB;
+
+	if (sys_outb(base_addr + LCR, lcr))
+		return 1;
+
+	if (sys_outb(base_addr + DLL, dll))
+		return 1;
+
+	if (sys_outb(base_addr + DLM, dlm))
+		return 1;
+
+    // Set
+
+    lcr &= 0xC0; // We don't to change bits 6 and 7
 
     lcr |= bits | stop << 2 | parity << 3;
 
@@ -130,7 +151,7 @@ int ser_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, 
     return 0;
 }
 
-int ser_test_poll(uint16_t base_addr, uint8_t tx, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate, int stringc, char* strings[]) {
+int uart_test_poll(uint16_t base_addr, uint8_t tx, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate, int stringc, char* strings[]) {
     uint8_t delay = 100000 / bits;
 
     if (!tx) {
@@ -153,7 +174,7 @@ int receive_data(uint16_t base_addr, uint8_t delay) {
         if (util_sys_inb(base_addr + LSR, &lsr))
             return 1;
 
-        while(!(lsr & THR_EMPTY)) {
+        while(!(lsr & RECEIVER_DATA)) {
             tickdelay(micros_to_ticks(delay));
             
             if (util_sys_inb(base_addr + LSR, &lsr))
@@ -175,12 +196,19 @@ int send_data(uint8_t base_addr, int stringc, char *strings[], uint8_t delay) {
     uint8_t lsr;
     
     for (int i = 0; i < stringc; i++) {
-        if (util_sys_inb(base_addr + LSR, &lsr) != OK)
+        if (util_sys_inb(base_addr + LSR, &lsr))
 		    return 1;
 
         if (lsr & OVERRUN_ERROR || lsr & PARITY_ERROR || lsr & FRAMING_ERROR)
             return 1;
 
+        while (!(lsr & THR_EMPTY)) {
+            tickdelay(micros_to_ticks(delay));
+
+            if (util_sys_inb(base_addr + LSR, &lsr))
+                return 1;
+        }
+        
         // Send character
         if (sys_outb(base_addr + THR, strings[i]))
             return 1;

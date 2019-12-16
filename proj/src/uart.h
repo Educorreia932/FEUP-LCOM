@@ -48,13 +48,6 @@
 #define FIFO_ERROR BIT(7) /**< @brief Set to 1 when there is at least one parity error or framing error or break indication in the FIFO Reset to 0 when the LSR is read, if there are no subsequent errors in the FIFO */
 ///@}
 
-#define SER_OVERRUN_ERR BIT(1)
-#define SER_PARITY_ERR BIT(2)
-#define SER_FRAME_ERR BIT(3)
-
-#define SER_DATA 0
-#define SER_RX_RDY BIT(0)
-
 uint8_t (ser_subscribe_int)(uint8_t *bit_no);
 uint8_t (ser_unsubscribe_int)();
 
@@ -62,7 +55,7 @@ uint8_t (ser_unsubscribe_int)();
  * @brief Read the control/status registers of the UART.
  * @details And displays it in a convenient format for humans to read.
  */
-int ser_test_conf(uint16_t base_addr);
+int uart_test_conf(uint16_t base_addr);
 
 /**
  * @param bits Number of bits per character
@@ -70,7 +63,7 @@ int ser_test_conf(uint16_t base_addr);
  * @param parity -1, 0 or 1
  * @param rate Bit-rate
  */
-int ser_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate);
+int uart_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate);
 
 /**
  * @brief Use the UART in polled mode for simplex communication
@@ -79,14 +72,16 @@ int ser_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, 
  * @param stop Number of stop bits
  * @param parity -1, 0 or 1
  * @param rate Bit-rate
+ * @param stringc
+ * @param strings
  */
-int ser_test_poll(uint16_t base_addr, uint8_t tx, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate, int stringc, char *strings[]);
+int uart_test_poll(uint16_t base_addr, uint8_t tx, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate, int stringc, char *strings[]);
 
 int receive_data(uint16_t base_addr, uint8_t delay);
 
 int send_data(uint8_t base_addr, int stringc, char *strings[], uint8_t delay);
 
-int ser_test_int();
+int uart_test_int();
 
-int ser_test_fifo();
+int uart_test_fifo();
 
