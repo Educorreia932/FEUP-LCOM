@@ -13,7 +13,6 @@
 
 /**
  * @brief This has all possible keys
- * 
  */
 typedef enum KeyboardMap {
     // 1 Byte scancodes
@@ -117,13 +116,19 @@ typedef struct MouseInputEvents {
     int32_t y_delta; 
 } MouseInputEvents_t;
 
-// Sets all bools to false
+/**
+ * @brief Sets all bools to false
+ */
 KbdInputEvents_t* new_kbd_input_events();
 void free_kbd_input_events(KbdInputEvents_t* kbd_input_ev);
 
-// Sets all bools to false
+/**
+ * @brief Sets all bools to false
+ */
 MouseInputEvents_t* new_mouse_input_events();
 void free_mouse_input_events(MouseInputEvents_t* mouse_input_ev);
 
-// Reset inputs
+/**
+ * @brief Resets inputs
+ */
 void reset_inputs(KbdInputEvents_t* kbd_eb, MouseInputEvents_t* mouse_ev);

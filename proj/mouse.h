@@ -46,11 +46,28 @@ void (mouse_ih)();
  */ 
 uint8_t (mouse_data_handler)();
 
+/** 
+ * @brief Enables stream mode data reporting by sending the respective command to the mouse.
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_data_reporting_enable();
+
+/** 
+ * @brief Disables mouse data reporting 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_data_reporting_disable();
+
+/** 
+ * @brief Sets mouse to stream mode 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_set_stream_mode();
-uint8_t mouse_set_remote_mode();
+
+/** 
+ * @brief Sends cmd to mouse signaling we want to read a packet 
+ * @returns 0 on success, 1 otherwise
+*/
 uint8_t mouse_read_data();
-uint8_t gesture_sm(uint8_t x_len, uint8_t tolerance);
 
 /** @} end of Mouse */
