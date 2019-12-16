@@ -7,6 +7,8 @@
 #include "mouse_cursor.h"
 #include "switchboard.h"
 
+// extern const char* assets_rel_path;
+
 enum PlayerNumber {
     PLAYER_1 = 1,
     PLAYER_2 = 2,
