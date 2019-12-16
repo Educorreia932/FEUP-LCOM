@@ -4,7 +4,6 @@
 unsigned long int no_of_calls = 0;
 static uint8_t st;
 
-/** @returns 0 upon success, 1 otherwise */
 int(util_get_LSB)(uint16_t val, uint8_t *lsb) {
 	if (!lsb)
 		return 1;
@@ -14,7 +13,6 @@ int(util_get_LSB)(uint16_t val, uint8_t *lsb) {
 	return 0;
 }
 
-/** @returns 0 upon success, 1 otherwise */
 int (util_get_MSB)(uint16_t val, uint8_t *msb) {
 	if (!msb)
 		return 1;
@@ -25,12 +23,11 @@ int (util_get_MSB)(uint16_t val, uint8_t *msb) {
 	return 0;
 }
 
-/** @returns 0 upon success, 1 otherwise */
 int (util_sys_inb)(int port, uint8_t *value) {
 	if (!value)
 		return 1;
 		
-	u32_t value32;
+	uint32_t value32;
 
 	if (sys_inb(port, &value32))
 		return 1;
@@ -42,11 +39,6 @@ int (util_sys_inb)(int port, uint8_t *value) {
 	return 0;
 }
 
-/** @brief Sends a KBC command 
- * @param port Port in which the command will be written
- * @param cmd Command to be issued
- * @returns 0 upon success, 1 otherwise 
- */
 uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd) {        
     // This section waits until it can write to input buffer or it reaches a timeout state
     uint8_t i = TIMEOUT_ATTEMPTS;
@@ -78,9 +70,6 @@ uint8_t (kbc_send_cmd)(uint8_t port, uint8_t cmd) {
     return 0;
 }
 
-/** @brief Reads scancodes from the keyboard's output buffer 
- * @returns 0 upon success, 1 otherwise 
- */
 uint8_t kbc_read_outbf(uint8_t port, uint8_t *content, bool isMouse) {
 	// This section waits until there is something to read from the output buffer or it reaches a time out state
 	uint8_t i = TIMEOUT_ATTEMPTS;
@@ -115,8 +104,6 @@ uint8_t kbc_read_outbf(uint8_t port, uint8_t *content, bool isMouse) {
 	return 0;
 
 }
-
-/** @brief Restores KBC byte to default state (returned by minix_get_dflt_kbc_byte()) */
 uint8_t restore_kbc_byte() {
 	if (kbc_send_cmd(IN_BUF_CMD, WRITE_CMD_BYTE))
 		return 1;

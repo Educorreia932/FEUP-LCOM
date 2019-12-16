@@ -4,16 +4,19 @@
  * @{
  */
 
-// Global variables
+/** @name Global variables */
+///@{
 bool mouse_ih_error = false, is_mouse_packet_complete = false;
 struct packet mouse_parsed_packet;
+///@}
 
-// Static variables
+/** @name Static variables */
+///@{
 static int mouse_hook_id;
 static uint8_t st, counter = 0;
 static uint8_t packet_bytes[3];
 static bool found_first_byte = false;
-
+///@}
 
 uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
     if (!bit_no) // Check if pointer is NULL
@@ -24,7 +27,6 @@ uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
 
     return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
-
 
 uint8_t (mouse_unsubscribe_int)() {
     return sys_irqrmpolicy(&mouse_hook_id);
@@ -77,18 +79,10 @@ uint8_t mouse_send_cmd(uint8_t cmd) {
     return 1;
 }
 
-/** 
- * @brief Enables stream mode data reporting by sending the respective command to the mouse.
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_data_reporting_enable() {
     return mouse_send_cmd(MOUSE_CMD_ENABLE_DATA_REPORT);
 }
 
-/** 
- * @brief Disables mouse data reporting 
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_data_reporting_disable() {
     return mouse_send_cmd(MOUSE_CMD_DISABLE_DATA_REPORT);
 }
@@ -105,18 +99,10 @@ uint8_t mouse_send_cmd_stream_mode(uint8_t cmd) {
     return 0;
 }
 
-/** 
- * @brief Sets mouse to stream mode 
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_set_stream_mode() {
     return mouse_send_cmd(MOUSE_CMD_STREAM_MODE);
 }
 
-/** 
- * @brief Sends cmd to mouse signaling we want to read a packet 
- * @returns 0 on success, 1 otherwise
-*/
 uint8_t mouse_read_data() {
     return mouse_send_cmd(MOUSE_CMD_READ_DATA);
 }
