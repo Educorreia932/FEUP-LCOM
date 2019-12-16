@@ -4,7 +4,6 @@
 #include "input_events.h"
 #include "platforms.h"
 #include "lasers.h"
-#include "resistances.h"
 #include "spikes.h"
 
 typedef struct Player Player_t;

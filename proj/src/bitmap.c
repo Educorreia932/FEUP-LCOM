@@ -1,5 +1,7 @@
 #include "bitmap.h"
 #include "video.h"
+// Literally only here (for now prob idk) to get us the realtive file path
+#include "game_manager.h"
 
 #define BITMAP_ID 0x4D42
 
@@ -41,8 +43,14 @@ Bitmap_t* new_bitmap(const char *filename) {
         return NULL;
     }
 
+    char file_path[256];
+    strncpy(file_path, assets_rel_path, 256);
+    strncat(file_path, filename, 256-strlen(file_path));
+
+    // printf("File: __%s__\n", file_path);
+
     // open filename in read binary mode
-    FILE* file = fopen(filename, "rb");
+    FILE* file = fopen(file_path, "rb");
 
     if (file == NULL) {
         printf("new_bmp: Failed to open file in binary mode\n");

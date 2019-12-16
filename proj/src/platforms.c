@@ -22,9 +22,9 @@ Platforms_t* prototype_platforms() {
 	Platforms_t *plat = (Platforms_t*) malloc(sizeof(Platforms_t));
 
 	// Sprites
-	plat->wall = new_sprite_dynamic("/home/lcom/labs/proj/assets/wall_dynamic.bmp" , 8, 0, 0);
+	plat->wall = new_sprite_dynamic("wall_dynamic.bmp" , 8, 0, 0);
 
-	plat->platform = new_sprite_dynamic("/home/lcom/labs/proj/assets/platform_dynamic.bmp", 8, 0, 0);
+	plat->platform = new_sprite_dynamic("platform_dynamic.bmp", 8, 0, 0);
 
 	plat->size = 13;
 

@@ -1,13 +1,13 @@
 #include "level.h"
 
-Level_t* new_level(const char* background_file_name) {
+Level_t* new_level() {
 	Level_t *level = (Level_t*) malloc(sizeof(Level_t));
 	if (level == NULL) {
 		printf("new_level: Failed to allocate memory for Level object\n");
 		return NULL;
 	}
 
-	level->background = new_sprite(0, 0, 1, background_file_name);
+	level->background = new_sprite(0, 0, 1, "background.bmp");
 	if (level->background == NULL) {
 		printf("new_level: Failed to load background sprite\n");
 		return NULL;
@@ -32,22 +32,54 @@ Level_t* prototype_level(bool is_single_player) {
 	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
 
 	// Background
-	level->background = new_sprite(0, 0, 1, "/home/lcom/labs/proj/assets/background.bmp");
+	level->background = new_sprite(0, 0, 1, "background.bmp");
+	if (level->background == NULL) {
+		printf("prototype_level: Failed to create the background Sprite\n");
+		free(level);
+		return NULL;
+	}
 
 	// Player
 	level->player = new_testing_player(is_single_player);
+	if (level->player == NULL) {
+		printf("prototype_level: Failed to create the Player\n");
+		free_sprite(level->background);
+		free(level);
+		return NULL;
+	}
 
 	// Platforms
 	level->platforms = prototype_platforms();
+	if (level->platforms == NULL) {
+		printf("prototype_level: Failed to create the Platforms\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free(level);
+		return NULL;
+	}
 
 	// Lasers
 	level->lasers = prototype_lasers();
-
-	// Resistances
-	level->resistances = prototype_resistances();
+	if (level->lasers == NULL) {
+		printf("prototype_level: Failed to create the Lasers\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free(level);
+		return NULL;
+	}
 
 	// Spikes
 	level->spikes = prototype_spikes();
+	if (level->spikes == NULL) {
+		printf("prototype_level: Failed to create the Spikes\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free_lasers(level->lasers);
+		free(level);
+		return NULL;
+	}
 
 	return level;
 }
@@ -61,7 +93,6 @@ void free_level(Level_t *level) {
 	free_platforms(level->platforms);
 	free_player(level->player);
 	free_lasers(level->lasers);
-	free_resistances(level->resistances);
 	free_spikes(level->spikes);
 	free(level);
 }
@@ -78,5 +109,4 @@ void render_level(Level_t *level) {
 	render_platforms(level->platforms);
 	render_player(level->player);
 	render_lasers(level->lasers);
-	render_resistances(level->resistances);
 }

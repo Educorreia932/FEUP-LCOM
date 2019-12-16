@@ -16,7 +16,7 @@ Spikes_t* prototype_spikes() {
     }
 
     // Sprite
-    spikes->sprite = new_sprite_dynamic("/home/lcom/labs/proj/assets/spike.bmp", 8, 0, 0);
+    spikes->sprite = new_sprite_dynamic("spike.bmp", 8, 0, 0);
 
     spikes->num_spikes = 9;
 

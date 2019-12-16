@@ -11,7 +11,7 @@ struct MouseCursor {
 };
 
 /* CONSTRUCTORS */
-MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_file_name) {
+MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev) {
     MouseCursor_t* cursor = (MouseCursor_t*)  malloc(sizeof(MouseCursor_t));
     if (cursor == NULL) {
         printf("new_cursor: Failed to allocate memory for the new Cursor\n");
@@ -30,7 +30,7 @@ MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_fi
 
     cursor->rendered = true;
     
-    cursor->sprite = new_sprite(0.0f, 0.0f, 1, mouse_bmp_file_name);
+    cursor->sprite = new_sprite(-2.0f, -2.0f, 1, "ui/wrench_cursor.bmp");
     if (cursor->sprite == NULL) {
         printf("new_testing_cursor: Failed to create the Cursor's Sprite\n");
         return NULL;

@@ -8,7 +8,7 @@ typedef struct MouseCursor MouseCursor_t;
 
 /* CONSTRUCTORS */
 
-MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev, const char* mouse_bmp_file_name);
+MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev);
 void free_cursor(MouseCursor_t* cursor);
 
 /* Activate and deactivate Cursor rendering */
