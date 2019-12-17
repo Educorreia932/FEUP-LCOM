@@ -549,6 +549,8 @@ void update_knob(Knob_t *knob) {
                     knob->being_moved = true;
                 }
             }
+            else
+                knob->hovered = false;
         }
     }
 }
