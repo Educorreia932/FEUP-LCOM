@@ -99,8 +99,8 @@ void free_level(Level_t *level) {
 
 // Actual level stuff
 
-void update_level(Level_t* level, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev){
-  	player_movement(level->player, level->platforms, level->lasers, level->spikes, kbd_ev, mouse_ev);
+void update_level(Level_t* level){
+  	player_movement(level->player, level->platforms, level->lasers, level->spikes);
 }
 
 void render_level(Level_t *level) {

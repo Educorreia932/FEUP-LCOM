@@ -2,14 +2,14 @@
 
 #include <lcom/lcf.h>
 
-/* INPUT EVENT STUFF */
-
 /** 
  * @brief 8 bit number where the MSB represents make or break code.
  * @details So we only have 0x7F possibilites
  */
-#define LARGEST_MAKECODE 0x7F 
+#define LARGEST_SCANCODE 0x7F 
 #define EXTRA_MAKECODES 6
+
+/* INPUT EVENT STUFF */
 
 /**
  * @brief This has all possible keys
@@ -90,45 +90,40 @@ typedef enum KeyboardMap {
     KBD_LEFT_SLASH = 0x29,
 
     // 2 byte scancodes, aka special cases
-    KBD_ARROW_LEFT = LARGEST_MAKECODE + 1,
-    KBD_ARROW_RIGHT = LARGEST_MAKECODE + 2,
-    KBD_ARROW_UP = LARGEST_MAKECODE + 3,
-    KBD_ARROW_DOWN = LARGEST_MAKECODE + 4,
-    KBD_DELETE = LARGEST_MAKECODE + 5,
-    KBD_SUPER = LARGEST_MAKECODE + 6
+    KBD_ARROW_LEFT = LARGEST_SCANCODE + 1,
+    KBD_ARROW_RIGHT = LARGEST_SCANCODE + 2,
+    KBD_ARROW_UP = LARGEST_SCANCODE + 3,
+    KBD_ARROW_DOWN = LARGEST_SCANCODE + 4,
+    KBD_DELETE = LARGEST_SCANCODE + 5,
+    KBD_SUPER = LARGEST_SCANCODE + 6
 
 } KeyboardMap_t;
 
-typedef struct KbdInputEvents {
-    bool key_down[LARGEST_MAKECODE + EXTRA_MAKECODES + 1];
-    bool key[LARGEST_MAKECODE + EXTRA_MAKECODES + 1];
-} KbdInputEvents_t;
+bool get_key(KeyboardMap_t map);
+bool get_key_down(KeyboardMap_t map);
 
-bool get_key(KbdInputEvents_t *kbd_ev, KeyboardMap_t map);
-bool get_key_down(KbdInputEvents_t *kbd_ev, KeyboardMap_t map);
 
-typedef struct MouseInputEvents {
-    bool left_button_down; // Left button
-    bool left_button;
-    bool right_button_down; // Right button
-    bool right_button;
-    int32_t x_delta;
-    int32_t y_delta; 
-} MouseInputEvents_t;
+void initialize_kbd_input_events();
+void free_kbd_input_events();
 
-/**
- * @brief Sets all bools to false
- */
-KbdInputEvents_t* new_kbd_input_events();
-void free_kbd_input_events(KbdInputEvents_t* kbd_input_ev);
+void kbd_input_events_process_scancode();
 
-/**
- * @brief Sets all bools to false
- */
-MouseInputEvents_t* new_mouse_input_events();
-void free_mouse_input_events(MouseInputEvents_t* mouse_input_ev);
+
+void initialize_mouse_input_events();
+void free_mouse_input_events();
+
+void mouse_input_events_process_packet();
+
+bool mouse_get_lb_down();
+bool mouse_get_lb();
+bool mouse_get_rb_down();
+bool mouse_get_rb();
+int32_t mouse_get_x_delta();
+int32_t mouse_get_y_delta();
+
 
 /**
  * @brief Resets inputs
  */
-void reset_inputs(KbdInputEvents_t* kbd_eb, MouseInputEvents_t* mouse_ev);
+void reset_kbd_input_state();
+void reset_mouse_input_state();

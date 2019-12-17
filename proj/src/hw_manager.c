@@ -8,14 +8,6 @@
 // Frame rate
 #define FRAME_PERIOD 1  // 60 fps
 
-// 2 byte scancodes, but we only need to compare the second one
-#define KBD_ARROW_LEFT_MAKECODE 0x4b
-#define KBD_ARROW_RIGHT_MAKECODE 0x4d
-#define KBD_ARROW_DOWN_MAKECODE 0x48
-#define KBD_ARROW_UP_MAKECODE 0x50
-#define KBD_DELETE_MAKECODE 0x53
-#define KBD_SUPER_MAKECODE 0x5B
-
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
 uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask, uint32_t* rtc_mask) {
@@ -105,86 +97,26 @@ inline void hw_manager_kbd_ih() {
 	kbd_ih();
 }
 
-void hw_manager_kbd(KbdInputEvents_t* kbd_ev) {
+void hw_manager_kbd() {
+
   	analyse_scancode();
 	  
-  	if (is_scancode_complete) {
+  	if (is_scancode_complete)
+		kbd_input_events_process_scancode();
 
-		// This aux_scancode will already have the positions in the array
-		// We only need to verify if it was a make or breack code later on
-		uint8_t aux_scancode = scancode & (~MAKE_TO_BREAK);
-
-		if (scancode_no_bytes == 2) {
-			// Two bytes, it's the special case...
-			switch (aux_scancode) {
-				case KBD_ARROW_LEFT_MAKECODE:
-					aux_scancode = KBD_ARROW_LEFT;
-					break;
-				case KBD_ARROW_RIGHT_MAKECODE:
-					aux_scancode = KBD_ARROW_RIGHT;
-					break;
-				case KBD_ARROW_UP_MAKECODE:
-					aux_scancode = KBD_ARROW_UP;
-					break;
-				case KBD_ARROW_DOWN_MAKECODE:
-					aux_scancode = KBD_ARROW_DOWN;
-					break;
-				case KBD_DELETE_MAKECODE:
-					aux_scancode = KBD_DELETE;
-					break;
-				case KBD_SUPER_MAKECODE:
-					aux_scancode = KBD_SUPER;
-					break;
-			}
-		}
-
-		if (scancode & MAKE_TO_BREAK) {
-			// It was a breakcode
-			kbd_ev->key[aux_scancode] = false;
-		}
-		else {
-			// It was a makecode
-			if (!kbd_ev->key[aux_scancode])
-				kbd_ev->key_down[aux_scancode] = true;
-			kbd_ev->key[aux_scancode] = true;
-		}
-
-	} // End of is_scancode_complete
 }
 
 inline void hw_manager_mouse_ih() {
 	mouse_ih();
 }
 
-void hw_manager_mouse(MouseInputEvents_t* mouse_ev) {
+void hw_manager_mouse() {
+
 	mouse_data_handler();
 
 	if (is_mouse_packet_complete) {
-		// Left Button
-		if (mouse_parsed_packet.lb) {
-			if (!mouse_ev->left_button)
-				mouse_ev->left_button_down = true;
-			mouse_ev->left_button = true;
-		}
-
-		else
-			mouse_ev->left_button = false;
 		
-		// Right Button
-		if (mouse_parsed_packet.rb) {
-			if (!mouse_ev->right_button)
-				mouse_ev->right_button_down = true;
-		}			
-
-		else
-			mouse_ev->right_button = false;
-		
-		// Movement Deltas
-		if (!mouse_parsed_packet.x_ov)
-			mouse_ev->x_delta += (int32_t) mouse_parsed_packet.delta_x;
-		
-		if (!mouse_parsed_packet.y_ov)
-			mouse_ev->y_delta +=  (int32_t) mouse_parsed_packet.delta_y;
+		mouse_input_events_process_packet();
 
 		is_mouse_packet_complete = false;    
 	}

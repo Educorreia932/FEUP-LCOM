@@ -2,7 +2,6 @@
 
 #include <lcom/lcf.h>
 #include "geometry.h"
-#include "mouse_cursor.h"
 #include "sprite.h"
 
 /* BUTTONS */
@@ -27,7 +26,7 @@ void button_show(Button_t* button);
 void button_activate(Button_t* button);
 void button_deactivate (Button_t* button);
 
-void update_button(Button_t* button, MouseCursor_t* cursor);
+void update_button(Button_t* button);
 void render_button(Button_t* button);
 
 /* SLIDERS */
@@ -44,7 +43,7 @@ void slider_show(Slider_t* slider);
 void slider_activate(Slider_t* slider);
 void slider_deactivate (Slider_t* slider);
 
-void update_slider(Slider_t* slider, MouseCursor_t* cursor);
+void update_slider(Slider_t* slider);
 
 void render_slider(Slider_t* slider);
 
@@ -65,6 +64,6 @@ void knob_show(Knob_t* knob);
 void knob_activate(Knob_t* knob);
 void knob_deactivate (Knob_t* knob);
 
-void update_knob(Knob_t* knob, MouseCursor_t* cursor);
+void update_knob(Knob_t* knob);
 
 void render_knob(Knob_t* knob);

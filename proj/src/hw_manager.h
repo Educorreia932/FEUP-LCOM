@@ -17,11 +17,11 @@ bool hw_manager_is_frame();
 
 void hw_manager_kbd_ih();
 
-void hw_manager_kbd(KbdInputEvents_t* kbd_ev);
+void hw_manager_kbd();
 
 void hw_manager_mouse_ih();
 
-void hw_manager_mouse(MouseInputEvents_t* mouse_ev);
+void hw_manager_mouse();
 
 void hw_manager_rtc_set_alarm(uint32_t period);
 
