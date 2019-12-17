@@ -1,4 +1,6 @@
 #include "ui_elements.h"
+#include "input_events.h"
+#include "mouse_cursor.h"
 #include "math_utils.h"
 
 /* COLOR CHANGES IN THE UI */
@@ -149,11 +151,11 @@ inline void button_deactivate (Button_t* button) {
     button->is_active = false;
 }
 
-void update_button(Button_t* button, MouseCursor_t* cursor) {
+void update_button(Button_t* button) {
     if (button->is_active && button->shown) {
-        if (is_cursor_inside_rect(cursor, &button->rect)) {
+        if (is_cursor_inside_rect(&button->rect)) {
             button->hovered = true;
-            if (cursor_left_button_down(cursor))
+            if (mouse_get_lb_down())
                 button->func();
         }
         else
@@ -261,17 +263,17 @@ inline void slider_deactivate (Slider_t* slider) {
     slider->is_active = false;
 }
 
-void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
+void update_slider(Slider_t* slider) {
     if (slider->is_active && slider->shown) {
         if (slider->being_moved) {
             // Update position
             slider->handle_rect.x = fclampf(
-                cursor_get_x(cursor) + slider->cursor_offset.x, slider->start_pos.x, slider->end_pos.x);
+                cursor_get_x() + slider->cursor_offset.x, slider->start_pos.x, slider->end_pos.x);
             
             slider->handle_rect.y = fclampf(
-                cursor_get_y(cursor) + slider->cursor_offset.y,
+                cursor_get_y() + slider->cursor_offset.y,
                 slider->start_pos.y, slider->end_pos.y);
-            if (!cursor_left_button(cursor)) {
+            if (!mouse_get_lb()) {
                 // Get the most appropriate state
                 Vec2d_t p = rect_get_origin(&slider->handle_rect);
                 float endpoint_distace = distance_vec2d(slider->start_pos, slider->end_pos);
@@ -282,13 +284,14 @@ void update_slider(Slider_t* slider, MouseCursor_t* cursor) {
                 slider->func(slider->state);
             }
         }
-        else if (is_cursor_inside_rect(cursor, &slider->handle_rect)) {
+        else if (is_cursor_inside_rect(&slider->handle_rect)) {
             slider->hovered = true;
-            if (cursor_left_button_down(cursor)) {
+            if (mouse_get_lb_down()) {
                 slider->cursor_offset = subtract_vec2d(
                     rect_get_origin(&slider->handle_rect),
-                    vec2d(  cursor_get_x(cursor),
-                            cursor_get_y(cursor)
+                    vec2d(  
+                            cursor_get_x(),
+                            cursor_get_y()
                         )
                     );
                 slider->being_moved = true;
@@ -433,12 +436,12 @@ inline void knob_deactivate (Knob_t* knob) {
     knob->is_active = false;
 }
 
-float knob_get_cursor_angle(Knob_t *knob, MouseCursor_t *cursor) {
-    float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(cursor), knob->center));
+float knob_get_cursor_angle(Knob_t *knob) {
+    float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(), knob->center));
     
     angle += knob->angle_offset;
 
-    if (knob->center.y > cursor_get_y(cursor) + (knob->radius * sinf(knob->angle_offset)))
+    if (knob->center.y > cursor_get_y() + (knob->radius * sinf(knob->angle_offset)))
         angle = 2 * M_PI - angle;
     
     return angle;
@@ -476,12 +479,12 @@ void knob_update_pos(Knob_t *knob, float angle) {
 
 }
 
-void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
+void update_knob(Knob_t *knob) {
     if (knob->is_active && knob->shown) {
         // Knob is in movement
         if (knob->being_moved) {
             // Update position
-            float angle = knob_get_cursor_angle(knob, cursor);
+            float angle = knob_get_cursor_angle(knob);
 
             if (knob->angle_lock == ANGLE_NO_LOCK) {
                 if (angle <= knob->start_angle)
@@ -513,7 +516,7 @@ void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
             
             knob_update_pos(knob, angle);
             
-            if (!cursor_left_button(cursor)) {
+            if (!mouse_get_lb()) {
                 knob->being_moved = false;
                 knob->angle_lock = ANGLE_NO_LOCK;
                 knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
@@ -527,19 +530,19 @@ void update_knob(Knob_t *knob, MouseCursor_t* cursor) {
                 cur_angle -= KNOB_ANGLE_SETBACK;
                 knob_update_pos(knob, fmaxf(cur_angle, knob->start_angle));
             }
-            else if (is_cursor_inside_rect(cursor, &knob->knob_rect)) {
+            else if (is_cursor_inside_rect(&knob->knob_rect)) {
 
                 // Mouse is hovering on the knob
                 knob->hovered = true;
 
-                if (cursor_left_button_down(cursor)) {
+                if (mouse_get_lb_down()) {
 
                     // cur_angle was calculated just before
                     
                     float cursor_angle = angle_vec2d(vec2d(1, 0),
-                        subtract_vec2d(cursor_get_pos(cursor),                        knob->center));
+                        subtract_vec2d(cursor_get_pos(),                        knob->center));
                     
-                    if (knob->center.y > cursor_get_y(cursor))
+                    if (knob->center.y > cursor_get_y())
                         cursor_angle = 2 * M_PI - cursor_angle;
                     
                     knob->angle_offset = cursor_angle - cur_angle;

@@ -24,6 +24,6 @@ void free_level(Level_t *level);
 
 // Actual level stuff
 
-void update_level(Level_t* level, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) ;
+void update_level(Level_t* level) ;
 
 void render_level(Level_t *level);

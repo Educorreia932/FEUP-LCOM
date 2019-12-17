@@ -21,27 +21,6 @@ GameManager_t * new_testing_game_manager(enum PlayerNumber player_number) {
 		return NULL;
 	}
 
-	game_manager->kbd_ev = new_kbd_input_events();
-	
-	if (game_manager->kbd_ev == NULL) {
-		printf("new_testing_game_manager: Failed to create the Keyboard Input Events object\n");
-		return NULL;
-	}
-
-	game_manager->mouse_ev = new_mouse_input_events();
-
-	if (game_manager->mouse_ev == NULL) {
-		printf("new_testing_game_manager: Failed to create the Mouse Input Events object\n");
-		return NULL;
-	}
-
-	game_manager->cursor = new_cursor(game_manager->mouse_ev);
-	
-	if (game_manager->cursor == NULL) {
-		printf("new_testing_game_manager: Failed to create the Cursor object\n");
-		return NULL;
-	}
-
 	game_manager->player_number = player_number;
 
 	if (game_manager->player_number == SINGLEPLAYER) {
@@ -64,7 +43,7 @@ GameManager_t * new_testing_game_manager(enum PlayerNumber player_number) {
 	}
 	else if (game_manager->player_number == PLAYER_2) {
 		game_manager->level = NULL;
-		game_manager->s_board = new_switchboard(game_manager->cursor);
+		game_manager->s_board = new_switchboard();
 		
 		if (game_manager->s_board == NULL) {
 			printf("new_testing_game_manager: Failed to create the Switchboard object\n");
@@ -82,13 +61,10 @@ void free_game_manager(GameManager_t *game_manager) {
     }
 
 	if (game_manager->level != NULL)
-	
 		free_level(game_manager->level);
 	if (game_manager->s_board != NULL)
 		free_switchboard(game_manager->s_board);
 	
-	free_kbd_input_events(game_manager->kbd_ev);
-	free_mouse_input_events(game_manager->mouse_ev);
 	free(game_manager);
 }
 
@@ -96,17 +72,19 @@ void free_game_manager(GameManager_t *game_manager) {
  * @note Update is executed once every frame
  */
 void update() {
-	update_cursor(gm->cursor);
+	update_cursor();
+
 	if (gm->player_number & SINGLEPLAYER)
-  		update_level(gm->level, gm->kbd_ev, gm->mouse_ev);
+  		update_level(gm->level);
 	else if (gm->player_number & PLAYER_1)
-		update_level(gm->level, gm->kbd_ev, gm->mouse_ev);
+		update_level(gm->level);
 	else if (gm->player_number & PLAYER_2)
 		update_switchboard(gm->s_board);	
+
 }
 
 void render() {
-	printf("Render level\n");
+
 	if (gm->player_number & SINGLEPLAYER)
   		render_level(gm->level);
 	else if (gm->player_number & PLAYER_1)
@@ -114,8 +92,7 @@ void render() {
 	else if (gm->player_number & PLAYER_2)
 		render_switchboard(gm->s_board);	
 
-	printf("Render cursor\n");
-	render_cursor(gm->cursor);
+	render_cursor();
 }
 
 /** 
@@ -125,6 +102,10 @@ void render() {
  */
 uint8_t start_game(enum PlayerNumber player_number) {  
 	printf("start_game: Creating GameManager object\n");
+
+	initialize_kbd_input_events();
+	initialize_mouse_input_events();
+	initialize_cursor();
 
 	gm = new_testing_game_manager(player_number);
 
@@ -154,9 +135,9 @@ uint8_t start_game(enum PlayerNumber player_number) {
 
 	printf("start_game: Entering game loop\n");
 
-	hw_manager_rtc_set_alarm(5);
+	// hw_manager_rtc_set_alarm(5);
 
-	while (!get_key(gm->kbd_ev, KBD_ESC)) {
+	while (!get_key(KBD_ESC)) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
 			continue;
@@ -167,12 +148,12 @@ uint8_t start_game(enum PlayerNumber player_number) {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.m_notify.interrupts & mouse_bit_mask) {
 						hw_manager_mouse_ih();
-						hw_manager_mouse(gm->mouse_ev);
+						hw_manager_mouse();
 					}
 
 					if (msg.m_notify.interrupts & kbd_bit_mask) {
 						hw_manager_kbd_ih();
-						hw_manager_kbd(gm->kbd_ev);
+						hw_manager_kbd();
 					}
 		
 					if (msg.m_notify.interrupts & timer0_bit_mask) {
@@ -197,7 +178,8 @@ uint8_t start_game(enum PlayerNumber player_number) {
 			render();
 			hw_manager_switch_double_buffer();
 			//reset rtc
-			reset_inputs(gm->kbd_ev, gm->mouse_ev);
+			reset_kbd_input_state();
+			reset_mouse_input_state();
 
 			is_frame = false;
 		}
@@ -206,6 +188,9 @@ uint8_t start_game(enum PlayerNumber player_number) {
 	printf("start_game: Game loop ended\n");
 
 	free_game_manager(gm);
+	free_kbd_input_events();
+	free_mouse_input_events();
+	free_cursor();
 	hw_manager_unsubscribe_int();
 	printf("start_game: Unsubscribed to all interrupts\n");
 

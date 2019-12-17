@@ -3,7 +3,6 @@
 #include <lcom/lcf.h>
 
 #include "level.h"
-#include "input_events.h"
 #include "mouse_cursor.h"
 #include "switchboard.h"
 
@@ -17,10 +16,7 @@ enum PlayerNumber {
 
 // Fake singleton but kinda
 typedef struct GameManager {
-	MouseInputEvents_t *mouse_ev;
-	KbdInputEvents_t *kbd_ev;
 	Level_t *level;
-	MouseCursor_t *cursor;
 	SwitchBoard_t *s_board;
 	enum PlayerNumber player_number;
 } GameManager_t;

@@ -63,7 +63,6 @@ struct SwitchBoard {
     Button_t *laser_buttons[3];
     Slider_t *speed_slider, *jump_slider;
     Knob_t *gravity_knob;
-    MouseCursor_t* cursor;
 };
 
 void print_laser1() {
@@ -90,17 +89,14 @@ void print_gravity_time(float f) {
     printf("Gravity time (rounded to int): %d\n", (int32_t) f);
 }
 
-SwitchBoard_t* new_switchboard(MouseCursor_t *cursor) {
-    if (cursor == NULL) {
-        printf("new_switchboard: Cursor cannot be a NULL pointer");
-        return NULL;
-    }
+SwitchBoard_t* new_switchboard() {
+
     SwitchBoard_t* s_board = (SwitchBoard_t*) malloc(sizeof(SwitchBoard_t));
     if (s_board == NULL) {
         printf("new_switchboard: Failed to allocate memory for Switchboard object\n");
         return NULL;
     }
-    s_board->cursor = cursor;
+
     s_board->background = new_sprite(0, 0, 1, "ui/switch_board.bmp");
     if (s_board->background == NULL) {
         printf("new_switchboard: Failed to create background Sprite\n");
@@ -180,12 +176,12 @@ void switchboard_set_three_lasers(SwitchBoard_t* s_board) {
 }
 
 void update_switchboard(SwitchBoard_t* s_board) {
-    update_button(s_board->laser_buttons[0], s_board->cursor);
-    update_button(s_board->laser_buttons[1], s_board->cursor);
-    update_button(s_board->laser_buttons[2], s_board->cursor);
-    update_slider(s_board->speed_slider, s_board->cursor);
-    update_slider(s_board->jump_slider, s_board->cursor);
-    update_knob(s_board->gravity_knob, s_board->cursor);
+    update_button(s_board->laser_buttons[0]);
+    update_button(s_board->laser_buttons[1]);
+    update_button(s_board->laser_buttons[2]);
+    update_slider(s_board->speed_slider);
+    update_slider(s_board->jump_slider);
+    update_knob(s_board->gravity_knob);
 }
 
 void render_switchboard(SwitchBoard_t* s_board) {

@@ -6,7 +6,7 @@
 
 typedef struct SwitchBoard SwitchBoard_t;
 
-SwitchBoard_t* new_switchboard(MouseCursor_t* cursor);
+SwitchBoard_t* new_switchboard();
 void free_switchboard(SwitchBoard_t* s_board);
 
 void switchboard_set_no_lasers(SwitchBoard_t* s_board);

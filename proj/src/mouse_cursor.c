@@ -1,45 +1,42 @@
 #include "mouse_cursor.h"
-#include "sprite.h"
 #include "input_events.h"
+#include "sprite.h"
 #include "math_utils.h"
 
-struct MouseCursor {
+typedef struct MouseCursor {
     Vec2d_t pos;
     Sprite_t* sprite;
-    MouseInputEvents_t* mouse_ev;
     bool rendered;
-};
+} MouseCursor_t;
+
+MouseCursor_t* cursor = NULL;
 
 /* CONSTRUCTORS */
-MouseCursor_t* new_cursor(MouseInputEvents_t *mouse_ev) {
-    MouseCursor_t* cursor = (MouseCursor_t*)  malloc(sizeof(MouseCursor_t));
+void initialize_cursor() {
     if (cursor == NULL) {
-        printf("new_cursor: Failed to allocate memory for the new Cursor\n");
-        return NULL;
+
+        cursor = (MouseCursor_t*)  malloc(sizeof(MouseCursor_t));
+
+        if (cursor == NULL) {
+            printf("new_cursor: Failed to allocate memory for the new Cursor\n");
+            return;
+        }
+
+        // TODO: Use screen size
+        cursor->pos = vec2d(200, 200);
+
+        cursor->rendered = true;
+        
+        cursor->sprite = new_sprite(-2.0f, -2.0f, 1, "ui/wrench_cursor.bmp");
+        if (cursor->sprite == NULL) {
+            printf("new_testing_cursor: Failed to create the Cursor's Sprite\n");
+            return;
+        }
     }
 
-    if (mouse_ev == NULL) {
-        printf("new_cursor: MouseInputEvents_t must be valid (it was a NULL pointer)\n");
-        return NULL;
-    }
-
-    cursor->mouse_ev = mouse_ev;
-
-    // TODO: Use screen size
-    cursor->pos = vec2d(200, 200);
-
-    cursor->rendered = true;
-    
-    cursor->sprite = new_sprite(-2.0f, -2.0f, 1, "ui/wrench_cursor.bmp");
-    if (cursor->sprite == NULL) {
-        printf("new_testing_cursor: Failed to create the Cursor's Sprite\n");
-        return NULL;
-    }
-
-    return cursor;
 }
 
-void free_cursor(MouseCursor_t* cursor) {
+void free_cursor() {
     if (cursor == NULL) {
 		printf("free_cursor: Cannot free a NULL pointer\n");
 		return;
@@ -49,69 +46,53 @@ void free_cursor(MouseCursor_t* cursor) {
 }
 
 /* Activate and Deactivate mouse cursor rendering */
-inline void cursor_hide(MouseCursor_t* cursor) {
+inline void cursor_hide() {
     cursor->rendered = false;
 }
 
-inline void cursor_show(MouseCursor_t* cursor) {
+inline void cursor_show() {
     cursor->rendered = true;
 }
 
-inline bool cursor_is_shown(MouseCursor_t* cursor) {
+inline bool cursor_is_shown() {
     return cursor->rendered;
 }
 
 /* CURSOR METHODS */
 
-void update_cursor(MouseCursor_t* cursor) {
+void update_cursor() {
     cursor->pos.x = fclampf(
-        cursor->pos.x + cursor->mouse_ev->x_delta,
+        cursor->pos.x + mouse_get_x_delta(),
         0,
         1024
     );
     cursor->pos.y = fclampf(
-        cursor->pos.y - cursor->mouse_ev->y_delta,
+        cursor->pos.y - mouse_get_y_delta(),
         0,
         768
     );
 
-    if (cursor->mouse_ev->right_button_down)
+    if (mouse_get_rb_down())
         printf("x: %u, y: %u \n", (int) cursor->pos.x, (int) cursor->pos.y);
 }
 
-void render_cursor(MouseCursor_t* cursor) {
+void render_cursor() {
     if (cursor->rendered)
         draw_sprite_vec2d(cursor->sprite, cursor->pos, COLOR_NO_MULTIPLY, false);
 }
 
-inline bool is_cursor_inside_rect(MouseCursor_t* cursor, Rect_t* rect) {
+inline bool is_cursor_inside_rect(Rect_t* rect) {
     return is_point_inside_rect(rect, cursor->pos);
 }
 
-inline bool cursor_left_button_down(MouseCursor_t* cursor) {
-    return cursor->mouse_ev->left_button_down;
-}
-
-inline bool cursor_left_button(MouseCursor_t* cursor) {
-    return cursor->mouse_ev->left_button;
-}
-
-inline bool cursor_right_button_down(MouseCursor_t* cursor) {
-    return cursor->mouse_ev->right_button_down;
-}
-
-inline bool cursor_right_button(MouseCursor_t* cursor) {
-    return cursor->mouse_ev->right_button;
-}
-
-inline float cursor_get_x(MouseCursor_t* cursor) {
+inline float cursor_get_x() {
     return cursor->pos.x;
 }
 
-inline float cursor_get_y(MouseCursor_t* cursor) {
+inline float cursor_get_y() {
     return cursor->pos.y;
 }
 
-inline Vec2d_t cursor_get_pos(MouseCursor_t* cursor) {
+inline Vec2d_t cursor_get_pos() {
     return cursor->pos;
 }

@@ -257,9 +257,7 @@ inline void player_start_death(Player_t *player) {
 }
 
 // TODO: Implement animations depending on movement
-void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, KbdInputEvents_t* kbd_ev, MouseInputEvents_t* mouse_ev) {
-	
-	GameManager_t* gm = get_game_manager();
+void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes) {
 
 	Rect_t previous_rect = player->rect;
 
@@ -270,23 +268,23 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 
 		if (player->is_single_player) {
 
-			update_slider(player->jump_slider, gm->cursor);
-			update_slider(player->speed_slider, gm->cursor);
+			update_slider(player->jump_slider);
+			update_slider(player->speed_slider);
 
-			update_button(player->laser_buttons[0], gm->cursor);
-			update_button(player->laser_buttons[1], gm->cursor);
-			update_button(player->laser_buttons[2], gm->cursor);
+			update_button(player->laser_buttons[0]);
+			update_button(player->laser_buttons[1]);
+			update_button(player->laser_buttons[2]);
 
-			if (get_key_down(kbd_ev, KBD_X))
+			if (get_key_down(KBD_X))
 				player->gravity *= -1;
 		}
 
-		if (get_key(kbd_ev, KBD_ARROW_RIGHT)) {
+		if (get_key(KBD_ARROW_RIGHT)) {
 			h_delta = DELTATIME * PLAYER_BASE_SPEED * player->speed_mult;
 			player->heading_right = true;
 		}
 		
-		if (get_key(kbd_ev, KBD_ARROW_LEFT)) {
+		if (get_key(KBD_ARROW_LEFT)) {
 			h_delta = DELTATIME * -PLAYER_BASE_SPEED * player->speed_mult;
 			player->heading_right = false;
 		}
@@ -321,7 +319,7 @@ void player_movement(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spik
 
 	// Jump button
 	if (player->respawn_timer == 0)
-		if (get_key_down(kbd_ev, KBD_Z) || get_key_down(kbd_ev, KBD_SPACEBAR))
+		if (get_key_down(KBD_Z) || get_key_down(KBD_SPACEBAR))
 			if (player_is_grounded(player, plat))
 				player->y_speed = -PLAYER_BASE_JUMP * player->jump_mult * fsign(player->gravity);
 
