@@ -8,20 +8,80 @@ struct Spikes {
     Rect_t* collision_rects;
 };
 
-Spikes_t* prototype_spikes() {
+Spikes_t* new_arcade_spikes() {
+
     Spikes_t* spikes = (Spikes_t*) malloc(sizeof(Spikes_t));
     if (spikes == NULL) {
-        printf("new_prototype_spikes: Failed to allocate memory for the Spikes object\n");
+        printf("new_arcade_spikes: Failed to allocate memory for the Spikes object\n");
         return NULL;
     }
 
     // Sprite
     spikes->sprite = new_sprite_dynamic("spike.bmp", 8, 0, 0);
+    if (spikes->sprite == NULL) {
+        printf("new_arcade_spikes: Failed to create the Sprite\n");
+        free(spikes);
+        return NULL;   
+    }
+
+    spikes->num_spikes = 0;
+
+    // Rects
+	spikes->render_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
+    if (spikes->render_rects == NULL) {
+        printf("new_arcade_spikes: Failed to allocate memory for the rendering hitboxes\n");
+        free_sprite_dynamic(spikes->sprite);
+        free(spikes);
+        return NULL;   
+    }
+
+    spikes->collision_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
+    if (spikes->collision_rects == NULL) {
+        printf("new_arcade_spikes: Failed to allocate memory for the rendering hitboxes\n");
+        free_sprite_dynamic(spikes->sprite);
+        free(spikes->render_rects);
+        free(spikes);
+        return NULL;  
+    }
+
+    for (uint8_t i = 0; i < spikes->num_spikes; ++i) {
+        spikes->collision_rects[i] = rect(
+            spikes->render_rects[i].x + 6,
+            spikes->render_rects[i].y + 6,
+            spikes->render_rects[i].w - 12,
+            spikes->render_rects[i].h - 12
+        );
+    }
+
+    return spikes;
+}
+
+Spikes_t* prototype_spikes() {
+
+    Spikes_t* spikes = (Spikes_t*) malloc(sizeof(Spikes_t));
+    if (spikes == NULL) {
+        printf("prototype_spikes: Failed to allocate memory for the Spikes object\n");
+        return NULL;
+    }
+
+    // Sprite
+    spikes->sprite = new_sprite_dynamic("spike.bmp", 8, 0, 0);
+    if (spikes->sprite == NULL) {
+        printf("prototype_spikes: Failed to create the Sprite\n");
+        free(spikes);
+        return NULL;   
+    }
 
     spikes->num_spikes = 9;
 
     // Rects
-	spikes->render_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
+    spikes->render_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
+    if (spikes->render_rects == NULL) {
+        printf("prototype_spikes: Failed to allocate memory for the rendering hitboxes\n");
+        free_sprite_dynamic(spikes->sprite);
+        free(spikes);
+        return NULL;   
+    }
 
     spikes->render_rects[0] = rect(296, 572, 120, 72);
     spikes->render_rects[1] = rect(296, 732, 120, 72);
@@ -35,8 +95,11 @@ Spikes_t* prototype_spikes() {
 
     spikes->collision_rects = (Rect_t*) malloc(sizeof(Rect_t) * spikes->num_spikes);
     if (spikes->collision_rects == NULL) {
-        printf("new_prototype_spikes: Failed to allocate memory for collision rects\n");
-        return NULL;
+        printf("prototype_spikes: Failed to allocate memory for the rendering hitboxes\n");
+        free_sprite_dynamic(spikes->sprite);
+        free(spikes->render_rects);
+        free(spikes);
+        return NULL;  
     }
 
     for (uint8_t i = 0; i < spikes->num_spikes; ++i) {

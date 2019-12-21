@@ -40,17 +40,6 @@ static int print_usage() {
     return 1;
 }
 
-int proj_game(enum PlayerNumber player_number) {
-	if (vg_init(0x117) == NULL)
-		return 1;
-
-	start_game(player_number);
-
-	vg_exit();
-
-	return 0;
-}
-
 int test_uart(uint8_t tx) {
     uint16_t base_addr = COM1;
 
@@ -74,26 +63,19 @@ int (proj_main_loop)(int argc, char *argv[]) {
 	if (argc <= 0 || argc > 2)
 		return print_usage();
 
-	if (strcmp(argv[0], "game") == 0) {
-        enum PlayerNumber pn = SINGLEPLAYER;
-        uint8_t selected_player = (uint8_t) (*argv[1] - '0');
-        
-        if (selected_player == 0)
-            pn = SINGLEPLAYER;
-        
-        else if (selected_player == 1)
-            pn = PLAYER_1;
-
-        else if (selected_player == 2)
-            pn = PLAYER_2;
-        
-        else {
-            printf("Invalid player number\n");
-            return 1;
-        }
-            
-        return proj_game(pn);
+    if (strcmp(argv[0], "sp") == 0) {
+        return start_game(GM_LEVEL);
+    }
+	if (strcmp(argv[0], "level") == 0) {
+        return start_game(GM_LEVEL | GM_UART);
 	}
+    else if (strcmp(argv[0], "sw") == 0 || strcmp(argv[0], "board") == 0) {
+        return start_game(GM_SWITCHBOARD | GM_UART);
+    }
+    else if (strcmp(argv[0], "arcade") == 0) {
+        return start_game(GM_ARCADE);
+    }
+    // Add multiplayer arcade later down the road
 
 	else if (strcmp(argv[0], "test") == 0) {
         uint8_t tx = (uint8_t) (*argv[1] - '0');
