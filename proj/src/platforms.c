@@ -18,22 +18,114 @@ Platforms_t* new_platforms() {
   	return NULL;
 }
 
-Platforms_t* prototype_platforms() {
+Platforms_t* new_arcade_platforms() {
 	Platforms_t *plat = (Platforms_t*) malloc(sizeof(Platforms_t));
+	if (plat == NULL) {
+		printf("new_arcade_platforms: Failed allocate memory for the Platforms object\n");
+		return NULL;
+	}
+
 
 	// Sprites
 	plat->wall = new_sprite_dynamic("wall_dynamic.bmp" , 8, 0, 0);
+	if (plat->wall == NULL) {
+		free(plat);
+		printf("new_arcade_platforms: Failed to create wall sprite\n");
+		return NULL;
+	}
 
 	plat->platform = new_sprite_dynamic("platform_dynamic.bmp", 8, 0, 0);
+	if (plat->platform == NULL) {
+		printf("new_arcade_platforms: Failed to create platform sprite\n");
+		free_sprite_dynamic(plat->wall);
+		free(plat);
+		return NULL;
+	}
+
+	plat->size = 4;
+
+	// Rects
+	plat->rects = (Rect_t*) malloc(sizeof(Rect_t) * plat->size);
+	if (plat->rects == NULL) {
+		printf("new_arcade_platforms: Failed to allocate memory for rects\n");
+		free_sprite_dynamic(plat->wall);
+		free_sprite_dynamic(plat->platform);
+		free(plat);
+		return NULL;		
+	}
+
+	// Walls	
+	plat->is_wall = (bool*) calloc(plat->size, sizeof(bool));
+	if (plat->is_wall == NULL) {
+		printf("new_arcade_platforms: Failed to allocate memory for is_wall array\n");
+		free_sprite_dynamic(plat->wall);
+		free_sprite_dynamic(plat->platform);
+		free(plat->rects);
+		free(plat);
+		return NULL;	
+	}
+
+	// Top wall
+	plat->rects[0] = rect(0, 0, 1024, 24);
+	plat->is_wall[0] = true;
+	// Left wall
+	plat->rects[1] = rect(0, 24, 24, 768 - 24*2 + 1);
+	plat->is_wall[1] = true;
+	// Bottom wall
+	plat->rects[2] = rect(0, 768 - 24 + 1, 1024, 24);
+	plat->is_wall[2] = true;
+	// Right wall
+	plat->rects[3] = rect(1024 - 24, 24, 24, 768 - 24*2 + 1);
+	plat->is_wall[3] = true;
+
+	return plat;
+}
+
+Platforms_t* prototype_platforms() {
+	Platforms_t *plat = (Platforms_t*) malloc(sizeof(Platforms_t));
+	if (plat == NULL) {
+		printf("prototype_platforms: Failed allocate memory for the Platforms object\n");
+		return NULL;
+	}
+
+	// Sprites
+	plat->wall = new_sprite_dynamic("wall_dynamic.bmp" , 8, 0, 0);
+	if (plat->wall == NULL) {
+		free(plat);
+		printf("prototype_platforms: Failed to create wall sprite\n");
+		return NULL;
+	}
+
+	plat->platform = new_sprite_dynamic("platform_dynamic.bmp", 8, 0, 0);
+	if (plat->platform == NULL) {
+		printf("prototype_platforms: Failed to create platform sprite\n");
+		free_sprite_dynamic(plat->wall);
+		free(plat);
+		return NULL;
+	}
 
 	plat->size = 13;
 
 	// Rects
 	plat->rects = (Rect_t*) malloc(sizeof(Rect_t) * plat->size);
+	if (plat->rects == NULL) {
+		printf("prototype_platforms: Failed to allocate memory for rects\n");
+		free_sprite_dynamic(plat->wall);
+		free_sprite_dynamic(plat->platform);
+		free(plat);
+		return NULL;		
+	}
 
 	// Walls	
-	plat->is_wall = (bool*) malloc(sizeof(bool) * plat->size);
-	memset(plat->is_wall, false, plat->size);
+	plat->is_wall = (bool*) calloc(plat->size, sizeof(bool));
+	if (plat->is_wall == NULL) {
+		printf("prototype_platforms: Failed to allocate memory for is_wall array\n");
+		free_sprite_dynamic(plat->wall);
+		free_sprite_dynamic(plat->platform);
+		free(plat->rects);
+		free(plat);
+		return NULL;	
+	}
 
 	// Top wall
 	plat->rects[0] = rect(0, 0, 1024, 24);

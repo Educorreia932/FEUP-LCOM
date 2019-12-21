@@ -136,3 +136,11 @@ void hw_manager_rtc_set_alarm(uint32_t period) {
 inline void hw_manager_switch_double_buffer() {
 	switch_double_buffer();
 }
+
+inline uint8_t hw_manager_enter_video_mode() {
+	return vg_init(0x117) == NULL;
+} 
+
+inline void hw_manager_exit_video_mode() {
+	vg_exit();
+}

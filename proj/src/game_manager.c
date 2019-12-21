@@ -1,120 +1,218 @@
 #include "game_manager.h"
 #include "hw_manager.h"
 
+
 static GameManager_t* gm;
 
-const char* assets_rel_path = "home/lcom/labs/proj/assets/";
+char* assets_rel_path = "home/lcom/labs/proj/assets/";
 
 // Add move verification here
 GameManager_t* get_game_manager() {
 	return gm;
 }
 
+// We prefer calling a void void function instead of, ye know, *seg fault*
+void gm_void_safety_function() {
+	return;
+}
+
+void gm_update_level() {
+	update_cursor();
+	update_level(get_game_manager()->level);
+}
+
+void gm_update_arcade() {
+	update_cursor();
+	update_arcade_level(get_game_manager()->level);
+}
+
+void gm_update_switchboard() {
+	update_cursor();
+	update_switchboard(get_game_manager()->s_board);
+}
+
+void gm_render_level() {
+	render_level(gm->level);
+	render_cursor();
+}
+
+void gm_render_arcade() {
+	render_level(gm->level);
+	render_cursor();
+}
+
+void gm_render_switchboard() {
+	render_switchboard(gm->s_board);
+	render_cursor();
+}
+
+uint8_t gm_start_level() {
+
+	if (gm->s_board != NULL) {
+		free_switchboard(gm->s_board);
+		gm->s_board = NULL;
+	}
+	
+	gm->level = prototype_level(gm->gamemode & GM_UART);
+	
+	if (gm->level == NULL) {
+		printf("gm_start_level: Failed to create the Level object\n");
+		return 1;
+	}
+
+	return 0;
+}
+
+uint8_t gm_start_switchboard() {
+	
+	if (gm->level != NULL) {
+		free_level(gm->level);
+		gm->level = NULL;
+	}
+	
+	gm->s_board = new_switchboard();
+	
+	if (gm->s_board == NULL) {
+		printf("gm_start_switchboard: Failed to create the Switchboard object\n");
+		return 1;
+	}
+
+	return 0;
+
+}
+
+uint8_t gm_start_arcade() {
+
+	if (gm->s_board != NULL) {
+		free_switchboard(gm->s_board);
+		gm->s_board = NULL;
+	}
+
+	gm->level = new_arcade_level();
+	
+	if (gm->level == NULL) {
+		printf("gm_start_arcade: Failed to create the Switchboard object\n");
+		return 1;
+	}
+
+	return 0;
+}
+
 /** 
  * @param player_number Number of the player that's playing 
  */
-GameManager_t * new_testing_game_manager(enum PlayerNumber player_number) {
-	GameManager_t *game_manager = (GameManager_t*) malloc(sizeof(GameManager_t));
+void initialize_game_manager(GameModeEnum gamemode) {
 	
-	if (game_manager == NULL) {
+	// Avoid overwriting the old one
+	if (gm != NULL) {
+		printf("initialize_game_manager: GameManager already exists\n");
+		return;
+	}
+
+	gm = (GameManager_t*) calloc(1, sizeof(GameManager_t));
+	if (gm == NULL) {
 		printf("new_testing_game_manager: Failed to allocate memory for GameManager object\n");
-		return NULL;
+		exit(42); // This would pretty much be as fatal as a fatal error could be
 	}
 
-	game_manager->player_number = player_number;
+	// Save the gamemode
+	gm->gamemode = gamemode;
 
-	if (game_manager->player_number == SINGLEPLAYER) {
-		game_manager->s_board = NULL;
-		game_manager->level = prototype_level(true);
-		
-		if (game_manager->level == NULL) {
-			printf("new_testing_game_manager: Failed to create the Level object\n");
-			return NULL;
-		}
+	// Select the starting "gamemode" accordingly
+	if (gm->gamemode & GM_LEVEL) {
+		gm_start_level();
 	}
-	else if (game_manager->player_number == PLAYER_1) {
-		game_manager->s_board = NULL;
-		game_manager->level = prototype_level(false);
-		
-		if (game_manager->level == NULL) {
-			printf("new_testing_game_manager: Failed to create the Level object\n");
-			return NULL;
-		}
+	else if (gm->gamemode & GM_SWITCHBOARD) {
+		gm_start_switchboard();
 	}
-	else if (game_manager->player_number == PLAYER_2) {
-		game_manager->level = NULL;
-		game_manager->s_board = new_switchboard();
-		
-		if (game_manager->s_board == NULL) {
-			printf("new_testing_game_manager: Failed to create the Switchboard object\n");
-			return NULL;
-		}
+	else if (gm->gamemode & GM_ARCADE) {
+		gm_start_arcade();
+	}
+	else
+	{
+		printf("Invalid gamemode\n");
+		exit(43); // Another pretty much fatal error
+	}
+	
+
+	// Put all the unused ones to a non-seg fault fucntion
+	for (uint8_t i = 0; i < 16; ++i) {
+		gm->update_function[i] = &gm_void_safety_function;
+		gm->render_function[i] = &gm_void_safety_function;
 	}
 
-	return game_manager;
+	// Set update and render functions
+	gm->update_function[GM_LEVEL] = &gm_update_level;
+	gm->update_function[GM_LEVEL_UART] = &gm_update_level;
+	gm->update_function[GM_SWITCHBOARD] = &gm_update_switchboard;
+	gm->update_function[GM_SWITCHBOARD_UART] = &gm_update_switchboard;
+	gm->update_function[GM_ARCADE] = &gm_update_arcade;
+	gm->update_function[GM_ARCADE_UART] = &gm_update_arcade;
+	
+	gm->render_function[GM_LEVEL] = &gm_render_level;
+	gm->render_function[GM_LEVEL_UART] = &gm_render_level;
+	gm->render_function[GM_SWITCHBOARD] = &gm_render_switchboard;
+	gm->render_function[GM_SWITCHBOARD_UART] = &gm_render_switchboard;
+	gm->render_function[GM_ARCADE] = &gm_render_arcade;
+	gm->render_function[GM_ARCADE_UART] = &gm_render_arcade;
+
 }
 
-void free_game_manager(GameManager_t *game_manager) {
-	if (game_manager == NULL) {
+void free_game_manager() {
+
+	if (gm == NULL) {
         printf("free_game_manager: Cannot free a NULL pointer\n");
         return;
     }
 
-	if (game_manager->level != NULL)
-		free_level(game_manager->level);
-	if (game_manager->s_board != NULL)
-		free_switchboard(game_manager->s_board);
+	if (gm->level != NULL)
+		free_level(gm->level);
+	if (gm->s_board != NULL)
+		free_switchboard(gm->s_board);
 	
-	free(game_manager);
+	free(gm);
+
 }
 
 /** 
- * @note Update is executed once every frame
+ * @note Called once every frame
  */
 void update() {
-	update_cursor();
-
-	if (gm->player_number & SINGLEPLAYER)
-  		update_level(gm->level);
-	else if (gm->player_number & PLAYER_1)
-		update_level(gm->level);
-	else if (gm->player_number & PLAYER_2)
-		update_switchboard(gm->s_board);	
-
+	gm->update_function[gm->gamemode]();
 }
 
 void render() {
-
-	if (gm->player_number & SINGLEPLAYER)
-  		render_level(gm->level);
-	else if (gm->player_number & PLAYER_1)
-		render_level(gm->level);
-	else if (gm->player_number & PLAYER_2)
-		render_switchboard(gm->s_board);	
-
-	render_cursor();
+	gm->render_function[gm->gamemode]();
 }
 
 /** 
  * @brief Starts the game
- * @param player_number Number of the player that's playing (1 to control Watt, 2 to control the switchboard)
  * @returns 0 on success, 1 otherwise
  */
-uint8_t start_game(enum PlayerNumber player_number) {  
-	printf("start_game: Creating GameManager object\n");
+uint8_t start_game(GameModeEnum gamemode) {  
 
+	printf("start_game: Started the game\n");
+
+	// Initialize rand seed
+	// time_t t;
+	// srand((unsigned) time(&t));
+	srand(20);
+
+	// Enter video mode
+	if (hw_manager_enter_video_mode())
+		return 1;
+
+	// If not initialized, guess what: Seg fault!
 	initialize_kbd_input_events();
 	initialize_mouse_input_events();
 	initialize_cursor();
 
-	gm = new_testing_game_manager(player_number);
+	initialize_game_manager(gamemode);
 
 	if (gm == NULL) {
 		printf("start_game: Failed to create GameManager object\n");
 		return 1;
 	}
-	
-	printf("start_game: Created Game Manager\n");
 
 	uint32_t kbd_bit_mask;
 	uint32_t timer0_bit_mask;
@@ -123,8 +221,6 @@ uint8_t start_game(enum PlayerNumber player_number) {
 	
 	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask))
 		printf("start_game: Failed to enable interrupts\n");
-  
-  	printf("start_game: Subscribed to all interrupts\n");
 
 	int r, ipc_status;
 	message msg;
@@ -174,9 +270,12 @@ uint8_t start_game(enum PlayerNumber player_number) {
 
 		// We only do the heavy stuff here, out of the "critical path"
 		if (is_frame) {
+
 			update();
 			render();
+
 			hw_manager_switch_double_buffer();
+
 			//reset rtc
 			reset_kbd_input_state();
 			reset_mouse_input_state();
@@ -187,12 +286,14 @@ uint8_t start_game(enum PlayerNumber player_number) {
 	
 	printf("start_game: Game loop ended\n");
 
-	free_game_manager(gm);
+	free_game_manager();
 	free_kbd_input_events();
 	free_mouse_input_events();
 	free_cursor();
 	hw_manager_unsubscribe_int();
-	printf("start_game: Unsubscribed to all interrupts\n");
+	hw_manager_exit_video_mode();
+
+	printf("Thanks for playing!\n");
 
 	return 0;
 }

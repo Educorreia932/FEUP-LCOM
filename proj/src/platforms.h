@@ -6,6 +6,7 @@
 typedef struct Platforms Platforms_t;
 
 Platforms_t* new_platforms();
+Platforms_t* new_arcade_platforms();
 Platforms_t* prototype_platforms();
 void free_platforms(Platforms_t *platforms);
 

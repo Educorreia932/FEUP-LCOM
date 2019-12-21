@@ -6,6 +6,7 @@
 
 typedef struct Spikes Spikes_t;
 
+Spikes_t* new_arcade_spikes();
 Spikes_t* prototype_spikes();
 void free_spikes(Spikes_t* spikes);
 

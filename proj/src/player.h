@@ -8,8 +8,8 @@
 
 typedef struct Player Player_t;
 
-Player_t* new_player();
-Player_t* new_testing_player(bool is_single_player);
+
+Player_t* new_player(bool ui_controls, bool arcade_mode);
 
 void free_player(Player_t* player);
 

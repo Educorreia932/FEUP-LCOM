@@ -30,3 +30,7 @@ void hw_manager_rtc_ih();
 /* VIDEO WRAPPERS */
 
 void hw_manager_switch_double_buffer();
+
+uint8_t hw_manager_enter_video_mode();
+
+void hw_manager_exit_video_mode();

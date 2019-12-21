@@ -19,7 +19,7 @@ Level_t* new_level() {
 		return NULL;
 	}
 
-	level->player = new_player();
+	level->player = new_player(false, false);
 	if (level->player == NULL) {
 		printf("new_level: Failed to allocate memory for Player object\n");
 		return NULL;
@@ -28,7 +28,64 @@ Level_t* new_level() {
 	return level;
 }
 
+Level_t* new_arcade_level() {
+	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
+
+	// Background
+	level->background = new_sprite(0, 0, 1, "background.bmp");
+	if (level->background == NULL) {
+		printf("new_arcade_level: Failed to create the background Sprite\n");
+		free(level);
+		return NULL;
+	}
+
+	// Player
+	level->player = new_player(false, true);
+	if (level->player == NULL) {
+		printf("new_arcade_level: Failed to create the Player\n");
+		free_sprite(level->background);
+		free(level);
+		return NULL;
+	}
+
+	// Platforms
+	level->platforms = new_arcade_platforms();
+	if (level->platforms == NULL) {
+		printf("new_arcade_level: Failed to create the Platforms\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free(level);
+		return NULL;
+	}
+
+	// Lasers
+	level->lasers = new_arcade_lasers();
+	if (level->lasers == NULL) {
+		printf("new_arcade_level: Failed to create the Lasers\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free(level);
+		return NULL;
+	}
+
+	// Spikes
+	level->spikes = new_arcade_spikes();
+	if (level->spikes == NULL) {
+		printf("new_arcade_level: Failed to create the Spikes\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free_lasers(level->lasers);
+		free(level);
+		return NULL;
+	}
+
+	return level;
+}
+
 Level_t* prototype_level(bool is_single_player) {
+	
 	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
 
 	// Background
@@ -40,7 +97,7 @@ Level_t* prototype_level(bool is_single_player) {
 	}
 
 	// Player
-	level->player = new_testing_player(is_single_player);
+	level->player = new_player(is_single_player, false);
 	if (level->player == NULL) {
 		printf("prototype_level: Failed to create the Player\n");
 		free_sprite(level->background);
@@ -99,8 +156,14 @@ void free_level(Level_t *level) {
 
 // Actual level stuff
 
-void update_level(Level_t* level){
+void update_level(Level_t* level) {
   	player_movement(level->player, level->platforms, level->lasers, level->spikes);
+}
+
+void update_arcade_level(Level_t* level) {
+	arcade_move_lasers(level->lasers);
+	arcade_add_laser(level->lasers);
+	player_movement(level->player, level->platforms, level->lasers, level->spikes);
 }
 
 void render_level(Level_t *level) {

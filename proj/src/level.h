@@ -19,11 +19,13 @@ typedef struct Level {
 // typedef struct Level Level_t;
 
 Level_t* new_level();
+Level_t* new_arcade_level();
 Level_t* prototype_level(bool is_single_player);
 void free_level(Level_t *level);
 
 // Actual level stuff
 
 void update_level(Level_t* level) ;
+void update_arcade_level(Level_t* level);
 
 void render_level(Level_t *level);

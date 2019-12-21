@@ -15,6 +15,9 @@ MouseCursor_t* cursor = NULL;
 void initialize_cursor() {
     if (cursor == NULL) {
 
+        // To make sure it exists
+        initialize_mouse_input_events();
+
         cursor = (MouseCursor_t*)  malloc(sizeof(MouseCursor_t));
 
         if (cursor == NULL) {
