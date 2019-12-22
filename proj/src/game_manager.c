@@ -196,7 +196,7 @@ uint8_t start_game(GameModeEnum gamemode) {
 	// Initialize rand seed
 	// time_t t;
 	// srand((unsigned) time(&t));
-	srand(20);
+	srand(time(NULL));
 
 	// Enter video mode
 	if (hw_manager_enter_video_mode())
