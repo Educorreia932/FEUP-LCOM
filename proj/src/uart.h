@@ -31,7 +31,12 @@
 ///@{
 #define LCR_NO_BITS_PER_CHAR (BIT(1) | BIT(0))
 #define LCR_STOP_BIT BIT(2)
-#define LCR_PARITY_CONTROL (BIT(5) | BIT(4) | BIT(3))
+#define LCR_PARITY_CONTROL_MASK (BIT(5) | BIT(4) | BIT(3))
+// We would include no parity here, but it's a strange special case
+#define LCR_PARITY_ODD BIT(3)
+#define LCR_PARITY_EVEN (BIT(4) | BIT(3))
+#define LCR_PARITY_ALWAYS_1 (BIT(5) | BIT(4))
+#define LCR_PARITY_ALWAYS_0 (BIT(5) | BIT(4) | BIT(3))
 #define LCR_BREAK_CONTROL BIT(6)
 #define LCR_DLAB BIT(7)
 ///@}

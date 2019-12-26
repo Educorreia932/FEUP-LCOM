@@ -32,19 +32,19 @@ uint8_t uart_print_conf() {
     uint8_t stop_bit = (lcr & LCR_STOP_BIT) >> 2;
     printf("Number of stop bits:\n%d stop bit(s)\n", stop_bit + 1);
 
-    uint8_t parity = (lcr & LCR_PARITY_CONTROL) >> 3;
+    uint8_t parity = (lcr & LCR_PARITY_CONTROL_MASK);
     printf("Parity control:\n");
     switch (parity) {
-        case 1: // 0b001
+        case LCR_PARITY_ODD: // 0b001
             printf("\tOdd parity\n");
             break;
-        case 3: // 0b011
+        case LCR_PARITY_EVEN: // 0b011
             printf("\tEven parity\n");
             break;
-        case 5: // 0b101
+        case LCR_PARITY_ALWAYS_1: // 0b101
             printf("\tParity bit is 1\n");
             break;
-        case 7: // 0b111
+        case LCR_PARITY_ALWAYS_0: // 0b111
             printf("\tParity bit is 0\n");
             break;
         default: // 0bxx0
@@ -72,10 +72,11 @@ uint8_t uart_set_conf() {
     // Set stop bit to true and toggle DLAB to write the bit rate
     uint8_t lcr = LCR_STOP_BIT | LCR_DLAB;
 
-    // Set mode parity to even
-    lcr |= BIT(3);
+    // Set mode parity to odd
+    lcr |= LCR_PARITY_ODD;
 
     // Set no of bits per char to 8
+    // bx11 = 3 -> 3 + 5 = 8 -> 8 bits per char
     lcr |= BIT(1) | BIT(0);
 
     // Write lcr (and get access to dll and ...)
@@ -161,22 +162,28 @@ uint8_t test_uart(uint8_t tx) {
     uart_set_conf();
     uart_print_conf();
 
+    const char* s = "Nao digas ao Souto que plagiamos a LCOM, shhh!";
+
     if (tx == 0) {
-        printf("Configured to receive data\n");
-        while (1) {
-            uart_send_char('Y');
+        printf("Configured to send data\n");        
+
+        for (size_t i = 0; i < strlen(s); ++i) {
+            uart_send_char(s[i]);
             tickdelay(1);
         }
+
     }
     else {
-        printf("Configured to send data\n"); 
+        printf("Configured to receive data\n"); 
         int uart_mask;
         uart_subscribe_int(&uart_mask);
 
         int r, ipc_status;
 	    message msg;
-        
-        while (uart_received_char == 0) {
+
+        size_t received_chars = 0;
+
+        while (received_chars < strlen(s)) {
             if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
                 printf("start_game: driver_receive failed with: %d", r);
                 continue;
@@ -187,8 +194,10 @@ uint8_t test_uart(uint8_t tx) {
                     case HARDWARE: /* hardware interrupt notification */
                         if (msg.m_notify.interrupts & uart_mask) {
                             uart_ih();
+                            ++received_chars;
+                            char char_casted = (char) uart_received_char;
+                            printf("%c", char_casted);
                         }
-
                         break;
                     default:
                         break; /* no other notifications expected: do nothing */     
@@ -196,7 +205,7 @@ uint8_t test_uart(uint8_t tx) {
             }
         }
 
-        printf("GOT SOMETHING!\nGot _%d_\n", uart_received_char);
+        printf("\n");
         uart_unsubscribe_int();
     }
 
