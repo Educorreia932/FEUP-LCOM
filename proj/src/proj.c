@@ -40,24 +40,6 @@ static int print_usage() {
     return 1;
 }
 
-int test_uart(uint8_t tx) {
-    uint16_t base_addr = COM1;
-
-    if (uart_test_set(base_addr, 8, 2, 0, 10))
-        return 1;
-
-    printf("\n");
-
-    if (uart_test_conf(base_addr))
-        return 1;
-    
-    char* strings[3] = {"A."};
-
-    if (uart_test_poll(base_addr, tx, 8, 2, -1, 100, 1, strings))
-        return 1;
-
-    return 0;
-}
 
 int (proj_main_loop)(int argc, char *argv[]) {
 	if (argc <= 0 || argc > 2)
@@ -78,17 +60,10 @@ int (proj_main_loop)(int argc, char *argv[]) {
     // Add multiplayer arcade later down the road
 
 	else if (strcmp(argv[0], "test") == 0) {
+
         uint8_t tx = (uint8_t) (*argv[1] - '0');
 
-        if (!tx)
-            printf("Configured to receive data\n");
-
-        else
-            printf("Configured to send data\n");
-
-		test_uart(tx);
-
-		return 1;
+		return test_uart(tx);
 	}
 
 	else {

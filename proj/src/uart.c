@@ -1,65 +1,39 @@
 #include "uart.h"
 
 static int ser_hook_id;
+uint8_t uart_received_char = 0;
 
-uint8_t (uart_subscribe_int)(uint8_t *bit_no) {
-    if (!bit_no) // Check if pointer is NULL
+uint8_t uart_subscribe_int(int *bit_mask) {
+    if (!bit_mask) // Check if pointer is NULL
         return 1;
 
     ser_hook_id = SER_1_IRQ;
-    *bit_no = SER_1_IRQ;	
+    *bit_mask = BIT(SER_1_IRQ);	
 
     return sys_irqsetpolicy(SER_1_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &ser_hook_id);
 }
 
-uint8_t (uart_unsubscribe_int)() {
+uint8_t uart_unsubscribe_int() {
     return sys_irqrmpolicy(&ser_hook_id);
 }
 
-int uart_test_conf(uint16_t base_addr) {
-    uint8_t lcr, ier;
+uint8_t uart_print_conf() {
 
-    if (util_sys_inb(base_addr + LCR, &lcr))
-        return 1;
-    
-    if (util_sys_inb(base_addr + IER, &ier))
+    uint8_t lcr;
+
+    if (util_sys_inb(COM1_BASE + UART_REG_LCR, &lcr))
         return 1;
 
     printf("LCR: %x\n", lcr);
 
-    uint8_t no_bits_per_char = lcr & NO_BITS_PER_CHAR;
+    uint8_t no_bits_per_char = lcr & LCR_NO_BITS_PER_CHAR;
+    printf("Number of bits per char:\n%d bits per char\n", no_bits_per_char + 5);
 
-    printf("Number of bits per char:\n");
+    uint8_t stop_bit = (lcr & LCR_STOP_BIT) >> 2;
+    printf("Number of stop bits:\n%d stop bit(s)\n", stop_bit + 1);
 
-    switch (no_bits_per_char) {
-        case 0: // 0b00
-            printf("\t5 bits per char\n");
-            break;
-        case 1: // 0b01
-            printf("\t6 bits per char\n");
-        case 2: // 0b10
-            printf("\t7 bits per char\n");
-        case 3: // 0b11
-            printf("\t8 bits per char\n");
-    }
-
-    uint8_t stop_bit = (lcr & STOP_BIT) >> 2;
-
-    printf("Number of stop bits:\n");
-
-    switch (stop_bit) {
-        case 0:
-            printf("\t1 stop bit\n");
-            break;
-        case 1:
-            printf("\t2 stop bits\n");
-            break;
-    }
-
-    uint8_t parity = (lcr & PARITY_CONTROL) >> 3;
-
+    uint8_t parity = (lcr & LCR_PARITY_CONTROL) >> 3;
     printf("Parity control:\n");
-
     switch (parity) {
         case 1: // 0b001
             printf("\tOdd parity\n");
@@ -78,10 +52,8 @@ int uart_test_conf(uint16_t base_addr) {
             break;
     }
 
-    uint8_t dlab = (lcr & DLAB) >> 7;
-
+    uint8_t dlab = (lcr & LCR_DLAB) >> 7;
     printf("Divisor Latch Access\n");
-
     switch (dlab) {
         case 0:
             printf("\tRBR (read)\n");
@@ -91,128 +63,142 @@ int uart_test_conf(uint16_t base_addr) {
             break;
     }
 
-    // TODO: IER
-
     return 0;
 }
 
-int uart_test_set(uint16_t base_addr, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate) {
-    uint8_t lcr;
+uint8_t uart_set_conf() {
 
-    if (util_sys_inb(base_addr + LCR, &lcr))
-            return 1;
+    /* LCR */
+    // Set stop bit to true and toggle DLAB to write the bit rate
+    uint8_t lcr = LCR_STOP_BIT | LCR_DLAB;
 
-    // Parity
+    // Set mode parity to even
+    lcr |= BIT(3);
 
-    switch (parity) {
-        case -1: // None
-            parity = 0;
-            break;
-        case 0: // Odd parity
-            parity = 1;
-            break;
-        case 1: // Even parity
-            parity = 3;
-            break;
-    }
+    // Set no of bits per char to 8
+    lcr |= BIT(1) | BIT(0);
 
-    // Rate
-
+    // Write lcr (and get access to dll and ...)
+    if (sys_outb(COM1_BASE + UART_REG_LCR, lcr))
+        return 1;
+    
+    // Write our bitrate
+    // Recommended value in the labs, 115200 / 115200 = 1
+    uint16_t bitrate = 1;
     uint8_t dll, dlm;
+    if (util_get_LSB(bitrate, &dll) || util_get_MSB(bitrate, &dlm))
+        return 1;
+    if (sys_outb(COM1_BASE + UART_REG_DLL, dll) || sys_outb(COM1_BASE + UART_REG_DLM, dlm))
+        return 1;
+    
+    // Restore the DLAB bit to 0
+    lcr &= ~LCR_DLAB;
+    if (sys_outb(COM1_BASE + UART_REG_LCR, lcr))
+        return 1;
+    
 
-    rate = 115200 / rate;
-
-    dll = rate % 256;
-	dlm = rate / 256;
-
-	if (util_sys_inb(base_addr + LCR, &lcr) != OK)
-		return 1;
-
-	lcr |= DLAB;
-
-	if (sys_outb(base_addr + LCR, lcr))
-		return 1;
-
-	if (sys_outb(base_addr + DLL, dll))
-		return 1;
-
-	if (sys_outb(base_addr + DLM, dlm))
-		return 1;
-
-    // Set
-
-    lcr &= 0xC0; // We don't to change bits 6 and 7
-
-    lcr |= bits | stop << 2 | parity << 3;
-
-    if (sys_outb(base_addr + LCR, lcr))
+    /* IER */
+    // Get interrupts for receiving data only
+    uint8_t ier = IER_RECEIVED_DATA_INT;
+    if (sys_outb(COM1_BASE + UART_REG_IER, ier))
         return 1;
 
     return 0;
 }
 
-int uart_test_poll(uint16_t base_addr, uint8_t tx, uint8_t bits, uint8_t stop, int8_t parity, uint8_t rate, int stringc, char* strings[]) {
-    uint8_t delay = 100000 / bits;
 
-    if (!tx) {
-        if (receive_data(base_addr, delay))
-            return 1;
-    }
-        
-    else
-        if (send_data(base_addr, stringc, strings, delay))
-            return 1;
+uint8_t uart_send_char(uint8_t to_send) {
 
-    return 0;
+    return sys_outb(COM1_BASE + UART_REG_THR, to_send);
+
 }
 
-int receive_data(uint16_t base_addr, uint8_t delay) {
+
+uint8_t uart_receive_char() {
+    
+    // Read LSR
     uint8_t lsr;
-    uint8_t character; 
+    if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
+        return 1;
+    
+    // Check for errors in the communication
+    if (lsr & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR))
+        return 1;
 
-    while (true) {
-        if (util_sys_inb(base_addr + LSR, &lsr))
-            return 1;
+    return util_sys_inb(COM1_BASE + UART_REG_RBR, &uart_received_char);
 
-        while(!(lsr & RECEIVER_DATA)) {
-            tickdelay(micros_to_ticks(delay));
-            
-            if (util_sys_inb(base_addr + LSR, &lsr))
-                return 1;
-        }
-
-        if (util_sys_inb(base_addr + RBR, &character))
-            return 1;
-
-        if (character == 1)
-            return 1;
-
-        if (character == '.')
-            return 0;
-    }
 }
 
-int send_data(uint8_t base_addr, int stringc, char *strings[], uint8_t delay) {
-    uint8_t lsr;
+
+void uart_ih() {
     
-    for (int i = 0; i < stringc; i++) {
-        if (util_sys_inb(base_addr + LSR, &lsr))
-		    return 1;
+    // Read iir
+    uint8_t iir;
+    util_sys_inb(COM1_BASE + UART_REG_IIR, &iir);
 
-        if (lsr & OVERRUN_ERROR || lsr & PARITY_ERROR || lsr & FRAMING_ERROR)
-            return 1;
-
-        while (!(lsr & THR_EMPTY)) {
-            tickdelay(micros_to_ticks(delay));
-
-            if (util_sys_inb(base_addr + LSR, &lsr))
-                return 1;
-        }
-        
-        // Send character
-        if (sys_outb(base_addr + THR, strings[i]))
-            return 1;
+    // Find what caused the interrupt
+    switch (iir & IIR_INT_SOURCE_MASK) {
+        case IIR_INT_SOURCE_RECEIVED_DATA_AVAILABLE:
+            uart_receive_char();
+            break;
+        // case IIR_INT_SOURCE_RECEIVER_LINE_STATUS:
+        //     break;
+        // case IIR_INT_SOURCE_CHARACTER_TIMEOUT_FIFO:
+        //     break;
+        // case IIR_INT_SOURCE_THR_EMPTY:
+        //     break;
+        // case IIR_INT_SOURCE_MODEM_STATUS:
+        //     break;
+        default:
+            break;
     }
+
+}
+
+// TESTING PURPUOSES
+uint8_t test_uart(uint8_t tx) {
     
+    uart_set_conf();
+    uart_print_conf();
+
+    if (tx == 0) {
+        printf("Configured to receive data\n");
+        while (1) {
+            uart_send_char('Y');
+            tickdelay(1);
+        }
+    }
+    else {
+        printf("Configured to send data\n"); 
+        int uart_mask;
+        uart_subscribe_int(&uart_mask);
+
+        int r, ipc_status;
+	    message msg;
+        
+        while (uart_received_char == 0) {
+            if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+                printf("start_game: driver_receive failed with: %d", r);
+                continue;
+            }
+
+            if (is_ipc_notify(ipc_status)) {
+                switch (_ENDPOINT_P(msg.m_source)) {
+                    case HARDWARE: /* hardware interrupt notification */
+                        if (msg.m_notify.interrupts & uart_mask) {
+                            uart_ih();
+                        }
+
+                        break;
+                    default:
+                        break; /* no other notifications expected: do nothing */     
+                }
+            }
+        }
+
+        printf("GOT SOMETHING!\nGot _%d_\n", uart_received_char);
+        uart_unsubscribe_int();
+    }
+
     return 0;
 }
