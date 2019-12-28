@@ -110,6 +110,8 @@ uint8_t uart_set_conf() {
 
 uint8_t uart_send_char(uint8_t to_send) {
 
+    char to_send_char = (char) to_send;
+    printf("Wrote: _%c_", to_send_char);
     return sys_outb(COM1_BASE + UART_REG_THR, to_send);
 
 }
@@ -117,6 +119,8 @@ uint8_t uart_send_char(uint8_t to_send) {
 
 uint8_t uart_receive_char() {
     
+    printf("Received the goddamn char\n");
+
     // Read LSR
     uint8_t lsr;
     if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
@@ -160,7 +164,7 @@ void uart_ih() {
 uint8_t test_uart(uint8_t tx) {
     
     uart_set_conf();
-    uart_print_conf();
+    // uart_print_conf();
 
     const char* s = "Nao digas ao Souto que plagiamos a LCOM, shhh!";
 

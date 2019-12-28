@@ -157,19 +157,23 @@ void free_level(Level_t *level) {
 // Actual level stuff
 
 void update_level(Level_t* level) {
-  	player_movement(level->player, level->platforms, level->lasers, level->spikes);
+  	update_player(level->player, level->platforms, level->lasers, level->spikes);
+	animator_player(level->player);
 }
 
 void update_arcade_level(Level_t* level) {
 	arcade_move_lasers(level->lasers);
 	arcade_add_laser(level->lasers);
-	player_movement(level->player, level->platforms, level->lasers, level->spikes);
+	update_player(level->player, level->platforms, level->lasers, level->spikes);
+	animator_player(level->player);
 }
 
 void render_level(Level_t *level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, false);
+	render_player_background(level->player);
 	render_spikes(level->spikes);
 	render_platforms(level->platforms);
-	render_player(level->player);
+	render_player_foreground(level->player);
 	render_lasers(level->lasers);
+	render_player_ui(level->player);
 }
