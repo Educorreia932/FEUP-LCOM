@@ -47,13 +47,19 @@ Bitmap_t* new_bitmap(const char *filename) {
     strncpy(file_path, assets_rel_path, 256);
     strncat(file_path, filename, 256-strlen(file_path));
 
-    // printf("File: __%s__\n", file_path);
+    if( access( file_path, F_OK ) == -1 ) {
+        // file does not exist
+        printf("new_bmp: File with path '%s' does not exist\n", file_path);
+        free(bmp);
+        return NULL;
+    }
 
     // open filename in read binary mode
     FILE* file = fopen(file_path, "rb");
 
     if (file == NULL) {
-        printf("new_bmp: Failed to open file in binary mode\n");
+        printf("new_bmp: Failed to open file '%s' in binary mode\n", file_path);
+        free(bmp);
         return NULL;
     }
 
