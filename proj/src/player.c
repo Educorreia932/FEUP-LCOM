@@ -514,7 +514,7 @@ void animator_player(Player_t* player) {
 void render_player_background(Player_t* player) {
 	if (player->respawn_timer == 0) {
 		// Player is alive
-		draw_sprite(player->sparks_sprite, &player->rect, COLOR_NO_MULTIPLY, !player->heading_right);
+		draw_sprite(player->sparks_sprite, &player->rect, COLOR_NO_MULTIPLY, SPRITE_Y_AXIS * !player->heading_right);
 	}
 }
 

@@ -185,7 +185,7 @@ void update_switchboard(SwitchBoard_t* s_board) {
 }
 
 void render_switchboard(SwitchBoard_t* s_board) {
-    draw_sprite_floats(s_board->background, 0, 0, COLOR_NO_MULTIPLY, false);
+    draw_sprite_floats(s_board->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
     
     render_button(s_board->laser_buttons[0]);
     render_button(s_board->laser_buttons[1]);
