@@ -90,7 +90,11 @@
 #define FCR_CLEAR_RCVR BIT(1) /**< @brief Set to 1 to clear all bytes in RCVR FIFO. Self-clearing.  */
 #define FCR_CLEAR_XMIT BIT(2) /**< @brief Set to 1 to clear all bytes in the XMIT FIFO. Self-clearing */
 #define FCR_ENABLE_64_BYTE_FIFO BIT(5) /**< @brief Enable 64 byte FIFO (for 16750 only) */
-
+#define FCR_TRIGGER_LEVEL_MASK (BIT(7) | BIT(6)) /**< @brief Mask for the trigger level */
+#define FCR_TRIGGER_LEVEL_1 0 /**< @brief Set trigger level to 1 (16 bit FIFO value only) */
+#define FCR_TRIGGER_LEVEL_4 BIT(6) /**< @brief Set trigger level to 4 (16 bit FIFO value only) */
+#define FCR_TRIGGER_LEVEL_8 BIT(7) /**< @brief Set trigger level to 8 (16 bit FIFO value only) */
+#define FCR_TRIGGER_LEVEL_14 (BIT(7) | BIT(6)) /**< @brief Set trigger level to 14 (16 bit FIFO value only) */
 ///@}
 
 
