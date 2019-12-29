@@ -110,16 +110,12 @@ uint8_t uart_set_conf() {
 
 uint8_t uart_send_char(uint8_t to_send) {
 
-    char to_send_char = (char) to_send;
-    printf("Wrote: _%c_", to_send_char);
     return sys_outb(COM1_BASE + UART_REG_THR, to_send);
 
 }
 
 
 uint8_t uart_receive_char() {
-    
-    printf("Received the goddamn char\n");
 
     // Read LSR
     uint8_t lsr;
