@@ -166,11 +166,11 @@ void update_button(Button_t* button) {
 void render_button(Button_t* button) {
     if (button->shown && button->sprite != NULL) {
         if (!button->is_active)
-            draw_sprite(button->sprite, &button->rect, COLOR_INACTIVE, false);
+            draw_sprite(button->sprite, &button->rect, COLOR_INACTIVE, SPRITE_NORMAL);
         else if (button->hovered)
-            draw_sprite(button->sprite, &button->rect, COLOR_WHEN_HOVERED, false);
+            draw_sprite(button->sprite, &button->rect, COLOR_WHEN_HOVERED, SPRITE_NORMAL);
         else
-            draw_sprite(button->sprite, &button->rect, COLOR_NO_MULTIPLY, false);
+            draw_sprite(button->sprite, &button->rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
     }
 }
 
@@ -306,21 +306,21 @@ void render_slider(Slider_t* slider) {
     if (slider->shown) {
         if (!slider->is_active) {
             // Draw default bar
-            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_INACTIVE, false);
+            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_INACTIVE, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_INACTIVE, false);
+            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_INACTIVE, SPRITE_NORMAL);
         }
         else if (slider->hovered) {
             // Draw default bar
-            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_NO_MULTIPLY, false);
+            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_WHEN_HOVERED, false);
+            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_WHEN_HOVERED, SPRITE_NORMAL);
         }
         else {
             // Draw default bar
-            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_NO_MULTIPLY, false);
+            draw_sprite_floats(slider->bar_sprite, slider->bar_pos.x, slider->bar_pos.y, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_NO_MULTIPLY, false);
+            draw_sprite(slider->handle_sprite, &slider->handle_rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
         }
     }
 }
@@ -559,23 +559,23 @@ void render_knob(Knob_t* knob) {
     if (knob->shown) {
         if (!knob->is_active) {
             // Draw default bar
-            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_INACTIVE, false);
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_INACTIVE, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_INACTIVE, false);
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_INACTIVE, SPRITE_NORMAL);
         }
 
         else if (knob->hovered) {
             // Draw default bar
-            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_WHEN_HOVERED, false);
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_WHEN_HOVERED, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_WHEN_HOVERED, false);
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_WHEN_HOVERED, SPRITE_NORMAL);
         }
 
         else {
             // Draw default bar
-            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_NO_MULTIPLY, false);
+            draw_sprite(knob->backdrop_sprite, &knob->backdrop_rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
             // Draw handle
-            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_NO_MULTIPLY, false);
+            draw_sprite(knob->knob_sprite, &knob->knob_rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
         }
     }
 }

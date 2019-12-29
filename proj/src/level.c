@@ -169,7 +169,7 @@ void update_arcade_level(Level_t* level) {
 }
 
 void render_level(Level_t *level) {
-	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, false);
+	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_player_background(level->player);
 	render_spikes(level->spikes);
 	render_platforms(level->platforms);

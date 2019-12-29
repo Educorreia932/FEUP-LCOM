@@ -81,7 +81,7 @@ void update_cursor() {
 
 void render_cursor() {
     if (cursor->rendered)
-        draw_sprite_vec2d(cursor->sprite, cursor->pos, COLOR_NO_MULTIPLY, false);
+        draw_sprite_vec2d(cursor->sprite, cursor->pos, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 }
 
 inline bool is_cursor_inside_rect(Rect_t* rect) {
