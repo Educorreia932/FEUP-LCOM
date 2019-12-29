@@ -149,6 +149,9 @@ uint8_t uart_set_conf() {
     if (sys_outb(COM1_BASE + UART_REG_IER, ier))
         return 1;
 
+    // uint8_t fcr = FCR_ENABLE_BOTH_FIFO | FCR_TRIGGER_LEVEL_4;
+    // if (sys_outb(COM1_BASE + UART_REG_FCR, fcr));
+
     return 0;
 }
 
@@ -185,15 +188,23 @@ uint8_t uart_receive_char() {
     if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
         return 1;
     
-    // Check for errors in the communication
-    if (lsr & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR))
-        return 1;
-
     uint8_t received_char;
-    if (util_sys_inb(COM1_BASE + UART_REG_RBR, &received_char))
-        return 1;
-    
-    return queue_push_back(rq, received_char);
+
+    while (lsr & LSR_RECEIVER_DATA) {
+        if (util_sys_inb(COM1_BASE + UART_REG_RBR, &received_char))
+            return 1;
+
+        // Check for errors in the communication
+        if (!(lsr & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR))) {
+            // aka It's all good
+            queue_push_back(rq, received_char);
+        }
+
+        if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
+            return 1;
+    }
+
+    return 0;
 
 }
 
@@ -215,7 +226,7 @@ void uart_ih() {
             break;
         case IIR_INT_SOURCE_THR_EMPTY:
             uart_thr_empty_ih();
-             break;
+            break;
         // case IIR_INT_SOURCE_RECEIVER_LINE_STATUS:
         //     break;
         // case IIR_INT_SOURCE_CHARACTER_TIMEOUT_FIFO:
@@ -293,6 +304,11 @@ uint8_t test_uart(uint8_t tx) {
                     case HARDWARE: /* hardware interrupt notification */
                         if (msg.m_notify.interrupts & uart_mask) {
                             uart_ih();
+                            while (!(queue_is_empty(rq))) {
+                                printf("%d", queue_front(rq));
+                                queue_pop(rq);
+                            }
+                            printf("\n");
                         }
                         break;
                     default:
@@ -301,12 +317,7 @@ uint8_t test_uart(uint8_t tx) {
             }
         }
 
-        printf("\n");
-        while (!(queue_is_empty(rq))) {
-            printf("%d", queue_front(rq));
-            queue_pop(rq);
-        }
-        printf("\n");
+        
         uart_free_sw_queues();
         uart_unsubscribe_int();
     }
