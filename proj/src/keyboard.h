@@ -10,8 +10,7 @@
 
 extern uint8_t scancode, is_scancode_complete, scancode_no_bytes;
 
-int (kbd_subscribe_int)(uint8_t *bit_no);
-
+int (kbd_subscribe_int)(uint32_t *bit_mask);
 int (kbd_unsubscribe_int)();
 
 

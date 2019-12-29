@@ -13,12 +13,12 @@ static int kbd_hook_id;
  * Sends the bit number for the interrupt through bit_no and saves the hook id on kbd_hook_id to be used later for unsubscribing and other actions.
  * @return 0 on success, 1 otherwise
 */
-int (kbd_subscribe_int)(uint8_t *bit_no) {
-	if (!bit_no) // Check if pointer is NULL
+int (kbd_subscribe_int)(uint32_t *bit_mask) {
+	if (!bit_mask) // Check if pointer is NULL
 		return 1;
 
 	kbd_hook_id = KBD_IRQ;
-	*bit_no = KBD_IRQ;
+	*bit_mask = BIT(KBD_IRQ);
 
 	if (sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &kbd_hook_id))
 		return 1;

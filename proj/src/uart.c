@@ -23,7 +23,15 @@ void uart_free_sw_queues() {
     }
 }
 
-uint8_t uart_subscribe_int(int *bit_mask) {
+uint8_t uart_receiver_q_front() {
+    return queue_front(rq);
+}
+
+void uart_receiver_q_pop() {
+    queue_pop(rq);
+}
+
+uint8_t uart_subscribe_int(uint32_t *bit_mask) {
     if (!bit_mask) // Check if pointer is NULL
         return 1;
 
@@ -257,7 +265,7 @@ uint8_t test_uart(uint8_t tx) {
             uart_send_char(s[i]);
         }
 
-        int uart_mask;
+        uint32_t uart_mask;
         uart_subscribe_int(&uart_mask);
 
         int r, ipc_status;
@@ -286,7 +294,7 @@ uint8_t test_uart(uint8_t tx) {
     }
     else {
         printf("Configured to receive data\n"); 
-        int uart_mask;
+        uint32_t uart_mask;
         uart_subscribe_int(&uart_mask);
 
         int r, ipc_status;
@@ -304,11 +312,6 @@ uint8_t test_uart(uint8_t tx) {
                     case HARDWARE: /* hardware interrupt notification */
                         if (msg.m_notify.interrupts & uart_mask) {
                             uart_ih();
-                            while (!(queue_is_empty(rq))) {
-                                printf("%d", queue_front(rq));
-                                queue_pop(rq);
-                            }
-                            printf("\n");
                         }
                         break;
                     default:
@@ -317,6 +320,12 @@ uint8_t test_uart(uint8_t tx) {
             }
         }
 
+
+        while (!(queue_is_empty(rq))) {
+            printf("%d ", queue_front(rq));
+            queue_pop(rq);
+        }
+        printf("\n");
         
         uart_free_sw_queues();
         uart_unsubscribe_int();

@@ -86,7 +86,7 @@ static void player_set_jump(uint8_t jump) {
 
 }
 
-static void player_switch_gravity() {
+void player_switch_gravity() {
 	
 	Player_t* p = get_game_manager()->level->player;
 

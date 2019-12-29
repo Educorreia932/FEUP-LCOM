@@ -61,12 +61,12 @@ date_t get_date() {
 	return t;
 }
 
-int (rtc_subscribe_int)(uint8_t *bit_no) {
-	if (!bit_no) // Check if pointer is NULL
+int (rtc_subscribe_int)(uint32_t *bit_mask) {
+	if (!bit_mask) // Check if pointer is NULL
 		return 1;
 
-	*bit_no = RTC_IRQ;
 	rtc_hook_id = RTC_IRQ;
+	*bit_mask = BIT(RTC_IRQ);
 
 	if (sys_irqsetpolicy(RTC_IRQ, IRQ_REENABLE, &rtc_hook_id))
 		return 1;
@@ -156,13 +156,11 @@ int rtc_int(uint16_t period) {
 	printf("Initial time: %u:%u:%u\n", initial_time.hour, initial_time.minutes, initial_time.seconds);
 
 	rtc_set_alarm(period);
-
-	uint8_t bit_no = 0;
         
 	// Only avoids making this operation on every notification
-	int rtc_bit_mask = BIT(bit_no);
+	uint32_t rtc_bit_mask;
 
-	if (rtc_subscribe_int(&bit_no)) 
+	if (rtc_subscribe_int(&rtc_bit_mask)) 
     	return 1;
 
 	int r, ipc_status;

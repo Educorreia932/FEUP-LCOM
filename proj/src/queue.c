@@ -35,10 +35,16 @@ Queue_t* new_queue() {
 void free_queue(Queue_t* q) {
 
     node_t *cur_node = q->front, *next_node;
-    while (cur_node != NULL) {
-        next_node = cur_node->next;
-        free(cur_node);
-        cur_node = next_node;
+
+    if (q->front == q->rear) {
+        free(q->front);
+    }
+    else {
+        while (cur_node != NULL) {
+            next_node = cur_node->next;
+            free(cur_node);
+            cur_node = next_node;
+        }
     }
 
     free(q);

@@ -14,7 +14,7 @@ extern struct packet mouse_parsed_packet;
  * @brief Susbcribes mouse interrupts 
  * @returns 0 on success, non-zero otherwise
  */
-uint8_t (mouse_subscribe_int)(uint8_t *bit_no);
+uint8_t (mouse_subscribe_int)(uint32_t *bit_mask);
 
 /**
  * @brief Unsubcribes mouse interrupts

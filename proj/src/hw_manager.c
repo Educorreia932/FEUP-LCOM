@@ -4,26 +4,17 @@
 #include "mouse.h"
 #include "video.h"
 #include "rtc.h"
+#include "uart.h"
 
 // Frame rate
 #define FRAME_PERIOD 1  // 60 fps
 
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
-uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask, uint32_t* rtc_mask) {
-	uint8_t timer0_bit_no = TIMER0_IRQ;
-	uint8_t kbd_bit_no = KBD_IRQ;
-	uint8_t mouse_bit_no = MOUSE_IRQ;
-	uint8_t rtc_bit_no = RTC_IRQ;
-
-	// Set the masks to send outside this function
-	*timer0_mask = BIT(timer0_bit_no);
-	*kbd_mask = BIT(kbd_bit_no);
-	*mouse_mask = BIT(mouse_bit_no);
-	*rtc_mask = BIT(rtc_bit_no);
+uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask, uint32_t *rtc_mask, uint32_t *uart_mask) {
 
 	/* ENABLE MOUSE STUFF */
-	if (mouse_subscribe_int(&mouse_bit_no))
+	if (mouse_subscribe_int(mouse_mask))
 		return 1;
 
 	if (mouse_disable_int())
@@ -40,11 +31,11 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 		return 1;
 
 	/* ENABLE TIMER 0 */
-	if (timer_subscribe_int(&timer0_bit_no))
+	if (timer0_subscribe_int(timer0_mask))
 		return 1;
 
 	/* ENABLE KEYBOARD */
-	if (kbd_subscribe_int(&kbd_bit_no)) 
+	if (kbd_subscribe_int(kbd_mask)) 
 		return 1;
 
 	/* ENABLE RTC */
@@ -55,20 +46,32 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 
 	printf("%x\n", reg_c);
 
-	if (rtc_subscribe_int(&rtc_bit_no))
+	if (rtc_subscribe_int(rtc_mask))
+		return 1;
+
+	/* ENABLE UART */
+	if (uart_set_conf())
+		return 1;
+	
+	uart_initialize_sw_queues();
+
+	if (uart_subscribe_int(uart_mask))
 		return 1;
 
 	return 0;
 }
 
 void hw_manager_unsubscribe_int() {
-	timer_unsubscribe_int();
+	timer0_unsubscribe_int();
 	kbd_unsubscribe_int();
+	
+	// MOUSE
 	mouse_unsubscribe_int();
 	mouse_data_reporting_disable();
 
 	uint32_t data;
 
+	// RTC
 	rtc_read_register(RTC_REG_B, &data);
 
 	data &= ~RTC_AIE;
@@ -76,12 +79,17 @@ void hw_manager_unsubscribe_int() {
 	rtc_write_register(RTC_DATA_REG, data);
 
 	rtc_unsubscribe_int();
+
+	// UART
+	uart_free_sw_queues();
+	uart_unsubscribe_int();
+
 }
 
 /* INT HANDLER STUFF */
 
 inline void hw_manager_timer0_ih() {
-	timer_int_handler();
+	timer0_int_handler();
 }
 
 bool hw_manager_is_frame() {
@@ -144,3 +152,19 @@ inline uint8_t hw_manager_enter_video_mode() {
 inline void hw_manager_exit_video_mode() {
 	vg_exit();
 }
+
+inline void hw_manager_uart_ih() {
+	uart_ih();
+}
+
+inline void hw_manager_uart_send_char(uint8_t to_send) {
+	uart_send_char(to_send);
+}
+
+inline uint8_t hw_manager_uart_front() {
+	return uart_receiver_q_front();
+}
+
+inline void hw_manager_uart_pop() {
+	uart_receiver_q_pop();
+} 

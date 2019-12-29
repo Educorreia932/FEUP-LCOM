@@ -8,6 +8,8 @@
 
 typedef struct Player Player_t;
 
+void player_switch_gravity();
+
 Player_t* new_player(bool ui_controls, bool arcade_mode);
 
 void free_player(Player_t* player);

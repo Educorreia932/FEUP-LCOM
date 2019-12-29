@@ -75,8 +75,6 @@ void update_cursor() {
         768
     );
 
-    if (mouse_get_rb_down())
-        printf("x: %u, y: %u \n", (int) cursor->pos.x, (int) cursor->pos.y);
 }
 
 void render_cursor() {
