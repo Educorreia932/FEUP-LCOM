@@ -50,7 +50,7 @@ void free_queue(Queue_t* q) {
  * Enqueues/Insert an element at the rear of a queue.
  * Function returns 1 on success otherwise returns 0.
  */
-uint8_t queue_push(Queue_t *q, uint8_t data)
+uint8_t queue_push_back(Queue_t *q, uint8_t data)
 {
     node_t * newNode = NULL;
 
@@ -128,14 +128,14 @@ uint8_t queue_pop(Queue_t *q)
  * at rear of the queue on success otherwise return 0xFF as 
  * error code.
  */
-// uint8_t queue_rear(Queue_t *q)
-// {
-//     // Return INT_MIN if queue is empty otherwise rear.
-//     return (queue_is_empty(q))
-//             ? 0xFF
-//             : q->rear->data;
+uint8_t queue_back(Queue_t *q)
+{
+    // Return INT_MIN if queue is empty otherwise rear.
+    return (queue_is_empty(q))
+            ? 0xFF
+            : q->rear->data;
 
-// }
+}
 
 
 /**
@@ -143,7 +143,7 @@ uint8_t queue_pop(Queue_t *q)
  * at front of the queue on success otherwise return 0xFF as 
  * error code.
  */
-uint8_t queue_top(Queue_t *q)
+uint8_t queue_front(Queue_t *q)
 {
     // Return 0xFF if queue is empty otherwise front.
     return (queue_is_empty(q))

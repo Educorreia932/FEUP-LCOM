@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 }
 
 static int print_usage() {
-    printf("Usage: game < player number >\n            0 - Singleplayer\n            1 - Player 1 (platformer)\n            2 - Player 2 (switchboard)\n        test\n");
+    printf("Usage: level | (sw | board) | arcade\n");
 
     return 1;
 }
