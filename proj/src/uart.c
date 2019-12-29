@@ -1,7 +1,27 @@
 #include "uart.h"
+#include "queue.h"
 
+// tq = transmitter queue, rq = receiver queue
+static Queue_t *tq, *rq;
 static int ser_hook_id;
-uint8_t uart_received_char = 0;
+
+void uart_initialize_sw_queues() {
+    if (tq == NULL)
+        tq = new_queue();
+    if (rq == NULL)
+        rq = new_queue();
+}
+
+void uart_free_sw_queues() {
+    if (tq != NULL) {
+        free_queue(tq);
+        tq = NULL;
+    }
+    if (rq != NULL) {
+        free_queue(rq);
+        rq = NULL;
+    }
+}
 
 uint8_t uart_subscribe_int(int *bit_mask) {
     if (!bit_mask) // Check if pointer is NULL
@@ -63,6 +83,31 @@ uint8_t uart_print_conf() {
             break;
     }
 
+
+    // IER
+
+    uint8_t ier;
+    if (util_sys_inb(COM1_BASE + UART_REG_IER, &ier))
+        return 1;
+    
+    if (ier & IER_RECEIVED_DATA_INT)
+        printf("IER: Received data int on\n");
+    else
+        printf("IER: Received data int off\n");
+    if (ier & IER_TRANSMITTER_EMPTY_INT)
+        printf("IER: THR empty int on\n");
+    else
+        printf("IER: THR empty int off\n");
+    if (ier & IER_RECEIVER_LINE_STATUS_INT)
+        printf("IER: Receiver line status int on\n");
+    else
+        printf("IER: Receiver line status int is off\n");
+    if (ier & IER_MODEM_STATUS_INT)
+        printf("IER: Modem status int on\n");
+    else
+        printf("IER: Modem status int off\n");
+    
+
     return 0;
 }
 
@@ -100,7 +145,7 @@ uint8_t uart_set_conf() {
 
     /* IER */
     // Get interrupts for receiving data only
-    uint8_t ier = IER_RECEIVED_DATA_INT;
+    uint8_t ier = IER_RECEIVED_DATA_INT | IER_TRANSMITTER_EMPTY_INT;
     if (sys_outb(COM1_BASE + UART_REG_IER, ier))
         return 1;
 
@@ -108,12 +153,30 @@ uint8_t uart_set_conf() {
 }
 
 
-uint8_t uart_send_char(uint8_t to_send) {
-
-    return sys_outb(COM1_BASE + UART_REG_THR, to_send);
-
+// Called when the when we receive the THR empty interrupt
+static void uart_thr_empty_ih() {
+    if (!queue_is_empty(tq)) {
+        uint8_t to_send = queue_front(tq);
+        queue_pop(tq);
+        sys_outb(COM1_BASE + UART_REG_THR, to_send);
+    }
 }
 
+uint8_t uart_send_char(uint8_t to_send) {
+
+    uint8_t lsr;
+    if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
+        return 1;
+    
+    queue_push_back(tq, to_send);
+
+    if (lsr & LSR_THR_EMPTY) {
+        uart_thr_empty_ih();
+    }
+
+    return 0;
+
+}
 
 uint8_t uart_receive_char() {
 
@@ -126,7 +189,11 @@ uint8_t uart_receive_char() {
     if (lsr & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR))
         return 1;
 
-    return util_sys_inb(COM1_BASE + UART_REG_RBR, &uart_received_char);
+    uint8_t received_char;
+    if (util_sys_inb(COM1_BASE + UART_REG_RBR, &received_char))
+        return 1;
+    
+    return queue_push_back(rq, received_char);
 
 }
 
@@ -137,16 +204,21 @@ void uart_ih() {
     uint8_t iir;
     util_sys_inb(COM1_BASE + UART_REG_IIR, &iir);
 
+    if (iir & IIR_NO_INT_PENDING)
+        return;
+
     // Find what caused the interrupt
     switch (iir & IIR_INT_SOURCE_MASK) {
         case IIR_INT_SOURCE_RECEIVED_DATA_AVAILABLE:
             uart_receive_char();
+            printf("%d\n", queue_back(rq));
             break;
+        case IIR_INT_SOURCE_THR_EMPTY:
+            uart_thr_empty_ih();
+             break;
         // case IIR_INT_SOURCE_RECEIVER_LINE_STATUS:
         //     break;
         // case IIR_INT_SOURCE_CHARACTER_TIMEOUT_FIFO:
-        //     break;
-        // case IIR_INT_SOURCE_THR_EMPTY:
         //     break;
         // case IIR_INT_SOURCE_MODEM_STATUS:
         //     break;
@@ -162,15 +234,43 @@ uint8_t test_uart(uint8_t tx) {
     uart_set_conf();
     // uart_print_conf();
 
-    const char* s = "Nao digas ao Souto que plagiamos a LCOM, shhh!";
+    uart_initialize_sw_queues();
+
+    const size_t s_size = 5;
+    const uint8_t s[5] = {1, 2, 3, 4, 10};
 
     if (tx == 0) {
         printf("Configured to send data\n");        
-
-        for (size_t i = 0; i < strlen(s); ++i) {
+        
+        for (size_t i = 0; i < s_size; ++i) {
             uart_send_char(s[i]);
-            tickdelay(1);
         }
+
+        int uart_mask;
+        uart_subscribe_int(&uart_mask);
+
+        int r, ipc_status;
+	    message msg;
+
+        while (1) {
+            if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+                printf("start_game: driver_receive failed with: %d", r);
+                continue;
+            }
+
+            if (is_ipc_notify(ipc_status)) {
+                switch (_ENDPOINT_P(msg.m_source)) {
+                    case HARDWARE: /* hardware interrupt notification */
+                        uart_ih();
+                        break;
+                    default:
+                        break; /* no other notifications expected: do nothing */     
+                }
+            }
+        }
+
+        uart_free_sw_queues();
+        uart_unsubscribe_int();
 
     }
     else {
@@ -181,9 +281,8 @@ uint8_t test_uart(uint8_t tx) {
         int r, ipc_status;
 	    message msg;
 
-        size_t received_chars = 0;
-
-        while (received_chars < strlen(s)) {
+        printf("Entering while loop\n");
+        while (queue_front(rq) != 10) {
             if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
                 printf("start_game: driver_receive failed with: %d", r);
                 continue;
@@ -194,9 +293,6 @@ uint8_t test_uart(uint8_t tx) {
                     case HARDWARE: /* hardware interrupt notification */
                         if (msg.m_notify.interrupts & uart_mask) {
                             uart_ih();
-                            ++received_chars;
-                            char char_casted = (char) uart_received_char;
-                            printf("%c", char_casted);
                         }
                         break;
                     default:
@@ -206,6 +302,12 @@ uint8_t test_uart(uint8_t tx) {
         }
 
         printf("\n");
+        while (!(queue_is_empty(rq))) {
+            printf("%d", queue_front(rq));
+            queue_pop(rq);
+        }
+        printf("\n");
+        uart_free_sw_queues();
         uart_unsubscribe_int();
     }
 
