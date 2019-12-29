@@ -73,25 +73,24 @@ void free_sprite(Sprite_t *s) {
   free(s);
 }
 
-inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed) {
+inline void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, SpriteReverse reversed) {
 	draw_sprite_floats(s, r->x, r->y, color_to_multiply, reversed);
 }
 
-inline void draw_sprite_vec2d(Sprite_t *s, Vec2d_t v, uint32_t color_to_multiply, bool reversed) {
+inline void draw_sprite_vec2d(Sprite_t *s, Vec2d_t v, uint32_t color_to_multiply, SpriteReverse reversed) {
   draw_sprite_floats(s, v.x, v.y, color_to_multiply, reversed);
 }
 
-void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, bool reversed) {
+// To not have to do the switch case on every draw_sprite call
+static void (*bitmap_functions[4])(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) = {draw_bitmap, draw_bitmap_reversed_y_axis, draw_bitmap_reversed_x_axis, draw_bitmap_reversed_both_axis};
+
+void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, SpriteReverse reversed) {
 	if (s->animation_state > s->size) {
 		printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", s->animation_state, s->size);
 		return;
 	}
 
-	if (!reversed) 
-		draw_bitmap(s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);
-
-	else 
-		draw_bitmap_reversed(s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);	
+  bitmap_functions[reversed](s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);
 }
 
 inline uint16_t sprite_get_width(Sprite_t *s) {

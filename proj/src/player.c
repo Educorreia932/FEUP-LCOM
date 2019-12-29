@@ -288,6 +288,10 @@ void free_player(Player_t* player) {
 	free(player);
 }
 
+inline static bool player_is_grav_inverted(Player_t *player) {
+	return player->gravity < 0 ? true : false;
+}
+
 // TODO: This is_grounded is very sketchy, improve it later down the road
 static bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 	Rect_t r;
@@ -516,15 +520,18 @@ void render_player_background(Player_t* player) {
 
 void render_player_foreground(Player_t* player) {
 
+	SpriteReverse sr = SPRITE_Y_AXIS * player->heading_right
+		+ SPRITE_X_AXIS * player_is_grav_inverted(player);
+
 	if (player->respawn_timer == 0)
 		// Player is alive
 		if (player->grounded && player->is_idle)
-			draw_sprite(player->idle_sprite, &player->rect, COLOR_NO_MULTIPLY, player->heading_right);
+			draw_sprite(player->idle_sprite, &player->rect, COLOR_NO_MULTIPLY, sr);
 		else
-			draw_sprite(player->walk_sprite, &player->rect, COLOR_NO_MULTIPLY, player->heading_right);
+			draw_sprite(player->walk_sprite, &player->rect, COLOR_NO_MULTIPLY, sr);
 	else {
 		// Player is dead
-		draw_sprite(player->idle_sprite, &player->rect, COLOR_RED, player->heading_right);
+		draw_sprite(player->idle_sprite, &player->rect, COLOR_RED, sr);
 	}
 
 }
