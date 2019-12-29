@@ -10,14 +10,21 @@
 
 typedef struct Sprite Sprite_t;
 
+typedef enum SpriteReverse {
+    SPRITE_NORMAL = 0,
+    SPRITE_Y_AXIS = 1,
+    SPRITE_X_AXIS = 2,
+    SPRITE_BOTH_AXIS = 3
+} SpriteReverse;
+
 /* SPRITE */
 
 Sprite_t* new_sprite(float x_offset, float y_offset, int num, ...);
 void free_sprite(Sprite_t *s);
 
-void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, bool reversed);
-void draw_sprite_vec2d(Sprite_t *s, Vec2d_t v, uint32_t color_to_multiply, bool reversed);
-void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, bool reversed);
+void draw_sprite(Sprite_t *s, Rect_t *r, uint32_t color_to_multiply, SpriteReverse reversed);
+void draw_sprite_vec2d(Sprite_t *s, Vec2d_t v, uint32_t color_to_multiply, SpriteReverse reversed);
+void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multiply, SpriteReverse reversed);
 
 uint16_t sprite_get_width(Sprite_t *s);
 uint16_t sprite_get_height(Sprite_t *s);

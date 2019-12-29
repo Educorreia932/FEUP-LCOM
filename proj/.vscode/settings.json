@@ -35,6 +35,12 @@
 		"locale": "c",
 		"i8042.h": "c",
 		"math_utils.h": "c",
-		"mouse_cursor.h": "c"
+		"mouse_cursor.h": "c",
+		"__tree": "c",
+		"bitset": "c",
+		"initializer_list": "c",
+		"map": "c",
+		"memory": "c",
+		"utility": "c"
 	},
 }

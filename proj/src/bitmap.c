@@ -164,6 +164,7 @@ inline bool is_not_background(uint16_t color) {
 }
 
 void draw_bitmap(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) {
+
     if (bmp == NULL)
         return;
 
@@ -223,7 +224,8 @@ void draw_bitmap(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint1
 
 }
 
-void draw_bitmap_reversed(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) {
+void draw_bitmap_reversed_y_axis(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) {
+
     if (bmp == NULL)
         return;
 
@@ -260,9 +262,130 @@ void draw_bitmap_reversed(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignme
 
     uint16_t* imgPos;
     uint16_t* bufferPos;
-    
+
     for (int32_t i = 0; i < height; i++) {
         int pos = y + height - 1 - i;
+
+        if (pos < 0 || pos >= vg_info.y_res)
+            continue;
+
+        bufferPos = (uint16_t*) double_buffer_base + x + width + pos * vg_info.x_res;
+
+        imgPos = (uint16_t*) bmp->data + xCorrection + i * width;
+
+        for (int j = 0; j < drawWidth; j++) {
+            if (is_not_background(*imgPos)) 
+                *bufferPos = *imgPos & multiply;
+
+            imgPos++;
+            bufferPos--;
+        }
+    }
+
+}
+
+void draw_bitmap_reversed_x_axis(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) {
+
+    if (bmp == NULL)
+        return;
+
+    int32_t width = bmp->info.width;
+    int32_t drawWidth = width;
+    int32_t height = bmp->info.height;
+
+    if (alignment == ALIGN_CENTER)
+        x -= width / 2;
+
+    else if (alignment == ALIGN_RIGHT)
+        x -= width;
+
+    // Completely out of bounds
+    if (x + width < 0 || x > vg_info.x_res || y + height < 0 || y > vg_info.y_res)
+        return;
+
+    int xCorrection = 0;
+
+    if (x < 0) {
+        xCorrection = -x;
+        drawWidth -= xCorrection;
+        x = 0;
+
+        if (drawWidth > vg_info.x_res )
+            drawWidth = vg_info.x_res;
+    }
+
+    else if (x + drawWidth >= vg_info.x_res )
+        drawWidth = vg_info.x_res - x;
+
+    // So because of the 4 byte padding, every bitmap with uneven width would render incorrectly, as such, we need to increment width by 1 in order to guarantee our pointer arithmetic is correct (this is, to include the 2 byte padding)
+    if (width % 2)
+        width += 1;
+
+    uint16_t* imgPos;
+    uint16_t* bufferPos;
+    
+    for (int32_t i = 0; i < height; i++) {
+        int pos = y + i;
+
+        if (pos < 0 || pos >= vg_info.y_res)
+            continue;
+
+        bufferPos = (uint16_t*) double_buffer_base
+            + x + pos * vg_info.x_res;
+
+        imgPos = (uint16_t*) bmp->data + xCorrection + i * width;
+        for (int j = 0; j < drawWidth; ++j) {
+            if (is_not_background(*imgPos)) {
+                *bufferPos = *imgPos & multiply;
+            }
+            ++imgPos;
+            ++bufferPos;
+        }
+    }
+
+}
+
+void draw_bitmap_reversed_both_axis(Bitmap_t *bmp, int32_t x, int32_t y, Alignment alignment, uint16_t multiply) {
+
+    if (bmp == NULL)
+        return;
+
+    int32_t width = bmp->info.width;
+    int32_t drawWidth = width;
+    int32_t height = bmp->info.height;
+
+    if (alignment == ALIGN_CENTER)
+        x -= width / 2;
+
+    else if (alignment == ALIGN_RIGHT)
+        x -= width;
+
+    if (x + width < 0 || x > vg_info.x_res || y + height < 0 || y > vg_info.y_res)
+        return;
+
+    int xCorrection = 0;
+
+    if (x < 0) {
+        xCorrection = -x;
+        drawWidth -= xCorrection;
+        x = 0;
+
+        if (drawWidth > vg_info.x_res )
+            drawWidth = vg_info.x_res;
+    }
+
+    else if (x + drawWidth >= vg_info.x_res )
+        drawWidth = vg_info.x_res - x;
+
+    // So because of the 4 byte padding, every bitmap with uneven width would render incorrectly, as such, we need to increment width by 1 in order to guarantee our pointer arithmetic is correct (this is, to include the 2 byte padding)
+    if (width % 2)
+        width += 1;
+
+    uint16_t* imgPos;
+    uint16_t* bufferPos;
+
+    for (int32_t i = 0; i < height; i++) {
+        int pos = y + i;
 
         if (pos < 0 || pos >= vg_info.y_res)
             continue;
