@@ -163,8 +163,13 @@ uint8_t uart_received_char;
 
 /* FUNCTIONS */
 
-uint8_t uart_subscribe_int(int *bit_mask);
-uint8_t ser_unsubscribe_int();
+uint8_t uart_subscribe_int(uint32_t *bit_mask);
+uint8_t uart_unsubscribe_int();
+
+void uart_initialize_sw_queues();
+void uart_free_sw_queues();
+uint8_t uart_receiver_q_front();
+void uart_receiver_q_pop();
 
 uint8_t uart_print_conf();
 uint8_t uart_set_conf();

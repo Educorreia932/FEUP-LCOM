@@ -7,7 +7,6 @@
 
 extern unsigned long int global_timer0_counter;
 
-// LCF takes care of these ones
-// int timer_subscribe_int(uint8_t *bit_no);
-// int timer_unsubscribe_int();
-// void timer_int_handler();
+int timer0_subscribe_int(uint32_t *bit_mask);
+int timer0_unsubscribe_int();
+void timer0_int_handler();

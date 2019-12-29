@@ -44,8 +44,7 @@ void rtc_ih();
 
 void rtc_set_alarm(uint32_t period);
 
-int rtc_subscribe_int();
-
+int rtc_subscribe_int(uint32_t *bit_mask);
 int rtc_unsubscribe_int();
 
 int rtc_read_register(uint32_t addr, uint32_t* data);

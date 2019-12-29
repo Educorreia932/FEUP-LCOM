@@ -1,7 +1,6 @@
 #include "game_manager.h"
 #include "hw_manager.h"
 
-
 static GameManager_t* gm;
 
 char* assets_rel_path = "home/lcom/labs/proj/assets/";
@@ -18,6 +17,14 @@ void gm_void_safety_function() {
 
 void gm_update_level() {
 	update_cursor();
+	switch (hw_manager_uart_front()) {
+		case 0xFF:
+			break;
+		case 5:
+			player_switch_gravity();
+			hw_manager_uart_pop();
+			break;
+	}
 	update_level(get_game_manager()->level);
 }
 
@@ -29,6 +36,9 @@ void gm_update_arcade() {
 void gm_update_switchboard() {
 	update_cursor();
 	update_switchboard(get_game_manager()->s_board);
+	if (mouse_get_rb_down()) {
+		hw_manager_uart_send_char(5);
+	}
 }
 
 void gm_render_level() {
@@ -218,8 +228,9 @@ uint8_t start_game(GameModeEnum gamemode) {
 	uint32_t timer0_bit_mask;
 	uint32_t mouse_bit_mask;
 	uint32_t rtc_bit_mask;
+	uint32_t uart_bit_mask;
 	
-	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask))
+	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask, &uart_bit_mask))
 		printf("start_game: Failed to enable interrupts\n");
 
 	int r, ipc_status;
@@ -258,8 +269,11 @@ uint8_t start_game(GameModeEnum gamemode) {
 					}
 
 					if (msg.m_notify.interrupts & rtc_bit_mask) {
-						printf("RTC\n");
 						hw_manager_rtc_ih();
+					}
+
+					if (msg.m_notify.interrupts & uart_bit_mask) {
+						hw_manager_uart_ih();
 					}
 
 					break;

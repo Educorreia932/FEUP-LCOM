@@ -104,13 +104,13 @@ int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
  * @brief Subscribes and enables Timer 0 interrupts. 
  * @details Sends the bit number for the interrupt through bit_no and saves the hook id on timer0_hook_id to be used later for unsubscribing and other actions 
  */
-int (timer_subscribe_int)(uint8_t *bit_no) {
+int timer0_subscribe_int(uint32_t *bit_mask) {
 
-  if (!bit_no) // Check if pointer is NULL
+  if (!bit_mask) // Check if pointer is NULL
     return 1;
 
-  *bit_no = TIMER0_IRQ;
   timer0_hook_id = TIMER0_IRQ;
+  *bit_mask = BIT(TIMER0_IRQ);
   global_timer0_counter = 0; // Reset time counter
 
   if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer0_hook_id) != OK)
@@ -123,12 +123,12 @@ int (timer_subscribe_int)(uint8_t *bit_no) {
  * @brief Unsubscribes Timer 0 interrupts.
  * @returns 0 upon success, 1 otherwise
  */
-int (timer_unsubscribe_int)() {
+int timer0_unsubscribe_int() {
 	return sys_irqrmpolicy(&timer0_hook_id) != OK;
 }
 
 /** @brief Increments the number of times that the timer sent an interrupt */
-void (timer_int_handler)() {
+void timer0_int_handler() {
   ++global_timer0_counter;
 }
 

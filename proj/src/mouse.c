@@ -18,12 +18,12 @@ static uint8_t packet_bytes[3];
 static bool found_first_byte = false;
 ///@}
 
-uint8_t (mouse_subscribe_int)(uint8_t *bit_no) {
-    if (!bit_no) // Check if pointer is NULL
+uint8_t (mouse_subscribe_int)(uint32_t *bit_mask) {
+    if (!bit_mask) // Check if pointer is NULL
         return 1;
 
     mouse_hook_id = MOUSE_IRQ;
-    *bit_no = MOUSE_IRQ;	
+    *bit_mask = BIT(MOUSE_IRQ);	
 
     return sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &mouse_hook_id);
 }
