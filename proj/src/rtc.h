@@ -6,6 +6,8 @@ typedef struct {
 	uint16_t seconds, minutes, hour;
 } date_t;
 
+#define RTC_WAIT_UIP 244 // Update time in microseconds 
+
 #define RTC_IRQ 8 /** @brief RTC IRQ line */
 #define RTC_ADDR_REG 0x70 /** @brief RTC Address Port **/
 #define RTC_DATA_REG 0x71 /** @brief RTC Data Port **/

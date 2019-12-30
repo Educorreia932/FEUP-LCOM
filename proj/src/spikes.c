@@ -9,7 +9,6 @@ struct Spikes {
 };
 
 Spikes_t* new_arcade_spikes() {
-
     Spikes_t* spikes = (Spikes_t*) malloc(sizeof(Spikes_t));
     if (spikes == NULL) {
         printf("new_arcade_spikes: Failed to allocate memory for the Spikes object\n");
@@ -57,7 +56,6 @@ Spikes_t* new_arcade_spikes() {
 }
 
 Spikes_t* prototype_spikes() {
-
     Spikes_t* spikes = (Spikes_t*) malloc(sizeof(Spikes_t));
     if (spikes == NULL) {
         printf("prototype_spikes: Failed to allocate memory for the Spikes object\n");
@@ -131,9 +129,6 @@ void render_spikes(Spikes_t* spikes) {
         draw_sprite_dynamic(spikes->sprite, &spikes->render_rects[i], COLOR_NO_MULTIPLY);
 }
 
-/**
- * @returns True if the player "hitbox" is colliding with a spike, false otherwise
- */
 bool player_touches_spike(Spikes_t* spikes, Rect_t* player) {
     for (uint32_t i = 0; i < spikes->num_spikes; i++)
         if (rect_collision(&spikes->collision_rects[i], player))

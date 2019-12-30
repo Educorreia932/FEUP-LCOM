@@ -85,7 +85,6 @@ Level_t* new_arcade_level() {
 }
 
 Level_t* prototype_level(bool is_single_player) {
-	
 	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
 
 	// Background
@@ -123,11 +122,13 @@ Level_t* prototype_level(bool is_single_player) {
 		free_player(level->player);
 		free_platforms(level->platforms);
 		free(level);
+
 		return NULL;
 	}
 
 	// Spikes
 	level->spikes = prototype_spikes();
+
 	if (level->spikes == NULL) {
 		printf("prototype_level: Failed to create the Spikes\n");
 		free_sprite(level->background);
@@ -135,6 +136,46 @@ Level_t* prototype_level(bool is_single_player) {
 		free_platforms(level->platforms);
 		free_lasers(level->lasers);
 		free(level);
+		
+		return NULL;
+	}
+
+	//Powerups
+	level->pu[0] = new_power_up("powerups/laser_icon.bmp", rect(48, 84, 40, 40), placeholder);
+	if (level->pu[0]== NULL) {
+		printf("prototype_level: Failed to create laser powerup\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free_lasers(level->lasers);
+		free_spikes(level->spikes);
+
+		return NULL;
+	}
+
+	level->pu[1] = new_power_up("powerups/anti_gravity_icon.bmp", rect(400, 704, 40, 40), placeholder);
+
+	if (level->pu[1] == NULL) {
+		printf("prototype_level: Failed to create anti-gravity powerup\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free_lasers(level->lasers);
+		free_spikes(level->spikes);
+
+		return NULL;
+	}
+
+	level->pu[2] = new_power_up("powerups/exit_icon.bmp", rect(890, 24, 80, 80), placeholder);
+
+	if (level->pu[2] == NULL) {
+		printf("prototype_level: Failed to create exit\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free_platforms(level->platforms);
+		free_lasers(level->lasers);
+		free_spikes(level->spikes);
+
 		return NULL;
 	}
 
@@ -157,14 +198,14 @@ void free_level(Level_t *level) {
 // Actual level stuff
 
 void update_level(Level_t* level) {
-  	update_player(level->player, level->platforms, level->lasers, level->spikes);
+  	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 	animator_player(level->player);
 }
 
 void update_arcade_level(Level_t* level) {
 	arcade_move_lasers(level->lasers);
 	arcade_add_laser(level->lasers);
-	update_player(level->player, level->platforms, level->lasers, level->spikes);
+	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 	animator_player(level->player);
 }
 
@@ -176,4 +217,7 @@ void render_level(Level_t *level) {
 	render_player_foreground(level->player);
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
+	render_power_up(level->pu[0]);
+	render_power_up(level->pu[1]);
+	render_power_up(level->pu[2]);
 }

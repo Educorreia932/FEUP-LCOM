@@ -347,17 +347,14 @@ static inline void player_start_death(Player_t *player) {
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
 }
 
-void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes) {
-
+void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
 	Rect_t previous_rect = player->rect;
 
 	// Horizontal Movement
 	float h_delta = 0;
 
 	if (player->respawn_timer == 0) {
-
 		if (player->ui_controls) {
-
 			update_slider(player->jump_slider);
 			update_slider(player->speed_slider);
 
@@ -409,6 +406,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 				player->rect = previous_rect;
 		}
 	}
+
 	else
 		player->is_idle = true;
 
@@ -441,10 +439,14 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		player->y_speed /= 3;
 	}
 
+	for (size_t i = 0; i < 3; i++)
+		update_power_up(pu[i], &(player->rect));	
+
 	if (player->respawn_timer == 0) {
 		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))
 			player_start_death(player);
 	}
+
 	else
 		player_death_cycle(player);
 	
@@ -467,10 +469,8 @@ static uint8_t player_walk_countdown_value(Player_t* player) {
 	);
 }
 
-
 // For now, both run independently
 void animator_player(Player_t* player) {
-
 	// If player is alive
 	if (player->respawn_timer == 0) {
 
@@ -510,7 +510,6 @@ void animator_player(Player_t* player) {
 
 }
 
-
 void render_player_background(Player_t* player) {
 	if (player->respawn_timer == 0) {
 		// Player is alive
@@ -519,7 +518,6 @@ void render_player_background(Player_t* player) {
 }
 
 void render_player_foreground(Player_t* player) {
-
 	SpriteReverse sr = SPRITE_Y_AXIS * player->heading_right
 		+ SPRITE_X_AXIS * player_is_grav_inverted(player);
 
@@ -533,7 +531,6 @@ void render_player_foreground(Player_t* player) {
 		// Player is dead
 		draw_sprite(player->idle_sprite, &player->rect, COLOR_RED, sr);
 	}
-
 }
 
 void render_player_ui(Player_t *player) {
