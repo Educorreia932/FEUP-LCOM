@@ -32,7 +32,8 @@ typedef enum GameMode {
     // Specific combinations
     GM_LEVEL_UART = 3,
     GM_ARCADE_UART = 9,
-    GM_SWITCHBOARD_UART = 5 // This one is dumb and works as a backup
+    GM_SWITCHBOARD_UART = 5, // This one is dumb and works as a backup
+    GM_MAIN_MENU = 16
 } GameModeEnum;
 
 // Fake singleton but kinda
@@ -40,12 +41,19 @@ typedef struct GameManager {
 	Level_t *level;
 	SwitchBoard_t *s_board;
     MainMenu_t *main_menu;
-    void (*update_function[16])();
-    void (*render_function[16])();
+    void (*update_function[32])();
+    void (*render_function[32])();
+    uint32_t esc_counter;
+    bool game_ongoing;
 	GameModeEnum gamemode;
 } GameManager_t;
 
 // Please only call when start_game has already been called
 GameManager_t* get_game_manager();
+
+void gm_start_level();
+void gm_start_switchboard();
+void gm_start_arcade();
+void gm_start_main_menu();
 
 uint8_t start_game(GameModeEnum gamemode);

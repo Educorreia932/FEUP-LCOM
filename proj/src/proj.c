@@ -17,11 +17,11 @@ int main(int argc, char *argv[]) {
 
     // enables to log function invocations that are being "wrapped" by LCF
     // [comment this out if you don't want/need it]
-    lcf_trace_calls("/home/lcom/labs/proj/trace_2.txt");
+    // lcf_trace_calls("/home/lcom/labs/proj/trace_2.txt");
 
     // enables to save the output of printf function calls on a file
     // [comment this out if you don't want/need it]
-    lcf_log_output("/home/lcom/labs/proj/output_2.txt");
+    // lcf_log_output("/home/lcom/labs/proj/output_2.txt");
 
     // handles control over to LCF
     // [LCF handles command line arguments and invokes the right function]
@@ -43,14 +43,15 @@ static int print_usage() {
 
 
 int (proj_main_loop)(int argc, char *argv[]) {
-	if (argc <= 0 || argc > 2)
-		return print_usage();
+	if (argc <= 0)
+		// return print_usage();
+        return start_game(GM_MAIN_MENU);
 
     if (strcmp(argv[0], "sp") == 0) {
         return start_game(GM_LEVEL);
     }
 	if (strcmp(argv[0], "level") == 0) {
-        return start_game(GM_LEVEL | GM_UART);
+        return start_game(GM_LEVEL_UART);
 	}
     else if (strcmp(argv[0], "sw") == 0 || strcmp(argv[0], "board") == 0) {
         return start_game(GM_SWITCHBOARD | GM_UART);
@@ -69,6 +70,7 @@ int (proj_main_loop)(int argc, char *argv[]) {
 
 	else {
 		printf("Invalid command\n");
+        print_usage();
 		return 1;
 	}
 }
