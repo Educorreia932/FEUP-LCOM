@@ -249,7 +249,6 @@ void uart_ih() {
 
 // TESTING PURPUOSES
 uint8_t test_uart(uint8_t tx) {
-    
     uart_set_conf();
     // uart_print_conf();
 
@@ -290,8 +289,8 @@ uint8_t test_uart(uint8_t tx) {
 
         uart_free_sw_queues();
         uart_unsubscribe_int();
-
     }
+
     else {
         printf("Configured to receive data\n"); 
         uint32_t uart_mask;

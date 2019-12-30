@@ -153,7 +153,7 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
-	level->pu[1] = new_power_up("powerups/anti_gravity_icon.bmp", rect(400, 704, 40, 40), placeholder);
+	level->pu[1] = new_power_up("powerups/anti_gravity_icon.bmp", rect(940, 704, 40, 40), placeholder);
 
 	if (level->pu[1] == NULL) {
 		printf("prototype_level: Failed to create anti-gravity powerup\n");
@@ -166,7 +166,7 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
-	level->pu[2] = new_power_up("powerups/exit_icon.bmp", rect(890, 24, 80, 80), placeholder);
+	level->pu[2] = new_power_up("powerups/exit_icon.bmp", rect(940, 24, 80, 80), placeholder);
 
 	if (level->pu[2] == NULL) {
 		printf("prototype_level: Failed to create exit\n");
@@ -187,6 +187,7 @@ void free_level(Level_t *level) {
         printf("free_level: Cannot free a NULL pointer\n");
         return;
     }
+
 	free_sprite(level->background);
 	free_platforms(level->platforms);
 	free_player(level->player);

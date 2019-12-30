@@ -50,15 +50,19 @@ int (proj_main_loop)(int argc, char *argv[]) {
     if (strcmp(argv[0], "sp") == 0) {
         return start_game(GM_LEVEL);
     }
+
 	if (strcmp(argv[0], "level") == 0) {
         return start_game(GM_LEVEL_UART);
 	}
+
     else if (strcmp(argv[0], "sw") == 0 || strcmp(argv[0], "board") == 0) {
         return start_game(GM_SWITCHBOARD | GM_UART);
     }
+    
     else if (strcmp(argv[0], "arcade") == 0) {
         return start_game(GM_ARCADE);
     }
+    
     // Add multiplayer arcade later down the road
 
 	else if (strcmp(argv[0], "test") == 0) {
