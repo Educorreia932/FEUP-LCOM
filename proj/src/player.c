@@ -439,8 +439,10 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		player->y_speed /= 3;
 	}
 
-	for (size_t i = 0; i < 3; i++)
-		update_power_up(pu[i], &(player->rect));	
+	for (uint8_t i = 0; i < 3; ++i) {
+		if (pu[i] != NULL)
+			update_power_up(pu[i], &(player->rect));
+	}
 
 	if (player->respawn_timer == 0) {
 		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))

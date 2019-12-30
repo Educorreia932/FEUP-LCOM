@@ -29,7 +29,7 @@ Level_t* new_level() {
 }
 
 Level_t* new_arcade_level() {
-	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
+	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
 
 	// Background
 	level->background = new_sprite(0, 0, 1, "background.bmp");
@@ -85,7 +85,7 @@ Level_t* new_arcade_level() {
 }
 
 Level_t* prototype_level(bool is_single_player) {
-	Level_t* level = (Level_t*) malloc(sizeof(Level_t));
+	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
 
 	// Background
 	level->background = new_sprite(0, 0, 1, "background.bmp");
@@ -217,7 +217,10 @@ void render_level(Level_t *level) {
 	render_player_foreground(level->player);
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
-	render_power_up(level->pu[0]);
-	render_power_up(level->pu[1]);
-	render_power_up(level->pu[2]);
+
+	for (uint8_t i = 0; i < 3; ++i) {
+		if (level->pu[i] != NULL)
+			render_power_up(level->pu[i]);
+	}
+
 }

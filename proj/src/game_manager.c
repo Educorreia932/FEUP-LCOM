@@ -1,6 +1,8 @@
 #include "game_manager.h"
 #include "hw_manager.h"
 
+#define GM_ESC_COUNTDOWN_WINDOW 20 // in frames
+
 static GameManager_t* gm;
 
 char* assets_rel_path = "home/lcom/labs/proj/assets/";
@@ -11,11 +13,11 @@ GameManager_t* get_game_manager() {
 }
 
 // We prefer calling a void void function instead of, ye know, *seg fault*
-void gm_void_safety_function() {
+static void gm_void_safety_function() {
 	return;
 }
 
-void gm_update_level() {
+static void gm_update_level() {
 	update_cursor();
 	switch (hw_manager_uart_front()) {
 		case 0xFF:
@@ -28,12 +30,12 @@ void gm_update_level() {
 	update_level(get_game_manager()->level);
 }
 
-void gm_update_arcade() {
+static void gm_update_arcade() {
 	update_cursor();
 	update_arcade_level(get_game_manager()->level);
 }
 
-void gm_update_switchboard() {
+static void gm_update_switchboard() {
 	update_cursor();
 	update_switchboard(get_game_manager()->s_board);
 	if (mouse_get_rb_down()) {
@@ -41,72 +43,113 @@ void gm_update_switchboard() {
 	}
 }
 
-void gm_render_level() {
+static void gm_update_main_menu() {
+	update_cursor();
+	update_main_menu(gm->main_menu);
+}
+
+static void gm_render_level() {
 	render_level(gm->level);
 	render_cursor();
 }
 
-void gm_render_arcade() {
+static void gm_render_arcade() {
 	render_level(gm->level);
 	render_cursor();
 }
 
-void gm_render_switchboard() {
+static void gm_render_switchboard() {
 	render_switchboard(gm->s_board);
 	render_cursor();
 }
 
-uint8_t gm_start_level() {
+static void gm_render_main_menu() {
+	render_main_menu(gm->main_menu);
+	render_cursor();
+}
+
+void gm_start_level() {
 
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
 	}
+
+	if (gm->main_menu != NULL) {
+		free_main_menu(gm->main_menu);
+		gm->main_menu = NULL;
+	}
 	
-	gm->level = prototype_level(gm->gamemode & GM_UART);
+	gm->level = prototype_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
-		printf("gm_start_level: Failed to create the Level object\n");
-		return 1;
+		printf("gm_start_level: Failed to create the Switchboard object\n");
+		exit(42);
 	}
 
-	return 0;
 }
 
-uint8_t gm_start_switchboard() {
+void gm_start_switchboard() {
 	
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;
+	}
+
+	if (gm->main_menu != NULL) {
+		free_main_menu(gm->main_menu);
+		gm->main_menu = NULL;
 	}
 	
 	gm->s_board = new_switchboard();
 	
 	if (gm->s_board == NULL) {
 		printf("gm_start_switchboard: Failed to create the Switchboard object\n");
-		return 1;
+		exit(42);
 	}
-
-	return 0;
 
 }
 
-uint8_t gm_start_arcade() {
+void gm_start_arcade() {
 
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
 	}
 
+	if (gm->main_menu != NULL) {
+		free_main_menu(gm->main_menu);
+		gm->main_menu = NULL;
+	}
+
 	gm->level = new_arcade_level();
 	
 	if (gm->level == NULL) {
 		printf("gm_start_arcade: Failed to create the Switchboard object\n");
-		return 1;
+		exit(42);
+	}
+}
+
+void gm_start_main_menu() {
+
+	if (gm->level != NULL) {
+		free_level(gm->level);
+		gm->level = NULL;
+	}
+	if (gm->s_board != NULL) {
+		free_switchboard(gm->s_board);
+		gm->s_board = NULL;
 	}
 
-	return 0;
+	gm->main_menu = new_main_menu();
+
+	if (gm->main_menu == NULL) {
+		printf("gm_start_main_menu: Faild to create the MainMenu object\n");
+		exit(42);
+	}
+
 }
+
 
 /** 
  * @param player_number Number of the player that's playing 
@@ -125,11 +168,17 @@ void initialize_game_manager(GameModeEnum gamemode) {
 		exit(42); // This would pretty much be as fatal as a fatal error could be
 	}
 
+	gm->esc_counter = GM_ESC_COUNTDOWN_WINDOW + 1;
+	gm->game_ongoing = true;
+
 	// Save the gamemode
 	gm->gamemode = gamemode;
 
 	// Select the starting "gamemode" accordingly
-	if (gm->gamemode & GM_LEVEL) {
+	if (gm->gamemode & GM_MAIN_MENU) {
+		gm_start_main_menu();
+	}
+	else if (gm->gamemode & GM_LEVEL) {
 		gm_start_level();
 	}
 	else if (gm->gamemode & GM_SWITCHBOARD) {
@@ -146,7 +195,7 @@ void initialize_game_manager(GameModeEnum gamemode) {
 	
 
 	// Put all the unused ones to a non-seg fault fucntion
-	for (uint8_t i = 0; i < 16; ++i) {
+	for (uint8_t i = 0; i < 31; ++i) {
 		gm->update_function[i] = &gm_void_safety_function;
 		gm->render_function[i] = &gm_void_safety_function;
 	}
@@ -158,13 +207,17 @@ void initialize_game_manager(GameModeEnum gamemode) {
 	gm->update_function[GM_SWITCHBOARD_UART] = &gm_update_switchboard;
 	gm->update_function[GM_ARCADE] = &gm_update_arcade;
 	gm->update_function[GM_ARCADE_UART] = &gm_update_arcade;
-	
+	gm->update_function[GM_MAIN_MENU] = &gm_update_main_menu;
+	gm->update_function[GM_MAIN_MENU | GM_UART] = &gm_update_main_menu;
+
 	gm->render_function[GM_LEVEL] = &gm_render_level;
 	gm->render_function[GM_LEVEL_UART] = &gm_render_level;
 	gm->render_function[GM_SWITCHBOARD] = &gm_render_switchboard;
 	gm->render_function[GM_SWITCHBOARD_UART] = &gm_render_switchboard;
 	gm->render_function[GM_ARCADE] = &gm_render_arcade;
 	gm->render_function[GM_ARCADE_UART] = &gm_render_arcade;
+	gm->render_function[GM_MAIN_MENU] = &gm_render_main_menu;
+	gm->render_function[GM_MAIN_MENU | GM_UART] = &gm_render_main_menu;
 
 }
 
@@ -179,15 +232,33 @@ void free_game_manager() {
 		free_level(gm->level);
 	if (gm->s_board != NULL)
 		free_switchboard(gm->s_board);
+	if (gm->main_menu != NULL)
+		free_main_menu(gm->main_menu);
 	
 	free(gm);
 
 }
 
-/** 
+/**
  * @note Called once every frame
  */
 void update() {
+	if (get_key_down(KBD_ESC)) {
+		if (gm->esc_counter <= GM_ESC_COUNTDOWN_WINDOW) {
+			// Go back a Menu
+			if (gm->gamemode & GM_MAIN_MENU)
+				gm->game_ongoing = false;
+			else {
+				gm->gamemode = GM_MAIN_MENU;
+				gm_start_main_menu();
+			}
+		}
+		else
+			gm->esc_counter = 0;
+	}
+	else
+		++gm->esc_counter;
+	
 	gm->update_function[gm->gamemode]();
 }
 
@@ -244,7 +315,7 @@ uint8_t start_game(GameModeEnum gamemode) {
 
 	// hw_manager_rtc_set_alarm(5);
 
-	while (!get_key(KBD_ESC)) {
+	while (gm->game_ongoing) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
 			continue;
