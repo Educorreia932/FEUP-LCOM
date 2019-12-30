@@ -41,6 +41,7 @@
 		"initializer_list": "c",
 		"map": "c",
 		"memory": "c",
-		"utility": "c"
+		"utility": "c",
+		"switchboard.h": "c"
 	},
 }

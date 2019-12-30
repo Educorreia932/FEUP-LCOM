@@ -1,3 +1,5 @@
+#pragma once
+
 #include <lcom/lcf.h>
 
 typedef struct Queue Queue_t;

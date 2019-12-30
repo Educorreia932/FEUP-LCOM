@@ -3,10 +3,26 @@
 #include <lcom/lcf.h>
 
 #include "level.h"
-#include "mouse_cursor.h"
 #include "switchboard.h"
+#include "main_menu.h"
 
 extern char* assets_rel_path;
+
+#define UART_TERMINATOR 0xFF
+
+enum UART_EVENT_HEADER {
+
+    HEADER_SYNCED = 's',
+
+    HEADER_LASER = 'L',
+    HEADER_SPEED_MULT = 'S',
+    HEADER_JUMP_MULT = 'J',
+    HEADER_PLAYER_DEATH = 'D',
+    HEADER_PLAYER_ALIVE = 'A',
+    HEADER_POWERS_UNLOCKED = 'P',
+    HEADER_PLAYER_UPDATE = 'U'
+};
+
 
 typedef enum GameMode {
     GM_UART = 1,
@@ -23,6 +39,7 @@ typedef enum GameMode {
 typedef struct GameManager {
 	Level_t *level;
 	SwitchBoard_t *s_board;
+    MainMenu_t *main_menu;
     void (*update_function[16])();
     void (*render_function[16])();
 	GameModeEnum gamemode;
