@@ -49,6 +49,11 @@ date_t get_date() {
 	date_t t;
 	uint32_t data;
 
+	rtc_read_register(RTC_REG_A, &data);
+
+	if (data & RTC_WAIT_UIP)
+		tickdelay(micros_to_ticks(RTC_WAIT_UIP));
+
 	rtc_read_register(RTC_REG_SECONDS, &data);
 	t.seconds = bcd_to_dec(data);
 

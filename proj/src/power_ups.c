@@ -10,7 +10,6 @@ struct PowerUp {
 };
 
 PowerUp_t* new_power_up(const char* sprite_file_name, Rect_t rect, void (*function)()) {
-    
     if (sprite_file_name == NULL) {
         printf("new_power_up: sprite_file_name must not be a NULL ptr\n");
         return NULL;
@@ -34,6 +33,7 @@ PowerUp_t* new_power_up(const char* sprite_file_name, Rect_t rect, void (*functi
         return NULL;
     }
 
+    pu->rect = rect ;
     pu->active = true;
     pu->func = function;
 
@@ -51,16 +51,21 @@ void free_power_up(PowerUp_t *pu) {
 }
 
 void update_power_up(PowerUp_t *pu, Rect_t *player_rect) {
-
     if (rect_collision(&(pu->rect), player_rect)) {
         pu->active = false;
         pu->func();
     }
-
 }
 
 void render_power_up(PowerUp_t *pu) {
-    if (pu->active) {
+    if (pu->active)
         draw_sprite(pu->sprite, &(pu->rect), COLOR_NO_MULTIPLY, SPRITE_NORMAL);
-    }
+}
+
+int gets_powerup(PowerUp_t *pu, Rect_t* rect) {
+    return rect_collision(&pu->rect, rect);
+}
+
+void placeholder() {
+    printf("Está a dar");
 }

@@ -190,7 +190,6 @@ void render_lasers(Lasers_t* lasers) {
 }
 
 bool player_is_dead(Lasers_t* lasers, Rect_t* rect) {
-
     Laser_t** aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
@@ -204,7 +203,6 @@ bool player_is_dead(Lasers_t* lasers, Rect_t* rect) {
 }
 
 void arcade_move_lasers(Lasers_t *lasers) {
-
     Laser_t** aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {

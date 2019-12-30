@@ -6,14 +6,16 @@
 #include "platforms.h"
 #include "lasers.h"
 #include "spikes.h"
+#include "power_ups.h"
 #include "input_events.h"
 
 typedef struct Level {
-    Sprite_t *background;
-    Platforms_t *platforms;
+    Sprite_t* background;
+    Platforms_t* platforms;
     Player_t* player;
     Lasers_t *lasers;
     Spikes_t* spikes;
+    PowerUp_t* pu[3];
 } Level_t;
 
 // typedef struct Level Level_t;
