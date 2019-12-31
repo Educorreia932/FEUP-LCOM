@@ -53,7 +53,7 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 	if (uart_set_conf())
 		return 1;
 	
-	uart_initialize_sw_queues();
+	uart_initialize_receiver_queue();
 
 	if (uart_subscribe_int(uart_mask))
 		return 1;
@@ -81,7 +81,7 @@ void hw_manager_unsubscribe_int() {
 	rtc_unsubscribe_int();
 
 	// UART
-	uart_free_sw_queues();
+	uart_free_receiver_queue();
 	uart_unsubscribe_int();
 
 }

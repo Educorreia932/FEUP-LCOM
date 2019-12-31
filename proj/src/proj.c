@@ -47,13 +47,6 @@ int (proj_main_loop)(int argc, char *argv[]) {
 		// return print_usage();
         return start_game(GM_MAIN_MENU);
 
-	else if (strcmp(argv[0], "test") == 0) {
-
-        uint8_t tx = (uint8_t) (*argv[1] - '0');
-
-		return test_uart(tx);
-	}
-
 	else {
 		printf("Invalid command\n");
         print_usage();

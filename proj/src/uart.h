@@ -166,8 +166,8 @@ uint8_t uart_received_char;
 uint8_t uart_subscribe_int(uint32_t *bit_mask);
 uint8_t uart_unsubscribe_int();
 
-void uart_initialize_sw_queues();
-void uart_free_sw_queues();
+void uart_initialize_receiver_queue();
+void uart_free_receiver_queue();
 
 uint8_t uart_receiver_q_front();
 void uart_receiver_q_pop();
@@ -179,6 +179,3 @@ uint8_t uart_set_conf();
 uint8_t uart_send_char(uint8_t to_send);
 
 void uart_ih();
-
-// Testing only
-uint8_t test_uart(uint8_t tx);

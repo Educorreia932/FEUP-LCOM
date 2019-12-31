@@ -13,3 +13,4 @@ uint8_t queue_back(Queue_t *q);
 uint8_t queue_front(Queue_t *q);
 bool queue_is_empty(Queue_t *q);
 bool queue_is_full(Queue_t *q);
+unsigned int queue_size(Queue_t *q);
