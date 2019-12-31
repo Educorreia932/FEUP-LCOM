@@ -11,7 +11,6 @@ extern char* assets_rel_path;
 #define UART_TERMINATOR 0xFF
 
 enum UART_EVENT_HEADER {
-
     HEADER_TERMINATOR = 0xFF,
 
     HEADER_SYNCED = 's',
@@ -61,9 +60,9 @@ void gm_start_main_menu();
 
 /**
  * @brief Used for exiting the game, even on catastrophic errors
- * 
  */
 void exit_game();
+
 /** 
  * @brief Starts the game
  * @param gamemode Indicates the gamemode to start the game on (usually the Menu)

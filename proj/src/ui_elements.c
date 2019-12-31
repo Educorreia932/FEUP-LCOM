@@ -3,8 +3,9 @@
 #include "mouse_cursor.h"
 #include "math_utils.h"
 
+
 /* COLOR CHANGES IN THE UI */
-#define COLOR_WHEN_HOVERED 0xef5d
+#define COLOR_WHEN_HOVERED 0xEF5D
 #define COLOR_INACTIVE 0x9492
 
 #define KNOB_ANGLE_PRECISION 0.1f
@@ -21,9 +22,6 @@ struct Button {
     void (*func)();
 };
 
-/**
- * @param sprite_file_name Empty string to not draw a sprite
- */
 Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect) {
     Button_t* button = (Button_t*) malloc(sizeof(Button_t));
     
@@ -90,7 +88,6 @@ Button_t* new_button_auto_size(const char* sprite_file_name, void (*func)(), Vec
     return button;
 }
 
-// Empty string to not draw a sprite
 Button_t* new_button_existing_sprite(Sprite_t *sprite, void (*func)(), Rect_t rect) {
     
     Button_t* button = (Button_t*) malloc(sizeof(Button_t));
@@ -346,7 +343,6 @@ struct Knob {
     void (*func)(float);
 };
 
-
 Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {    
     Knob_t* knob = (Knob_t*) malloc(sizeof(Knob_t));
     if (knob == NULL) {
@@ -581,3 +577,217 @@ void render_knob(Knob_t* knob) {
 }
 
 ///@}
+
+struct Number {
+    Rect_t rect;
+    Sprite_t* sprite;
+    uint8_t value;
+};
+
+Number_t* new_number(uint8_t value, Rect_t rect) {
+    Number_t* number = (Number_t*) malloc(sizeof(Number_t));
+    
+    if (number == NULL) {
+        printf("new_button: Failed to allocate memory for the number\n");
+        return NULL;
+    }
+    
+    number->rect = rect;
+
+    char* sprite_file_name;
+
+    // Tried to play with strcat but this was the easiest way
+    switch (value) {
+        case 0:
+            sprite_file_name = "ui/0.bmp";
+            break;
+        case 1:
+            sprite_file_name = "ui/1.bmp";
+            break;
+        case 2:
+            sprite_file_name = "ui/2.bmp";
+            break;
+        case 3:
+            sprite_file_name = "ui/3.bmp";
+            break;
+        case 4:
+            sprite_file_name = "ui/4.bmp";
+            break;
+        case 5:
+            sprite_file_name = "ui/5.bmp";
+            break;
+        case 6:
+            sprite_file_name = "ui/6.bmp";
+            break;
+        case 7:
+            sprite_file_name = "ui/7.bmp";
+            break;
+        case 8:
+            sprite_file_name = "ui/8.bmp";
+            break;
+        case 9:
+            sprite_file_name = "ui/9.bmp";
+            break;
+    }
+
+    if (strcmp("", sprite_file_name) == 0)
+        number->sprite = NULL;
+    
+    else {
+        number->sprite = new_sprite(0, 0, 1, sprite_file_name);
+    
+        if (number->sprite == NULL) {
+            printf("new_button: Failed to create numbers's sprite\n");
+            free(number);
+            return NULL;
+        }
+    }
+    
+    return number;
+}
+
+bool update_number(Number_t* number, bool carry) {
+    if (carry) {
+        number->value++;
+
+        if (number->value == 10)
+            number->value = 0;
+
+        char* sprite_file_name;
+
+        switch (number->value) {
+            case 0:
+                sprite_file_name = "ui/0.bmp";
+                break;
+            case 1:
+                sprite_file_name = "ui/1.bmp";
+                break;
+            case 2:
+                sprite_file_name = "ui/2.bmp";
+                break;
+            case 3:
+                sprite_file_name = "ui/3.bmp";
+                break;
+            case 4:
+                sprite_file_name = "ui/4.bmp";
+                break;
+            case 5:
+                sprite_file_name = "ui/5.bmp";
+                break;
+            case 6:
+                sprite_file_name = "ui/6.bmp";
+                break;
+            case 7:
+                sprite_file_name = "ui/7.bmp";
+                break;
+            case 8:
+                sprite_file_name = "ui/8.bmp";
+                break;
+            case 9:
+                sprite_file_name = "ui/9.bmp";
+                break;
+            }
+
+        number->sprite = new_sprite(0, 0, 1, sprite_file_name); 
+
+        return number->value == 0;
+    }
+
+    return false;
+}
+
+void render_number(Number_t* number) {
+    draw_sprite(number->sprite, &number->rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+}
+
+void set_number(Number_t* number, uint8_t value) {
+    number->value = value;
+
+    char* sprite_file_name;
+
+    switch (number->value) {
+        case 0:
+            sprite_file_name = "ui/0.bmp";
+            break;
+        case 1:
+            sprite_file_name = "ui/1.bmp";
+            break;
+        case 2:
+            sprite_file_name = "ui/2.bmp";
+            break;
+        case 3:
+            sprite_file_name = "ui/3.bmp";
+            break;
+        case 4:
+            sprite_file_name = "ui/4.bmp";
+            break;
+        case 5:
+            sprite_file_name = "ui/5.bmp";
+            break;
+        case 6:
+            sprite_file_name = "ui/6.bmp";
+            break;
+        case 7:
+            sprite_file_name = "ui/7.bmp";
+            break;
+        case 8:
+            sprite_file_name = "ui/8.bmp";
+            break;
+        case 9:
+            sprite_file_name = "ui/9.bmp";
+            break;
+        }
+
+    number->sprite = new_sprite(0, 0, 1, sprite_file_name);
+}
+
+struct Score {
+    Number_t* numbers;
+    uint8_t value;
+    size_t size;
+};
+
+// TODO: Position on screen
+Score_t* new_score(uint8_t value) {
+    Score_t* score = (Score_t*) malloc(sizeof(Score_t*));
+    
+    if (score == NULL) {
+        printf("new_score: Failed to allocate memory for the score\n");
+        return NULL;
+    }
+
+    score->size = 3;
+
+    score->numbers = (Number_t*) malloc(sizeof(Number_t) * score->size);
+
+    if (score->numbers == NULL) {
+        printf("new_score: Failed to allocate memory for the numbers\n");
+        free(score);
+        return NULL;   
+    }
+
+    uint16_t x_pos = 900;
+
+    for (size_t i = 0; i < score->size; i++)
+        score->numbers[i] = *new_number(0, rect(x_pos - i * 40, 75, 36, 48));
+
+    return score;
+}
+
+void update_score(Score_t* score) {
+    bool carry = true;
+
+    for (size_t i = 0; i < score->size; i++)
+        carry = update_number(&score->numbers[i], carry);
+}
+
+void render_score(Score_t* score) {
+    for (size_t i = 0; i < score->size; i++)
+        render_number(&score->numbers[i]);
+}
+
+void reset_score(Score_t* score) {
+    for (size_t i = 0; i < score->size; i++)
+        set_number(&score->numbers[i], 0);
+}
+
