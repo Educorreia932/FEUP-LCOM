@@ -1,32 +1,5 @@
 #include "level.h"
-
-Level_t* new_level() {
-	Level_t *level = (Level_t*) malloc(sizeof(Level_t));
-	if (level == NULL) {
-		printf("new_level: Failed to allocate memory for Level object\n");
-		return NULL;
-	}
-
-	level->background = new_sprite(0, 0, 1, "background.bmp");
-	if (level->background == NULL) {
-		printf("new_level: Failed to load background sprite\n");
-		return NULL;
-	}
-
-	level->platforms = new_platforms();
-	if (level->platforms == NULL) {
-			printf("new_level: Failed to allocate memory for Platforms object\n");
-		return NULL;
-	}
-
-	level->player = new_player(false, false);
-	if (level->player == NULL) {
-		printf("new_level: Failed to allocate memory for Player object\n");
-		return NULL;
-	}
-
-	return level;
-}
+#include "player.h"
 
 Level_t* new_arcade_level() {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
@@ -40,7 +13,7 @@ Level_t* new_arcade_level() {
 	}
 
 	// Player
-	level->player = new_player(false, true);
+	level->player = new_player(false, true, UNLOCKED_GRAVITY);
 	if (level->player == NULL) {
 		printf("new_arcade_level: Failed to create the Player\n");
 		free_sprite(level->background);
@@ -96,7 +69,7 @@ Level_t* prototype_level(bool is_single_player) {
 	}
 
 	// Player
-	level->player = new_player(is_single_player, false);
+	level->player = new_player(is_single_player, false, UNLOCKED_JUMP | UNLOCKED_SPEED);
 	if (level->player == NULL) {
 		printf("prototype_level: Failed to create the Player\n");
 		free_sprite(level->background);
@@ -141,7 +114,7 @@ Level_t* prototype_level(bool is_single_player) {
 	}
 
 	//Powerups
-	level->pu[0] = new_power_up("powerups/laser_icon.bmp", rect(48, 84, 40, 40), placeholder);
+	level->pu[0] = new_power_up("powerups/laser_icon.bmp", vec2d(48, 84), player_unlock_lasers);
 	if (level->pu[0]== NULL) {
 		printf("prototype_level: Failed to create laser powerup\n");
 		free_sprite(level->background);
@@ -153,7 +126,7 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
-	level->pu[1] = new_power_up("powerups/anti_gravity_icon.bmp", rect(940, 704, 40, 40), placeholder);
+	level->pu[1] = new_power_up("powerups/anti_gravity_icon.bmp", vec2d(940, 680), player_unlock_gravity);
 
 	if (level->pu[1] == NULL) {
 		printf("prototype_level: Failed to create anti-gravity powerup\n");
@@ -166,7 +139,7 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
-	level->pu[2] = new_power_up("powerups/exit_icon.bmp", rect(940, 24, 80, 80), placeholder);
+	level->pu[2] = new_power_up("powerups/exit_icon.bmp", vec2d(920, 23), player_win);
 
 	if (level->pu[2] == NULL) {
 		printf("prototype_level: Failed to create exit\n");
@@ -219,7 +192,7 @@ void render_level(Level_t *level) {
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
 
-	for (uint8_t i = 0; i < 3; ++i) {
+	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (level->pu[i] != NULL)
 			render_power_up(level->pu[i]);
 	}

@@ -15,12 +15,11 @@ typedef struct Level {
     Player_t* player;
     Lasers_t *lasers;
     Spikes_t* spikes;
-    PowerUp_t* pu[3];
+    PowerUp_t* pu[MAX_POWERUPS];
 } Level_t;
 
 // typedef struct Level Level_t;
 
-Level_t* new_level();
 Level_t* new_arcade_level();
 Level_t* prototype_level(bool is_single_player);
 void free_level(Level_t *level);

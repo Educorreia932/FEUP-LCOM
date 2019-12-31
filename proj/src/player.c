@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include "ui_elements.h"
 #include "game_manager.h"
+#include "hw_manager.h"
 
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
@@ -49,6 +50,8 @@ struct Player {
 
 	bool heading_right, is_idle, grounded;
 
+	PlayerUnlockedPowers default_powers, current_powers;
+
 	// Animation stuff
 	uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
 
@@ -57,56 +60,108 @@ struct Player {
 	Button_t **laser_buttons;
 };
 
-// Forward declarated to be used in new_player
+// Forward declaration in order to be used in new_player
 static uint8_t player_walk_countdown_value(Player_t* player);
 
-static void player_set_speed(uint8_t speed) {
+/* UNLOCKING POWERS */
 
-	Player_t* p = get_game_manager()->level->player;
-	
-	float mult = PLAYER_MIN_SPEED_MULT + (
-		(PLAYER_MIN_SPEED_MULT - PLAYER_MAX_SPEED_MULT) /
-		(0 - 255)
-	) * speed;
-
-	p->speed_mult = mult;
-
+static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
+	if (get_game_manager()->gamemode & GM_UART) {
+		hw_manager_uart_send_char(HEADER_PLAYER_UPDATE);
+		hw_manager_uart_send_char((uint8_t) powers_to_give);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
+	}
+	else {
+		// Gets the player from anywhere
+		get_game_manager()->level->player->current_powers |= powers_to_give;
+	}
+}
+void player_unlock_speed() {
+	player_unlock_powers(UNLOCKED_SPEED);
+	if (get_game_manager()->level->player->ui_controls) {
+		slider_activate(get_game_manager()->level->player->speed_slider);
+	}
+}
+void player_unlock_jump() {
+	player_unlock_powers(UNLOCKED_JUMP);
+	if (get_game_manager()->level->player->ui_controls) {
+		slider_activate(get_game_manager()->level->player->jump_slider);
+	}
+}
+void player_unlock_lasers() {
+	player_unlock_powers(UNLOCKED_LASERS);
+	if (get_game_manager()->level->player->ui_controls) {
+		Player_t *p = get_game_manager()->level->player;
+		button_activate(p->laser_buttons[0]);
+		button_activate(p->laser_buttons[1]);
+		button_activate(p->laser_buttons[2]);
+	}
+}
+void player_unlock_gravity() {
+	player_unlock_powers(UNLOCKED_GRAVITY);
 }
 
-static void player_set_jump(uint8_t jump) {
-
-	Player_t* p = get_game_manager()->level->player;
-
-	float mult = PLAYER_MAX_JUMP_MULT + (
-		(PLAYER_MIN_JUMP_MULT - PLAYER_MAX_JUMP_MULT) /
-		(255 - 0)
-	) * jump;
-
-	p->jump_mult = mult;
-
+void player_win() {
+	printf("Congrats u win my boy!\n");
 }
 
-void player_switch_gravity() {
-	
-	Player_t* p = get_game_manager()->level->player;
+void player_set_speed(uint8_t speed) {
+	// Gets the player from anywhere
+	Player_t *p = get_game_manager()->level->player;
+	if (p->current_powers & UNLOCKED_JUMP) {
+		float mult = PLAYER_MIN_SPEED_MULT + (
+			(PLAYER_MIN_SPEED_MULT - PLAYER_MAX_SPEED_MULT) /
+			(0 - 255)
+		) * speed;
 
-	p->gravity *= -1;
+		// Gets the player from anywhere
+		p->speed_mult = mult;
+	}
+}
 
+void player_set_jump(uint8_t jump) {
+	// Gets the player from anywhere
+	Player_t *p = get_game_manager()->level->player;
+	if (p->current_powers & UNLOCKED_JUMP) {
+		float mult = PLAYER_MAX_JUMP_MULT + (
+			(PLAYER_MIN_JUMP_MULT - PLAYER_MAX_JUMP_MULT) /
+			(255 - 0)
+		) * jump;
+
+		p->jump_mult = mult;
+	}
+}
+
+// Grav direction should be -1 or 1
+void player_set_gravity(int8_t grav_direction) {
+	// Gets the player from anywhere
+	Player_t *p = get_game_manager()->level->player;
+	if (p->current_powers & UNLOCKED_GRAVITY)
+		p->gravity = BASE_GRAVITY * grav_direction;
+}
+
+static void player_switch_gravity() {
+	// Gets the player from anywhere
+	Player_t *p = get_game_manager()->level->player;
+	if (p->current_powers & UNLOCKED_GRAVITY)
+		p->gravity *= -1;
 }
 
 static void player_set_laser_0() {
-	lasers_set_link_id(get_game_manager()->level->lasers, 0);
+	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)
+		lasers_set_link_id(get_game_manager()->level->lasers, 0);
 }
 
 static void player_set_laser_1() {
-	lasers_set_link_id(get_game_manager()->level->lasers, 1);
+	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)
+		lasers_set_link_id(get_game_manager()->level->lasers, 1);
 }
 
 static void player_set_laser_2() {
-	lasers_set_link_id(get_game_manager()->level->lasers, 2);
+	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)	lasers_set_link_id(get_game_manager()->level->lasers, 2);
 }
 
-Player_t* new_player(bool ui_controls, bool arcade_mode) {
+Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) {
 
 	Player_t* player = (Player_t*) malloc(sizeof(Player_t));
 	
@@ -171,6 +226,9 @@ Player_t* new_player(bool ui_controls, bool arcade_mode) {
 	player->anim_walk_countdown = player_walk_countdown_value(player);
 	player->anim_spark_countdown = PLAYER_SPARK_COUNTDOWN;
 
+	player->default_powers = default_powers;
+	player->current_powers = default_powers;
+
 	// Creating player hitbox
 	player->rect = rect(
 		player->x_spawn,
@@ -194,6 +252,8 @@ Player_t* new_player(bool ui_controls, bool arcade_mode) {
 			free(player);
 			return NULL;
 		}
+		if (!(player->current_powers & UNLOCKED_JUMP))
+			slider_deactivate(player->jump_slider);
 
 		player->speed_slider = new_slider("ui/small_horizontal_slider.bmp", "ui/small_slider_handle.bmp", player_set_speed, vec2d(20, 2), 255, vec2d(25, 4), vec2d(90, 4));
 		if (player->speed_slider == NULL) {
@@ -205,6 +265,8 @@ Player_t* new_player(bool ui_controls, bool arcade_mode) {
 			free(player);
 			return NULL;
 		}
+		if (!(player->current_powers & UNLOCKED_SPEED))
+			slider_deactivate(player->speed_slider);
 
 		player->laser_buttons = (Button_t**) malloc(sizeof(Button_t*) * 3);
 		if (player->laser_buttons == NULL) {
@@ -256,6 +318,11 @@ Player_t* new_player(bool ui_controls, bool arcade_mode) {
 			free(player->laser_buttons);
 			free(player);
 			return NULL;
+		}
+		if (!(player->current_powers & UNLOCKED_LASERS)) {
+			button_deactivate(player->laser_buttons[0]);
+			button_deactivate(player->laser_buttons[1]);
+			button_deactivate(player->laser_buttons[2]);
 		}
 
 	}
@@ -324,6 +391,26 @@ static inline void player_respawn(Player_t *player) {
 	// player->jump_mult = PLAYER_DEFAULT_JUMP_MULT;
 	player->respawn_timer = 0;
 
+	player->current_powers = player->default_powers;
+
+	if (player->ui_controls) {
+		if (!(player->default_powers & UNLOCKED_SPEED))
+			slider_deactivate(player->speed_slider);
+		if (!(player->default_powers & UNLOCKED_JUMP))
+			slider_deactivate(player->jump_slider);
+		if (!(player->default_powers & UNLOCKED_LASERS)) {
+			button_deactivate(player->laser_buttons[0]);
+			button_deactivate(player->laser_buttons[1]);
+			button_deactivate(player->laser_buttons[2]);
+		}
+	}
+
+	PowerUp_t **power_ups = get_game_manager()->level->pu; 
+	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
+		if (power_ups[i] != NULL)
+			respawn_powerup(power_ups[i]);
+	}
+
 	player->anim_idle_countdown = PLAYER_IDLE_COUNTDOWN_OPEN;
 	player->anim_walk_countdown = player_walk_countdown_value(player);
 	player->anim_spark_countdown = PLAYER_SPARK_COUNTDOWN;
@@ -344,6 +431,7 @@ static inline void player_death_cycle(Player_t *player) {
 
 static inline void player_start_death(Player_t *player) {
 	set_animation_state(player->idle_sprite, 1);
+	player->current_powers = player->default_powers;
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
 }
 
@@ -354,6 +442,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	float h_delta = 0;
 
 	if (player->respawn_timer == 0) {
+
 		if (player->ui_controls) {
 			update_slider(player->jump_slider);
 			update_slider(player->speed_slider);
@@ -439,7 +528,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		player->y_speed /= 3;
 	}
 
-	for (uint8_t i = 0; i < 3; ++i) {
+	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (pu[i] != NULL)
 			update_power_up(pu[i], &(player->rect));
 	}
@@ -448,7 +537,6 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))
 			player_start_death(player);
 	}
-
 	else
 		player_death_cycle(player);
 	
@@ -513,7 +601,7 @@ void animator_player(Player_t* player) {
 }
 
 void render_player_background(Player_t* player) {
-	if (player->respawn_timer == 0) {
+	if (player->respawn_timer == 0 && player->gravity != BASE_GRAVITY) {
 		// Player is alive
 		draw_sprite(player->sparks_sprite, &player->rect, COLOR_NO_MULTIPLY, SPRITE_Y_AXIS * !player->heading_right);
 	}

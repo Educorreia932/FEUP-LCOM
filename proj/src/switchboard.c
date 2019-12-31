@@ -3,6 +3,8 @@
 #include "sprite.h"
 #include "mouse_cursor.h"
 #include "math_utils.h"
+#include "game_manager.h"
+#include "hw_manager.h"
 
 /* SWITCHBOARD MINIGAMES */
 
@@ -65,24 +67,34 @@ struct SwitchBoard {
     Knob_t *gravity_knob;
 };
 
-void print_laser1() {
-    printf("Toggled to link id 1\n");
+void send_laser0() {
+    hw_manager_uart_send_char(HEADER_LASER);
+    hw_manager_uart_send_char(0);
+    hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
 
-void print_laser2() {
-    printf("Toggled to link id 2\n");
+void send_laser1() {
+    hw_manager_uart_send_char(HEADER_LASER);
+    hw_manager_uart_send_char(1);
+    hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
 
-void print_laser3() {
-    printf("Toggled to link id 3\n");
+void send_laser2() {
+    hw_manager_uart_send_char(HEADER_LASER);
+    hw_manager_uart_send_char(2);
+    hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
 
-void print_speed_mult(uint8_t speed_mult) {
-    printf("New speed mult is in state: %d\n", speed_mult);
+void send_speed_mult(uint8_t speed_mult) {
+    hw_manager_uart_send_char(HEADER_SPEED_MULT);
+    hw_manager_uart_send_char(speed_mult);
+    hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
 
-void print_jump_mult(uint8_t jump_mult) {
-    printf("New jump mult is in state: %d\n", jump_mult);
+void send_jump_mult(uint8_t jump_mult) {
+    hw_manager_uart_send_char(HEADER_JUMP_MULT);
+    hw_manager_uart_send_char(jump_mult);
+    hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
 
 void print_gravity_time(float f) {
@@ -104,14 +116,14 @@ SwitchBoard_t* new_switchboard() {
         return NULL;
     }
 
-    s_board->laser_buttons[0] = new_button_auto_size("ui/laser_button_red.bmp", print_laser1, vec2d(840, 180));
+    s_board->laser_buttons[0] = new_button_auto_size("ui/laser_button_red.bmp", send_laser0, vec2d(840, 180));
     if (s_board->laser_buttons[0] == NULL) {
         printf("new_switchboard: Failed to create laser button 0\n");
         free_sprite(s_board->background);
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[1] = new_button_auto_size("ui/laser_button_blue.bmp", print_laser2, vec2d(840, 280));
+    s_board->laser_buttons[1] = new_button_auto_size("ui/laser_button_blue.bmp", send_laser1, vec2d(840, 280));
     if (s_board->laser_buttons[1] == NULL) {
         printf("new_switchboard: Failed to create laser button 1\n");
         free_sprite(s_board->background);
@@ -119,7 +131,7 @@ SwitchBoard_t* new_switchboard() {
         free(s_board);
         return NULL;
     }
-    s_board->laser_buttons[2] = new_button_auto_size("ui/laser_button_pink.bmp", print_laser3, vec2d(840, 380));
+    s_board->laser_buttons[2] = new_button_auto_size("ui/laser_button_pink.bmp", send_laser2, vec2d(840, 380));
     if (s_board->laser_buttons[2] == NULL) {
         printf("new_switchboard: Failed to create laser button 2\n");
         free_sprite(s_board->background);
@@ -128,12 +140,13 @@ SwitchBoard_t* new_switchboard() {
         free(s_board);
         return NULL;
     }
+    switchboard_set_three_lasers(s_board);
 
-    s_board->speed_slider = new_slider("ui/speed_slider.bmp", "ui/speed_slider_handle.bmp", print_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
+    s_board->speed_slider = new_slider("ui/speed_slider.bmp", "ui/speed_slider_handle.bmp", send_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
     if (s_board->speed_slider == NULL) {
         printf("new_switchboard: Failed to create horizontal slider\n");
     }
-    s_board->jump_slider = new_slider("ui/jump_slider.bmp", "ui/jump_slider_handle.bmp", print_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
+    s_board->jump_slider = new_slider("ui/jump_slider.bmp", "ui/jump_slider_handle.bmp", send_jump_mult, vec2d(20, 220), 255, vec2d(30, 240), vec2d(30, 500));
     if (s_board->jump_slider == NULL) {
         printf("new_switchboard: Failed to create vertical slider\n");
     }
@@ -142,8 +155,7 @@ SwitchBoard_t* new_switchboard() {
         printf("new_switchboard: Failed to create gravity knob\n");
         return NULL;
     }
-    switchboard_set_two_lasers(s_board);
-    // slider_deactivate(s_board->jump_slider);
+    
     return s_board;
 }
 

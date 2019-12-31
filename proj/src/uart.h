@@ -168,8 +168,10 @@ uint8_t uart_unsubscribe_int();
 
 void uart_initialize_sw_queues();
 void uart_free_sw_queues();
+
 uint8_t uart_receiver_q_front();
 void uart_receiver_q_pop();
+bool uart_receiver_q_empty();
 
 uint8_t uart_print_conf();
 uint8_t uart_set_conf();
