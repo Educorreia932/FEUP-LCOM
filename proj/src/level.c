@@ -56,7 +56,7 @@ Level_t* new_arcade_level(bool is_single_player) {
 
 	// Multiplayer
 	if (!is_single_player) {
-
+		level->player_two = new_player_two();
 	}
 
 	return level;
@@ -196,6 +196,9 @@ void render_level(Level_t *level) {
 	render_player_foreground(level->player);
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
+
+	if (level->player_two != NULL)
+		render_player_player_two(level->player_two);
 
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (level->pu[i] != NULL)

@@ -40,3 +40,13 @@ void animator_player(Player_t* player);
 void render_player_background(Player_t* player);
 void render_player_foreground(Player_t* player);
 void render_player_ui(Player_t *player);
+
+typedef struct PlayerTwo PlayerTwo_t;
+
+PlayerTwo_t* new_player_two();
+
+void render_player_player_two(PlayerTwo_t* player_two);
+
+void update_player_two(Player_t* player_two, uint16_t x, uint16_t y, bool is_dead);
+
+void send_info();

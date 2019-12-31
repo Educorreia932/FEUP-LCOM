@@ -21,9 +21,7 @@ enum UART_EVENT_HEADER {
     HEADER_PLAYER_DEATH = 'D',
     HEADER_SWITCHBOARD_SETUP = 'P',
     HEADER_PLAYER_UPDATE = 'U'
-
 };
-
 
 typedef enum GameMode {
     GM_UART = 1,
