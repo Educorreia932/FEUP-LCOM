@@ -2,21 +2,15 @@
 #include "queue.h"
 
 // tq = transmitter queue, rq = receiver queue
-static Queue_t *tq, *rq;
+static Queue_t *rq;
 static int ser_hook_id;
 
-void uart_initialize_sw_queues() {
-    if (tq == NULL)
-        tq = new_queue();
+void uart_initialize_receiver_queue() {
     if (rq == NULL)
         rq = new_queue();
 }
 
-void uart_free_sw_queues() {
-    if (tq != NULL) {
-        free_queue(tq);
-        tq = NULL;
-    }
+void uart_free_receiver_queue() {
     if (rq != NULL) {
         free_queue(rq);
         rq = NULL;
@@ -161,8 +155,9 @@ uint8_t uart_set_conf() {
     if (sys_outb(COM1_BASE + UART_REG_IER, ier))
         return 1;
 
-    // uint8_t fcr = FCR_ENABLE_BOTH_FIFO | FCR_TRIGGER_LEVEL_4;
-    // if (sys_outb(COM1_BASE + UART_REG_FCR, fcr));
+    uint8_t fcr = FCR_ENABLE_BOTH_FIFO | FCR_TRIGGER_LEVEL_1;
+    if (sys_outb(COM1_BASE + UART_REG_FCR, fcr))
+        return 1;
 
     return 0;
 }
@@ -170,27 +165,16 @@ uint8_t uart_set_conf() {
 
 // Called when the when we receive the THR empty interrupt
 static void uart_thr_empty_ih() {
-    if (!queue_is_empty(tq)) {
-        uint8_t to_send = queue_front(tq);
-        queue_pop(tq);
-        sys_outb(COM1_BASE + UART_REG_THR, to_send);
-    }
+    
+    printf("THR empty ih called... Unexpected\n");
+    
 }
 
-uint8_t uart_send_char(uint8_t to_send) {
+uint8_t uart_send_char(uint8_t to_send) {    
 
-    uint8_t lsr;
-    if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
-        return 1;
-    
-    queue_push_back(tq, to_send);
-
-    if (lsr & LSR_THR_EMPTY) {
-        uart_thr_empty_ih();
-    }
+    sys_outb(COM1_BASE + UART_REG_THR, to_send);
 
     return 0;
-
 }
 
 uint8_t uart_receive_char() {
@@ -210,6 +194,7 @@ uint8_t uart_receive_char() {
         if (!(lsr & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR))) {
             // aka It's all good
             queue_push_back(rq, received_char);
+            // printf("Received: %d\n", queue_back(rq));
         }
 
         if (util_sys_inb(COM1_BASE + UART_REG_LSR, &lsr))
@@ -234,7 +219,6 @@ void uart_ih() {
     switch (iir & IIR_INT_SOURCE_MASK) {
         case IIR_INT_SOURCE_RECEIVED_DATA_AVAILABLE:
             uart_receive_char();
-            printf("%d\n", queue_back(rq));
             break;
         case IIR_INT_SOURCE_THR_EMPTY:
             uart_thr_empty_ih();
@@ -249,90 +233,4 @@ void uart_ih() {
             break;
     }
 
-}
-
-// TESTING PURPUOSES
-uint8_t test_uart(uint8_t tx) {
-    uart_set_conf();
-    // uart_print_conf();
-
-    uart_initialize_sw_queues();
-
-    const size_t s_size = 5;
-    const uint8_t s[5] = {1, 2, 3, 4, 10};
-
-    if (tx == 0) {
-        printf("Configured to send data\n");        
-        
-        for (size_t i = 0; i < s_size; ++i) {
-            uart_send_char(s[i]);
-        }
-
-        uint32_t uart_mask;
-        uart_subscribe_int(&uart_mask);
-
-        int r, ipc_status;
-	    message msg;
-
-        while (1) {
-            if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-                printf("start_game: driver_receive failed with: %d", r);
-                continue;
-            }
-
-            if (is_ipc_notify(ipc_status)) {
-                switch (_ENDPOINT_P(msg.m_source)) {
-                    case HARDWARE: /* hardware interrupt notification */
-                        uart_ih();
-                        break;
-                    default:
-                        break; /* no other notifications expected: do nothing */     
-                }
-            }
-        }
-
-        uart_free_sw_queues();
-        uart_unsubscribe_int();
-    }
-
-    else {
-        printf("Configured to receive data\n"); 
-        uint32_t uart_mask;
-        uart_subscribe_int(&uart_mask);
-
-        int r, ipc_status;
-	    message msg;
-
-        printf("Entering while loop\n");
-        while (queue_front(rq) != 10) {
-            if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-                printf("start_game: driver_receive failed with: %d", r);
-                continue;
-            }
-
-            if (is_ipc_notify(ipc_status)) {
-                switch (_ENDPOINT_P(msg.m_source)) {
-                    case HARDWARE: /* hardware interrupt notification */
-                        if (msg.m_notify.interrupts & uart_mask) {
-                            uart_ih();
-                        }
-                        break;
-                    default:
-                        break; /* no other notifications expected: do nothing */     
-                }
-            }
-        }
-
-
-        while (!(queue_is_empty(rq))) {
-            printf("%d ", queue_front(rq));
-            queue_pop(rq);
-        }
-        printf("\n");
-        
-        uart_free_sw_queues();
-        uart_unsubscribe_int();
-    }
-
-    return 0;
 }

@@ -70,6 +70,9 @@ static void gm_update_arcade() {
 
 static void gm_update_switchboard() {
 	
+	if (!hw_manager_uart_is_empty()) {
+		gm_uart_erase_message();
+	}
 	update_cursor();
 	update_switchboard(get_game_manager()->s_board);
 	
@@ -344,8 +347,11 @@ uint8_t start_game(GameModeEnum gamemode) {
 	uint32_t rtc_bit_mask;
 	uint32_t uart_bit_mask;
 	
-	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask, &uart_bit_mask))
+	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask, &uart_bit_mask)) {
 		printf("start_game: Failed to enable interrupts\n");
+		exit_game();
+		exit(42);
+	}
 
 	int r, ipc_status;
 	message msg;

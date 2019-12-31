@@ -174,3 +174,13 @@ bool queue_is_full(Queue_t *q)
 {
     return (q->size >= CAPACITY);
 }
+
+/**
+ * @brief Returns the current size
+ * 
+ * @param q 
+ * @return unsigned int 
+ */
+unsigned int queue_size(Queue_t *q) {
+    return q->size;
+}
