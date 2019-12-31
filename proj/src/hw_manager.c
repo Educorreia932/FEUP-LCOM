@@ -44,8 +44,6 @@ uint8_t hw_manager_subscribe_int (uint32_t *timer0_mask, uint32_t *kbd_mask, uin
 
 	rtc_read_register(RTC_REG_C, &reg_c);
 
-	printf("%x\n", reg_c);
-
 	if (rtc_subscribe_int(rtc_mask))
 		return 1;
 

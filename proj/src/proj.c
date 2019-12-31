@@ -44,7 +44,6 @@ static int print_usage() {
 
 int (proj_main_loop)(int argc, char *argv[]) {
 	if (argc <= 0)
-		// return print_usage();
         return start_game(GM_MAIN_MENU);
 
 	else {

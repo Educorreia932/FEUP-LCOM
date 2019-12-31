@@ -6,6 +6,7 @@
 #include "ui_elements.h"
 #include "game_manager.h"
 #include "hw_manager.h"
+#include "power_ups.h"
 
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
@@ -38,7 +39,6 @@
 #define PLAYER_JUMP_MULT_STEP 0.01f
 
 struct Player {
-
 	Rect_t rect;
 	Sprite_t *idle_sprite, *walk_sprite,*sparks_sprite;
 	float speed_mult, jump_mult;
@@ -58,6 +58,9 @@ struct Player {
 	// Single Player UI ~ NULL ptr if multiplayer
 	Slider_t *jump_slider, *speed_slider;
 	Button_t **laser_buttons;
+
+	// Only used in Arcade mode 
+	Score_t* score;
 };
 
 // Forward declaration in order to be used in new_player
@@ -76,18 +79,21 @@ static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
 		get_game_manager()->level->player->current_powers |= powers_to_give;
 	}
 }
+
 void player_unlock_speed() {
 	player_unlock_powers(UNLOCKED_SPEED);
 	if (get_game_manager()->level->player->ui_controls) {
 		slider_activate(get_game_manager()->level->player->speed_slider);
 	}
 }
+
 void player_unlock_jump() {
 	player_unlock_powers(UNLOCKED_JUMP);
 	if (get_game_manager()->level->player->ui_controls) {
 		slider_activate(get_game_manager()->level->player->jump_slider);
 	}
 }
+
 void player_unlock_lasers() {
 	player_unlock_powers(UNLOCKED_LASERS);
 	if (get_game_manager()->level->player->ui_controls) {
@@ -97,6 +103,7 @@ void player_unlock_lasers() {
 		button_activate(p->laser_buttons[2]);
 	}
 }
+
 void player_unlock_gravity() {
 	player_unlock_powers(UNLOCKED_GRAVITY);
 }
@@ -162,7 +169,6 @@ static void player_set_laser_2() {
 }
 
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) {
-
 	Player_t* player = (Player_t*) malloc(sizeof(Player_t));
 	
 	if (player == NULL) {
@@ -241,7 +247,6 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	player->ui_controls = ui_controls;
 
 	if (ui_controls) {
-		
 		// Creating the extra single player UI 
 		player->jump_slider = new_slider("ui/small_vertical_slider.bmp", "ui/small_slider_handle.bmp", player_set_jump, vec2d(2, 20), 255, vec2d(4, 25), vec2d(4, 90));
 		if (player->jump_slider == NULL) {
@@ -328,6 +333,12 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// printf("new_testing_player: Finished making player\n");
+	player->score = NULL;
+
+	// Arcade
+	if (player->arcade_mode)
+		player->score = new_score(0);
+
 	return player;
 }
 
@@ -425,8 +436,12 @@ static inline void player_death_cycle(Player_t *player) {
 	if (player->respawn_timer != 1)
 		--player->respawn_timer;
 	
-	else
+	else {
+		if (player->arcade_mode)
+			reset_score(player->score);
+
 		player_respawn(player);
+	}
 }
 
 static inline void player_start_death(Player_t *player) {
@@ -534,12 +549,20 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	if (player->respawn_timer == 0) {
-		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))
+		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) 
 			player_start_death(player);
 	}
 	else
 		player_death_cycle(player);
 	
+	if (player->arcade_mode) {
+		if (arcade_player_passes_lasers(lasers, &player->rect)) {
+			update_score(player->score);
+		}
+			
+		else 
+			printf("Fora\n");
+	}
 }
 
 /*
@@ -632,4 +655,33 @@ void render_player_ui(Player_t *player) {
 		render_button(player->laser_buttons[1]);
 		render_button(player->laser_buttons[2]);
 	}
+
+	if (player->score != NULL) // Arcade mode 
+		render_score(player->score);
 }
+
+/** @note Only used in Arcade mode */
+
+struct PlayerTwo {
+	// Rect_t rect;
+	// Sprite_t *idle_sprite, *walk_sprite,*sparks_sprite;
+	// float speed_mult, jump_mult;
+	// float y_speed, gravity;
+	// float x_spawn, y_spawn;
+	
+	// bool ui_controls, arcade_mode;
+	// uint8_t respawn_timer; // If != 0, player is dead
+
+	// bool heading_right, is_idle, grounded;
+
+	// PlayerUnlockedPowers default_powers, current_powers;
+
+	// // Animation stuff
+	// uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
+
+	// // Single Player UI ~ NULL ptr if multiplayer
+	// Slider_t *jump_slider, *speed_slider;
+	// Button_t **laser_buttons;
+
+	Score_t* score;
+};

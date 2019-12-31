@@ -154,7 +154,6 @@ Vec2d_t circumference_vec2d(Vec2d_t center, float radius, float angle);
  * 
  * @note This is used for various purpuoses, such as:\n
  *          Colliders, sprite sizes, UI element's "hitbox", etc...
- * 
  */
 typedef struct Rect {
     float x; /**< @brief The x coordinate of the top leftmost point*/

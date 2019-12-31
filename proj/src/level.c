@@ -1,7 +1,7 @@
 #include "level.h"
 #include "player.h"
 
-Level_t* new_arcade_level() {
+Level_t* new_arcade_level(bool is_single_player) {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
 
 	// Background
@@ -52,6 +52,11 @@ Level_t* new_arcade_level() {
 		free_lasers(level->lasers);
 		free(level);
 		return NULL;
+	}
+
+	// Multiplayer
+	if (!is_single_player) {
+
 	}
 
 	return level;
@@ -196,5 +201,4 @@ void render_level(Level_t *level) {
 		if (level->pu[i] != NULL)
 			render_power_up(level->pu[i]);
 	}
-
 }

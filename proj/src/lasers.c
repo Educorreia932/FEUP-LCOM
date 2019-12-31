@@ -42,19 +42,18 @@ void free_laser(Laser_t* laser) {
     free(laser);
 }
 
-
 struct Lasers {
-    Laser_t **lasers;
+    Laser_t** lasers;
     uint8_t num_lasers;
     uint8_t cur_link_id;
-    // The number of colors is also the number of possible link ids
+    /** @note The number of colors is also the number of possible link ids */
     uint16_t* colors;
     uint8_t num_colors;
     SpriteDynamic_t *sprite;
 };
 
 Lasers_t* new_arcade_lasers() {
-        Lasers_t* lasers = (Lasers_t*) malloc(sizeof(Lasers_t));
+    Lasers_t* lasers = (Lasers_t*) malloc(sizeof(Lasers_t));
     if (lasers == NULL) {
         printf("new_arcade_lasers: Failed to allocate memory for the lasers\n");
         return NULL;
@@ -164,7 +163,6 @@ void free_lasers(Lasers_t* lasers) {
     free(lasers);
 }
 
-
 inline bool lasers_set_link_id(Lasers_t *lasers, uint8_t link) {
     if (link >= lasers->num_colors)
         return false;
@@ -207,7 +205,6 @@ void arcade_move_lasers(Lasers_t *lasers) {
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
         if (*aux != NULL) {
-
             (*aux)->rect.x -= ARCADE_LASER_MOVEMENT;
 
             if ((*aux)->rect.x < ARCADE_LASER_LEFT_EDGE) {
@@ -222,24 +219,21 @@ void arcade_move_lasers(Lasers_t *lasers) {
 }
 
 void arcade_add_laser(Lasers_t *lasers) {
-
     static uint16_t next_laser = 0;
 
-    if (next_laser) {
+    if (next_laser) 
         --next_laser;
-    }
-    else {
 
+    else {
         Laser_t **aux = lasers->lasers;
-        Laser_t **top=NULL, **bottom=NULL;
+        Laser_t **top = NULL, **bottom = NULL;
 
         // Is there a suitable free pair of lasers? 
         for (uint32_t i = 0; i < lasers->num_lasers; i++) {
-
             if (*aux == NULL) {
-                if (top == NULL) {
+                if (top == NULL) 
                     top = aux;
-                }
+
                 else {
                     bottom = aux;
                     break;
@@ -277,4 +271,36 @@ void arcade_add_laser(Lasers_t *lasers) {
             );
         }
     }
+}
+
+static bool in_empty_space = false;
+
+bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect) {
+    Laser_t** aux = lasers->lasers;
+
+    for (uint32_t i = 0; i < lasers->num_lasers; i += 2) {
+        if (aux[i] != NULL) {
+            float x = aux[i]->rect.x;
+            float y = aux[i]->rect.y;
+            float w = aux[i]->rect.w;
+            float h = aux[i + 1]->rect.y - y;
+
+            Rect_t* empty_space = new_rect(x, y, w , h);
+
+            if (rect_collision(empty_space, rect)) {
+                free(empty_space);
+
+                if (in_empty_space)
+                    return false;
+
+                in_empty_space = true;
+
+                return true;
+            } 
+        }
+    }
+
+    in_empty_space = false;
+
+    return false;
 }

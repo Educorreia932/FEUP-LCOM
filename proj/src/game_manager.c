@@ -20,7 +20,6 @@ static void gm_void_safety_function() {
 // Erases everything until the queue is either empty or it finds a message terminator
 // This means an error will never "contaminate" the next messages
 static void gm_uart_erase_message() {
-
 	while (hw_manager_uart_front() != HEADER_TERMINATOR
 			&& !hw_manager_uart_is_empty()) {
 		
@@ -30,11 +29,9 @@ static void gm_uart_erase_message() {
 
 	if (!hw_manager_uart_is_empty())
 		hw_manager_uart_pop();
-
 }
 
 static void gm_update_level() {
-
 	if (!hw_manager_uart_is_empty()) {
 
 		switch (hw_manager_uart_front()) {
@@ -105,7 +102,6 @@ static void gm_render_main_menu() {
 }
 
 void gm_start_level() {
-
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -149,7 +145,6 @@ void gm_start_switchboard() {
 }
 
 void gm_start_arcade() {
-
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -160,7 +155,7 @@ void gm_start_arcade() {
 		gm->main_menu = NULL;
 	}
 
-	gm->level = new_arcade_level();
+	gm->level = new_arcade_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
 		printf("gm_start_arcade: Failed to create the Switchboard object\n");
@@ -170,7 +165,6 @@ void gm_start_arcade() {
 }
 
 void gm_start_main_menu() {
-
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;
@@ -190,12 +184,10 @@ void gm_start_main_menu() {
 
 }
 
-
 /** 
- * @param player_number Number of the player that's playing 
+ * @param gamemode Indicates the gamemode to start the game on
  */
 void initialize_game_manager(GameModeEnum gamemode) {
-	
 	// Avoid overwriting the old one
 	if (gm != NULL) {
 		printf("initialize_game_manager: GameManager already exists\n");
@@ -215,25 +207,23 @@ void initialize_game_manager(GameModeEnum gamemode) {
 	gm->gamemode = gamemode;
 
 	// Select the starting "gamemode" accordingly
-	if (gm->gamemode & GM_MAIN_MENU) {
+	if (gm->gamemode & GM_MAIN_MENU)
 		gm_start_main_menu();
-	}
-	else if (gm->gamemode & GM_LEVEL) {
+
+	else if (gm->gamemode & GM_LEVEL)
 		gm_start_level();
-	}
-	else if (gm->gamemode & GM_SWITCHBOARD) {
+	
+	else if (gm->gamemode & GM_SWITCHBOARD)
 		gm_start_switchboard();
-	}
-	else if (gm->gamemode & GM_ARCADE) {
+	
+	else if (gm->gamemode & GM_ARCADE)
 		gm_start_arcade();
-	}
-	else
-	{
+
+	else {
 		printf("Invalid gamemode\n");
 		exit(43); // Another pretty much fatal error
 	}
 	
-
 	// Put all the unused ones to a non-seg fault fucntion
 	for (uint8_t i = 0; i < 31; ++i) {
 		gm->update_function[i] = &gm_void_safety_function;
@@ -317,7 +307,6 @@ void exit_game() {
 }
 
 uint8_t start_game(GameModeEnum gamemode) {  
-
 	printf("start_game: Started the game\n");
 
 	// Initialize rand seed
@@ -362,8 +351,6 @@ uint8_t start_game(GameModeEnum gamemode) {
 
 	printf("start_game: Entering game loop\n");
 
-	// hw_manager_rtc_set_alarm(5);
-
 	while (gm->game_ongoing) {
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("start_game: driver_receive failed with: %d", r);
@@ -404,7 +391,6 @@ uint8_t start_game(GameModeEnum gamemode) {
 
 		// We only do the heavy stuff here, out of the "critical path"
 		if (is_frame) {
-
 			update();
 			render();
 

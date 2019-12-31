@@ -34,9 +34,9 @@ static void menu_start_arcade_single() {
 }
 
 static void menu_start_arcade_versus() {
-    // GameManager_t* gm = get_game_manager();
-    // gm->gamemode = GM_ARCADE_UART;
-    // gm_start_arcade();
+    GameManager_t* gm = get_game_manager();
+    gm->gamemode = GM_ARCADE_UART;
+    gm_start_arcade();
 }
 
 MainMenu_t* new_main_menu() {
@@ -57,14 +57,13 @@ MainMenu_t* new_main_menu() {
     menu->camp_coop_p1 = new_button("main_menu/coop_p1_button.bmp", menu_start_campaign_coop_p1, rect(281, 490, 216, 75));
     menu->camp_coop_p2 = new_button("main_menu/coop_p2_button.bmp", menu_start_campaign_coop_p2, rect(279, 563, 218, 75));
     menu->arcade_single = new_button("main_menu/single_button.bmp", menu_start_arcade_single, rect(545, 490, 207, 75));
-    menu->arcade_versus = new_button("main_menu/versus_button.bmp", menu_start_arcade_versus, rect(751, 490, 216, 75));
+    menu->arcade_versus = new_button("main_menu/versus_button.bmp", menu_start_arcade_versus, rect(751, 490, 216, 75)); 
 
     return menu;
 
 }
 
 void free_main_menu(MainMenu_t *menu) {
-
     if (menu == NULL) {
         printf("free_main_menu: Cannot free a NULL ptr\n");
         return;
@@ -77,7 +76,6 @@ void free_main_menu(MainMenu_t *menu) {
     free_button(menu->camp_coop_p2);
     free_button(menu->arcade_single);
     free_button(menu->arcade_versus);
-
 }
 
 void update_main_menu(MainMenu_t *menu) {
