@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 }
 
 static int print_usage() {
-    printf("Usage: level | (sw | board) | arcade\n");
+    printf("Usage: literally just 'lcom_run proj'\n");
 
     return 1;
 }
@@ -47,24 +47,7 @@ int (proj_main_loop)(int argc, char *argv[]) {
 		// return print_usage();
         return start_game(GM_MAIN_MENU);
 
-    if (strcmp(argv[0], "sp") == 0) {
-        return start_game(GM_LEVEL);
-    }
-
-	if (strcmp(argv[0], "level") == 0) {
-        return start_game(GM_LEVEL_UART);
-	}
-
-    else if (strcmp(argv[0], "sw") == 0 || strcmp(argv[0], "board") == 0) {
-        return start_game(GM_SWITCHBOARD | GM_UART);
-    }
-    
-    else if (strcmp(argv[0], "arcade") == 0) {
-        return start_game(GM_ARCADE);
-    }
-    
-    // Add multiplayer arcade later down the road
-
+	else if (strcmp(argv[0], "test") == 0) {
 	else if (strcmp(argv[0], "test") == 0) {
 
         uint8_t tx = (uint8_t) (*argv[1] - '0');

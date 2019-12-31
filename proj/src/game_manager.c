@@ -17,16 +17,49 @@ static void gm_void_safety_function() {
 	return;
 }
 
-static void gm_update_level() {
-	update_cursor();
-	switch (hw_manager_uart_front()) {
-		case 0xFF:
-			break;
-		case 5:
-			player_switch_gravity();
-			hw_manager_uart_pop();
-			break;
+// Erases everything until the queue is either empty or it finds a message terminator
+// This means an error will never "contaminate" the next messages
+static void gm_uart_erase_message() {
+
+	while (hw_manager_uart_front() != HEADER_TERMINATOR
+			&& !hw_manager_uart_is_empty()) {
+		
+		hw_manager_uart_pop();
+
 	}
+
+	if (!hw_manager_uart_is_empty())
+		hw_manager_uart_pop();
+
+}
+
+static void gm_update_level() {
+
+	if (!hw_manager_uart_is_empty()) {
+
+		switch (hw_manager_uart_front()) {
+
+			case HEADER_SPEED_MULT:
+				hw_manager_uart_pop();
+				player_set_speed(hw_manager_uart_front());
+				break;
+			case HEADER_JUMP_MULT:
+				hw_manager_uart_pop();
+				player_set_jump(hw_manager_uart_front());
+				break;
+			case HEADER_LASER:
+				hw_manager_uart_pop();
+				lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
+				gm_uart_erase_message();
+				break;
+
+		}
+
+		gm_uart_erase_message();
+		
+	}
+
+	update_cursor();
 	update_level(get_game_manager()->level);
 }
 
@@ -36,16 +69,16 @@ static void gm_update_arcade() {
 }
 
 static void gm_update_switchboard() {
+	
 	update_cursor();
 	update_switchboard(get_game_manager()->s_board);
-	if (mouse_get_rb_down()) {
-		hw_manager_uart_send_char(5);
-	}
+	
 }
 
 static void gm_update_main_menu() {
 	update_cursor();
 	update_main_menu(gm->main_menu);
+	gm_uart_erase_message();
 }
 
 static void gm_render_level() {
@@ -84,6 +117,7 @@ void gm_start_level() {
 	
 	if (gm->level == NULL) {
 		printf("gm_start_level: Failed to create the Switchboard object\n");
+		exit_game();
 		exit(42);
 	}
 
@@ -105,6 +139,7 @@ void gm_start_switchboard() {
 	
 	if (gm->s_board == NULL) {
 		printf("gm_start_switchboard: Failed to create the Switchboard object\n");
+		exit_game();
 		exit(42);
 	}
 
@@ -126,6 +161,7 @@ void gm_start_arcade() {
 	
 	if (gm->level == NULL) {
 		printf("gm_start_arcade: Failed to create the Switchboard object\n");
+		exit_game();
 		exit(42);
 	}
 }
@@ -145,6 +181,7 @@ void gm_start_main_menu() {
 
 	if (gm->main_menu == NULL) {
 		printf("gm_start_main_menu: Faild to create the MainMenu object\n");
+		exit_game();
 		exit(42);
 	}
 
@@ -266,10 +303,16 @@ void render() {
 	gm->render_function[gm->gamemode]();
 }
 
-/** 
- * @brief Starts the game
- * @returns 0 on success, 1 otherwise
- */
+// Used for shutdowns (including panicky ones)
+void exit_game() {
+	free_game_manager();
+	free_kbd_input_events();
+	free_mouse_input_events();
+	free_cursor();
+	hw_manager_unsubscribe_int();
+	hw_manager_exit_video_mode();
+}
+
 uint8_t start_game(GameModeEnum gamemode) {  
 
 	printf("start_game: Started the game\n");
@@ -371,12 +414,7 @@ uint8_t start_game(GameModeEnum gamemode) {
 	
 	printf("start_game: Game loop ended\n");
 
-	free_game_manager();
-	free_kbd_input_events();
-	free_mouse_input_events();
-	free_cursor();
-	hw_manager_unsubscribe_int();
-	hw_manager_exit_video_mode();
+	exit_game();
 
 	printf("Thanks for playing!\n");
 

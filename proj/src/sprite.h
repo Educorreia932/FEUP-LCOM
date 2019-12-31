@@ -28,6 +28,7 @@ void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multipl
 
 uint16_t sprite_get_width(Sprite_t *s);
 uint16_t sprite_get_height(Sprite_t *s);
+Vec2d_t sprite_get_size(Sprite_t *s);
 
 void set_animation_state(Sprite_t *s, uint8_t state);
 uint8_t get_animation_state(const Sprite_t *s);

@@ -123,9 +123,9 @@ Lasers_t* prototype_lasers() {
         return NULL;
     }
 
-    lasers->lasers[0] = new_laser(rect(732, 632, 16, 112), 0);
-    lasers->lasers[1] = new_laser(rect(804, 632, 16, 112), 1);
-    lasers->lasers[2] = new_laser(rect(876, 632, 16, 112), 0);
+    lasers->lasers[0] = new_laser(rect(680, 632, 16, 112), 0);
+    lasers->lasers[1] = new_laser(rect(780, 632, 16, 112), 1);
+    lasers->lasers[2] = new_laser(rect(880, 632, 16, 112), 0);
     lasers->lasers[3] = new_laser(rect(512, 224, 16, 144), 2);
 
     // Colors

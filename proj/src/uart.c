@@ -31,6 +31,10 @@ void uart_receiver_q_pop() {
     queue_pop(rq);
 }
 
+bool uart_receiver_q_empty() {
+    return queue_is_empty(rq);
+}
+
 uint8_t uart_subscribe_int(uint32_t *bit_mask) {
     if (!bit_mask) // Check if pointer is NULL
         return 1;

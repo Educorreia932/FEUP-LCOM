@@ -12,15 +12,17 @@ extern char* assets_rel_path;
 
 enum UART_EVENT_HEADER {
 
+    HEADER_TERMINATOR = 0xFF,
+
     HEADER_SYNCED = 's',
 
     HEADER_LASER = 'L',
     HEADER_SPEED_MULT = 'S',
     HEADER_JUMP_MULT = 'J',
     HEADER_PLAYER_DEATH = 'D',
-    HEADER_PLAYER_ALIVE = 'A',
-    HEADER_POWERS_UNLOCKED = 'P',
+    HEADER_SWITCHBOARD_SETUP = 'P',
     HEADER_PLAYER_UPDATE = 'U'
+
 };
 
 
@@ -43,8 +45,9 @@ typedef struct GameManager {
     MainMenu_t *main_menu;
     void (*update_function[32])();
     void (*render_function[32])();
-    uint32_t esc_counter;
-    bool game_ongoing;
+    uint32_t esc_counter; // Used to go back
+    bool game_ongoing; // Used to exit the game
+    bool uart_synced;
 	GameModeEnum gamemode;
 } GameManager_t;
 
@@ -56,4 +59,14 @@ void gm_start_switchboard();
 void gm_start_arcade();
 void gm_start_main_menu();
 
+/**
+ * @brief Used for exiting the game, even on catastrophic errors
+ * 
+ */
+void exit_game();
+/** 
+ * @brief Starts the game
+ * @param gamemode Indicates the gamemode to start the game on (usually the Menu)
+ * @returns 0 on success, 1 otherwise
+ */
 uint8_t start_game(GameModeEnum gamemode);

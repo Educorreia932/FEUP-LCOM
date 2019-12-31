@@ -9,9 +9,28 @@
 
 typedef struct Player Player_t;
 
-void player_switch_gravity();
+typedef enum PlayerUnlockedPowers {
+    UNLOCKED_NOTHING = 0,
+    UNLOCKED_SPEED = 1,
+    UNLOCKED_JUMP = 2,
+    UNLOCKED_LASERS = 4,
+    UNLOCKED_GRAVITY = 8,
+    UNLOCKED_ALL = 15
+} PlayerUnlockedPowers;
 
-Player_t* new_player(bool ui_controls, bool arcade_mode);
+// void player_unlock_speed();
+// void player_unlock_jump();
+void player_unlock_lasers();
+void player_unlock_gravity();
+
+void player_win();
+
+void player_set_speed(uint8_t speed);
+void player_set_jump(uint8_t jump);
+// Grav direction should be -1 or 1
+void player_set_gravity(int8_t grav_direction);
+
+Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers);
 
 void free_player(Player_t* player);
 

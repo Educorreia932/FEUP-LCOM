@@ -101,6 +101,10 @@ inline uint16_t sprite_get_height(Sprite_t *s) {
   return bitmap_get_height(s->bmps[0]);
 }
 
+inline Vec2d_t sprite_get_size(Sprite_t *s) {
+  return vec2d(sprite_get_width(s), sprite_get_height(s));
+}
+
 void set_animation_state(Sprite_t *s, uint8_t state) {
   s->animation_state = state;
 }
