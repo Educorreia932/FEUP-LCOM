@@ -104,7 +104,6 @@ inline void hw_manager_kbd_ih() {
 }
 
 void hw_manager_kbd() {
-
   	analyse_scancode();
 	  
   	if (is_scancode_complete)
@@ -117,7 +116,6 @@ inline void hw_manager_mouse_ih() {
 }
 
 void hw_manager_mouse() {
-
 	mouse_data_handler();
 
 	if (is_mouse_packet_complete) {
@@ -126,7 +124,6 @@ void hw_manager_mouse() {
 
 		is_mouse_packet_complete = false;    
 	}
-
 }
 
 void hw_manager_rtc_ih() {

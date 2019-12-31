@@ -69,11 +69,13 @@ static uint8_t player_walk_countdown_value(Player_t* player);
 /* UNLOCKING POWERS */
 
 static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
+	// Multiplayer
 	if (get_game_manager()->gamemode & GM_UART) {
 		hw_manager_uart_send_char(HEADER_PLAYER_UPDATE);
 		hw_manager_uart_send_char((uint8_t) powers_to_give);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
+
 	else {
 		// Gets the player from anywhere
 		get_game_manager()->level->player->current_powers |= powers_to_give;
@@ -337,7 +339,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 
 	// Arcade
 	if (player->arcade_mode)
-		player->score = new_score(0);
+		player->score = new_score(800, 75, 0);
 
 	return player;
 }
@@ -491,7 +493,6 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	if (h_delta != 0) {
-
 		player->is_idle = false;
 
 		player->rect.x += h_delta / 2;
@@ -556,12 +557,12 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		player_death_cycle(player);
 	
 	if (player->arcade_mode) {
-		if (arcade_player_passes_lasers(lasers, &player->rect)) {
+		if (arcade_player_passes_lasers(lasers, &player->rect))
 			update_score(player->score);
-		}
-			
-		else 
-			printf("Fora\n");
+		
+		// Versus mode
+		if (get_game_manager()->gamemode & GM_UART)
+			send_info();
 	}
 }
 
@@ -660,28 +661,70 @@ void render_player_ui(Player_t *player) {
 		render_score(player->score);
 }
 
-/** @note Only used in Arcade mode */
+/** 
+ * @brief Representation of the second player while playing Arcade mode in versus
+ * @note Only used in Arcade mode 
+ */
 
 struct PlayerTwo {
-	// Rect_t rect;
-	// Sprite_t *idle_sprite, *walk_sprite,*sparks_sprite;
-	// float speed_mult, jump_mult;
-	// float y_speed, gravity;
-	// float x_spawn, y_spawn;
+	Rect_t rect;
+	Sprite_t* sprite;
+	float x_spawn, y_spawn;
 	
-	// bool ui_controls, arcade_mode;
-	// uint8_t respawn_timer; // If != 0, player is dead
-
 	// bool heading_right, is_idle, grounded;
 
-	// PlayerUnlockedPowers default_powers, current_powers;
-
-	// // Animation stuff
+	// Animation stuff
 	// uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
-
-	// // Single Player UI ~ NULL ptr if multiplayer
-	// Slider_t *jump_slider, *speed_slider;
-	// Button_t **laser_buttons;
 
 	Score_t* score;
 };
+
+PlayerTwo_t* new_player_two() {
+	PlayerTwo_t* player_two = (PlayerTwo_t*) malloc(sizeof(PlayerTwo_t));
+	
+	if (player_two == NULL) {
+		printf("new_player: Failed to allocate memory for the player two object\n");
+		return NULL;
+	}
+
+	// Sprite
+	player_two->sprite = new_sprite(0, 0, 1, "player/walk_0.bmp");
+    
+	if (player_two->sprite == NULL) {
+        printf("new_player_two: Failed to create the Sprite\n");
+        free(player_two);
+        return NULL;
+    }
+
+	player_two->x_spawn = 60.0f;
+	player_two->y_spawn = 704.0f;
+
+	// Creating player hitbox
+	player_two->rect = rect(
+		player_two->x_spawn,
+		player_two->y_spawn, 
+		(float) sprite_get_width(player_two->sprite), 
+		(float) sprite_get_height(player_two->sprite)
+	);
+
+	player_two->score = new_score(800, 140, 0);
+
+	if (player_two->sprite == NULL) {
+        printf("new_power_up: Failed to create the Sprite\n");
+        free(player_two);
+        return NULL;
+    }
+
+	return player_two;
+}
+
+void render_player_player_two(PlayerTwo_t* player_two) {
+	draw_sprite(player_two->sprite, &(player_two->rect), COLOR_BLUE, SPRITE_NORMAL);
+
+	render_score(player_two->score);
+}
+
+void send_info() {
+	hw_manager_uart_send_char(HEADER_PLAYER_UPDATE);
+	hw_manager_uart_send_char(HEADER_TERMINATOR);
+}

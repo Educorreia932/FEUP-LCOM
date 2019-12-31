@@ -102,7 +102,6 @@ void print_gravity_time(float f) {
 }
 
 SwitchBoard_t* new_switchboard() {
-
     SwitchBoard_t* s_board = (SwitchBoard_t*) malloc(sizeof(SwitchBoard_t));
     if (s_board == NULL) {
         printf("new_switchboard: Failed to allocate memory for Switchboard object\n");

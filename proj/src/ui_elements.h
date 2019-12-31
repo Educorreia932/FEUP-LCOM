@@ -85,7 +85,7 @@ typedef struct Number Number_t;
 
 typedef struct Score Score_t;
 
-Score_t* new_score(uint8_t value);
+Score_t* new_score(uint16_t x, uint16_t  y, uint8_t value);
 
 void update_score(Score_t* score);
 

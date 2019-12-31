@@ -16,6 +16,7 @@ typedef struct Level {
     Lasers_t *lasers;
     Spikes_t* spikes;
     PowerUp_t* pu[MAX_POWERUPS];
+    PlayerTwo_t* player_two;
 } Level_t;
 
 // typedef struct Level Level_t;

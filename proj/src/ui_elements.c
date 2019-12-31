@@ -536,7 +536,7 @@ void update_knob(Knob_t *knob) {
                     // cur_angle was calculated just before
                     
                     float cursor_angle = angle_vec2d(vec2d(1, 0),
-                        subtract_vec2d(cursor_get_pos(),                        knob->center));
+                        subtract_vec2d(cursor_get_pos(), knob->center));
                     
                     if (knob->center.y > cursor_get_y())
                         cursor_angle = 2 * M_PI - cursor_angle;
@@ -741,14 +741,17 @@ void set_number(Number_t* number, uint8_t value) {
     number->sprite = new_sprite(0, 0, 1, sprite_file_name);
 }
 
+#define SCORE_SIZE 3
+
 struct Score {
     Number_t* numbers;
     uint8_t value;
     size_t size;
+    float x;
+    float y;
 };
 
-// TODO: Position on screen
-Score_t* new_score(uint8_t value) {
+Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
     Score_t* score = (Score_t*) malloc(sizeof(Score_t*));
     
     if (score == NULL) {
@@ -756,7 +759,9 @@ Score_t* new_score(uint8_t value) {
         return NULL;
     }
 
-    score->size = 3;
+    score->x = x;
+    score->y = y;
+    score->size = SCORE_SIZE;
 
     score->numbers = (Number_t*) malloc(sizeof(Number_t) * score->size);
 
@@ -766,10 +771,10 @@ Score_t* new_score(uint8_t value) {
         return NULL;   
     }
 
-    uint16_t x_pos = 900;
+    uint16_t x_pos = x + 120;
 
     for (size_t i = 0; i < score->size; i++)
-        score->numbers[i] = *new_number(0, rect(x_pos - i * 40, 75, 36, 48));
+        score->numbers[i] = *new_number(0, rect(x_pos - i * 40, y, 36, 48));
 
     return score;
 }
