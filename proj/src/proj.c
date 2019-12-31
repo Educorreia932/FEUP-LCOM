@@ -48,7 +48,6 @@ int (proj_main_loop)(int argc, char *argv[]) {
         return start_game(GM_MAIN_MENU);
 
 	else if (strcmp(argv[0], "test") == 0) {
-	else if (strcmp(argv[0], "test") == 0) {
 
         uint8_t tx = (uint8_t) (*argv[1] - '0');
 
