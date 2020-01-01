@@ -40,7 +40,7 @@
 
 struct Player {
 	Rect_t rect;
-	Sprite_t *idle_sprite, *walk_sprite,*sparks_sprite;
+	Sprite_t *idle_sprite, *walk_sprite, *sparks_sprite;
 	float speed_mult, jump_mult;
 	float y_speed, gravity;
 	float x_spawn, y_spawn;
@@ -82,7 +82,6 @@ static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
 
 	// Gets the player from anywhere
 	get_game_manager()->level->player->current_powers |= powers_to_give;
-
 }
 
 void player_unlock_speed() {
@@ -179,7 +178,7 @@ static void player_set_laser_2() {
 	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)	lasers_set_link_id(get_game_manager()->level->lasers, 2);
 }
 
-Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) {
+Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) { //TODO: Specify spawn
 	Player_t* player = (Player_t*) malloc(sizeof(Player_t));
 	
 	if (player == NULL) {
@@ -467,12 +466,12 @@ static inline void player_start_death(Player_t *player) {
 
 void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
 	Rect_t previous_rect = player->rect;
+	bool score_update = false, died = false;
 
 	// Horizontal Movement
 	float h_delta = 0;
 
 	if (player->respawn_timer == 0) {
-
 		if (player->ui_controls) {
 			update_slider(player->jump_slider);
 			update_slider(player->speed_slider);
@@ -563,19 +562,23 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	if (player->respawn_timer == 0) {
-		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) 
+		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))  {
+			died = true;
 			player_start_death(player);
+		}
 	}
+
 	else
 		player_death_cycle(player);
 	
 	if (player->arcade_mode) {
-		if (arcade_player_passes_lasers(lasers, &player->rect))
+		if (arcade_player_passes_lasers(lasers, &player->rect)) {
 			update_score(player->score);
-		
-		// Versus mode
+			score_update = true;
+		}
+
 		if (get_game_manager()->gamemode & GM_UART)
-			send_info();
+			send_info(player, died, score_update);
 	}
 }
 
@@ -674,6 +677,21 @@ void render_player_ui(Player_t *player) {
 		render_score(player->score);
 }
 
+#define PLAYER_TWO_X_MSB 0
+#define PLAYER_TWO_X_LSB 1
+#define PLAYER_TWO_Y_MSB 2
+#define PLAYER_TWO_Y_LSB 3
+#define PLAYER_TWO_ADDITIONAL_1 4
+#define PLAYER_TWO_ADDITIONAL_2 5
+
+#define PLAYER_TWO_ANIMATION_NUMBER (BIT(0) | BIT(1) | BIT(2)) // Player and Spark
+#define PLAYER_TWO_IS_DEAD BIT(4)
+#define PLAYER_TWO_IS_GROUNDED BIT(5)
+#define PLAYER_TWO_HEADING_RIGHT BIT(6)
+#define PLAYER_TWO_UPSIDE_DOWN BIT(7)
+
+#define PLAYER_TWO_INCREASE_SCORE BIT(4)
+
 /** 
  * @brief Representation of the second player while playing Arcade mode in versus
  * @note Only used in Arcade mode 
@@ -681,18 +699,20 @@ void render_player_ui(Player_t *player) {
 
 struct PlayerTwo {
 	Rect_t rect;
-	Sprite_t* sprite;
+	Sprite_t* idle_sprite;
+	Sprite_t* walk_sprite;
+	Sprite_t* sparks_sprite;
 	float x_spawn, y_spawn;
 	
-	// bool heading_right, is_idle, grounded;
+	bool heading_right, is_idle, grounded, is_dead, gravity;
 
 	// Animation stuff
-	// uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
+	uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
 
 	Score_t* score;
 };
 
-PlayerTwo_t* new_player_two() {
+PlayerTwo_t* new_player_two() { 
 	PlayerTwo_t* player_two = (PlayerTwo_t*) malloc(sizeof(PlayerTwo_t));
 	
 	if (player_two == NULL) {
@@ -700,14 +720,46 @@ PlayerTwo_t* new_player_two() {
 		return NULL;
 	}
 
-	// Sprite
-	player_two->sprite = new_sprite(0, 0, 1, "player/walk_0.bmp");
-    
-	if (player_two->sprite == NULL) {
-        printf("new_player_two: Failed to create the Sprite\n");
-        free(player_two);
-        return NULL;
-    }
+	// Idle animation
+	player_two->idle_sprite = new_sprite(0, 0, 2, 
+		"player/idle_0.bmp",
+		"player/idle_1.bmp"
+	);
+	if (player_two->idle_sprite == NULL) {
+		printf("new_player: Failed to create the idle animation's Sprite object\n");
+		free(player_two);
+		return NULL;
+	}
+
+	// Walking animation
+	player_two->walk_sprite = new_sprite(0, 0, 5, 
+		"player/walk_0.bmp",
+		"player/walk_1.bmp",
+		"player/walk_2.bmp",
+		"player/walk_3.bmp",
+		"player/walk_4.bmp"
+	);
+	if (player_two->idle_sprite == NULL) {
+		printf("new_player: Failed to create the walk animation's Sprite object\n");
+		free_sprite(player_two->idle_sprite);
+		free(player_two);
+		return NULL;
+	}
+
+	// The background sparks
+	player_two->sparks_sprite = new_sprite(-8, -8, 4,
+		"player/spark_0.bmp",
+		"player/spark_1.bmp",
+		"player/spark_2.bmp",
+		"player/spark_3.bmp"
+	);
+	if (player_two->sparks_sprite == NULL) {
+		printf("new_player_two: Failed to create the sparks' Sprite object\n");
+		free_sprite(player_two->idle_sprite);
+		free_sprite(player_two->walk_sprite);
+		free(player_two);
+		return NULL;
+	}
 
 	player_two->x_spawn = 60.0f;
 	player_two->y_spawn = 704.0f;
@@ -716,14 +768,16 @@ PlayerTwo_t* new_player_two() {
 	player_two->rect = rect(
 		player_two->x_spawn,
 		player_two->y_spawn, 
-		(float) sprite_get_width(player_two->sprite), 
-		(float) sprite_get_height(player_two->sprite)
+		(float) sprite_get_width(player_two->idle_sprite), 
+		(float) sprite_get_height(player_two->idle_sprite)
 	);
 
 	player_two->score = new_score(800, 140, 0);
 
-	if (player_two->sprite == NULL) {
-        printf("new_power_up: Failed to create the Sprite\n");
+	if (player_two->score == NULL) {
+        printf("new_player_two: Failed to create the score\n");
+		free_sprite(player_two->idle_sprite);
+		free_sprite(player_two->walk_sprite);
         free(player_two);
         return NULL;
     }
@@ -731,13 +785,74 @@ PlayerTwo_t* new_player_two() {
 	return player_two;
 }
 
-void render_player_player_two(PlayerTwo_t* player_two) {
-	draw_sprite(player_two->sprite, &(player_two->rect), COLOR_BLUE, SPRITE_NORMAL);
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
+	player_two->rect.x = (bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB];
+	player_two->rect.y = (bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB];
 
+	// bytes[PLAYER_TWO_ADDITIONAL_1] && PLAYER_TWO_ANIMATION_NUMBER;
+
+	printf("Byte %u\n", bytes[PLAYER_TWO_ADDITIONAL_1]);
+
+	player_two->is_dead = (bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_INCREASE_SCORE) >> 4;
+	player_two->heading_right = (bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_INCREASE_SCORE) >> 6;
+
+	if ((bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE) >> 4)
+		update_score(player_two->score);
+
+	if (player_two->is_dead)
+		reset_score(player_two->score);
+}
+
+void render_player_two_background(PlayerTwo_t* player_two) {
+	if (!player_two->is_dead && !player_two->gravity) {
+		// Player is alive
+		draw_sprite(player_two->sparks_sprite, &player_two->rect, COLOR_BLUE, SPRITE_Y_AXIS * !player_two->heading_right);
+	}
+}
+
+void render_player_two_foreground(PlayerTwo_t* player_two) {
+	SpriteReverse sr = SPRITE_Y_AXIS * player_two->heading_right
+		+ SPRITE_X_AXIS * !player_two->gravity;
+
+	if (!player_two->is_dead)
+		// Player is alive
+		if (player_two->grounded && player_two->is_idle)
+			draw_sprite(player_two->idle_sprite, &player_two->rect, COLOR_BLUE, sr);
+		
+		else
+			draw_sprite(player_two->walk_sprite, &player_two->rect, COLOR_BLUE, sr);
+
+	else 
+		// Player is dead
+		draw_sprite(player_two->idle_sprite, &player_two->rect, COLOR_PINK, sr);
+}
+
+void render_player_two_ui(PlayerTwo_t* player_two) {
 	render_score(player_two->score);
 }
 
-void send_info() {
-	hw_manager_uart_send_char(HEADER_PLAYER_UPDATE);
+void send_info(Player_t* player, bool is_dead, bool score_update) {
+	uint16_t x = player->rect.x;
+	uint16_t y = player->rect.y;
+
+	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0;
+	
+	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb)) 
+		return; 
+
+	additional_byte_1 |= (is_dead << 4);
+	additional_byte_1 |= (player->heading_right << 6);
+
+	additional_byte_2 |= (score_update << 4);
+
+	hw_manager_uart_send_char(HEADER_PLAYER_TWO_UPDATE);
+
+	hw_manager_uart_send_char(x_msb);
+	hw_manager_uart_send_char(x_lsb);
+	hw_manager_uart_send_char(y_msb);
+	hw_manager_uart_send_char(y_lsb);
+	hw_manager_uart_send_char(additional_byte_1);
+	hw_manager_uart_send_char(additional_byte_2);
+
 	hw_manager_uart_send_char(HEADER_TERMINATOR);
 }

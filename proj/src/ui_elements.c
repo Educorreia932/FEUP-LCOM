@@ -674,6 +674,8 @@ Number_t* new_number(uint8_t value, Rect_t rect) {
     return number;
 }
 
+
+// TODO: Load numbers before
 bool update_number(Number_t* number, bool carry) {
     if (carry) {
         number->value++;
@@ -807,6 +809,7 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
     return score;
 }
 
+// clamp (math.h ??)
 void update_score(Score_t* score) {
     bool carry = true;
 

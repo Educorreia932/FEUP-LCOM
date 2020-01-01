@@ -29,8 +29,11 @@ enum UART_EVENT_HEADER {
     HEADER_PLAYER_RESPAWN = 'R',
     HEADER_PLAYER_UPDATE = 'U',
     HEADER_REQUEST_POWERS = 'P',
-    HEADER_RESPONSE_POWERS = 'p'
+    HEADER_RESPONSE_POWERS = 'p',
 
+    // Arcade
+    HEADER_PLAYER_TWO_UPDATE = 'T',
+    HEADER_ARCADE_READY = 'A'
 };
 
 typedef enum GameMode {

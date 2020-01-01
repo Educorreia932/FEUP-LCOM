@@ -12,7 +12,7 @@ extern unsigned long int no_of_calls;
 int (util_get_LSB) (uint16_t val, uint8_t *lsb);
 
 /** 
- * * @param val input 2 byte integer
+ * @param val input 2 byte integer
  * @param msb Address of memory location to be update with val's MSB
  * @returns 0 upon success, 1 otherwise 
  */
