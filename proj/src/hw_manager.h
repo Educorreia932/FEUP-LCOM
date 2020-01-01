@@ -3,6 +3,9 @@
 #include <lcom/lcf.h>
 #include "input_events.h"
 
+#define UART_DC_TIME (5 * 60) // 5 seconds
+#define UART_CONNECTION_WARNING_TIME (UART_DC_TIME / 2) // Half the UART_DC_TIME
+
 /* SUBSCRIBE & UNSUBCRIBE INT */
 
 uint8_t hw_manager_subscribe_int(uint32_t *timer0_mask, uint32_t *kbd_mask, uint32_t *mouse_mask, uint32_t *rtc_mask, uint32_t *uart_mask);

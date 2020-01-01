@@ -65,6 +65,9 @@ struct SwitchBoard {
     Button_t *laser_buttons[3];
     Slider_t *speed_slider, *jump_slider;
     Knob_t *gravity_knob;
+
+    PlayerUnlockedPowers default_powers, current_powers;
+    bool is_player_alive;
 };
 
 void send_laser0() {
@@ -99,6 +102,31 @@ void send_jump_mult(uint8_t jump_mult) {
 
 void print_gravity_time(float f) {
     printf("Gravity time (rounded to int): %d\n", (int32_t) f);
+}
+
+static void switchboard_update_powers(SwitchBoard_t* sw) {
+    slider_set_activation(sw->speed_slider, sw->current_powers & UNLOCKED_SPEED);
+    slider_set_activation(sw->jump_slider, sw->current_powers & UNLOCKED_JUMP);
+    button_set_activation(sw->laser_buttons[0], sw->current_powers & UNLOCKED_LASERS);
+    button_set_activation(sw->laser_buttons[1], sw->current_powers & UNLOCKED_LASERS);
+    button_set_activation(sw->laser_buttons[2], sw->current_powers & UNLOCKED_LASERS);
+    knob_set_activation(sw->gravity_knob, sw->current_powers & UNLOCKED_GRAVITY);
+}
+
+void switchboard_set_default_powers(SwitchBoard_t* sw, PlayerUnlockedPowers default_powers) {
+    sw->default_powers = default_powers;
+    sw->current_powers = default_powers;
+    switchboard_update_powers(sw);
+}
+
+void switchboard_unlock_powers(SwitchBoard_t* sw, PlayerUnlockedPowers new_powers) {
+    sw->current_powers |= new_powers;
+    switchboard_update_powers(sw);
+}
+
+void switchboard_player_respawn(SwitchBoard_t* sw) {
+    sw->current_powers = sw->default_powers;
+    switchboard_update_powers(sw);
 }
 
 SwitchBoard_t* new_switchboard() {

@@ -18,6 +18,7 @@ typedef enum PlayerUnlockedPowers {
     UNLOCKED_ALL = 15
 } PlayerUnlockedPowers;
 
+PlayerUnlockedPowers player_get_default_powers();
 // void player_unlock_speed();
 // void player_unlock_jump();
 void player_unlock_lasers();

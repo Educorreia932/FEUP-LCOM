@@ -6,6 +6,8 @@
 #include "rtc.h"
 #include "uart.h"
 
+#include "game_manager.h"
+
 // Frame rate
 #define FRAME_PERIOD 1  // 60 fps
 
@@ -153,6 +155,7 @@ inline void hw_manager_uart_ih() {
 }
 
 inline void hw_manager_uart_send_char(uint8_t to_send) {
+	get_game_manager()->uart_last_sent = 0;
 	uart_send_char(to_send);
 }
 

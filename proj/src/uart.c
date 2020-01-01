@@ -151,7 +151,8 @@ uint8_t uart_set_conf() {
 
     /* IER */
     // Get interrupts for receiving data only
-    uint8_t ier = IER_RECEIVED_DATA_INT | IER_TRANSMITTER_EMPTY_INT;
+    // uint8_t ier = IER_RECEIVED_DATA_INT | IER_TRANSMITTER_EMPTY_INT;
+    uint8_t ier = IER_RECEIVED_DATA_INT;
     if (sys_outb(COM1_BASE + UART_REG_IER, ier))
         return 1;
 
