@@ -68,6 +68,10 @@ static uint8_t player_walk_countdown_value(Player_t* player);
 
 /* UNLOCKING POWERS */
 
+PlayerUnlockedPowers player_get_default_powers() {
+	return get_game_manager()->level->player->default_powers;
+}
+
 static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
 	// Multiplayer
 	if (get_game_manager()->gamemode & GM_UART) {
@@ -431,7 +435,11 @@ static inline void player_respawn(Player_t *player) {
 	set_animation_state(player->idle_sprite, 0);
 	set_animation_state(player->walk_sprite, 0);
 	set_animation_state(player->sparks_sprite, 0);
-
+	
+	if (get_game_manager()->gamemode & GM_UART) {
+		hw_manager_uart_send_char(HEADER_PLAYER_RESPAWN);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
+	}
 }
 
 static inline void player_death_cycle(Player_t *player) {

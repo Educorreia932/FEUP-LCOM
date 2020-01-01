@@ -33,6 +33,7 @@ void button_hide(Button_t* button);
 void button_show(Button_t* button);
 void button_activate(Button_t* button);
 void button_deactivate (Button_t* button);
+void button_set_activation(Button_t* button, bool is_active);
 
 void update_button(Button_t* button);
 void render_button(Button_t* button);
@@ -52,6 +53,7 @@ void slider_hide(Slider_t* slider);
 void slider_show(Slider_t* slider);
 void slider_activate(Slider_t* slider);
 void slider_deactivate (Slider_t* slider);
+void slider_set_activation(Slider_t* slider, bool is_active);
 
 void update_slider(Slider_t* slider);
 
@@ -72,6 +74,7 @@ void knob_hide(Knob_t* knob);
 void knob_show(Knob_t* knob);
 void knob_activate(Knob_t* knob);
 void knob_deactivate (Knob_t* knob);
+void knob_set_activation(Knob_t* knob, bool is_active);
 
 void update_knob(Knob_t* knob);
 

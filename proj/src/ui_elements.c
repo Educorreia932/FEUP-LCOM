@@ -148,6 +148,10 @@ inline void button_deactivate (Button_t* button) {
     button->is_active = false;
 }
 
+inline void button_set_activation(Button_t* button, bool is_active) {
+    button->is_active = is_active;
+}
+
 void update_button(Button_t* button) {
     if (button->is_active && button->shown) {
         if (is_cursor_inside_rect(&button->rect)) {
@@ -259,6 +263,11 @@ inline void slider_activate(Slider_t* slider) {
 inline void slider_deactivate (Slider_t* slider) {
     slider->is_active = false;
 }
+
+inline void slider_set_activation(Slider_t* slider, bool is_active) {
+    slider->is_active = is_active;
+}
+
 
 void update_slider(Slider_t* slider) {
     if (slider->is_active && slider->shown) {
@@ -432,7 +441,12 @@ inline void knob_deactivate (Knob_t* knob) {
     knob->is_active = false;
 }
 
-float knob_get_cursor_angle(Knob_t *knob) {
+inline void knob_set_activation(Knob_t* knob, bool is_active) {
+    knob->is_active = is_active;
+}
+
+
+static float knob_get_cursor_angle(Knob_t *knob) {
     float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(), knob->center));
     
     angle += knob->angle_offset;
@@ -443,7 +457,7 @@ float knob_get_cursor_angle(Knob_t *knob) {
     return angle;
 }
 
-float knob_get_cur_angle(Knob_t *knob) {
+static float knob_get_cur_angle(Knob_t *knob) {
 
     float cur_angle = angle_vec2d(
         vec2d(1, 0),
@@ -463,7 +477,7 @@ float knob_get_cur_angle(Knob_t *knob) {
     return cur_angle;
 }
 
-void knob_update_pos(Knob_t *knob, float angle) {
+static void knob_update_pos(Knob_t *knob, float angle) {
 
     Vec2d_t pos = circumference_vec2d(knob->center, knob->radius, 
                 fclampf(angle, knob->start_angle, knob->end_angle));

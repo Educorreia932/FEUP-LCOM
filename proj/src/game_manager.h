@@ -13,14 +13,20 @@ extern char* assets_rel_path;
 enum UART_EVENT_HEADER {
     HEADER_TERMINATOR = 0xFF,
 
+    // Sync
     HEADER_SYNCED = 's',
+    HEADER_AVAILABLE_LEVEL = 'l',
+    HEADER_AVAILABLE_ARCADE = 'a',
 
+    // Campaign
     HEADER_LASER = 'L',
     HEADER_SPEED_MULT = 'S',
     HEADER_JUMP_MULT = 'J',
-    HEADER_PLAYER_DEATH = 'D',
-    HEADER_SWITCHBOARD_SETUP = 'P',
-    HEADER_PLAYER_UPDATE = 'U'
+    HEADER_PLAYER_RESPAWN = 'R',
+    HEADER_PLAYER_UPDATE = 'U',
+    HEADER_REQUEST_POWERS = 'P',
+    HEADER_RESPONSE_POWERS = 'p'
+
 };
 
 typedef enum GameMode {
@@ -44,8 +50,10 @@ typedef struct GameManager {
     void (*render_function[32])();
     uint32_t esc_counter; // Used to go back
     bool game_ongoing; // Used to exit the game
-    bool uart_synced;
+    bool uart_synced; // Used to know if the two players are connected or not
+    uint32_t uart_last_sent, uart_last_received;
 	GameModeEnum gamemode;
+    Sprite_t *connecting_sprite;
 } GameManager_t;
 
 // Please only call when start_game has already been called

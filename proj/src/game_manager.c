@@ -1,5 +1,6 @@
 #include "game_manager.h"
 #include "hw_manager.h"
+#include "mouse_cursor.h"
 
 #define GM_ESC_COUNTDOWN_WINDOW 20 // in frames
 
@@ -31,29 +32,52 @@ static void gm_uart_erase_message() {
 		hw_manager_uart_pop();
 }
 
-static void gm_update_level() {
+static void gm_update_campaign_single() {
+	update_cursor();
+	update_level(get_game_manager()->level);
+}
+
+static void gm_update_campaign_coop() {
+
 	if (!hw_manager_uart_is_empty()) {
-
-		switch (hw_manager_uart_front()) {
-
-			case HEADER_SPEED_MULT:
-				hw_manager_uart_pop();
-				player_set_speed(hw_manager_uart_front());
-				break;
-			case HEADER_JUMP_MULT:
-				hw_manager_uart_pop();
-				player_set_jump(hw_manager_uart_front());
-				break;
-			case HEADER_LASER:
-				hw_manager_uart_pop();
-				lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
-				gm_uart_erase_message();
-				break;
-
+		gm->uart_last_received = 0;
+		if (!gm->uart_synced) {
+			switch (hw_manager_uart_front()) {
+				case HEADER_REQUEST_POWERS:
+					hw_manager_uart_send_char(HEADER_RESPONSE_POWERS);
+					hw_manager_uart_send_char((uint8_t) player_get_default_powers());
+					hw_manager_uart_send_char(HEADER_TERMINATOR);
+					gm->uart_synced = true;
+					break;
+			}
 		}
-
-		gm_uart_erase_message();
-		
+		else {
+			switch (hw_manager_uart_front()) {
+				case HEADER_SPEED_MULT:
+					hw_manager_uart_pop();
+					player_set_speed(hw_manager_uart_front());
+					break;
+				case HEADER_JUMP_MULT:
+					hw_manager_uart_pop();
+					player_set_jump(hw_manager_uart_front());
+					break;
+				case HEADER_LASER:
+					hw_manager_uart_pop();
+					lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
+					break;
+				case HEADER_SYNCED:
+					// Do nothing
+					break;
+			}
+		}
+		gm_uart_erase_message();	
+	}
+	else {
+		++gm->uart_last_received;
+		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
+			gm->uart_synced = false;
+			printf("Other user has disconnected\n");
+		}
 	}
 
 	update_cursor();
@@ -68,8 +92,48 @@ static void gm_update_arcade() {
 static void gm_update_switchboard() {
 	
 	if (!hw_manager_uart_is_empty()) {
+		gm->uart_last_received = 0;
+		if (!gm->uart_synced) {
+			switch (hw_manager_uart_front()) {
+				case HEADER_AVAILABLE_LEVEL:
+					hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
+					hw_manager_uart_send_char(HEADER_TERMINATOR);
+					break;
+				case HEADER_RESPONSE_POWERS:
+					hw_manager_uart_pop();
+					switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
+					gm->uart_synced = true;
+					break;
+			}
+		}
+		else {
+			switch (hw_manager_uart_front()) {
+				case HEADER_PLAYER_RESPAWN:
+					switchboard_player_respawn(gm->s_board);
+					break;
+				case HEADER_PLAYER_UPDATE:
+					hw_manager_uart_pop();
+					switchboard_unlock_powers(gm->s_board, hw_manager_uart_front());
+					break;
+				case HEADER_RESPONSE_POWERS:
+					hw_manager_uart_pop();
+					switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
+					break;
+				case HEADER_SYNCED:
+					// Do nothing
+					break;
+			}
+		}
 		gm_uart_erase_message();
 	}
+	else {
+		++gm->uart_last_received;
+		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
+			gm->uart_synced = false;
+			printf("Other user has disconnected\n");
+		}
+	}
+
 	update_cursor();
 	update_switchboard(get_game_manager()->s_board);
 	
@@ -81,8 +145,16 @@ static void gm_update_main_menu() {
 	gm_uart_erase_message();
 }
 
-static void gm_render_level() {
+static void gm_render_campaign_single() {
 	render_level(gm->level);
+	render_cursor();
+}
+
+static void gm_render_campaign_coop() {
+	if (gm->uart_synced)
+		render_level(gm->level);
+	else
+		draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_cursor();
 }
 
@@ -92,7 +164,9 @@ static void gm_render_arcade() {
 }
 
 static void gm_render_switchboard() {
-	render_switchboard(gm->s_board);
+	if (gm->uart_synced)
+		render_switchboard(gm->s_board);
+	else draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_cursor();
 }
 
@@ -112,12 +186,18 @@ void gm_start_level() {
 		gm->main_menu = NULL;
 	}
 	
+	gm->uart_synced = false;
 	gm->level = prototype_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
 		printf("gm_start_level: Failed to create the Switchboard object\n");
 		exit_game();
 		exit(42);
+	}
+
+	if (gm->gamemode & GM_UART) {
+		hw_manager_uart_send_char(HEADER_AVAILABLE_LEVEL);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
 
 }
@@ -134,12 +214,18 @@ void gm_start_switchboard() {
 		gm->main_menu = NULL;
 	}
 	
+	gm->uart_synced = false;
 	gm->s_board = new_switchboard();
 	
 	if (gm->s_board == NULL) {
 		printf("gm_start_switchboard: Failed to create the Switchboard object\n");
 		exit_game();
 		exit(42);
+	}
+
+	if (gm->gamemode & GM_UART) {
+		hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
 
 }
@@ -155,6 +241,7 @@ void gm_start_arcade() {
 		gm->main_menu = NULL;
 	}
 
+	gm->uart_synced = false;
 	gm->level = new_arcade_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
@@ -187,7 +274,7 @@ void gm_start_main_menu() {
 /** 
  * @param gamemode Indicates the gamemode to start the game on
  */
-void initialize_game_manager(GameModeEnum gamemode) {
+static void initialize_game_manager(GameModeEnum gamemode) {
 	// Avoid overwriting the old one
 	if (gm != NULL) {
 		printf("initialize_game_manager: GameManager already exists\n");
@@ -196,12 +283,21 @@ void initialize_game_manager(GameModeEnum gamemode) {
 
 	gm = (GameManager_t*) calloc(1, sizeof(GameManager_t));
 	if (gm == NULL) {
-		printf("new_testing_game_manager: Failed to allocate memory for GameManager object\n");
+		printf("initialize_game_manager: Failed to allocate memory for GameManager object\n");
 		exit(42); // This would pretty much be as fatal as a fatal error could be
+	}
+
+	gm->connecting_sprite = new_sprite(0, 0, 1, "main_menu/awaiting_connection_screen.bmp");
+	if (gm->connecting_sprite == NULL) {
+		printf("initialize_game_manager: Failed to create the awaiting connection Sprijte\n");
+		free(gm);
+		gm = NULL;
+		exit(42);
 	}
 
 	gm->esc_counter = GM_ESC_COUNTDOWN_WINDOW + 1;
 	gm->game_ongoing = true;
+	gm->uart_synced = false;
 
 	// Save the gamemode
 	gm->gamemode = gamemode;
@@ -231,8 +327,8 @@ void initialize_game_manager(GameModeEnum gamemode) {
 	}
 
 	// Set update and render functions
-	gm->update_function[GM_LEVEL] = &gm_update_level;
-	gm->update_function[GM_LEVEL_UART] = &gm_update_level;
+	gm->update_function[GM_LEVEL] = &gm_update_campaign_single;
+	gm->update_function[GM_LEVEL_UART] = &gm_update_campaign_coop;
 	gm->update_function[GM_SWITCHBOARD] = &gm_update_switchboard;
 	gm->update_function[GM_SWITCHBOARD_UART] = &gm_update_switchboard;
 	gm->update_function[GM_ARCADE] = &gm_update_arcade;
@@ -240,8 +336,8 @@ void initialize_game_manager(GameModeEnum gamemode) {
 	gm->update_function[GM_MAIN_MENU] = &gm_update_main_menu;
 	gm->update_function[GM_MAIN_MENU | GM_UART] = &gm_update_main_menu;
 
-	gm->render_function[GM_LEVEL] = &gm_render_level;
-	gm->render_function[GM_LEVEL_UART] = &gm_render_level;
+	gm->render_function[GM_LEVEL] = &gm_render_campaign_single;
+	gm->render_function[GM_LEVEL_UART] = &gm_render_campaign_coop;
 	gm->render_function[GM_SWITCHBOARD] = &gm_render_switchboard;
 	gm->render_function[GM_SWITCHBOARD_UART] = &gm_render_switchboard;
 	gm->render_function[GM_ARCADE] = &gm_render_arcade;
@@ -273,6 +369,8 @@ void free_game_manager() {
  * @note Called once every frame
  */
 void update() {
+
+	// Takes care of exiting a gamemode and exiting the game
 	if (get_key_down(KBD_ESC)) {
 		if (gm->esc_counter <= GM_ESC_COUNTDOWN_WINDOW) {
 			// Go back a Menu
@@ -289,7 +387,17 @@ void update() {
 	else
 		++gm->esc_counter;
 	
+	if (gm->gamemode & GM_UART) {
+		// Used to make sure the UART is still synced
+		++gm->uart_last_sent;
+		if (gm->uart_last_sent > UART_CONNECTION_WARNING_TIME) {
+			hw_manager_uart_send_char(HEADER_SYNCED);
+			hw_manager_uart_send_char(HEADER_TERMINATOR);
+		}
+	}
+	
 	gm->update_function[gm->gamemode]();
+
 }
 
 void render() {
