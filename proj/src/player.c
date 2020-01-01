@@ -80,10 +80,9 @@ static void player_unlock_powers(PlayerUnlockedPowers powers_to_give) {
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
 
-	else {
-		// Gets the player from anywhere
-		get_game_manager()->level->player->current_powers |= powers_to_give;
-	}
+	// Gets the player from anywhere
+	get_game_manager()->level->player->current_powers |= powers_to_give;
+
 }
 
 void player_unlock_speed() {
@@ -118,6 +117,8 @@ void player_win() {
 	printf("Congrats u win my boy!\n");
 }
 
+// PLAYER UPDATES
+
 void player_set_speed(uint8_t speed) {
 	// Gets the player from anywhere
 	Player_t *p = get_game_manager()->level->player;
@@ -145,12 +146,16 @@ void player_set_jump(uint8_t jump) {
 	}
 }
 
-// Grav direction should be -1 or 1
-void player_set_gravity(int8_t grav_direction) {
-	// Gets the player from anywhere
+void player_set_gravity_normal() {
 	Player_t *p = get_game_manager()->level->player;
 	if (p->current_powers & UNLOCKED_GRAVITY)
-		p->gravity = BASE_GRAVITY * grav_direction;
+		p->gravity = BASE_GRAVITY;
+}
+
+void player_set_gravity_reversed() {
+	Player_t *p = get_game_manager()->level->player;
+	if (p->current_powers & UNLOCKED_GRAVITY)
+		p->gravity = -BASE_GRAVITY;
 }
 
 static void player_switch_gravity() {

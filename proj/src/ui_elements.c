@@ -9,7 +9,6 @@
 #define COLOR_INACTIVE 0x9492
 
 #define KNOB_ANGLE_PRECISION 0.1f
-#define KNOB_ANGLE_SETBACK 0.01f
 #define KNOB_ANGLE_RETAKE_CONTROL_PRECISION 0.25f
 
 /** @name Button */
@@ -348,11 +347,13 @@ struct Knob {
     Vec2d_t center;
     bool shown, is_active, being_moved, hovered;
     float radius, start_angle, end_angle, angle_offset;
+    float angle_setback;
     enum KnobAngleLock angle_lock;
-    void (*func)(float);
+    bool has_reset;
+    void (*on_drop)(), (*on_reset)();
 };
 
-Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*func)(float), Vec2d_t pos, float start_angle, float end_angle, float radius) {    
+Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_file_name, void (*on_drop)(), void (*on_reset)(), float angle_setback, Vec2d_t pos, float start_angle, float end_angle, float radius) {    
     Knob_t* knob = (Knob_t*) malloc(sizeof(Knob_t));
     if (knob == NULL) {
         printf("new_knob: Failed to allocate memory for the Knob\n");
@@ -391,6 +392,8 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
     knob->end_angle = end_angle * (2 * M_PI) / 360.0f;
     knob->angle_offset = 0.0f;
     knob->angle_lock = ANGLE_NO_LOCK;
+    knob->angle_setback = fminf(angle_setback, KNOB_ANGLE_PRECISION / 2);
+    knob->has_reset = true;
     knob->knob_rect = rect_from_vec2d(
         subtract_vec2d(
             circumference_vec2d(knob->center, radius, knob->start_angle),
@@ -404,14 +407,16 @@ Knob_t* new_knob(const char* backdrop_sprite_file_name, const char* knob_sprite_
             sprite_get_height(knob->knob_sprite)
             )
         );
-    if (func == NULL) {
+    if (on_drop == NULL || on_reset == NULL) {
         printf("new_knob: Function pointer invalid\n");
         free_sprite(knob->backdrop_sprite);
         free_sprite(knob->knob_sprite);
         free(knob);
         return NULL;
     }
-    knob->func = func;
+    knob->on_drop = on_drop;
+    knob->on_reset = on_reset;
+
     return knob;
 }
 
@@ -529,38 +534,47 @@ void update_knob(Knob_t *knob) {
             if (!mouse_get_lb()) {
                 knob->being_moved = false;
                 knob->angle_lock = ANGLE_NO_LOCK;
-                knob->func(fclampf(angle, knob->start_angle, knob->end_angle));
+                knob->on_drop();
+                knob->has_reset = false;
             }
         }
         else {
 
+            // Currently NOT being moved
             float cur_angle = knob_get_cur_angle(knob);
             if (fabs(cur_angle) > fabs(knob->start_angle) + KNOB_ANGLE_PRECISION) {
-                // If we want to reset dynamically, change this place here
-                cur_angle -= KNOB_ANGLE_SETBACK;
+                // Resets itself
+                cur_angle -= knob->angle_setback;
                 knob_update_pos(knob, fmaxf(cur_angle, knob->start_angle));
             }
-            else if (is_cursor_inside_rect(&knob->knob_rect)) {
+            else {
+                if (!knob->has_reset) {
+                    knob->has_reset = true;
+                    knob->on_reset();
+                }
 
-                // Mouse is hovering on the knob
-                knob->hovered = true;
+                if (is_cursor_inside_rect(&knob->knob_rect)) {
 
-                if (mouse_get_lb_down()) {
+                    // Mouse is hovering on the knob
+                    knob->hovered = true;
 
-                    // cur_angle was calculated just before
-                    
-                    float cursor_angle = angle_vec2d(vec2d(1, 0),
-                        subtract_vec2d(cursor_get_pos(), knob->center));
-                    
-                    if (knob->center.y > cursor_get_y())
-                        cursor_angle = 2 * M_PI - cursor_angle;
-                    
-                    knob->angle_offset = cursor_angle - cur_angle;
-                    knob->being_moved = true;
+                    if (mouse_get_lb_down()) {
+
+                        // cur_angle was calculated just before
+                        float cursor_angle = angle_vec2d(vec2d(1, 0),
+                            subtract_vec2d(cursor_get_pos(), knob->center));
+                        
+                        if (knob->center.y > cursor_get_y())
+                            cursor_angle = 2 * M_PI - cursor_angle;
+                        
+                        knob->angle_offset = cursor_angle - cur_angle;
+                        knob->being_moved = true;
+                    }
+                }
+                else {
+                    knob->hovered = false;
                 }
             }
-            else
-                knob->hovered = false;
         }
     }
 }
