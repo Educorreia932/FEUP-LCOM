@@ -55,6 +55,7 @@ typedef struct GameManager {
     uint32_t esc_counter; // Used to go back
     bool game_ongoing; // Used to exit the game
     bool uart_synced; // Used to know if the two players are connected or not
+    bool has_partner;
     uint32_t uart_last_sent, uart_last_received;
 	GameModeEnum gamemode;
     Sprite_t *connecting_sprite;

@@ -48,6 +48,7 @@ static void gm_update_campaign_coop() {
 					hw_manager_uart_send_char((uint8_t) player_get_default_powers());
 					hw_manager_uart_send_char(HEADER_TERMINATOR);
 					gm->uart_synced = true;
+					gm->has_partner = true;
 					break;
 			}
 		}
@@ -88,8 +89,13 @@ static void gm_update_campaign_coop() {
 	else {
 		++gm->uart_last_received;
 		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
-			gm->uart_synced = false;
-			printf("Other user has disconnected\n");
+			if (gm->has_partner) {
+				// Other player disconnected or some REALLY bad desync happened
+				gm->uart_synced = false;
+				gm->gamemode = GM_MAIN_MENU;
+				gm_start_main_menu();
+				return;
+			}
 		}
 	}
 
@@ -116,6 +122,7 @@ static void gm_update_switchboard() {
 					hw_manager_uart_pop();
 					switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
 					gm->uart_synced = true;
+					gm->has_partner = true;
 					break;
 			}
 		}
@@ -142,8 +149,13 @@ static void gm_update_switchboard() {
 	else {
 		++gm->uart_last_received;
 		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
-			gm->uart_synced = false;
-			printf("Other user has disconnected\n");
+			if (gm->has_partner) {
+				// Other player disconnected or some REALLY bad desync happened
+				gm->uart_synced = false;
+				gm->gamemode = GM_MAIN_MENU;
+				gm_start_main_menu();
+				return;
+			}
 		}
 	}
 
@@ -200,6 +212,7 @@ void gm_start_level() {
 	}
 	
 	gm->uart_synced = false;
+	gm->has_partner = false;
 	gm->level = prototype_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
@@ -228,6 +241,7 @@ void gm_start_switchboard() {
 	}
 	
 	gm->uart_synced = false;
+	gm->has_partner = false;
 	gm->s_board = new_switchboard();
 	
 	if (gm->s_board == NULL) {
@@ -255,6 +269,7 @@ void gm_start_arcade() {
 	}
 
 	gm->uart_synced = false;
+	gm->has_partner = false;
 	gm->level = new_arcade_level(!(gm->gamemode & GM_UART));
 	
 	if (gm->level == NULL) {
@@ -274,6 +289,8 @@ void gm_start_main_menu() {
 		gm->s_board = NULL;
 	}
 
+	gm->uart_synced = false;
+	gm->has_partner = false;
 	gm->main_menu = new_main_menu();
 
 	if (gm->main_menu == NULL) {
@@ -311,6 +328,7 @@ static void initialize_game_manager(GameModeEnum gamemode) {
 	gm->esc_counter = GM_ESC_COUNTDOWN_WINDOW + 1;
 	gm->game_ongoing = true;
 	gm->uart_synced = false;
+	gm->has_partner = false;
 
 	// Save the gamemode
 	gm->gamemode = gamemode;
