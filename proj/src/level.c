@@ -188,6 +188,14 @@ void update_arcade_level(Level_t* level) {
 	animator_player(level->player);
 }
 
+void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
+	arcade_move_lasers(level->lasers);
+	arcade_add_laser(level->lasers);
+	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
+	animator_player(level->player);
+	update_player_two(level->player_two, bytes);
+}
+
 void render_level(Level_t *level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_player_background(level->player);
@@ -197,11 +205,23 @@ void render_level(Level_t *level) {
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
 
-	if (level->player_two != NULL)
-		render_player_player_two(level->player_two);
-
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (level->pu[i] != NULL)
 			render_power_up(level->pu[i]);
 	}
+}
+
+void render_arcade_versus(Level_t* level) {
+	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+	render_platforms(level->platforms);
+	
+	render_player_background(level->player);
+	render_player_foreground(level->player);
+
+	render_player_two_background(level->player_two);
+	render_player_two_foreground(level->player_two);
+
+	render_lasers(level->lasers);
+	render_player_ui(level->player);
+	render_player_two_ui(level->player_two);
 }

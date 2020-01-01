@@ -48,7 +48,7 @@ Para além disso, é possível controlar certos aspetos da jogabilidade, como a 
 
 % \includegraphics[width=\textwidth]{singleplayer}
 
-% \section{Arcade}
+\section{Arcade}
 
 Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro modo de jogo, em que o jogador terá de se desviar de lasers que vêm na sua direção, passando por entre estes e tentanto aguentar o máximo de tempo possível sem tocar neles e perder.
 
@@ -59,7 +59,7 @@ Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro mod
 \section{Dispositivos Usados}
 
 \begin{center}
-	\begin{tabular}{ |c|c|c| } 
+	\begin{tabular}{|c|c|c|} 
 		\hline
 			Dispositivo & Utilização & Interrupção \\ 
 		\hline
@@ -67,7 +67,7 @@ Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro mod
 			Timer & N/A & Sim \\ 
 			Teclado & Controlo da personagem 1 & Sim \\ 
 			Rato & Menus e personagem 2 & Sim\\
-			Placa Gráfica & N/A & Não\\
+			Placa Gráfica & Desenho dos menus e do jogo & Não\\
 			Real Time Clock & Efeito temporário & Sim\\
 			Serial Port & N/A & Sim \\
 		\hline
@@ -92,9 +92,55 @@ RGB 565
 
 \subsection{Serial Port}
 
-Usado nos modos multiplayer (Campaign - Co-Op e Arcade - Versus). No primeiro, as personagens 1 e 2 seriam controladas pelos utilizadores em máquinas separadas 
+Usado nos modos multiplayer (Campaign - Co-Op e Arcade - Versus). No primeiro, as personagens 1 e 2 são controladas pelos utilizadores em máquinas separadas, sendo que estas interegam entre si do seguinte modo: A personagem 2 consegue inicialmente controlar tanto a velocidade como altura do salto da personagem 1,
+porém, após esta obter certos powerups, a personagem 2 é notificada de que pode também controlar os lasers que estão ativos e o sentido da gravidade do jogador 1.
+
+Feita com FIFOs
 
 \chapter{Organização e Estrutura do Código}
+
+\section{Bitmap}
+
+desenhar invertido
+0xFF00FF (chroma)
+
+\section{Sprite}
+
+\section{Game Manager}
+
+\section{Hardware Manager}
+
+\section{Timer}
+
+Lab2
+
+\section{Keyboard}
+
+Lab3
+
+\section{Mouse}
+
+Lab4
+
+\section{Video}
+
+Lab5
+
+\section{Level}
+
+\section{Player}
+
+\section{RTC}
+
+O módulo do RTC é responsável por obter informação acerca da hora atual, bem como programar alarmes.
+
+\section{Switchboard}
+
+\section{Powerup}
+
+\section{Proj}
+
+\section{Call Graph}
 
 \chapter{Detalhes de Implementação}
 

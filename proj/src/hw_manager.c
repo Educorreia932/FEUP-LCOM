@@ -163,8 +163,8 @@ inline uint8_t hw_manager_uart_front() {
 	return uart_receiver_q_front();
 }
 
-inline void hw_manager_uart_pop() {
-	uart_receiver_q_pop();
+inline uint8_t hw_manager_uart_pop() {
+	return uart_receiver_q_pop();
 } 
 
 inline bool hw_manager_uart_is_empty() {

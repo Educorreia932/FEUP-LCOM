@@ -175,7 +175,6 @@ inline void lasers_cycle_link_id(Lasers_t *lasers) {
 }
 
 void render_lasers(Lasers_t* lasers) {
-
     Laser_t** aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
@@ -244,11 +243,9 @@ void arcade_add_laser(Lasers_t *lasers) {
         }
 
         if (top != NULL && bottom != NULL) {
-
             next_laser = ARCADE_LASER_BASE_DELAY;
             int rng = (rand() % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT;
 
-            // TODO: Improve macros to remove magic numbers
             *top = new_laser(
                 rect_from_uints(
                     ARCADE_LASER_RIGHT_EDGE - ARCADE_LASER_WIDTH,

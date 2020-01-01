@@ -47,8 +47,10 @@ typedef struct PlayerTwo PlayerTwo_t;
 
 PlayerTwo_t* new_player_two();
 
-void render_player_player_two(PlayerTwo_t* player_two);
+void render_player_two_background(PlayerTwo_t* player_two);
+void render_player_two_foreground(PlayerTwo_t* player_two);
+void render_player_two_ui(PlayerTwo_t* player_two);
 
-void update_player_two(Player_t* player_two, uint16_t x, uint16_t y, bool is_dead);
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
 
-void send_info();
+void send_info(Player_t* player, bool is_dead, bool score_update);

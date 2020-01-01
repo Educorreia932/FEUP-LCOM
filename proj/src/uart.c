@@ -21,8 +21,8 @@ uint8_t uart_receiver_q_front() {
     return queue_front(rq);
 }
 
-void uart_receiver_q_pop() {
-    queue_pop(rq);
+uint8_t uart_receiver_q_pop() {
+    return queue_pop(rq);
 }
 
 bool uart_receiver_q_empty() {

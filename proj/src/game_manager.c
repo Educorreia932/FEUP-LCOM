@@ -2,7 +2,7 @@
 #include "hw_manager.h"
 #include "mouse_cursor.h"
 
-#define GM_ESC_COUNTDOWN_WINDOW 20 // in frames
+#define GM_ESC_COUNTDOWN_WINDOW 20 /** @note In frames */
 
 static GameManager_t* gm;
 
@@ -18,8 +18,10 @@ static void gm_void_safety_function() {
 	return;
 }
 
-// Erases everything until the queue is either empty or it finds a message terminator
-// This means an error will never "contaminate" the next messages
+/** 
+ * @brief Erases everything until the queue is either empty or it finds a message terminator
+ * This means an error will never "contaminate" the next messages
+ */
 static void gm_uart_erase_message() {
 	while (hw_manager_uart_front() != HEADER_TERMINATOR
 			&& !hw_manager_uart_is_empty()) {
@@ -38,7 +40,6 @@ static void gm_update_campaign_single() {
 }
 
 static void gm_update_campaign_coop() {
-
 	if (!hw_manager_uart_is_empty()) {
 		gm->uart_last_received = 0;
 		if (!gm->uart_synced) {
@@ -52,6 +53,7 @@ static void gm_update_campaign_coop() {
 					break;
 			}
 		}
+
 		else {
 			switch (hw_manager_uart_front()) {
 				case HEADER_SPEED_MULT:
@@ -108,10 +110,66 @@ static void gm_update_arcade() {
 	update_arcade_level(get_game_manager()->level);
 }
 
-static void gm_update_switchboard() {
-	
+static void gm_update_arcade_versus() {
+	uint8_t bytes[6];
+
 	if (!hw_manager_uart_is_empty()) {
 		gm->uart_last_received = 0;
+
+		if (!gm->uart_synced) {
+			switch (hw_manager_uart_front()) {
+				case HEADER_AVAILABLE_ARCADE: // TODO: Master of lasers
+					gm->uart_synced = true;
+					gm->has_partner = true;
+					hw_manager_uart_send_char(HEADER_ARCADE_READY);
+					hw_manager_uart_send_char(HEADER_TERMINATOR);
+					break;
+				case HEADER_ARCADE_READY:
+					gm->uart_synced = true;
+					gm->has_partner = true;
+					break;
+			}
+		}
+
+		else {
+			switch (hw_manager_uart_front()) {
+				case HEADER_PLAYER_TWO_UPDATE:
+					hw_manager_uart_pop();
+					
+					for (size_t i = 0; i < 6; i++)
+						bytes[i] = hw_manager_uart_pop();
+
+					break;
+			}
+		}
+
+		gm_uart_erase_message();	
+	}
+	
+	else {
+		++gm->uart_last_received;
+		
+		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
+			if (gm->has_partner) {
+				// Other player disconnected or some REALLY bad desync happened
+				gm->uart_synced = false;
+				gm->gamemode = GM_MAIN_MENU;
+				gm_start_main_menu();
+				return;
+			}
+		}
+	}
+
+	update_cursor();
+
+	if (gm->uart_synced)
+		update_arcade_versus(get_game_manager()->level, bytes);
+}
+
+static void gm_update_switchboard() {
+	if (!hw_manager_uart_is_empty()) {
+		gm->uart_last_received = 0;
+
 		if (!gm->uart_synced) {
 			switch (hw_manager_uart_front()) {
 				case HEADER_AVAILABLE_LEVEL:
@@ -126,6 +184,7 @@ static void gm_update_switchboard() {
 					break;
 			}
 		}
+
 		else {
 			switch (hw_manager_uart_front()) {
 				case HEADER_PLAYER_RESPAWN:
@@ -146,6 +205,7 @@ static void gm_update_switchboard() {
 		}
 		gm_uart_erase_message();
 	}
+
 	else {
 		++gm->uart_last_received;
 		if (gm->uart_synced && (gm->uart_last_received > UART_DC_TIME)) {
@@ -160,8 +220,9 @@ static void gm_update_switchboard() {
 	}
 
 	update_cursor();
-	update_switchboard(get_game_manager()->s_board);
-	
+
+	if (gm->uart_synced)
+		update_switchboard(get_game_manager()->s_board);
 }
 
 static void gm_update_main_menu() {
@@ -185,13 +246,27 @@ static void gm_render_campaign_coop() {
 
 static void gm_render_arcade() {
 	render_level(gm->level);
+
+	render_cursor();
+}
+
+static void gm_render_arcade_versus() {
+	if (gm->uart_synced)
+		render_arcade_versus(gm->level);
+
+	else
+		draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+
 	render_cursor();
 }
 
 static void gm_render_switchboard() {
 	if (gm->uart_synced)
 		render_switchboard(gm->s_board);
-	else draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+
+	else 
+		draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+	
 	render_cursor();
 }
 
@@ -225,11 +300,9 @@ void gm_start_level() {
 		hw_manager_uart_send_char(HEADER_AVAILABLE_LEVEL);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
-
 }
 
 void gm_start_switchboard() {
-	
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;
@@ -254,10 +327,11 @@ void gm_start_switchboard() {
 		hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
-
 }
 
 void gm_start_arcade() {
+	// srand(0);
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -276,6 +350,11 @@ void gm_start_arcade() {
 		printf("gm_start_arcade: Failed to create the Switchboard object\n");
 		exit_game();
 		exit(42);
+	}
+
+	if (gm->gamemode & GM_UART) {
+		hw_manager_uart_send_char(HEADER_AVAILABLE_ARCADE);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
 }
 
@@ -363,7 +442,7 @@ static void initialize_game_manager(GameModeEnum gamemode) {
 	gm->update_function[GM_SWITCHBOARD] = &gm_update_switchboard;
 	gm->update_function[GM_SWITCHBOARD_UART] = &gm_update_switchboard;
 	gm->update_function[GM_ARCADE] = &gm_update_arcade;
-	gm->update_function[GM_ARCADE_UART] = &gm_update_arcade;
+	gm->update_function[GM_ARCADE_UART] = &gm_update_arcade_versus;
 	gm->update_function[GM_MAIN_MENU] = &gm_update_main_menu;
 	gm->update_function[GM_MAIN_MENU | GM_UART] = &gm_update_main_menu;
 
@@ -372,10 +451,9 @@ static void initialize_game_manager(GameModeEnum gamemode) {
 	gm->render_function[GM_SWITCHBOARD] = &gm_render_switchboard;
 	gm->render_function[GM_SWITCHBOARD_UART] = &gm_render_switchboard;
 	gm->render_function[GM_ARCADE] = &gm_render_arcade;
-	gm->render_function[GM_ARCADE_UART] = &gm_render_arcade;
+	gm->render_function[GM_ARCADE_UART] = &gm_render_arcade_versus;
 	gm->render_function[GM_MAIN_MENU] = &gm_render_main_menu;
 	gm->render_function[GM_MAIN_MENU | GM_UART] = &gm_render_main_menu;
-
 }
 
 void free_game_manager() {
@@ -400,7 +478,6 @@ void free_game_manager() {
  * @note Called once every frame
  */
 void update() {
-
 	// Takes care of exiting a gamemode and exiting the game
 	if (get_key_down(KBD_ESC)) {
 		if (gm->esc_counter <= GM_ESC_COUNTDOWN_WINDOW) {
@@ -447,11 +524,6 @@ void exit_game() {
 
 uint8_t start_game(GameModeEnum gamemode) {  
 	printf("start_game: Started the game\n");
-
-	// Initialize rand seed
-	// time_t t;
-	// srand((unsigned) time(&t));
-	srand(time(NULL));
 
 	// Enter video mode
 	if (hw_manager_enter_video_mode())

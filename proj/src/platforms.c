@@ -25,7 +25,6 @@ Platforms_t* new_arcade_platforms() {
 		return NULL;
 	}
 
-
 	// Sprites
 	plat->wall = new_sprite_dynamic("wall_dynamic.bmp" , 8, 0, 0);
 	if (plat->wall == NULL) {
