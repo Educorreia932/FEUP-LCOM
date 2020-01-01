@@ -28,8 +28,9 @@ void player_win();
 
 void player_set_speed(uint8_t speed);
 void player_set_jump(uint8_t jump);
-// Grav direction should be -1 or 1
-void player_set_gravity(int8_t grav_direction);
+void player_set_gravity_normal();
+void player_set_gravity_reversed();
+
 
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers);
 

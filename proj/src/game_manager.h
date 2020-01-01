@@ -10,6 +10,9 @@ extern char* assets_rel_path;
 
 #define UART_TERMINATOR 0xFF
 
+#define UART_GRAVITY_NORMAL 0
+#define UART_GRAVITY_REVERSED 1
+
 enum UART_EVENT_HEADER {
     HEADER_TERMINATOR = 0xFF,
 
@@ -19,9 +22,10 @@ enum UART_EVENT_HEADER {
     HEADER_AVAILABLE_ARCADE = 'a',
 
     // Campaign
-    HEADER_LASER = 'L',
     HEADER_SPEED_MULT = 'S',
     HEADER_JUMP_MULT = 'J',
+    HEADER_LASER = 'L',
+    HEADER_GRAVITY = 'G',
     HEADER_PLAYER_RESPAWN = 'R',
     HEADER_PLAYER_UPDATE = 'U',
     HEADER_REQUEST_POWERS = 'P',

@@ -53,11 +53,11 @@ MainMenu_t* new_main_menu() {
         return NULL;
     }
 
-    menu->camp_single = new_button("main_menu/single_button.bmp", menu_start_campaign_single, rect(75, 490, 207, 75));
-    menu->camp_coop_p1 = new_button("main_menu/coop_p1_button.bmp", menu_start_campaign_coop_p1, rect(281, 490, 216, 75));
-    menu->camp_coop_p2 = new_button("main_menu/coop_p2_button.bmp", menu_start_campaign_coop_p2, rect(279, 563, 218, 75));
-    menu->arcade_single = new_button("main_menu/single_button.bmp", menu_start_arcade_single, rect(545, 490, 207, 75));
-    menu->arcade_versus = new_button("main_menu/versus_button.bmp", menu_start_arcade_versus, rect(751, 490, 216, 75)); 
+    menu->camp_single = new_button_auto_size("main_menu/single_button.bmp", menu_start_campaign_single, vec2d(75, 490));
+    menu->camp_coop_p1 = new_button_auto_size("main_menu/coop_p1_button.bmp", menu_start_campaign_coop_p1, vec2d(281, 490));
+    menu->camp_coop_p2 = new_button_auto_size("main_menu/coop_p2_button.bmp", menu_start_campaign_coop_p2, vec2d(279, 563));
+    menu->arcade_single = new_button_auto_size("main_menu/single_button.bmp", menu_start_arcade_single, vec2d(545, 490));
+    menu->arcade_versus = new_button_auto_size("main_menu/versus_button.bmp", menu_start_arcade_versus, vec2d(751, 490)); 
 
     return menu;
 

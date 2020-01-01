@@ -65,6 +65,19 @@ static void gm_update_campaign_coop() {
 					hw_manager_uart_pop();
 					lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
 					break;
+				case HEADER_GRAVITY:
+					hw_manager_uart_pop();
+					switch (hw_manager_uart_front()) {
+						case UART_GRAVITY_NORMAL:
+							player_set_gravity_normal();
+							break;
+						case UART_GRAVITY_REVERSED:
+							player_set_gravity_reversed();
+							break;
+						default:
+							printf("Coop campaign level: Unexpected gravity value\n");
+							break;
+					}
 				case HEADER_SYNCED:
 					// Do nothing
 					break;
