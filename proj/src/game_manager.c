@@ -319,7 +319,7 @@ static void initialize_game_manager(GameModeEnum gamemode) {
 
 	gm->connecting_sprite = new_sprite(0, 0, 1, "main_menu/awaiting_connection_screen.bmp");
 	if (gm->connecting_sprite == NULL) {
-		printf("initialize_game_manager: Failed to create the awaiting connection Sprijte\n");
+		printf("initialize_game_manager: Failed to create the awaiting connection Sprite\n");
 		free(gm);
 		gm = NULL;
 		exit(42);
