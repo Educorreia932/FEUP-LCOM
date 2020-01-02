@@ -123,15 +123,17 @@ static void gm_update_arcade_versus() {
 
 		if (!gm->uart_synced) {
 			switch (hw_manager_uart_front()) {
-				case HEADER_AVAILABLE_ARCADE: // TODO: Master of lasers
+				case HEADER_AVAILABLE_ARCADE:
 					gm->uart_synced = true;
 					gm->has_partner = true;
+					gm->level->laser_master = true;
 					hw_manager_uart_send_char(HEADER_ARCADE_READY);
 					hw_manager_uart_send_char(HEADER_TERMINATOR);
 					break;
 				case HEADER_ARCADE_READY:
 					gm->uart_synced = true;
 					gm->has_partner = true;
+					gm->level->laser_master = false;
 					break;
 			}
 		}
@@ -141,7 +143,7 @@ static void gm_update_arcade_versus() {
 				case HEADER_PLAYER_TWO_UPDATE:
 					hw_manager_uart_pop();
 					
-					for (size_t i = 0; i < 6; i++)
+					for (size_t i = 0; i < 7; i++)
 						bytes[i] = hw_manager_uart_pop();
 
 					break;
@@ -167,8 +169,10 @@ static void gm_update_arcade_versus() {
 
 	update_cursor();
 
+	int laser_pos = 0;
+
 	if (gm->uart_synced)
-		update_arcade_versus(get_game_manager()->level, bytes);
+		update_arcade_versus(get_game_manager()->level, bytes, &laser_pos);
 }
 
 static void gm_update_switchboard() {
@@ -337,8 +341,6 @@ void gm_start_switchboard() {
 }
 
 void gm_start_arcade() {
-	// srand(0);
-
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -370,6 +372,7 @@ void gm_start_main_menu() {
 		free_level(gm->level);
 		gm->level = NULL;
 	}
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;

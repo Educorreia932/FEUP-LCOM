@@ -8,6 +8,9 @@
 #include "hw_manager.h"
 #include "power_ups.h"
 
+static int counter = 0;
+
+
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
 #define FALLING_MULT 1.6f
@@ -66,7 +69,7 @@ struct Player {
 // Forward declaration in order to be used in new_player
 static uint8_t player_walk_countdown_value(Player_t* player);
 // Forward declaration in order to be used in update_player
-static void player_send_info(Player_t* player, bool score_update);
+static void player_send_info(Player_t* player, bool score_update, int* laser_pos);
 
 /* UNLOCKING POWERS */
 
@@ -465,7 +468,7 @@ static inline void player_start_death(Player_t *player) {
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
 }
 
-void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
+void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[], int* laser_pos) {
 	Rect_t previous_rect = player->rect;
 	bool score_update = false, died = false;
 
@@ -581,7 +584,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		}
 
 		if (get_game_manager()->gamemode & GM_UART)
-			player_send_info(player, score_update);
+			player_send_info(player, score_update, laser_pos);
 	}
 }
 
@@ -686,6 +689,7 @@ void render_player_ui(Player_t *player) {
 #define PLAYER_TWO_Y_LSB 3
 #define PLAYER_TWO_ADDITIONAL_1 4
 #define PLAYER_TWO_ADDITIONAL_2 5
+#define PLAYER_TWO_ADDITIONAL_3 6
 
 #define PLAYER_TWO_ANIMATION_MASK (BIT(0) | BIT(1) | BIT(2)) // Player and Spark
 #define PLAYER_TWO_IS_DEAD BIT(4)
@@ -762,7 +766,6 @@ PlayerTwo_t* new_player_two() {
 
 	player_two->pos = vec2d(60.0f, 704.0f);
 
-
 	player_two->score = new_score(800, 140, 0);
 
 	if (player_two->score == NULL) {
@@ -788,12 +791,8 @@ void free_player_two(PlayerTwo_t* player_two) {
 
 }
 
-void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos) {
 	player_two->pos = vec2d((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB], (bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]);
-
-	// bytes[PLAYER_TWO_ADDITIONAL_1] && PLAYER_TWO_ANIMATION_NUMBER;
-
-	// printf("Byte %u\n", bytes[PLAYER_TWO_ADDITIONAL_1]);
 
 	player_two->is_dead = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_DEAD;
 	player_two->is_idle = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_IDLE;
@@ -812,6 +811,14 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 
 	if (player_two->is_dead)
 		reset_score(player_two->score);
+	
+	if (!get_game_manager()->level->laser_master) {
+		printf("received: %u %u\n", bytes[PLAYER_TWO_ADDITIONAL_3], counter);
+		*laser_pos = bytes[PLAYER_TWO_ADDITIONAL_3];
+		counter++;
+	}
+
+	printf("laser %u\n", *laser_pos);
 }
 
 void render_player_two_background(PlayerTwo_t* player_two) {
@@ -826,7 +833,6 @@ void render_player_two_foreground(PlayerTwo_t* player_two) {
 		+ SPRITE_X_AXIS * player_two->anti_gravity;
 
 	if (!player_two->is_dead)
-		// Player is alive
 		if (player_two->is_idle)
 			draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, COLOR_BLUE, sr);
 		
@@ -842,11 +848,12 @@ void render_player_two_ui(PlayerTwo_t* player_two) {
 	render_score(player_two->score);
 }
 
-static void player_send_info(Player_t* player, bool score_update) {
+
+static void player_send_info(Player_t* player, bool score_update, int* laser_pos) {
 	uint16_t x = player->rect.x;
 	uint16_t y = player->rect.y;
 
-	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0;
+	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0, additional_byte_3 = 0;
 	
 	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb)) 
 		return; 
@@ -855,6 +862,7 @@ static void player_send_info(Player_t* player, bool score_update) {
 		additional_byte_1 = get_animation_state(player->idle_sprite) & PLAYER_TWO_ANIMATION_MASK;
 		additional_byte_1 |= PLAYER_TWO_IS_IDLE;
 	}
+
 	else
 		additional_byte_1 = get_animation_state(player->walk_sprite) & PLAYER_TWO_ANIMATION_MASK;
 
@@ -867,6 +875,13 @@ static void player_send_info(Player_t* player, bool score_update) {
 	additional_byte_2 = get_animation_state(player->sparks_sprite) & PLAYER_TWO_ANIMATION_MASK;
 	additional_byte_2 |= (score_update << 4);
 
+	if (get_game_manager()->level->laser_master) {
+		additional_byte_3 = (unsigned char) rand();
+		printf("Sent %u %u\n", additional_byte_3, counter);
+		*laser_pos = additional_byte_3;
+		counter++;
+	}
+
 	hw_manager_uart_send_char(HEADER_PLAYER_TWO_UPDATE);
 
 	hw_manager_uart_send_char(x_msb);
@@ -875,6 +890,7 @@ static void player_send_info(Player_t* player, bool score_update) {
 	hw_manager_uart_send_char(y_lsb);
 	hw_manager_uart_send_char(additional_byte_1);
 	hw_manager_uart_send_char(additional_byte_2);
+	hw_manager_uart_send_char(additional_byte_3);
 
 	hw_manager_uart_send_char(HEADER_TERMINATOR);
 }

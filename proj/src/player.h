@@ -36,7 +36,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 
 void free_player(Player_t* player);
 
-void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]);
+void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[], int* laser_pos);
 
 void animator_player(Player_t* player);
 void render_player_background(Player_t* player);
@@ -52,4 +52,4 @@ void render_player_two_background(PlayerTwo_t* player_two);
 void render_player_two_foreground(PlayerTwo_t* player_two);
 void render_player_two_ui(PlayerTwo_t* player_two);
 
-void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos);

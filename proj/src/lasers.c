@@ -216,7 +216,7 @@ void arcade_move_lasers(Lasers_t *lasers) {
 
 }
 
-void arcade_add_laser(Lasers_t *lasers) {
+void arcade_add_laser(Lasers_t *lasers, int* laser_pos) {
     static uint16_t next_laser = 0;
 
     if (next_laser) 
@@ -240,10 +240,10 @@ void arcade_add_laser(Lasers_t *lasers) {
                 
             ++aux;
         }
-
+    
         if (top != NULL && bottom != NULL) {
             next_laser = ARCADE_LASER_BASE_DELAY;
-            int rng = (rand() % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT;
+            int rng = (*laser_pos % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT;
 
             *top = new_laser(
                 rect_from_uints(
