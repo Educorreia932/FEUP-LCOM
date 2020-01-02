@@ -30,7 +30,7 @@ Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect) 
     }
     
     button->rect = rect;
-    
+
     if (strcmp("", sprite_file_name) == 0)
         button->sprite = NULL;
     
@@ -43,20 +43,20 @@ Button_t* new_button(const char* sprite_file_name, void (*func)(), Rect_t rect) 
             return NULL;
         }
     }
-    
+
     button->is_active = true;
     button->shown = true;
     button->hovered = false;
-    
+
     if (func == NULL) {
         printf("new_button: Function pointer invalid\n");
         free_sprite(button->sprite);
         free(button);
         return NULL;
     }
-    
+
     button->func = func;
-    
+
     return button;
 }
 
@@ -718,6 +718,7 @@ bool update_number(Number_t* number, bool carry) {
                 break;
             }
 
+        free_sprite(number->sprite);
         number->sprite = new_sprite(0, 0, 1, sprite_file_name); 
 
         return number->value == 0;
@@ -782,7 +783,7 @@ struct Score {
 };
 
 Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
-    Score_t* score = (Score_t*) malloc(sizeof(Score_t*));
+    Score_t* score = (Score_t*) calloc(1, sizeof(Score_t*));
     
     if (score == NULL) {
         printf("new_score: Failed to allocate memory for the score\n");
@@ -793,7 +794,7 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
     score->y = y;
     score->size = SCORE_SIZE;
 
-    score->numbers = (Number_t*) malloc(sizeof(Number_t) * score->size);
+    score->numbers = (Number_t*) calloc(score->size, sizeof(Number_t));
 
     if (score->numbers == NULL) {
         printf("new_score: Failed to allocate memory for the numbers\n");
@@ -807,6 +808,21 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
         score->numbers[i] = *new_number(0, rect(x_pos - i * 40, y, 36, 48));
 
     return score;
+}
+
+void free_score(Score_t* score) {
+    if (score == NULL) {
+        printf("free_score: Cannot free a NULL pointer\n");
+        return;
+    }
+
+    for (size_t i = 0; i < score->size; i++)
+        if (score->numbers[i].sprite != NULL)
+            free_sprite(score->numbers[i].sprite);
+    
+    free(score->numbers);
+
+    free(score);
 }
 
 // clamp (math.h ??)

@@ -12,7 +12,9 @@ struct MainMenu {
 static void menu_start_campaign_single() {
     GameManager_t* gm = get_game_manager();
     gm->gamemode = GM_LEVEL;
+    printf("To start level\n");
     gm_start_level();
+    printf("Started level\n");
 }
 
 static void menu_start_campaign_coop_p1() {

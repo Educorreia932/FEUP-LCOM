@@ -34,6 +34,11 @@ static void gm_uart_erase_message() {
 		hw_manager_uart_pop();
 }
 
+// static void gm_uart_clear_everything() {
+// 	while (!hw_manager_uart_is_empty())
+// 		hw_manager_uart_pop();
+// }
+
 static void gm_update_campaign_single() {
 	update_cursor();
 	update_level(get_game_manager()->level);
@@ -276,6 +281,7 @@ static void gm_render_main_menu() {
 }
 
 void gm_start_level() {
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -285,11 +291,12 @@ void gm_start_level() {
 		free_main_menu(gm->main_menu);
 		gm->main_menu = NULL;
 	}
-	
+
 	gm->uart_synced = false;
 	gm->has_partner = false;
+
 	gm->level = prototype_level(!(gm->gamemode & GM_UART));
-	
+
 	if (gm->level == NULL) {
 		printf("gm_start_level: Failed to create the Switchboard object\n");
 		exit_game();

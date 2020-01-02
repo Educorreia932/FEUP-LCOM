@@ -21,10 +21,30 @@ Level_t* new_arcade_level(bool is_single_player) {
 		return NULL;
 	}
 
-	// Platforms
-	level->platforms = new_arcade_platforms();
-	if (level->platforms == NULL) {
-		printf("new_arcade_level: Failed to create the Platforms\n");
+	// Lasers (here to not break stuff)
+	/* IMPORTANT (before wasting YOUR own time figuring this one out):
+		We don't know what this code here does exactly, but without it the program would break
+		By "this code" we mean creating the lasers and then immediately deleting them 
+		Descrição do Bug das Bermudas a que isto dá fix:
+			Ao jogar arcade versus, só ao segundo jogador a juntar-se, a dynamic_sprite() criada dentro de qualquer função no spot EXATO deste new_arcade_lasers() apagado logo depois de ser criado fica com o variável "dynamic_splice_size" com o valor de cerca de 58368 em vez de qualquer valor a que ele esteja supostamente set. Isto faz com que o draw_bitmap_dynamic() se queixe e dê printf a dizer "Tamanho mínimo deveria ser 116736" (116736 = 2*58368, tal como definido nessa função). Essa função dá o print e recusa desenhar a sprite (para evitar seg faults e undefined behaviours).
+			Após mais de 6 horas a tentar dar debug e perceber o que raio está a acontecer, lembrei-de deste "fix" que essencialmente descarta a sprite lida mal (ao apagar o objeto) e re-lê... mais uma prova de quão misterioso este bug realmente é...
+			Até agora, este bug é ainda mais misterioso que o LCF :upside_down:
+	*/
+	level->lasers = new_arcade_lasers();
+	if (level->lasers == NULL) {
+		printf("new_arcade_level: Failed to create the Lasers\n");
+		free_sprite(level->background);
+		free_player(level->player);
+		free(level);
+		return NULL;
+	}
+	free_lasers(level->lasers);
+	level->lasers = NULL;
+
+	// Spikes
+	level->spikes = new_arcade_spikes();
+	if (level->spikes == NULL) {
+		printf("new_arcade_level: Failed to create the Spikes\n");
 		free_sprite(level->background);
 		free_player(level->player);
 		free(level);
@@ -36,19 +56,19 @@ Level_t* new_arcade_level(bool is_single_player) {
 	if (level->lasers == NULL) {
 		printf("new_arcade_level: Failed to create the Lasers\n");
 		free_sprite(level->background);
+		free_spikes(level->spikes);
 		free_player(level->player);
-		free_platforms(level->platforms);
 		free(level);
 		return NULL;
 	}
 
-	// Spikes
-	level->spikes = new_arcade_spikes();
-	if (level->spikes == NULL) {
-		printf("new_arcade_level: Failed to create the Spikes\n");
+	// Platforms
+	level->platforms = new_arcade_platforms();
+	if (level->platforms == NULL) {
+		printf("new_arcade_level: Failed to create the Platforms\n");
 		free_sprite(level->background);
 		free_player(level->player);
-		free_platforms(level->platforms);
+		free_spikes(level->spikes);
 		free_lasers(level->lasers);
 		free(level);
 		return NULL;
@@ -171,6 +191,16 @@ void free_level(Level_t *level) {
 	free_player(level->player);
 	free_lasers(level->lasers);
 	free_spikes(level->spikes);
+
+	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
+		if (level->pu[i] != NULL) {
+			free_power_up(level->pu[i]);
+		}
+	}
+
+	if (level->player_two != NULL)
+		free_player_two(level->player_two);
+
 	free(level);
 }
 

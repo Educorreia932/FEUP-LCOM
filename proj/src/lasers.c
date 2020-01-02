@@ -92,7 +92,6 @@ Lasers_t* new_arcade_lasers() {
 
     lasers->colors[0] = COLOR_RED;
 
-    printf("Created lasers\n");
     return lasers;
 }
 
