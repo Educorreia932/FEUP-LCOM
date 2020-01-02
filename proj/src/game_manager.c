@@ -450,7 +450,7 @@ void gm_start_main_menu() {
 /** 
  * @param gamemode Indicates the gamemode to start the game on
  */
-static void initialize_game_manager(GameModeEnum gamemode) {
+static void initialize_game_manager() {
 	// Avoid overwriting the old one
 	if (gm != NULL) {
 		printf("initialize_game_manager: GameManager already exists\n");
@@ -477,25 +477,7 @@ static void initialize_game_manager(GameModeEnum gamemode) {
 	gm->has_partner = false;
 
 	// Save the gamemode
-	gm->gamemode = gamemode;
-
-	// Select the starting "gamemode" accordingly
-	if (gm->gamemode & GM_MAIN_MENU)
-		gm_start_main_menu();
-
-	else if (gm->gamemode & GM_LEVEL)
-		gm_start_level();
-	
-	else if (gm->gamemode & GM_SWITCHBOARD)
-		gm_start_switchboard();
-	
-	else if (gm->gamemode & GM_ARCADE)
-		gm_start_arcade();
-
-	else {
-		printf("Invalid gamemode\n");
-		exit(43); // Another pretty much fatal error
-	}
+	gm->gamemode = GM_MAIN_MENU;
 	
 	// Put all the unused ones to a non-seg fault fucntion
 	for (uint8_t i = 0; i < 31; ++i) {
@@ -536,6 +518,8 @@ void free_game_manager() {
 		free_switchboard(gm->s_board);
 	if (gm->main_menu != NULL)
 		free_main_menu(gm->main_menu);
+	if (gm->connecting_sprite != NULL)
+		free_sprite(gm->connecting_sprite);
 	
 	free(gm);
 
@@ -589,7 +573,7 @@ void exit_game() {
 	hw_manager_exit_video_mode();
 }
 
-uint8_t start_game(GameModeEnum gamemode) {  
+uint8_t start_game() {  
 	printf("start_game: Started the game\n");
 
 	// Enter video mode
@@ -601,7 +585,7 @@ uint8_t start_game(GameModeEnum gamemode) {
 	initialize_mouse_input_events();
 	initialize_cursor();
 
-	initialize_game_manager(gamemode);
+	initialize_game_manager();
 
 	if (gm == NULL) {
 		printf("start_game: Failed to create GameManager object\n");
@@ -619,6 +603,8 @@ uint8_t start_game(GameModeEnum gamemode) {
 		exit_game();
 		exit(42);
 	}
+
+	gm_start_main_menu();
 
 	int r, ipc_status;
 	message msg;
