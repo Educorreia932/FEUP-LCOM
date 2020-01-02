@@ -180,7 +180,7 @@ bool does_collide_platforms(Platforms_t *plat, Rect_t *rect) {
 	return 0;
 }
 
-void render_platforms(Platforms_t *plat) {	
+void render_platforms(Platforms_t* plat) {	
 	Rect_t* rects = (Rect_t*) plat->rects;
 	bool* are_walls = (bool*) plat->is_wall;
 

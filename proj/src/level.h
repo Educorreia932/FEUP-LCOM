@@ -17,6 +17,7 @@ typedef struct Level {
     Spikes_t* spikes;
     PowerUp_t* pu[MAX_POWERUPS];
     PlayerTwo_t* player_two;
+    bool laser_master;
 } Level_t;
 
 // typedef struct Level Level_t;
@@ -29,7 +30,7 @@ void free_level(Level_t *level);
 
 void update_level(Level_t* level) ;
 void update_arcade_level(Level_t* level);
-void update_arcade_versus(Level_t* level, uint8_t bytes[]) ;
+void update_arcade_versus(Level_t* level, uint8_t bytes[], int* laser_pos);
 
 void render_level(Level_t *level);
 void render_arcade_versus(Level_t* level);

@@ -2,7 +2,7 @@
 #include "input_events.h"
 #include "mouse_cursor.h"
 #include "math_utils.h"
-
+#include "utils.h"
 
 /* COLOR CHANGES IN THE UI */
 #define COLOR_WHEN_HOVERED 0xEF5D
@@ -804,8 +804,10 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
 
     uint16_t x_pos = x + 120;
 
-    for (size_t i = 0; i < score->size; i++)
-        score->numbers[i] = *new_number(0, rect(x_pos - i * 40, y, 36, 48));
+    for (size_t i = 0; i < score->size; i++) {
+        printf("digit %u\n", get_digit(value, i));
+        score->numbers[i] = *new_number(get_digit(value, i), rect(x_pos - i * 40, y, 36, 48));
+    }
 
     return score;
 }
@@ -825,7 +827,7 @@ void free_score(Score_t* score) {
     free(score);
 }
 
-// clamp (math.h ??)
+// TODO: clamp (math.h)
 void update_score(Score_t* score) {
     bool carry = true;
 
