@@ -52,5 +52,3 @@ void render_player_two_foreground(PlayerTwo_t* player_two);
 void render_player_two_ui(PlayerTwo_t* player_two);
 
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
-
-void send_info(Player_t* player, bool is_dead, bool score_update);
