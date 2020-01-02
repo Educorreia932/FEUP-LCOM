@@ -632,7 +632,6 @@ void animator_player(Player_t* player) {
 			--player->anim_idle_countdown;
 
 		if (player->anim_walk_countdown == 0) {
-			// This one has to be a switch case
 			uint8_t state = get_animation_state(player->walk_sprite);
 			set_animation_state(player->walk_sprite, (state+1) % 5);
 			player->anim_walk_countdown = player_walk_countdown_value(player);
@@ -747,7 +746,7 @@ PlayerTwo_t* new_player_two() {
 	}
 
 	// The background sparks
-	player_two->sparks_sprite = new_sprite(0, -8, 4,
+	player_two->sparks_sprite = new_sprite(-8, -2, 4,
 		"player/spark_0.bmp",
 		"player/spark_1.bmp",
 		"player/spark_2.bmp",
@@ -789,7 +788,7 @@ void free_player_two(PlayerTwo_t* player_two) {
 }
 
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos) {
-	player_two->pos = vec2d((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB], (bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]);
+	player_two->pos = vec2d((float) ((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB]), (float) ((bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]));
 
 	player_two->is_dead = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_DEAD;
 	player_two->is_idle = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_IDLE;
@@ -803,8 +802,8 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos)
 
 	set_animation_state(player_two->sparks_sprite, bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_ANIMATION_MASK);
 
-	// if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
-	// 	update_score(player_two->score);
+	if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
+		update_score(player_two->score);
 
 	if (player_two->is_dead)
 		reset_score(player_two->score);
@@ -840,8 +839,8 @@ void render_player_two_ui(PlayerTwo_t* player_two) {
 
 
 static void player_send_info(Player_t* player, bool score_update, int* laser_pos) {
-	uint16_t x = player->rect.x;
-	uint16_t y = player->rect.y;
+	int16_t x = (int16_t) player->rect.x;
+	int16_t y = (int16_t) player->rect.y;
 
 	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0;
 	
@@ -858,7 +857,7 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 	if (player->respawn_timer != 0)
 		additional_byte_1 |= PLAYER_TWO_IS_DEAD;
 	additional_byte_1 |= (player->heading_right << 6);
-	if (player->gravity < 0)
+	if (player_is_grav_inverted(player))
 		additional_byte_1 |= PLAYER_TWO_ANTI_GRAVITY;
 
 	additional_byte_2 = get_animation_state(player->sparks_sprite) & PLAYER_TWO_ANIMATION_MASK;

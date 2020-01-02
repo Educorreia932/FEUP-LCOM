@@ -44,7 +44,7 @@ static int print_usage() {
 
 int (proj_main_loop)(int argc, char *argv[]) {
 	if (argc <= 0)
-        return start_game(GM_MAIN_MENU);
+        return start_game();
 
 	else {
 		printf("Invalid command\n");

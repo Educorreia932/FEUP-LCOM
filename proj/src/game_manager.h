@@ -95,8 +95,7 @@ void gm_start_main_menu();
 void exit_game();
 
 /** 
- * @brief Starts the game
- * @param gamemode Indicates the gamemode to start the game on (usually the Menu)
+ * @brief Starts (and plays) the game
  * @returns 0 on success, 1 otherwise
  */
-uint8_t start_game(GameModeEnum gamemode);
+uint8_t start_game();
