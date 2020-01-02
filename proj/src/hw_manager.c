@@ -170,3 +170,7 @@ inline uint8_t hw_manager_uart_pop() {
 inline bool hw_manager_uart_is_empty() {
 	return uart_receiver_q_empty();
 }
+
+inline uint8_t hw_manager_uart_size() {
+	return uart_receiver_q_size();
+}

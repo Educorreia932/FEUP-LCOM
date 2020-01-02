@@ -29,6 +29,10 @@ bool uart_receiver_q_empty() {
     return queue_is_empty(rq);
 }
 
+uint8_t uart_receiver_q_size() {
+    return queue_size(rq);
+}
+
 uint8_t uart_subscribe_int(uint32_t *bit_mask) {
     if (!bit_mask) // Check if pointer is NULL
         return 1;
@@ -167,7 +171,7 @@ uint8_t uart_set_conf() {
 // Called when the when we receive the THR empty interrupt
 static void uart_thr_empty_ih() {
     
-    printf("THR empty ih called... Unexpected\n");
+    // printf("THR empty ih called... Unexpected\n");
     
 }
 

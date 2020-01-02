@@ -805,7 +805,7 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
     uint16_t x_pos = x + 120;
 
     for (size_t i = 0; i < score->size; i++) {
-        printf("digit %u\n", get_digit(value, i));
+        // printf("digit %u\n", get_digit(value, i));
         score->numbers[i] = *new_number(get_digit(value, i), rect(x_pos - i * 40, y, 36, 48));
     }
 

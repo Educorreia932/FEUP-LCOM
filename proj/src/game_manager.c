@@ -46,52 +46,74 @@ static void gm_update_campaign_single() {
 
 static void gm_update_campaign_coop() {
 	if (!hw_manager_uart_is_empty()) {
+		bool keep_going = true;
 		gm->uart_last_received = 0;
-		if (!gm->uart_synced) {
-			switch (hw_manager_uart_front()) {
-				case HEADER_REQUEST_POWERS:
-					hw_manager_uart_send_char(HEADER_RESPONSE_POWERS);
-					hw_manager_uart_send_char((uint8_t) player_get_default_powers());
-					hw_manager_uart_send_char(HEADER_TERMINATOR);
-					gm->uart_synced = true;
-					gm->has_partner = true;
-					break;
+		while (!hw_manager_uart_is_empty() && keep_going) {
+			if (!gm->uart_synced) {
+				switch (hw_manager_uart_front()) {
+					case HEADER_REQUEST_POWERS:
+						if (hw_manager_uart_size() < HEADER_REQUEST_POWERS_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_send_char(HEADER_RESPONSE_POWERS);
+						hw_manager_uart_send_char((uint8_t) player_get_default_powers());
+						hw_manager_uart_send_char(HEADER_TERMINATOR);
+						gm->uart_synced = true;
+						gm->has_partner = true;
+						break;
+				}
 			}
-		}
 
-		else {
-			switch (hw_manager_uart_front()) {
-				case HEADER_SPEED_MULT:
-					hw_manager_uart_pop();
-					player_set_speed(hw_manager_uart_front());
-					break;
-				case HEADER_JUMP_MULT:
-					hw_manager_uart_pop();
-					player_set_jump(hw_manager_uart_front());
-					break;
-				case HEADER_LASER:
-					hw_manager_uart_pop();
-					lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
-					break;
-				case HEADER_GRAVITY:
-					hw_manager_uart_pop();
-					switch (hw_manager_uart_front()) {
-						case UART_GRAVITY_NORMAL:
-							player_set_gravity_normal();
+			else {
+				switch (hw_manager_uart_front()) {
+					case HEADER_SPEED_MULT:
+						if (hw_manager_uart_size() < HEADER_SPEED_MULT_SIZE) {
+							keep_going = false;
 							break;
-						case UART_GRAVITY_REVERSED:
-							player_set_gravity_reversed();
+						}
+						hw_manager_uart_pop();
+						player_set_speed(hw_manager_uart_front());
+						break;
+					case HEADER_JUMP_MULT:
+						if (hw_manager_uart_size() < HEADER_JUMP_MULT_SIZE) {
+							keep_going = false;
 							break;
-						default:
-							printf("Coop campaign level: Unexpected gravity value\n");
+						}
+						hw_manager_uart_pop();
+						player_set_jump(hw_manager_uart_front());
+						break;
+					case HEADER_LASER:
+						if (hw_manager_uart_size() < HEADER_LASER_SIZE) {
+							keep_going = false;
 							break;
-					}
-				case HEADER_SYNCED:
-					// Do nothing
-					break;
+						}
+						hw_manager_uart_pop();
+						lasers_set_link_id(gm->level->lasers, hw_manager_uart_front());
+						break;
+					case HEADER_GRAVITY:
+						if (hw_manager_uart_size() < HEADER_GRAVITY_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_pop();
+						switch (hw_manager_uart_front()) {
+							case UART_GRAVITY_NORMAL:
+								player_set_gravity_normal();
+								break;
+							case UART_GRAVITY_REVERSED:
+								player_set_gravity_reversed();
+								break;
+							default:
+								printf("Coop campaign level: Unexpected gravity value\n");
+								break;
+						}
+						break;
+				}
 			}
-		}
-		gm_uart_erase_message();	
+			if (keep_going)
+				gm_uart_erase_message();
+		}	
 	}
 	else {
 		++gm->uart_last_received;
@@ -120,37 +142,52 @@ static void gm_update_arcade_versus() {
 
 	if (!hw_manager_uart_is_empty()) {
 		gm->uart_last_received = 0;
+		bool keep_going = true;
 
-		if (!gm->uart_synced) {
-			switch (hw_manager_uart_front()) {
-				case HEADER_AVAILABLE_ARCADE:
-					gm->uart_synced = true;
-					gm->has_partner = true;
-					gm->level->laser_master = true;
-					hw_manager_uart_send_char(HEADER_ARCADE_READY);
-					hw_manager_uart_send_char(HEADER_TERMINATOR);
-					break;
-				case HEADER_ARCADE_READY:
-					gm->uart_synced = true;
-					gm->has_partner = true;
-					gm->level->laser_master = false;
-					break;
+		while (!hw_manager_uart_is_empty() && keep_going) {
+			if (!gm->uart_synced) {
+				switch (hw_manager_uart_front()) {
+					case HEADER_AVAILABLE_ARCADE:
+						if (hw_manager_uart_size() < HEADER_AVAILABLE_ARCADE_SIZE) {
+							keep_going = false;
+							break;
+						}
+						gm->uart_synced = true;
+						gm->has_partner = true;
+						gm->level->laser_master = true;
+						hw_manager_uart_send_char(HEADER_ARCADE_READY);
+						hw_manager_uart_send_char(HEADER_TERMINATOR);
+						break;
+					case HEADER_ARCADE_READY:
+						if (hw_manager_uart_size() < HEADER_ARCADE_READY_SIZE) {
+							keep_going = false;
+							break;
+						}
+						gm->uart_synced = true;
+						gm->has_partner = true;
+						gm->level->laser_master = false;
+						break;
+				}
 			}
-		}
 
-		else {
-			switch (hw_manager_uart_front()) {
-				case HEADER_PLAYER_TWO_UPDATE:
-					hw_manager_uart_pop();
-					
-					for (size_t i = 0; i < 7; i++)
-						bytes[i] = hw_manager_uart_pop();
+			else {
+				switch (hw_manager_uart_front()) {
+					case HEADER_PLAYER_TWO_UPDATE:
+						if (hw_manager_uart_size() < HEADER_PLAYER_TWO_UPDATE_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_pop();
+						
+						for (size_t i = 0; i < 6; i++)
+							bytes[i] = hw_manager_uart_pop();
 
-					break;
+						break;
+				}
 			}
+			if (keep_going)
+				gm_uart_erase_message();
 		}
-
-		gm_uart_erase_message();	
 	}
 	
 	else {
@@ -178,41 +215,61 @@ static void gm_update_arcade_versus() {
 static void gm_update_switchboard() {
 	if (!hw_manager_uart_is_empty()) {
 		gm->uart_last_received = 0;
-
-		if (!gm->uart_synced) {
-			switch (hw_manager_uart_front()) {
-				case HEADER_AVAILABLE_LEVEL:
-					hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
-					hw_manager_uart_send_char(HEADER_TERMINATOR);
-					break;
-				case HEADER_RESPONSE_POWERS:
-					hw_manager_uart_pop();
-					switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
-					gm->uart_synced = true;
-					gm->has_partner = true;
-					break;
+		bool keep_going = true;
+		while (!hw_manager_uart_is_empty() && keep_going) {
+			if (!gm->uart_synced) {
+				switch (hw_manager_uart_front()) {
+					case HEADER_AVAILABLE_LEVEL:
+						if (hw_manager_uart_size() < HEADER_AVAILABLE_LEVEL_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
+						hw_manager_uart_send_char(HEADER_TERMINATOR);
+						break;
+					case HEADER_RESPONSE_POWERS:
+						if (hw_manager_uart_size() < HEADER_RESPONSE_POWERS_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_pop();
+						switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
+						gm->uart_synced = true;
+						gm->has_partner = true;
+						break;
+				}
 			}
-		}
 
-		else {
-			switch (hw_manager_uart_front()) {
-				case HEADER_PLAYER_RESPAWN:
-					switchboard_player_respawn(gm->s_board);
-					break;
-				case HEADER_PLAYER_UPDATE:
-					hw_manager_uart_pop();
-					switchboard_unlock_powers(gm->s_board, hw_manager_uart_front());
-					break;
-				case HEADER_RESPONSE_POWERS:
-					hw_manager_uart_pop();
-					switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
-					break;
-				case HEADER_SYNCED:
-					// Do nothing
-					break;
+			else {
+				switch (hw_manager_uart_front()) {
+					case HEADER_PLAYER_RESPAWN:
+						if (hw_manager_uart_size() < HEADER_PLAYER_RESPAWN_SIZE) {
+							keep_going = false;
+							break;
+						}
+						switchboard_player_respawn(gm->s_board);
+						break;
+					case HEADER_PLAYER_UPDATE:
+						if (hw_manager_uart_size() < HEADER_PLAYER_UPDATE_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_pop();
+						switchboard_unlock_powers(gm->s_board, hw_manager_uart_front());
+						break;
+					case HEADER_RESPONSE_POWERS:
+						if (hw_manager_uart_size() < HEADER_RESPONSE_POWERS_SIZE) {
+							keep_going = false;
+							break;
+						}
+						hw_manager_uart_pop();
+						switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
+						break;
+				}
 			}
+			if (keep_going)
+				gm_uart_erase_message();
 		}
-		gm_uart_erase_message();
 	}
 
 	else {
@@ -260,9 +317,9 @@ static void gm_render_arcade() {
 }
 
 static void gm_render_arcade_versus() {
-	if (gm->uart_synced)
+	if (gm->uart_synced) {
 		render_arcade_versus(gm->level);
-
+	}
 	else
 		draw_sprite_floats(gm->connecting_sprite, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 

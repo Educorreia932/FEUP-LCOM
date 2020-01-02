@@ -8,8 +8,6 @@
 #include "hw_manager.h"
 #include "power_ups.h"
 
-static int counter = 0;
-
 
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
@@ -218,7 +216,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// The background sparks
-	player->sparks_sprite = new_sprite(-8, -8, 4,
+	player->sparks_sprite = new_sprite(-8, -2, 4,
 		"player/spark_0.bmp",
 		"player/spark_1.bmp",
 		"player/spark_2.bmp",
@@ -689,7 +687,6 @@ void render_player_ui(Player_t *player) {
 #define PLAYER_TWO_Y_LSB 3
 #define PLAYER_TWO_ADDITIONAL_1 4
 #define PLAYER_TWO_ADDITIONAL_2 5
-#define PLAYER_TWO_ADDITIONAL_3 6
 
 #define PLAYER_TWO_ANIMATION_MASK (BIT(0) | BIT(1) | BIT(2)) // Player and Spark
 #define PLAYER_TWO_IS_DEAD BIT(4)
@@ -806,19 +803,12 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos)
 
 	set_animation_state(player_two->sparks_sprite, bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_ANIMATION_MASK);
 
-	if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
-		update_score(player_two->score);
+	// if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
+	// 	update_score(player_two->score);
 
 	if (player_two->is_dead)
 		reset_score(player_two->score);
-	
-	if (!get_game_manager()->level->laser_master) {
-		printf("received: %u %u\n", bytes[PLAYER_TWO_ADDITIONAL_3], counter);
-		*laser_pos = bytes[PLAYER_TWO_ADDITIONAL_3];
-		counter++;
-	}
 
-	printf("laser %u\n", *laser_pos);
 }
 
 void render_player_two_background(PlayerTwo_t* player_two) {
@@ -853,7 +843,7 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 	uint16_t x = player->rect.x;
 	uint16_t y = player->rect.y;
 
-	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0, additional_byte_3 = 0;
+	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0;
 	
 	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb)) 
 		return; 
@@ -862,7 +852,6 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 		additional_byte_1 = get_animation_state(player->idle_sprite) & PLAYER_TWO_ANIMATION_MASK;
 		additional_byte_1 |= PLAYER_TWO_IS_IDLE;
 	}
-
 	else
 		additional_byte_1 = get_animation_state(player->walk_sprite) & PLAYER_TWO_ANIMATION_MASK;
 
@@ -875,13 +864,6 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 	additional_byte_2 = get_animation_state(player->sparks_sprite) & PLAYER_TWO_ANIMATION_MASK;
 	additional_byte_2 |= (score_update << 4);
 
-	if (get_game_manager()->level->laser_master) {
-		additional_byte_3 = (unsigned char) rand();
-		printf("Sent %u %u\n", additional_byte_3, counter);
-		*laser_pos = additional_byte_3;
-		counter++;
-	}
-
 	hw_manager_uart_send_char(HEADER_PLAYER_TWO_UPDATE);
 
 	hw_manager_uart_send_char(x_msb);
@@ -890,7 +872,6 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 	hw_manager_uart_send_char(y_lsb);
 	hw_manager_uart_send_char(additional_byte_1);
 	hw_manager_uart_send_char(additional_byte_2);
-	hw_manager_uart_send_char(additional_byte_3);
 
 	hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
