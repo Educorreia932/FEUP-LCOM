@@ -211,12 +211,12 @@ void render_level(Level_t *level) {
 void render_arcade_versus(Level_t* level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_platforms(level->platforms);
-	
-	render_player_background(level->player);
-	render_player_foreground(level->player);
 
 	render_player_two_background(level->player_two);
 	render_player_two_foreground(level->player_two);
+	
+	render_player_background(level->player);
+	render_player_foreground(level->player);
 
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
