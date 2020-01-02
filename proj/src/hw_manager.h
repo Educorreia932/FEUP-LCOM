@@ -43,3 +43,4 @@ void hw_manager_uart_send_char(uint8_t to_send);
 uint8_t hw_manager_uart_front();
 uint8_t hw_manager_uart_pop();
 bool hw_manager_uart_is_empty();
+uint8_t hw_manager_uart_size();

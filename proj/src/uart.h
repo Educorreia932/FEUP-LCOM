@@ -172,6 +172,7 @@ void uart_free_receiver_queue();
 uint8_t uart_receiver_q_front();
 uint8_t uart_receiver_q_pop();
 bool uart_receiver_q_empty();
+uint8_t uart_receiver_q_size();
 
 uint8_t uart_print_conf();
 uint8_t uart_set_conf();
