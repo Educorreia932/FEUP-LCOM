@@ -46,6 +46,7 @@ void render_player_ui(Player_t *player);
 typedef struct PlayerTwo PlayerTwo_t;
 
 PlayerTwo_t* new_player_two();
+void free_player_two(PlayerTwo_t* player_two);
 
 void render_player_two_background(PlayerTwo_t* player_two);
 void render_player_two_foreground(PlayerTwo_t* player_two);

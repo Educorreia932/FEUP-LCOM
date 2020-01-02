@@ -181,7 +181,7 @@ static void player_set_laser_2() {
 }
 
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) { //TODO: Specify spawn
-	Player_t* player = (Player_t*) malloc(sizeof(Player_t));
+	Player_t* player = (Player_t*) calloc(1, sizeof(Player_t));
 	
 	if (player == NULL) {
 		printf("new_player: Failed to allocate memory for the player object\n");
@@ -271,7 +271,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 		}
 		if (!(player->current_powers & UNLOCKED_JUMP))
 			slider_deactivate(player->jump_slider);
-
+		
 		player->speed_slider = new_slider("ui/small_horizontal_slider.bmp", "ui/small_slider_handle.bmp", player_set_speed, vec2d(20, 2), 255, vec2d(25, 4), vec2d(90, 4));
 		if (player->speed_slider == NULL) {
 			printf("new_player: Failed to create speed slider\n");
@@ -284,8 +284,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 		}
 		if (!(player->current_powers & UNLOCKED_SPEED))
 			slider_deactivate(player->speed_slider);
-
-		player->laser_buttons = (Button_t**) malloc(sizeof(Button_t*) * 3);
+		player->laser_buttons = (Button_t**) calloc(3, sizeof(Button_t*));
 		if (player->laser_buttons == NULL) {
 			printf("new_player: Failed to allocate memory for the three buttons\n");
 			free_sprite(player->idle_sprite);
@@ -297,9 +296,9 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 			return NULL;
 		}
 
+		player->laser_buttons[0] = NULL;
 		player->laser_buttons[0] = new_button("ui/small_laser_button_red.bmp", player_set_laser_0, rect(130.0f, 4.0f, 16.0f, 16.0f));
 		if (player->laser_buttons[0] == NULL) {
-			printf("new_player: Failed to create red laser button\n");
 			free_sprite(player->idle_sprite);
 			free_sprite(player->walk_sprite);
 			free_sprite(player->sparks_sprite);
@@ -350,7 +349,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	// Arcade
 	if (player->arcade_mode)
 		player->score = new_score(800, 75, 0);
-
+	
 	return player;
 }
 
@@ -713,7 +712,7 @@ struct PlayerTwo {
 };
 
 PlayerTwo_t* new_player_two() { 
-	PlayerTwo_t* player_two = (PlayerTwo_t*) malloc(sizeof(PlayerTwo_t));
+	PlayerTwo_t* player_two = (PlayerTwo_t*) calloc(1, sizeof(PlayerTwo_t));
 	
 	if (player_two == NULL) {
 		printf("new_player: Failed to allocate memory for the player two object\n");
@@ -747,7 +746,7 @@ PlayerTwo_t* new_player_two() {
 	}
 
 	// The background sparks
-	player_two->sparks_sprite = new_sprite(-8, -8, 4,
+	player_two->sparks_sprite = new_sprite(0, -8, 4,
 		"player/spark_0.bmp",
 		"player/spark_1.bmp",
 		"player/spark_2.bmp",
@@ -775,6 +774,18 @@ PlayerTwo_t* new_player_two() {
     }
 
 	return player_two;
+}
+
+void free_player_two(PlayerTwo_t* player_two) {
+
+	free_sprite(player_two->idle_sprite);
+	free_sprite(player_two->walk_sprite);
+	free_sprite(player_two->sparks_sprite);
+
+	free_score(player_two->score);
+
+	free(player_two);
+
 }
 
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {

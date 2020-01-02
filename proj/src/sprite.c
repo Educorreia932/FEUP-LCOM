@@ -89,8 +89,9 @@ void draw_sprite_floats(Sprite_t *s, float x, float y, uint32_t color_to_multipl
 		printf("draw_sprite_ints: Refusing to draw, animation state %d is larger than possible (max is %d)\n", s->animation_state, s->size);
 		return;
 	}
-
-	bitmap_functions[reversed](s->bmps[s->animation_state], (int32_t)(x + s->x_offset), (int32_t)(y + s->y_offset), ALIGN_LEFT, color_to_multiply);
+	x += s->x_offset;
+	y += s->y_offset;
+	bitmap_functions[reversed](s->bmps[s->animation_state], (int32_t) x, (int32_t) y, ALIGN_LEFT, color_to_multiply);
 }
 
 inline uint16_t sprite_get_width(Sprite_t *s) {

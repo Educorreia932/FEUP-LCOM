@@ -42,6 +42,7 @@
 		"map": "c",
 		"memory": "c",
 		"utility": "c",
-		"switchboard.h": "c"
+		"switchboard.h": "c",
+		"power_ups.h": "c"
 	},
 }
