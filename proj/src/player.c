@@ -65,6 +65,8 @@ struct Player {
 
 // Forward declaration in order to be used in new_player
 static uint8_t player_walk_countdown_value(Player_t* player);
+// Forward declaration in order to be used in update_player
+static void player_send_info(Player_t* player, bool score_update);
 
 /* UNLOCKING POWERS */
 
@@ -571,6 +573,8 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	else
 		player_death_cycle(player);
 	
+	animator_player(player);
+
 	if (player->arcade_mode) {
 		if (arcade_player_passes_lasers(lasers, &player->rect)) {
 			update_score(player->score);
@@ -578,7 +582,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		}
 
 		if (get_game_manager()->gamemode & GM_UART)
-			send_info(player, died, score_update);
+			player_send_info(player, score_update);
 	}
 }
 
@@ -684,11 +688,11 @@ void render_player_ui(Player_t *player) {
 #define PLAYER_TWO_ADDITIONAL_1 4
 #define PLAYER_TWO_ADDITIONAL_2 5
 
-#define PLAYER_TWO_ANIMATION_NUMBER (BIT(0) | BIT(1) | BIT(2)) // Player and Spark
+#define PLAYER_TWO_ANIMATION_MASK (BIT(0) | BIT(1) | BIT(2)) // Player and Spark
 #define PLAYER_TWO_IS_DEAD BIT(4)
-#define PLAYER_TWO_IS_GROUNDED BIT(5)
+#define PLAYER_TWO_IS_IDLE BIT(5)
 #define PLAYER_TWO_HEADING_RIGHT BIT(6)
-#define PLAYER_TWO_UPSIDE_DOWN BIT(7)
+#define PLAYER_TWO_ANTI_GRAVITY BIT(7)
 
 #define PLAYER_TWO_INCREASE_SCORE BIT(4)
 
@@ -698,16 +702,12 @@ void render_player_ui(Player_t *player) {
  */
 
 struct PlayerTwo {
-	Rect_t rect;
+	Vec2d_t pos;
 	Sprite_t* idle_sprite;
 	Sprite_t* walk_sprite;
 	Sprite_t* sparks_sprite;
-	float x_spawn, y_spawn;
 	
-	bool heading_right, is_idle, grounded, is_dead, gravity;
-
-	// Animation stuff
-	uint8_t anim_idle_countdown, anim_walk_countdown, anim_spark_countdown;
+	bool heading_right, is_idle, is_dead, anti_gravity;
 
 	Score_t* score;
 };
@@ -761,16 +761,8 @@ PlayerTwo_t* new_player_two() {
 		return NULL;
 	}
 
-	player_two->x_spawn = 60.0f;
-	player_two->y_spawn = 704.0f;
+	player_two->pos = vec2d(60.0f, 704.0f);
 
-	// Creating player hitbox
-	player_two->rect = rect(
-		player_two->x_spawn,
-		player_two->y_spawn, 
-		(float) sprite_get_width(player_two->idle_sprite), 
-		(float) sprite_get_height(player_two->idle_sprite)
-	);
 
 	player_two->score = new_score(800, 140, 0);
 
@@ -786,17 +778,25 @@ PlayerTwo_t* new_player_two() {
 }
 
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
-	player_two->rect.x = (bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB];
-	player_two->rect.y = (bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB];
+	player_two->pos = vec2d((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB], (bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]);
 
 	// bytes[PLAYER_TWO_ADDITIONAL_1] && PLAYER_TWO_ANIMATION_NUMBER;
 
-	printf("Byte %u\n", bytes[PLAYER_TWO_ADDITIONAL_1]);
+	// printf("Byte %u\n", bytes[PLAYER_TWO_ADDITIONAL_1]);
 
-	player_two->is_dead = (bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_INCREASE_SCORE) >> 4;
-	player_two->heading_right = (bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_INCREASE_SCORE) >> 6;
+	player_two->is_dead = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_DEAD;
+	player_two->is_idle = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_IDLE;
+	player_two->heading_right = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_HEADING_RIGHT;
+	player_two->anti_gravity = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_ANTI_GRAVITY;
 
-	if ((bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE) >> 4)
+	if (player_two->is_idle)
+		set_animation_state(player_two->idle_sprite, bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_ANIMATION_MASK);
+	else
+		set_animation_state(player_two->walk_sprite, bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_ANIMATION_MASK);
+
+	set_animation_state(player_two->sparks_sprite, bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_ANIMATION_MASK);
+
+	if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
 		update_score(player_two->score);
 
 	if (player_two->is_dead)
@@ -804,34 +804,34 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 }
 
 void render_player_two_background(PlayerTwo_t* player_two) {
-	if (!player_two->is_dead && !player_two->gravity) {
+	if (!player_two->is_dead && player_two->anti_gravity) {
 		// Player is alive
-		draw_sprite(player_two->sparks_sprite, &player_two->rect, COLOR_BLUE, SPRITE_Y_AXIS * !player_two->heading_right);
+		draw_sprite_vec2d(player_two->sparks_sprite, player_two->pos, COLOR_BLUE, SPRITE_NORMAL);
 	}
 }
 
 void render_player_two_foreground(PlayerTwo_t* player_two) {
 	SpriteReverse sr = SPRITE_Y_AXIS * player_two->heading_right
-		+ SPRITE_X_AXIS * !player_two->gravity;
+		+ SPRITE_X_AXIS * player_two->anti_gravity;
 
 	if (!player_two->is_dead)
 		// Player is alive
-		if (player_two->grounded && player_two->is_idle)
-			draw_sprite(player_two->idle_sprite, &player_two->rect, COLOR_BLUE, sr);
+		if (player_two->is_idle)
+			draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, COLOR_BLUE, sr);
 		
 		else
-			draw_sprite(player_two->walk_sprite, &player_two->rect, COLOR_BLUE, sr);
+			draw_sprite_vec2d(player_two->walk_sprite, player_two->pos, COLOR_BLUE, sr);
 
 	else 
 		// Player is dead
-		draw_sprite(player_two->idle_sprite, &player_two->rect, COLOR_PINK, sr);
+		draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, COLOR_PINK, sr);
 }
 
 void render_player_two_ui(PlayerTwo_t* player_two) {
 	render_score(player_two->score);
 }
 
-void send_info(Player_t* player, bool is_dead, bool score_update) {
+static void player_send_info(Player_t* player, bool score_update) {
 	uint16_t x = player->rect.x;
 	uint16_t y = player->rect.y;
 
@@ -840,9 +840,20 @@ void send_info(Player_t* player, bool is_dead, bool score_update) {
 	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb)) 
 		return; 
 
-	additional_byte_1 |= (is_dead << 4);
-	additional_byte_1 |= (player->heading_right << 6);
+	if (player->is_idle && player->grounded) {
+		additional_byte_1 = get_animation_state(player->idle_sprite) & PLAYER_TWO_ANIMATION_MASK;
+		additional_byte_1 |= PLAYER_TWO_IS_IDLE;
+	}
+	else
+		additional_byte_1 = get_animation_state(player->walk_sprite) & PLAYER_TWO_ANIMATION_MASK;
 
+	if (player->respawn_timer != 0)
+		additional_byte_1 |= PLAYER_TWO_IS_DEAD;
+	additional_byte_1 |= (player->heading_right << 6);
+	if (player->gravity < 0)
+		additional_byte_1 |= PLAYER_TWO_ANTI_GRAVITY;
+
+	additional_byte_2 = get_animation_state(player->sparks_sprite) & PLAYER_TWO_ANIMATION_MASK;
 	additional_byte_2 |= (score_update << 4);
 
 	hw_manager_uart_send_char(HEADER_PLAYER_TWO_UPDATE);
