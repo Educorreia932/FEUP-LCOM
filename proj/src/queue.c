@@ -6,8 +6,6 @@
 
 #include "queue.h"
 
-#define CAPACITY 200    // Queue max capacity
-
 /* Queue structure definition */
 typedef struct node 
 {
@@ -172,7 +170,7 @@ bool queue_is_empty(Queue_t *q)
  */
 bool queue_is_full(Queue_t *q)
 {
-    return (q->size >= CAPACITY);
+    return (q->size >= QUEUE_MAX_CAPACITY);
 }
 
 /**

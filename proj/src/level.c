@@ -220,7 +220,8 @@ void update_arcade_level(Level_t* level) {
 void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 	arcade_move_lasers(level->lasers);
 	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
-	update_player_two(level->player_two, bytes);
+	if (bytes != NULL)
+		update_player_two(level->player_two, bytes);
 	arcade_add_laser(level->lasers);
 }
 

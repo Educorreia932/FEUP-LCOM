@@ -8,15 +8,14 @@
 extern void* double_buffer_base;
 extern vbe_mode_info_summary_t vg_info;
 
-// TODO: Convert to our bit specifying data types
-struct BitmapFileHeader {
+typedef struct BitmapFileHeader {
     uint16_t type; // specifies the file type
 	uint32_t size; // specifies the size in bytes of the bitmap file
 	uint32_t reserved; // reserved; must be 0
 	uint32_t offset; // specifies the offset in bytes from the bitmapfileheader to the bitmap bits
-};
+} BitmapFileHeader_t;
 
-struct BitmapInfoHeader {
+typedef struct BitmapInfoHeader {
     uint32_t size; // specifies the number of bytes required by the struct
 	uint32_t width; // specifies width in pixels
 	uint32_t height; // specifies height in pixels
@@ -28,7 +27,7 @@ struct BitmapInfoHeader {
 	int32_t yResolution; // number of pixels per meter in y axis
 	uint32_t nColors; // number of colors used by the bitmap
 	uint32_t importantColors; // number of colors that are important
-};
+} BitmapInfoHeader_t;
 
 struct Bitmap {
     BitmapInfoHeader_t info;

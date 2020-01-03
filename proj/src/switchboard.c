@@ -50,11 +50,10 @@ struct SwitchBoard {
     uint16_t time_to_reset_rendering;
 };
 
-void switchboard_start_minigame() {
-    SwitchBoard_t* sw = get_game_manager()->s_board;
+void switchboard_start_minigame(SwitchBoard_t* s_board) {
     hw_manager_rtc_set_alarm(MINIGAME_WAIT_TIME);
 
-    minigame1_spawn_buttons(sw->mg1);
+    minigame1_spawn_buttons(s_board->mg1);
 }
 
 static void send_laser0() {
@@ -165,8 +164,6 @@ SwitchBoard_t* new_switchboard() {
         free(s_board);
         return NULL;
     }
-    
-    switchboard_set_three_lasers(s_board);
 
     s_board->speed_slider = new_slider("ui/speed_slider.bmp", "ui/speed_slider_handle.bmp", send_speed_mult, vec2d(160, 40), 255, vec2d(180, 50), vec2d(440, 50));
     if (s_board->speed_slider == NULL) {
@@ -229,24 +226,6 @@ void free_switchboard(SwitchBoard_t* s_board) {
     free_knob(s_board->gravity_knob);
     free_minigame1(s_board->mg1);
     free(s_board);
-}
-
-void switchboard_set_no_lasers(SwitchBoard_t* s_board) {
-    button_deactivate(s_board->laser_buttons[0]);
-    button_deactivate(s_board->laser_buttons[1]);
-    button_deactivate(s_board->laser_buttons[2]);
-}
-
-void switchboard_set_two_lasers(SwitchBoard_t* s_board) {
-    button_activate(s_board->laser_buttons[0]);
-    button_activate(s_board->laser_buttons[1]);
-    button_deactivate(s_board->laser_buttons[2]);
-}
-
-void switchboard_set_three_lasers(SwitchBoard_t* s_board) {
-    button_activate(s_board->laser_buttons[0]);
-    button_activate(s_board->laser_buttons[1]);
-    button_activate(s_board->laser_buttons[2]);
 }
 
 void update_switchboard(SwitchBoard_t* s_board) {

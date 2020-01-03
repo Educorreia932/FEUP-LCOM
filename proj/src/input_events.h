@@ -2,6 +2,8 @@
 
 #include <lcom/lcf.h>
 
+/** @file input_events.h */
+
 /** @defgroup inputs User Inputs */
 /** @addtogroup inputs
   *

@@ -71,9 +71,11 @@ struct Player {
     Score_t* time_took;
 };
 
-// Forward declaration in order to be used in new_player
+// Forward declaration to be used in update_player()
+static void animator_player(Player_t* player);
+// Forward declaration in order to be used in new_player()
 static uint8_t player_walk_countdown_value(Player_t* player);
-// Forward declaration in order to be used in update_player
+// Forward declaration in order to be used in update_player()
 static void player_send_info(Player_t* player, bool score_update);
 
 /* UNLOCKING POWERS */
@@ -587,7 +589,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	if (player->respawn_timer == 0) {
-		if (player_is_dead(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))  {
+		if (lasers_collide_player(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))  {
 			died = true;
 			player_start_death(player);
 		}
@@ -626,8 +628,9 @@ static uint8_t player_walk_countdown_value(Player_t* player) {
 	);
 }
 
-// For now, both run independently
-void animator_player(Player_t* player) {
+
+static void animator_player(Player_t* player) {
+	// For now, both run independently
 	// If player is alive
 	if (player->respawn_timer == 0) {
 
