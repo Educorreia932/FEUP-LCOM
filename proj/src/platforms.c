@@ -13,11 +13,6 @@ struct Platforms {
     uint8_t size;    
 };
 
-// TODO: ALL OF THIS
-Platforms_t* new_platforms() {
-  	return NULL;
-}
-
 Platforms_t* new_arcade_platforms() {
 	Platforms_t *plat = (Platforms_t*) malloc(sizeof(Platforms_t));
 	if (plat == NULL) {

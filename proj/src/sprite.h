@@ -154,7 +154,7 @@ void free_sprite_dynamic(SpriteDynamic_t* sd);
 
 /**
  * @brief Draws a SpriteDynamic on the screen
- * @details Upon rendering the image will be 'stretched' (reproduced) to fulfill the indicated size
+ * @details Upon rendering, the image will be 'stretched' (reproduced) to fulfill the indicated size
  * @warning The color_to_multiply uses a bitwise AND between the colors
  * @param sd The SpriteDynamic to draw
  * @param r Pointer to a rect with the point for the Sprite to be drawn at and it's size (both width and height). Calls to render a size lesser than twice the object's dynamic_slice_size will be ignored

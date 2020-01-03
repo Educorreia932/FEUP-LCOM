@@ -22,27 +22,44 @@
  */
 extern char* assets_rel_path;
 
-#define UART_GRAVITY_NORMAL 0 /** <@brief Content of the gravity byte */
-#define UART_GRAVITY_REVERSED 1 /** <@brief Content of the gravity byte */
+/** @brief Content of the gravity byte */
+#define UART_GRAVITY_NORMAL 0
+/** @brief Content of the gravity byte */
+#define UART_GRAVITY_REVERSED 1
 
-// number of bytes of each kind of message
-#define HEADER_SYNCED_SIZE 2 /** <@brief Total size of the synced header */
-#define HEADER_AVAILABLE_LEVEL_SIZE 2 /** <@brief Total size of the available level header */
-#define HEADER_AVAILABLE_ARCADE_SIZE 2 /** <@brief Total size of the available arcade header */
+// UART messages size by Header
+
+/** @brief Total size of the synced header */
+#define HEADER_SYNCED_SIZE 2 
+/** @brief Total size of the available level header */
+#define HEADER_AVAILABLE_LEVEL_SIZE 2
+/** @brief Total size of the available arcade header */
+#define HEADER_AVAILABLE_ARCADE_SIZE 2
 
 // Campaign
-#define HEADER_SPEED_MULT_SIZE 3 /** <@brief Total size of the speed mult header */
-#define HEADER_JUMP_MULT_SIZE 3 /** <@brief Total size of the jump mult header */
-#define HEADER_LASER_SIZE 3 /** <@brief Total size of the laser header */
-#define HEADER_GRAVITY_SIZE 3 /** <@brief Total size of the gravity header */
-#define HEADER_PLAYER_RESPAWN_SIZE 2  /** <@brief Total size of the player respawn header */
-#define HEADER_PLAYER_UPDATE_SIZE 3 /** <@brief Total size of the player update header */
-#define HEADER_REQUEST_POWERS_SIZE 2 /** <@brief Total size of the request powers header */
-#define HEADER_RESPONSE_POWERS_SIZE 3 /** <@brief Total size of the response powers header */
+/** @brief Total size of the speed mult header */
+#define HEADER_SPEED_MULT_SIZE 3
+/** @brief Total size of the jump mult header */
+#define HEADER_JUMP_MULT_SIZE 3
+/** @brief Total size of the laser header */
+#define HEADER_LASER_SIZE 3
+/** @brief Total size of the gravity header */
+#define HEADER_GRAVITY_SIZE 3
+/** @brief Total size of the player respawn header */
+#define HEADER_PLAYER_RESPAWN_SIZE 2
+/** @brief Total size of the player update header */
+#define HEADER_PLAYER_UPDATE_SIZE 3
+/** @brief Total size of the request powers header */
+#define HEADER_REQUEST_POWERS_SIZE 2
+/** @brief Total size of the response powers header */
+#define HEADER_RESPONSE_POWERS_SIZE 3
 
 // Arcade
-#define HEADER_PLAYER_TWO_UPDATE_SIZE 8 /** <@brief Total size of the player two update header */
-#define HEADER_ARCADE_READY_SIZE 2 /** <@brief Total size of the arcade ready header */
+/** @brief Total size of the player two update header */
+#define HEADER_PLAYER_TWO_UPDATE_SIZE 8
+/** @brief Total size of the arcade ready header */
+#define HEADER_ARCADE_READY_SIZE 2
+
 
 /**
  * @brief Enum with all the serial port headers
@@ -70,6 +87,7 @@ enum UART_EVENT_HEADER {
     HEADER_PLAYER_TWO_UPDATE = 'T',
     HEADER_ARCADE_READY = 'A'
 };
+
 
 /**
  * @brief An enum representing the current gamemode

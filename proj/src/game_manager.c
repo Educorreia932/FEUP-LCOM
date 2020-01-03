@@ -139,6 +139,7 @@ static void gm_update_arcade() {
 
 static void gm_update_arcade_versus() {
 	uint8_t bytes[6];
+	bool received_update = false;
 
 	if (!hw_manager_uart_is_empty()) {
 		gm->uart_last_received = 0;
@@ -180,6 +181,7 @@ static void gm_update_arcade_versus() {
 						for (size_t i = 0; i < 6; i++)
 							bytes[i] = hw_manager_uart_pop();
 
+						received_update = true;
 						break;
 				}
 			}
@@ -205,8 +207,12 @@ static void gm_update_arcade_versus() {
 
 	update_cursor();
 
-	if (gm->uart_synced)
-		update_arcade_versus(get_game_manager()->level, bytes);
+	if (gm->uart_synced) {
+		if (received_update)
+			update_arcade_versus(gm->level, bytes);
+		else
+			update_arcade_versus(gm->level, NULL);
+	}
 }
 
 static void gm_update_switchboard() {
@@ -654,7 +660,7 @@ uint8_t start_game(bool override_path, char *assets_path) {
 					if (msg.m_notify.interrupts & rtc_bit_mask) {
 						hw_manager_rtc_ih();
 						if (gm->gamemode & GM_SWITCHBOARD)
-							switchboard_start_minigame();
+							switchboard_start_minigame(gm->s_board);
 					}
 
 					if (msg.m_notify.interrupts & uart_bit_mask) {

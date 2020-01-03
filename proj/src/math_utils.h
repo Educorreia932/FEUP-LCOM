@@ -5,7 +5,7 @@
 #include <lcom/lcf.h>
 #include <math.h>
 
-/** @defgroup math_utils */
+/** @defgroup math_utils Math Utilities */
 
 /** @addtogroup	math_utils
  *  

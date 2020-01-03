@@ -15,10 +15,10 @@
 #define ARCADE_LASER_BOTTOM_EDGE (768 - 24)
 
 
-struct Laser {
+typedef struct Laser {
     Rect_t rect;
     uint8_t link_id;
-};
+} Laser_t;
 
 Laser_t* new_laser(Rect_t rect, uint8_t link_id) {
     Laser_t* laser = (Laser_t*) malloc(sizeof(Laser_t));
@@ -169,9 +169,9 @@ inline bool lasers_set_link_id(Lasers_t *lasers, uint8_t link) {
     return true;
 }
 
-inline void lasers_cycle_link_id(Lasers_t *lasers) {
-    lasers->cur_link_id = (lasers->cur_link_id + 1) % lasers->num_colors;
-}
+// inline void lasers_cycle_link_id(Lasers_t *lasers) {
+//     lasers->cur_link_id = (lasers->cur_link_id + 1) % lasers->num_colors;
+// }
 
 void render_lasers(Lasers_t* lasers) {
     Laser_t** aux = lasers->lasers;
@@ -185,7 +185,7 @@ void render_lasers(Lasers_t* lasers) {
 
 }
 
-bool player_is_dead(Lasers_t* lasers, Rect_t* rect) {
+bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect) {
     Laser_t** aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
