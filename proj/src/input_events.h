@@ -2,17 +2,28 @@
 
 #include <lcom/lcf.h>
 
+/** @defgroup inputs User Inputs */
+/** @addtogroup inputs
+  *
+  * @brief	The interfaces to receive all information related to direct user input
+  *
+  * @{
+  */
+
 /** 
  * @brief 8 bit number where the MSB represents make or break code.
  * @details So we only have 0x7F possibilites
  */
 #define LARGEST_SCANCODE 0x7F 
+/**
+ * @brief Represents the number of extra 2 byte scancodes
+ */
 #define EXTRA_MAKECODES 6
 
 /* INPUT EVENT STUFF */
 
 /**
- * @brief This has all possible keys
+ * @brief Contains all the keys recognized by Keyboard Input
  */
 typedef enum KeyboardMap {
     // 1 Byte scancodes
@@ -99,31 +110,102 @@ typedef enum KeyboardMap {
 
 } KeyboardMap_t;
 
+/**
+ * @brief Check if the user is currently pressing a given key
+ * 
+ * @param map The key
+ * @return True if the key is currently pressed\n
+ *  False otherwise
+ */
 bool get_key(KeyboardMap_t map);
+/**
+ * @brief Check if the user has started pressing a given key this frame
+ * 
+ * @param map The key 
+ * @return True if the key was pressed down this frame\n
+ *  False otherwise
+ */
 bool get_key_down(KeyboardMap_t map);
 
-
+/**
+ * @brief If the keyboard input events is not initialized, it *will* seg fault (to be used in the very beginning of a program)
+ */
 void initialize_kbd_input_events();
+/**
+ * @brief Frees the keyboard input events from memory (to be used at the very end of a program) 
+ */
 void free_kbd_input_events();
 
+/**
+ * @brief To be called after the interrupt handler of the keyboard, to process the new received scancode  
+ */
 void kbd_input_events_process_scancode();
 
 
+/**
+ * @brief If the mouse input events is not initialized, it *will* seg fault (to be used in the very beginning of a program)
+ */
 void initialize_mouse_input_events();
+/**
+ * @brief Frees the mouse input events from memory (to be used at the very end of a program) 
+ */
 void free_mouse_input_events();
 
+/**
+ * @brief To be called after the interrupt handler of the mouse, to process the new received mouse packet
+ */
 void mouse_input_events_process_packet();
 
+/**
+ * @brief Returns true if the mouse left button has started getting pressed this frame
+ * 
+ * @return True if the mouse left button has started getting pressed this frame\n
+ * False otherwise
+ */
 bool mouse_get_lb_down();
+/**
+ * @brief Returns true if the mouse left button is currently pressed
+ * 
+ * @return True if the mouse left button is currently pressed\n
+ * False otherwise 
+ */
 bool mouse_get_lb();
+/**
+ * @brief Returns true if the mouse right button has started getting pressed this frame
+ * 
+ * @return True if the mouse right button has started getting pressed this frame\n
+ * False otherwise
+ */
 bool mouse_get_rb_down();
+/**
+ * @brief Returns true if the mouse right button is currently pressed
+ * 
+ * @return True if the mouse right button is currently pressed\n
+ * False otherwise 
+ */
 bool mouse_get_rb();
+/**
+ * @brief Returns the mouse's movement along the x axis over the last frame
+ * 
+ * @return int32_t Returns the mouse's movement along the x axis over the last frame
+ */
 int32_t mouse_get_x_delta();
+/**
+ * @brief Returns the mouse's movement along the x axis over the last frame
+ * 
+ * @return int32_t Returns the mouse's movement along the x axis over the last frame
+ */
 int32_t mouse_get_y_delta();
 
 
 /**
- * @brief Resets inputs
+ * @brief Resets keyboard inputs (to be called at the very end of every frame)
  */
 void reset_kbd_input_state();
+/**
+ * @brief Resets mouse inputs (to be called at the very end of every frame)
+ * 
+ */
 void reset_mouse_input_state();
+
+/** @} */

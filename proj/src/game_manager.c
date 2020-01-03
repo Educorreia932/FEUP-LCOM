@@ -6,7 +6,7 @@
 
 static GameManager_t* gm;
 
-char* assets_rel_path = "home/lcom/labs/proj/assets/";
+char *assets_rel_path = "home/lcom/labs/proj/assets/";
 
 // Add move verification here
 GameManager_t* get_game_manager() {
@@ -573,8 +573,14 @@ void exit_game() {
 	hw_manager_exit_video_mode();
 }
 
-uint8_t start_game() {  
+uint8_t start_game(bool override_path, char *assets_path) {  
 	printf("start_game: Started the game\n");
+
+	if (override_path) {
+		free(assets_rel_path);
+		assets_rel_path = (char*) malloc(sizeof(assets_path) * strlen(assets_path));
+		strncpy(assets_rel_path, assets_path, 255);
+	}
 
 	// Enter video mode
 	if (hw_manager_enter_video_mode())
