@@ -1,10 +1,11 @@
 \documentclass{report}
 \usepackage{graphicx}
+\usepackage{float}
 \graphicspath{ {./images/} }
 
 \begin{document}
 
-\title{LCOM Final Report}
+\title{\textbf{Project Watt} \\ LCOM Final Report}
 	\author{Eduardo da Costa Correia\\
 	\texttt{up201806433}
 	\and
@@ -18,7 +19,7 @@
 
 \section{Menu Principal}
 
-Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode selecionar um dos dois modos de jogos possíveis, cada um com a opção de se jogar ou não com outro jogador.
+Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode selecionar um dos dois modos de jogos possíveis a iniciar, cada um com a opção de se jogar ou não com outro jogador.
 
 \begin{itemize}
 	\item Campaign
@@ -36,23 +37,40 @@ Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode sele
 	\end{itemize}
 \end{itemize}
 
-Para sair do jogo, o utilizador deve pressionar \textit{Esc} duas vezes, o mesmo para voltar ao menu principal a partir de um dos modos de jogo.
+Para sair do jogo, o utilizador deve pressionar a tecla \textit{Esc} duas vezes, o mesmo para voltar ao menu principal a partir de um dos modos de jogo.
 
-% \includegraphics[width=\textwidth]{main_menu}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{main_menu}
+	\caption{Menu principal}
+\end{figure}
 
 \section{Campaign}
 
-Este é o modo de jogo \textit{principal} em que um jogador controla a personagem \textit{Watt}, uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra", ou seja, neste caso, a personagem tem de alcançar o canto superior direito do mapa. Para isso tem de ultrapassar diversos obstáculos tais como os espinhos e lasers (se tocar num destes a faísca dissipa-se e volta ao início). \newline
-O movimento da personagem principal é controlado pelas teclas W, A, S, D ou pelas setas $\uparrow$, $\leftarrow$, $\downarrow$ e $\rightarrow$ e o seu salto pela tecla Z ou pelo Espaço.
-Para além disso, é possível controlar certos aspetos da jogabilidade, como a altura do salto da personagem e a sua velocidade (através dos \textit{sliders} azul e laranja respetivamente), qual dos lasers está inativo (vermelho, azul ou roxo - através dos botões com a cor correspondente) e o sentido da gravidade da personagem (através da tecla X em multiplayer, uma knob em Co-Op). Todos estes aspetos são controlados pelo segundo jogador se estiver a jogar em Co-Op.
+Este é o modo de jogo "principal" em que um jogador controla a personagem \textit{Watt}, uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra", ou seja, neste caso, a personagem tem de alcançar o canto superior direito do mapa (Figura 1.2.\footnotemark). Para isso tem de ultrapassar diversos obstáculos tais como os espinhos e lasers (se tocar num destes a faísca dissipa-se e volta ao início).
 
-% \includegraphics[width=\textwidth]{singleplayer}
+Para além disso, é possível controlar certos aspetos da jogabilidade, como a altura do salto da personagem e a sua velocidade (através dos \textit{sliders} azul e laranja respetivamente), qual dos lasers está inativo (vermelho, azul ou roxo - através dos botões com a cor correspondente) e o sentido da gravidade da personagem. Todos estes aspetos são controlados pelo segundo jogador se estiver a jogar em co-op através de uma \textit{switchboard} (Figura 1.3.).
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{campaign_singleplayer}
+	\caption{Campaign - Personagem 1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{campaign_switchboard}
+	\caption{Campaign - Personagem 2 (Switchboard)}
+\end{figure}
+
+\footnotetext{As figuras apresentadas para ilustrar o nível da personagem 1 do modo campaign são do modo singleplayer, portanto incluem botões e \textit{sliders} no canto superior esquerdo que não estão presentes no modo \textit{co-op}}
 
 \section{Arcade}
 
-Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro modo de jogo, em que o jogador terá de se desviar de lasers que vêm na sua direção, passando por entre estes e tentanto aguentar o máximo de tempo possível sem tocar neles e perder.
+Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro modo de jogo, em que o jogador terá de se desviar de lasers que vêm na sua direção, passando por entre estes, tentanto aguentar o máximo de tempo possível e alcançando o maior score (canto superior direito - Figura 1.4.) sem tocar neles e perder.
+Possui também um modo \textit{versus}, em que dois utilizadores jogam simultaneamente para ver quem obtém o \textit{highscore}.
 
-% \includegraphics[width=\textwidth]{arcade}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{arcade}
+	\caption{Arcade}
+\end{figure}
 
 \chapter{Estado do Projeto}
 
@@ -64,31 +82,36 @@ Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro mod
 			Dispositivo & Utilização & Interrupção \\ 
 		\hline
 		\hline
-			Timer & N/A & Sim \\ 
+			Timer & Framerate handling  & Sim \\ 
 			Teclado & Controlo da personagem 1 & Sim \\ 
 			Rato & Menus e personagem 2 & Sim\\
 			Placa Gráfica & Desenho dos menus e do jogo & Não\\
 			Real Time Clock & Efeito temporário & Sim\\
-			Serial Port & N/A & Sim \\
+			Serial Port & Modos Co-Op e Versus & Sim \\
 		\hline
 	\end{tabular}
 \end{center}
 
 \subsection{Timer}
 
-Framerate handling
+O timer possui como principal função atualizar o estado do jogo, assim, a cada $\frac{1}{60}$s (o Timer 0 possui uma frequência de 60 Hz), todo a informação do nível (lasers ativos, coordenadas/estado do jogador, posição do rato...) é atualizada conforme os inputs do(s) utilizador(es) e é o mesmo é renderizado de acordo com essa informação.
 
 \subsection{Teclado}
+
+O teclado é usado para controlar a personagem 1 e o seu movimento, atraveś das teclas \textbf{W}, \textbf{A}, \textbf{S}, \textbf{D} ou pelas setas $\uparrow$, $\leftarrow$, $\downarrow$ e $\rightarrow$ e o seu salto pela tecla \textbf{Z} ou pelo \textbf{Espaço}.
+
+Para além disso, se estiver a jogar em \textit{singleplayer}, o sentido da gravidade da personagem.
 
 \subsection{Rato}
 
 \paragraph{}
-Usado no menu principal para selecionar o modo de jogo e para controlar sliders/knob.
+O rato é usado sobretudo no menu principal para selecionar o modo de jogo, clicando no botão correspondente, e no modo \textit{campaign} para controlar os \textit{sliders}, clicando e arrastando o botão esquerdo (o mesmo para a \textit{knob} no modo \textit{Co-Op}) e para selecionar o botão do \textit{laser} inativo.  
 
 \subsection{Placa Gráfica}
 
 \paragraph{}
-RGB 565
+A placa gráfica é usada para renderizar todo o jogo, por camadas (conforme a ordem das chamadas de render de cada elemento). É usada no modo \textit{0x117}, que possui resolução \textit{1024x768} e profundidade de cor RGB 5:6:5 ($2^{16}$ cores possíveis).
+Para além disso, usámos a técnica de \textit{double buferring} e a nossa taxa de atualização do ecrã é de 60 frames por segundo.
 
 \subsection{Real Time Clock}
 
@@ -97,7 +120,6 @@ RGB 565
 \paragraph{}
 Usado nos modos multiplayer (Campaign - Co-Op e Arcade - Versus). No primeiro, as personagens 1 e 2 são controladas pelos utilizadores em máquinas separadas, sendo que estas interegam entre si do seguinte modo: A personagem 2 consegue inicialmente controlar tanto a velocidade como altura do salto da personagem 1,
 porém, após esta obter certos powerups, a personagem 2 é notificada de que pode também controlar os lasers que estão ativos e o sentido da gravidade do jogador 1.
-
 Feita com FIFOs
 
 \chapter{Organização e Estrutura do Código}
@@ -163,7 +185,7 @@ Infelizmente existem outros módulos com um grande conhecimento destes protocolo
 
 \section{Timer}
 
-Lab2
+\textit{Código importado do Lab 2}\footnotemark
 
 \section{Keyboard}
 
@@ -197,10 +219,9 @@ Para permitir saber se um dado botão começou a ser premido num determinado fra
 
 \paragraph{}
 
-
 \section{Video}
 
-Lab5
+\textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
 
 \section{Level}
 
@@ -212,6 +233,18 @@ O módulo do RTC é responsável por obter informação acerca da hora atual, be
 
 \section{UI Elements}
 
+\subsection{Button}
+
+\subsection{Number}
+
+A classe \textit{Number} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()}
+
+\footnotetext{Caso o algarismo seja 9, passa para 0}
+
+\subsection{Score}
+
+A classe \textit{Score} possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, possui a utilidade de apresentar qualquer número (com qualquer número de algarismos), sendo possível iniciar com um valor inteiro qualquer.
+
 \section{Switchboard}
 
 \section{Powerup}
@@ -219,6 +252,10 @@ O módulo do RTC é responsável por obter informação acerca da hora atual, be
 \section{Proj}
 
 \section{Call Graph}
+
+TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
+
+\footnotetext{No código importado dos labs fizemos ligeiras alterações, como remover funções que não utilizamos (por exemplo, naquilo em que optássemos por usar \textit{interrupts} removemos o código que lidava com \textit{pollling}) e especificar uma abordagem geral para uma específica ao projeto, para ser mais eficaz (como usar a placa gráfica num modo apenas, correspondente ao que optámos por utilizar no nosso jogo).}
 
 \chapter{Detalhes de Implementação}
 
