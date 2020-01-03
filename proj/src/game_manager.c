@@ -476,6 +476,10 @@ static void initialize_game_manager() {
 	gm->uart_synced = false;
 	gm->has_partner = false;
 
+	gm->normal_rendering = true;
+	gm->switch_buffer_func[0] = hw_manager_glitched_switch_double_buffer;
+	gm->switch_buffer_func[1] = hw_manager_switch_double_buffer;
+
 	// Save the gamemode
 	gm->gamemode = GM_MAIN_MENU;
 	
@@ -576,6 +580,8 @@ void exit_game() {
 uint8_t start_game(bool override_path, char *assets_path) {  
 	printf("start_game: Started the game\n");
 
+	srand(time(NULL));
+
 	if (override_path) {
 		free(assets_rel_path);
 		assets_rel_path = (char*) malloc(sizeof(assets_path) * strlen(assets_path));
@@ -647,6 +653,8 @@ uint8_t start_game(bool override_path, char *assets_path) {
 
 					if (msg.m_notify.interrupts & rtc_bit_mask) {
 						hw_manager_rtc_ih();
+						if (gm->gamemode & GM_SWITCHBOARD)
+							switchboard_start_minigame();
 					}
 
 					if (msg.m_notify.interrupts & uart_bit_mask) {
@@ -664,7 +672,7 @@ uint8_t start_game(bool override_path, char *assets_path) {
 			update();
 			render();
 
-			hw_manager_switch_double_buffer();
+			gm->switch_buffer_func[gm->normal_rendering]();
 
 			//reset rtc
 			reset_kbd_input_state();

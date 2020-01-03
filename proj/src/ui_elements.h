@@ -35,6 +35,10 @@ void button_activate(Button_t* button);
 void button_deactivate (Button_t* button);
 void button_set_activation(Button_t* button, bool is_active);
 
+// Only exist for use by the minigames
+Rect_t* button_get_rect(Button_t* button);
+void button_move(Button_t* button, Vec2d_t delta);
+
 void update_button(Button_t* button);
 void render_button(Button_t* button);
 
