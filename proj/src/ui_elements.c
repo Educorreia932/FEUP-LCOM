@@ -503,6 +503,10 @@ static void knob_update_pos(Knob_t *knob, float angle) {
 
 }
 
+void knob_reset_state(Knob_t *knob) {
+    knob_update_pos(knob, knob->start_angle);
+}
+
 void update_knob(Knob_t *knob) {
     if (knob->is_active && knob->shown) {
         // Knob is in movement

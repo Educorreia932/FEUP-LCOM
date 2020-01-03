@@ -79,6 +79,8 @@ void knob_activate(Knob_t* knob);
 void knob_deactivate (Knob_t* knob);
 void knob_set_activation(Knob_t* knob, bool is_active);
 
+void knob_reset_state(Knob_t *knob);
+
 void update_knob(Knob_t* knob);
 
 void render_knob(Knob_t* knob);
