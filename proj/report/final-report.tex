@@ -1,16 +1,18 @@
 \documentclass{report}
+\usepackage{subfig}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage[margin=1in]{geometry}
 \graphicspath{ {./images/} }
 
 \begin{document}
 
-\title{\textbf{Project Watt} \\ LCOM Final Report}
-	\author{Eduardo da Costa Correia\\
-	\texttt{up201806433}
-	\and
-	Tiago Duarte Silva\\
-	\texttt{up201806516}}   
+\title{\textbf{Project Watt} \\ LCOM Final Report \\ Turma 6 - Grupo 7}
+\author{Eduardo da Costa Correia\\
+\texttt{up201806433}
+\and
+Tiago Duarte Silva\\
+\texttt{up201806516}}   
 \maketitle
 
 \tableofcontents
@@ -21,55 +23,84 @@
 
 Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode selecionar um dos dois modos de jogos possíveis a iniciar, cada um com a opção de se jogar ou não com outro jogador.
 
-\begin{itemize}
-	\item Campaign
-
-	\begin{itemize}
-		\item Singleplayer 
-		\item Co-Op
-	\end{itemize}
-	
-	\item Arcade
-	
-	\begin{itemize}
-		\item Singleplayer 
-		\item Versus
-	\end{itemize}
-\end{itemize}
-
-Para sair do jogo, o utilizador deve pressionar a tecla \textit{Esc} duas vezes, o mesmo para voltar ao menu principal a partir de um dos modos de jogo.
+Para sair do jogo, o utilizador deve pressionar a tecla \textbf{\textit{Esc}} duas vezes, o mesmo para voltar ao menu principal a partir de um dos modos de jogo.
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{main_menu}
+	\centering
+	\includegraphics[width=0.9\textwidth]{main_menu}
 	\caption{Menu principal}
 \end{figure}
 
+\pagebreak
+
 \section{Campaign}
 
-Este é o modo de jogo "principal" em que um jogador controla a personagem \textit{Watt}, uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra", ou seja, neste caso, a personagem tem de alcançar o canto superior direito do mapa (Figura 1.2.\footnotemark). Para isso tem de ultrapassar diversos obstáculos tais como os espinhos e lasers (se tocar num destes a faísca dissipa-se e volta ao início).
+Este é o modo de jogo "principal" em que um jogador controla a personagem \textit{Watt} (Figura \ref{fig:watt}), uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra" (Figura \ref{fig:exit}), ou seja, neste caso, a personagem tem de alcançar o \textbf{canto superior direito do mapa} (Figura \ref{fig:level}\footnotemark). Para isso tem de ultrapassar diversos obstáculos tais como os \textbf{espinhos} e \textbf{lasers} (se tocar num destes a faísca dissipa-se e volta ao início).
 
-Para além disso, é possível controlar certos aspetos da jogabilidade, como a altura do salto da personagem e a sua velocidade (através dos \textit{sliders} azul e laranja respetivamente), qual dos lasers está inativo (vermelho, azul ou roxo - através dos botões com a cor correspondente) e o sentido da gravidade da personagem. Todos estes aspetos são controlados pelo segundo jogador se estiver a jogar em co-op através de uma \textit{switchboard} (Figura 1.3.).
+Para além disso, é possível controlar certos aspetos da jogabilidade, como a \textbf{altura do salto} da personagem e a sua \textbf{velocidade} (através dos \textit{sliders} azul e laranja respetivamente). 
 
-\begin{figure}
-	\includegraphics[width=\textwidth]{campaign_singleplayer}
-	\caption{Campaign - Personagem 1}
+Existem ainda dois \textbf{powerups} que após obtidos, desbloqueiam o controlo de funcionalidades adicionais, requeridas para acabar o nível. Estes são o powerup dos \textbf{lasers} (\textbf{canto superior esquerdo} - Figura 1.3) que permitem qual dos lasers está \textbf{inativo} (vermelho, azul ou roxo - através dos botões com a cor correspondente) e o sentido da gravidade da personagem. 
+
+Todos estes aspetos são controlados pelo \textbf{segundo jogador}se estiver a jogar em co-op através de uma \textbf{\textit{switchboard}} (Figura \ref{fig:switchboard}). Esta \textbf{\textit{switchboard}} possui ainda um \textbf{\textit{mini-jogo}} que consiste em destruir \textbf{\textit{balões}} que aparecem (clicando neles) antes que estes atinjam o \textbf{topo do ecrã}, caso contrário, tal gerará \textbf{\textit{interferência}} (o ecrã fica com \textit{ruído} para tornar a experiência mais desafiante e fazer com que quem controle a personagem 2 tenha de estar mais ativo).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics{watt}
+	\caption{Personagem 1 - Watt}
+	\label{fig:watt}
 \end{figure}
 
-\begin{figure}
-	\includegraphics[width=\textwidth]{campaign_switchboard}
-	\caption{Campaign - Personagem 2 (Switchboard)}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.08\textwidth]{exit_icon}
+	\caption{Saída}
+	\label{fig:exit}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[Laser]{{\includegraphics{laser_icon} }}%
+    \qquad
+    \subfloat[Anti-gravidade]{{\includegraphics{anti_gravity_icon} }}
+    \caption{Powerups}
+    \label{fig:powerups}
 \end{figure}
 
 \footnotetext{As figuras apresentadas para ilustrar o nível da personagem 1 do modo campaign são do modo singleplayer, portanto incluem botões e \textit{sliders} no canto superior esquerdo que não estão presentes no modo \textit{co-op}}
 
-\section{Arcade}
-
-Um modo de jogo alternativo, baseado na mecânica de anti-gravidade do outro modo de jogo, em que o jogador terá de se desviar de lasers que vêm na sua direção, passando por entre estes, tentanto aguentar o máximo de tempo possível e alcançando o maior score (canto superior direito - Figura 1.4.) sem tocar neles e perder.
-Possui também um modo \textit{versus}, em que dois utilizadores jogam simultaneamente para ver quem obtém o \textit{highscore}.
+\pagebreak
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{arcade}
-	\caption{Arcade}
+	\centering
+	\includegraphics[width=0.8\textwidth]{campaign_singleplayer}
+	\caption{Campaign - Nível (Personagem 1)}
+	\label{fig:level}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{campaign_switchboard}
+	\caption{Campaign - Switchboard (Personagem 2)}
+	\label{fig:switchboard}
+\end{figure}
+
+\pagebreak
+
+\section{Arcade}
+
+Um modo de jogo alternativo, baseado na mecânica de \textbf{anti-gravidade} do outro modo de jogo, em que o jogador terá de se desviar de \textbf{lasers} que vêm na sua direção, passando por entre estes, tentanto aguentar o máximo de tempo possível e alcançando o maior \textbf{\textit{score}} (\textbf{canto superior direito} - Figura 1.4.) sem tocar neles e perder.
+Possui também um modo \textbf{\textit{versus}}, em que dois utilizadores jogam simultaneamente para ver quem obtém o \textbf{\textit{highcore}}. O segundo jogador é apresentado numa cor azulada para se distinguir do jogador que está a controlar a sua personagem.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{arcade}
+	\caption{Arcade - Singleplayer}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{arcade_versus}
+	\caption{Arcade - Versus}
 \end{figure}
 
 \chapter{Estado do Projeto}
@@ -100,7 +131,7 @@ O timer possui como principal função atualizar o estado do jogo, assim, a cada
 
 O teclado é usado para controlar a personagem 1 e o seu movimento, atraveś das teclas \textbf{W}, \textbf{A}, \textbf{S}, \textbf{D} ou pelas setas $\uparrow$, $\leftarrow$, $\downarrow$ e $\rightarrow$ e o seu salto pela tecla \textbf{Z} ou pelo \textbf{Espaço}.
 
-Para além disso, se estiver a jogar em \textit{singleplayer}, o sentido da gravidade da personagem.
+Para além disso, se estiver a jogar em \textit{singleplayer}, o sentido da gravidade da personagem é trocado através da tecla \textbf{X}.
 
 \subsection{Rato}
 
@@ -110,17 +141,19 @@ O rato é usado sobretudo no menu principal para selecionar o modo de jogo, clic
 \subsection{Placa Gráfica}
 
 \paragraph{}
-A placa gráfica é usada para renderizar todo o jogo, por camadas (conforme a ordem das chamadas de render de cada elemento). É usada no modo \textit{0x117}, que possui resolução \textit{1024x768} e profundidade de cor RGB 5:6:5 ($2^{16}$ cores possíveis).
-Para além disso, usámos a técnica de \textit{double buferring} e a nossa taxa de atualização do ecrã é de 60 frames por segundo.
+A placa gráfica é usada para renderizar todo o jogo, por \textbf{camadas}(conforme a ordem das chamadas de render de cada elemento). É usada no modo \textbf{0x117}, que possui resolução \textbf{1024x768} e profundidade de cor \textbf{RGB 5:6:5} ($2^{16}$ cores possíveis).
+Para além disso, usámos a técnica de \textbf{\textit{double buferring}} e a nossa taxa de atualização do ecrã é de \textbf{60 \textit{frames} por segundo}.
 
 \subsection{Real Time Clock}
+
+O \textbf{\textit{RTC}} é usado essencialmente em duas vertentes diferentes, no modo \textbf{\textit{Campaign}}, com a \textbf{personagem 1}, para ler a hora de quando a personageminicia o jogo e de quando acaba para ver quanto tempo demorou a concluir o nível e com a \textbf{personagem 2} (\textit{switchboard}) para determinar de quanto em quanto tempo surgem os \textbf{\textit{balões}} do mini-jogo, através de \textbf{\textit{alarmes}} (\textit{interrupts}).
 
 \subsection{Serial Port}
 
 \paragraph{}
-Usado nos modos multiplayer (Campaign - Co-Op e Arcade - Versus). No primeiro, as personagens 1 e 2 são controladas pelos utilizadores em máquinas separadas, sendo que estas interegam entre si do seguinte modo: A personagem 2 consegue inicialmente controlar tanto a velocidade como altura do salto da personagem 1,
-porém, após esta obter certos powerups, a personagem 2 é notificada de que pode também controlar os lasers que estão ativos e o sentido da gravidade do jogador 1.
-Feita com FIFOs
+A \textbf{\textit{serial port}} é usada para coordenadar os dois jogadores conetados nos modos \textbf{multiplayer} (Campaign - Co-Op e Arcade - Versus). No primeiro, as personagens 1 e 2 são controladas pelos utilizadores em máquinas separadas, sendo que estas interegam entre si do seguinte modo: A personagem 2 envia a informação no que toca aos aspetos que esta pode alterar (altura do salto, velocidade...) à personagem 1 e esta envia informação acerca do estado do jogador (powerups obtidos, morto ou vivo...).
+
+Implementada com FIFOs.
 
 \chapter{Organização e Estrutura do Código}
 
@@ -144,7 +177,9 @@ Este módulo é usado para colisões e para o UI.
 \subsection{Sistema de Colisões}
 
 \paragraph{}
-Sistema de colisões.
+Sistema de colisões. \newline
+
+Módulo desenvolvido por: 
 
 \section{Bitmap}
 
@@ -159,8 +194,10 @@ Ao desenvolver o projeto considerámos necessário uma maneira de poder renderiz
 
 Existe ainda a possibilidade de cada pixel ser 'multiplicado' por uma cor. Devido ao custo pesado de computação desta operação, decidimos que usar uma operação bitwise entre a cor do pixel e da cor a multiplicar, visto que o efeito que ela produz seja satisfatório o suficiente para as nossas necessidades, mantendo um baixo custo computacional. Esta operação irá sempre escurecer a cor do \textit{bitmap} original, e quando aplicado a um pixel branco irá ficar apenas a cor a multiplicar. Esta propriedade foi usada a renderizar todas as plataformas e paredes. 
 
-Todos os \textit{bitmaps} podem ser desenhados com 'transparência', isto é, definimos a cor rosa, 0xFF00FF (em RBG 888), como a cor que será sempre ignorada ao desenhar.
+Todos os \textit{bitmaps} podem ser desenhados com 'transparência', isto é, definimos a cor rosa, 0xFF00FF (em RBG 888), como a cor que será sempre ignorada ao desenhar. \newline
 
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+ 
 \section{Sprite}
 
 \paragraph{}
@@ -172,16 +209,50 @@ O sistema que decidimos implementar está imbutido diretamente na nossa classe \
 
 A máquina de estados responsável por controlar qual o valor deste estado (por \textit{default} este valor é 0, ou seja, o primeiro \textit{bitmap}). Este tema será abordado novamente ao discutir o \textit{player}.
 
-Cada \textit{sprite} criada também tem um \textit{offset} individual que é utilizado ao renderizar o \textit{bitmap} no ecrã. Existe ainda um getter das \textit{sprites} (\textbf{Vec2d\_t sprite\_get\_size(Sprite\_t *s)})que permite obter o tamanho do primeiro \textit{bitmap} carregado, especialmente útil para obter dinâmicamente a \textit{hitbox} do \textit{player} e dos botões. 
+Cada \textit{sprite} criada também tem um \textit{offset} individual que é utilizado ao renderizar o \textit{bitmap} no ecrã. Existe ainda um getter das \textit{sprites} (\textbf{Vec2d\_t sprite\_get\_size(Sprite\_t *s)})que permite obter o tamanho do primeiro \textit{bitmap} carregado, especialmente útil para obter dinâmicamente a \textit{hitbox} do \textit{player} e dos botões.\newline
+
+Módulo desenvolvido por: Tiago Silva
 
 \section{Game Manager}
+
+Módulo desenvolvido por: 
 
 \section{Hardware Manager}
 
 \paragraph{}
 Este módulo foi uma tentativa de tentar encapsular ao máximo todo o conhecimento e funções responáveis por interagir com o hardware num único sítio o e transparecer o mínimo possível sobre as nossas implementações internas do \textit{timer}, \textit{keyboard}, \textit{mouse}, etc..
 
-Infelizmente existem outros módulos com um grande conhecimento destes protocolos, como o \textit{InputEvents}, o \textit{GameManager} e tudo o que envolvesse o \textit{serial port}.
+Infelizmente existem outros módulos com um grande conhecimento destes protocolos, como o \textit{InputEvents}, o \textit{GameManager} e tudo o que envolvesse o \textit{serial port}.\newline
+
+Módulo desenvolvido por: 
+
+\section{Level}
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+
+\section{Switchboard}
+
+\section{Player}
+
+Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%) 
+
+\section{UI Elements}
+
+\subsection{Button}
+
+\subsection{Number}
+
+A classe \textit{Number} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()} \newline
+
+\footnotetext{Caso o algarismo seja 9, passa para 0}
+
+\subsection{Score}
+
+A classe \textit{Score} serve para  possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, também é usada para exibir o tempo (em segundos) que o jogador demorou a concluir o nível do \textit{campaign} e de apresentar qualquer número (com qualquer número de algarismos), sendo possível iniciar com um valor inteiro qualquer.
+
+Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%) 
+
+\section{Powerup}
 
 \section{Timer}
 
@@ -223,31 +294,11 @@ Para permitir saber se um dado botão começou a ser premido num determinado fra
 
 \textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
 
-\section{Level}
-
-\section{Player}
-
 \section{RTC}
 
-O módulo do RTC é responsável por obter informação acerca da hora atual, bem como programar alarmes.
+O módulo do RTC é responsável por obter informação acerca da hora atual, bem como programar alarmes. \newline
 
-\section{UI Elements}
-
-\subsection{Button}
-
-\subsection{Number}
-
-A classe \textit{Number} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()}
-
-\footnotetext{Caso o algarismo seja 9, passa para 0}
-
-\subsection{Score}
-
-A classe \textit{Score} possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, possui a utilidade de apresentar qualquer número (com qualquer número de algarismos), sendo possível iniciar com um valor inteiro qualquer.
-
-\section{Switchboard}
-
-\section{Powerup}
+Módulo desenvolvido por: Eduardo Correia
 
 \section{Proj}
 
