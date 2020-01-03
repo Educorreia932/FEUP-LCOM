@@ -106,6 +106,7 @@ static void switchboard_update_powers(SwitchBoard_t* sw) {
     button_set_activation(sw->laser_buttons[1], sw->current_powers & UNLOCKED_LASERS);
     button_set_activation(sw->laser_buttons[2], sw->current_powers & UNLOCKED_LASERS);
     knob_set_activation(sw->gravity_knob, sw->current_powers & UNLOCKED_GRAVITY);
+    knob_reset_state(sw->gravity_knob);
 }
 
 void switchboard_set_default_powers(SwitchBoard_t* sw, PlayerUnlockedPowers default_powers) {
