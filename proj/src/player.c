@@ -54,6 +54,8 @@ struct Player {
 
 	bool heading_right, is_idle, grounded;
 
+	int seconds_beginning;
+
 	PlayerUnlockedPowers default_powers, current_powers;
 
 	// Animation stuff
@@ -118,7 +120,11 @@ void player_unlock_gravity() {
 }
 
 void player_win() {
-	printf("Congrats u win my boy!\n");
+	int seconds_beginning =	get_game_manager()->level->player->seconds_beginning;
+	int seconds_end = hw_manager_rtc_read_date_in_seconds();
+	int seconds_difference = seconds_end - seconds_beginning;
+	//Score_t* time_took = new_score(800, 70, seconds_difference, 5);
+	printf("It took you %u seconds\n", seconds_difference);
 }
 
 // PLAYER UPDATES
@@ -353,6 +359,8 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	if (player->arcade_mode)
 		player->score = new_score(800, 75, 0, 3);
 	
+	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
+
 	return player;
 }
 
