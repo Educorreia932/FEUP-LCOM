@@ -7,6 +7,10 @@
 #include "spikes.h"
 #include "power_ups.h"
 
+/** @defgroup player Player
+ * @{
+ */
+
 typedef struct Player Player_t;
 
 typedef enum PlayerUnlockedPowers {
@@ -31,12 +35,11 @@ void player_set_jump(uint8_t jump);
 void player_set_gravity_normal();
 void player_set_gravity_reversed();
 
-
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers);
 
 void free_player(Player_t* player);
 
-void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[], int* laser_pos);
+void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]);
 
 void animator_player(Player_t* player);
 void render_player_background(Player_t* player);
@@ -52,4 +55,6 @@ void render_player_two_background(PlayerTwo_t* player_two);
 void render_player_two_foreground(PlayerTwo_t* player_two);
 void render_player_two_ui(PlayerTwo_t* player_two);
 
-void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos);
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
+
+/** @} end of Player */

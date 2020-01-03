@@ -8,6 +8,9 @@
 #include "hw_manager.h"
 #include "power_ups.h"
 
+/** @defgroup player Player
+ * @{
+ */
 
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
@@ -47,7 +50,7 @@ struct Player {
 	float x_spawn, y_spawn;
 	
 	bool ui_controls, arcade_mode;
-	uint8_t respawn_timer; // If != 0, player is dead
+	uint8_t respawn_timer; /**< @brief If != 0, player is dead */
 
 	bool heading_right, is_idle, grounded;
 
@@ -60,14 +63,13 @@ struct Player {
 	Slider_t *jump_slider, *speed_slider;
 	Button_t **laser_buttons;
 
-	// Only used in Arcade mode 
-	Score_t* score;
+	Score_t* score; /**< @note Only used in Arcade mode  */
 };
 
 // Forward declaration in order to be used in new_player
 static uint8_t player_walk_countdown_value(Player_t* player);
 // Forward declaration in order to be used in update_player
-static void player_send_info(Player_t* player, bool score_update, int* laser_pos);
+static void player_send_info(Player_t* player, bool score_update);
 
 /* UNLOCKING POWERS */
 
@@ -349,7 +351,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 
 	// Arcade
 	if (player->arcade_mode)
-		player->score = new_score(800, 75, 0);
+		player->score = new_score(800, 75, 0, 3);
 	
 	return player;
 }
@@ -466,7 +468,7 @@ static inline void player_start_death(Player_t *player) {
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
 }
 
-void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[], int* laser_pos) {
+void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
 	Rect_t previous_rect = player->rect;
 	bool score_update = false, died = false;
 
@@ -582,7 +584,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		}
 
 		if (get_game_manager()->gamemode & GM_UART)
-			player_send_info(player, score_update, laser_pos);
+			player_send_info(player, score_update);
 	}
 }
 
@@ -762,7 +764,7 @@ PlayerTwo_t* new_player_two() {
 
 	player_two->pos = vec2d(60.0f, 704.0f);
 
-	player_two->score = new_score(800, 140, 0);
+	player_two->score = new_score(800, 140, 0, 3);
 
 	if (player_two->score == NULL) {
         printf("new_player_two: Failed to create the score\n");
@@ -787,7 +789,7 @@ void free_player_two(PlayerTwo_t* player_two) {
 
 }
 
-void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[], int* laser_pos) {
+void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 	player_two->pos = vec2d((float) ((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB]), (float) ((bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]));
 
 	player_two->is_dead = bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_IS_DEAD;
@@ -838,7 +840,7 @@ void render_player_two_ui(PlayerTwo_t* player_two) {
 }
 
 
-static void player_send_info(Player_t* player, bool score_update, int* laser_pos) {
+static void player_send_info(Player_t* player, bool score_update) {
 	int16_t x = (int16_t) player->rect.x;
 	int16_t y = (int16_t) player->rect.y;
 
@@ -874,3 +876,5 @@ static void player_send_info(Player_t* player, bool score_update, int* laser_pos
 
 	hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
+
+/** @} end of Player */

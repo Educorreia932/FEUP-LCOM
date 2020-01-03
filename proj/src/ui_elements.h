@@ -59,7 +59,6 @@ void update_slider(Slider_t* slider);
 
 void render_slider(Slider_t* slider);
 
-
 /*----------------------------*/
 /*--------    KNOB    --------*/
 /*----------------------------*/
@@ -88,7 +87,13 @@ typedef struct Number Number_t;
 
 typedef struct Score Score_t;
 
-Score_t* new_score(uint16_t x, uint16_t  y, uint8_t value);
+/** 
+ * @param x Horizontal position
+ * @param y Vertical position
+ * @param value Value to be displayed
+ * @param size Number of digits to be displayed
+ */
+Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) ;
 void free_score(Score_t* score);
 
 void update_score(Score_t* score);

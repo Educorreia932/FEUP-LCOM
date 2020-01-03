@@ -22,6 +22,6 @@ void render_lasers(Lasers_t* lasers);
 bool player_is_dead(Lasers_t* lasers, Rect_t* rect);
 
 void arcade_move_lasers(Lasers_t *lasers);
-void arcade_add_laser(Lasers_t *lasers, int* laser_pos);
+void arcade_add_laser(Lasers_t *lasers);
 
 bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect);
