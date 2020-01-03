@@ -302,14 +302,48 @@ Módulo desenvolvido por: Eduardo Correia
 
 \section{Proj}
 
+%O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que menos tem peso no projeto, uma vez que só trata de chamar a função de iniciar o jogo --- \textit{start_game}. O \textit{GameManager} trata de tudo o resto.
+
 \section{Call Graph}
 
 TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
+
+\begin{center}
+	\begin{tabular}{|c|c|} 
+		\hline
+			Módulo & Peso relativo \\ 
+		\hline
+		\hline
+			Geometry & \\
+			Bitmap & \\
+			Sprite & \\
+			Game Manager & \\
+			Hardware Manager & \\
+			Level & \\
+			Switchboard & \\ 
+			Player & \\
+			UI Elements & \\
+			Powerup & \\
+			Timer & \\
+			Keyboard & \\
+			Mouse & \\
+			Video & \\
+			RTC & \\
+			Proj & \\
+		\hline
+	\end{tabular}
+\end{center}
 
 \footnotetext{No código importado dos labs fizemos ligeiras alterações, como remover funções que não utilizamos (por exemplo, naquilo em que optássemos por usar \textit{interrupts} removemos o código que lidava com \textit{pollling}) e especificar uma abordagem geral para uma específica ao projeto, para ser mais eficaz (como usar a placa gráfica num modo apenas, correspondente ao que optámos por utilizar no nosso jogo).}
 
 \chapter{Detalhes de Implementação}
 
+É possível mudar o path absoluto das imagens com um argumento da linha de comandos, sendo o limite de carateres atual de 255.
+
 \chapter{Conclusões}
+
+\paragraph{}
+
+
 
 \end{document}
