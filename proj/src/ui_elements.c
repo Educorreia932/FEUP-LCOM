@@ -606,8 +606,11 @@ void render_knob(Knob_t* knob) {
 
 ///@}
 
+/** 
+ * @brief Represents a single digit (0 to 9)
+ */
 struct Number {
-    Rect_t rect;
+    Rect_t rect; 
     Sprite_t* sprite;
     uint8_t value;
 };
@@ -674,8 +677,6 @@ Number_t* new_number(uint8_t value, Rect_t rect) {
     return number;
 }
 
-
-// TODO: Load numbers before
 bool update_number(Number_t* number, bool carry) {
     if (carry) {
         number->value++;
@@ -772,17 +773,18 @@ void set_number(Number_t* number, uint8_t value) {
     number->sprite = new_sprite(0, 0, 1, sprite_file_name);
 }
 
-#define SCORE_SIZE 3
-
+/** 
+ * @brief Represents the score of the player in arcade mode, but can also be used to render a sequence of digits up to 999
+ */
 struct Score {
     Number_t* numbers;
-    uint8_t value;
+    uint16_t value;
     size_t size;
     float x;
     float y;
 };
 
-Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
+Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) {
     Score_t* score = (Score_t*) calloc(1, sizeof(Score_t*));
     
     if (score == NULL) {
@@ -792,7 +794,7 @@ Score_t* new_score(uint16_t x, uint16_t y, uint8_t value) {
 
     score->x = x;
     score->y = y;
-    score->size = SCORE_SIZE;
+    score->size = size;
 
     score->numbers = (Number_t*) calloc(score->size, sizeof(Number_t));
 
@@ -827,12 +829,13 @@ void free_score(Score_t* score) {
     free(score);
 }
 
-// TODO: clamp (math.h)
 void update_score(Score_t* score) {
-    bool carry = true;
+    if (score->value < 999) {
+            bool carry = true;
 
     for (size_t i = 0; i < score->size; i++)
         carry = update_number(&score->numbers[i], carry);
+    }
 }
 
 void render_score(Score_t* score) {

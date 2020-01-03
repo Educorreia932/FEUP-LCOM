@@ -208,21 +208,20 @@ void free_level(Level_t *level) {
 // Actual level stuff
 
 void update_level(Level_t* level) {
-  	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu, NULL);
+  	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 }
 
 void update_arcade_level(Level_t* level) {
 	arcade_move_lasers(level->lasers);
-	int laser_pos = rand();
-	arcade_add_laser(level->lasers, &laser_pos);
-	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu, NULL);
+	arcade_add_laser(level->lasers);
+	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 }
 
-void update_arcade_versus(Level_t* level, uint8_t bytes[], int* laser_pos) {
+void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 	arcade_move_lasers(level->lasers);
-	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu, laser_pos);
-	update_player_two(level->player_two, bytes, laser_pos);
-	arcade_add_laser(level->lasers, laser_pos);
+	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
+	update_player_two(level->player_two, bytes);
+	arcade_add_laser(level->lasers);
 }
 
 void render_level(Level_t *level) {

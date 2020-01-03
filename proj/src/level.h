@@ -30,7 +30,7 @@ void free_level(Level_t *level);
 
 void update_level(Level_t* level) ;
 void update_arcade_level(Level_t* level);
-void update_arcade_versus(Level_t* level, uint8_t bytes[], int* laser_pos);
+void update_arcade_versus(Level_t* level, uint8_t bytes[]);
 
 void render_level(Level_t *level);
 void render_arcade_versus(Level_t* level);

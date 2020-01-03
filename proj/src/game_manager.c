@@ -154,7 +154,6 @@ static void gm_update_arcade_versus() {
 						}
 						gm->uart_synced = true;
 						gm->has_partner = true;
-						gm->level->laser_master = true;
 						hw_manager_uart_send_char(HEADER_ARCADE_READY);
 						hw_manager_uart_send_char(HEADER_TERMINATOR);
 						break;
@@ -165,7 +164,6 @@ static void gm_update_arcade_versus() {
 						}
 						gm->uart_synced = true;
 						gm->has_partner = true;
-						gm->level->laser_master = false;
 						break;
 				}
 			}
@@ -185,6 +183,7 @@ static void gm_update_arcade_versus() {
 						break;
 				}
 			}
+			
 			if (keep_going)
 				gm_uart_erase_message();
 		}
@@ -206,10 +205,8 @@ static void gm_update_arcade_versus() {
 
 	update_cursor();
 
-	int laser_pos = 0;
-
 	if (gm->uart_synced)
-		update_arcade_versus(get_game_manager()->level, bytes, &laser_pos);
+		update_arcade_versus(get_game_manager()->level, bytes);
 }
 
 static void gm_update_switchboard() {
@@ -398,6 +395,9 @@ void gm_start_switchboard() {
 }
 
 void gm_start_arcade() {
+	srand(12);
+	printf("%u\n", rand());
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
