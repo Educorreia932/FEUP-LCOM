@@ -8,6 +8,7 @@
 #include "spikes.h"
 #include "power_ups.h"
 #include "input_events.h"
+#include "ui_elements.h"
 
 typedef struct Level {
     Sprite_t* background;
@@ -18,6 +19,7 @@ typedef struct Level {
     PowerUp_t* pu[MAX_POWERUPS];
     PlayerTwo_t* player_two;
     bool laser_master;
+
 } Level_t;
 
 // typedef struct Level Level_t;

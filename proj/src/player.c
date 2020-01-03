@@ -44,7 +44,7 @@
 
 struct Player {
 	Rect_t rect;
-	Sprite_t *idle_sprite, *walk_sprite, *sparks_sprite;
+	Sprite_t *idle_sprite, *walk_sprite, *sparks_sprite, *win_screen;
 	float speed_mult, jump_mult;
 	float y_speed, gravity;
 	float x_spawn, y_spawn;
@@ -66,6 +66,9 @@ struct Player {
 	Button_t **laser_buttons;
 
 	Score_t* score; /**< @note Only used in Arcade mode  */
+
+	bool game_won;
+    Score_t* time_took;
 };
 
 // Forward declaration in order to be used in new_player
@@ -123,8 +126,8 @@ void player_win() {
 	int seconds_beginning =	get_game_manager()->level->player->seconds_beginning;
 	int seconds_end = hw_manager_rtc_read_date_in_seconds();
 	int seconds_difference = seconds_end - seconds_beginning;
-	//Score_t* time_took = new_score(800, 70, seconds_difference, 5);
-	printf("It took you %u seconds\n", seconds_difference);
+	get_game_manager()->level->player->game_won = true;
+	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3);
 }
 
 // PLAYER UPDATES
@@ -189,11 +192,19 @@ static void player_set_laser_2() {
 	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)	lasers_set_link_id(get_game_manager()->level->lasers, 2);
 }
 
-Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) { //TODO: Specify spawn
+Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) {
 	Player_t* player = (Player_t*) calloc(1, sizeof(Player_t));
 	
 	if (player == NULL) {
 		printf("new_player: Failed to allocate memory for the player object\n");
+		return NULL;
+	}
+
+	// Winning Screen
+	player->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
+	if (player->win_screen == NULL) {
+		printf("new_player: Failed to create the winning screen Sprite\n");
+		free(player);
 		return NULL;
 	}
 
@@ -230,6 +241,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 		"player/spark_2.bmp",
 		"player/spark_3.bmp"
 	);
+
 	if (player->sparks_sprite == NULL) {
 		printf("new_player: Failed to create the sparks' Sprite object\n");
 		free_sprite(player->idle_sprite);
@@ -354,12 +366,13 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 
 	// printf("new_testing_player: Finished making player\n");
 	player->score = NULL;
-
 	// Arcade
 	if (player->arcade_mode)
 		player->score = new_score(800, 75, 0, 3);
 	
 	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
+	player->game_won = false;
+	player->time_took = NULL;
 
 	return player;
 }
@@ -569,7 +582,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
-		if (pu[i] != NULL)
+		if (pu[i] != NULL && !player->game_won)
 			update_power_up(pu[i], &(player->rect));
 	}
 
@@ -638,6 +651,7 @@ void animator_player(Player_t* player) {
 				player->anim_idle_countdown = PLAYER_IDLE_COUNTDOWN_OPEN;
 			set_animation_state(player->idle_sprite, (state+1) % 2);
 		}
+		
 		else
 			--player->anim_idle_countdown;
 
@@ -646,6 +660,7 @@ void animator_player(Player_t* player) {
 			set_animation_state(player->walk_sprite, (state+1) % 5);
 			player->anim_walk_countdown = player_walk_countdown_value(player);
 		}
+
 		else
 			--player->anim_walk_countdown;
 		
@@ -688,6 +703,11 @@ void render_player_ui(Player_t *player) {
 
 	if (player->score != NULL) // Arcade mode 
 		render_score(player->score);
+
+	if (player->game_won) {
+		draw_sprite_floats(player->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+		render_score(player->time_took);
+	}
 }
 
 #define PLAYER_TWO_X_MSB 0

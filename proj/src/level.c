@@ -231,12 +231,13 @@ void render_level(Level_t *level) {
 	render_platforms(level->platforms);
 	render_player_foreground(level->player);
 	render_lasers(level->lasers);
-	render_player_ui(level->player);
-
+	
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (level->pu[i] != NULL)
 			render_power_up(level->pu[i]);
 	}
+
+	render_player_ui(level->player);
 }
 
 void render_arcade_versus(Level_t* level) {
