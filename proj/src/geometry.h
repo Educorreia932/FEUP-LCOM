@@ -2,6 +2,8 @@
 
 #include <lcom/lcf.h>
 
+/** @file geometry.h */
+
 /** @defgroup geometry Geometry */
 
 /** @addtogroup geometry

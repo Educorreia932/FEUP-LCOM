@@ -2,13 +2,16 @@
 
 #include <lcom/lcf.h>
 
-#define CHROMA_KEY_PINK_565 0xF81F
+#define CHROMA_KEY_PINK_565 0xF81F /** <@brief The color to be considered as 'invisible' to the renderer */
 
-// The number of pixels of the "dynamic" subdivision
-#define BMP_DYNAMIC_SCALE 5
-
+/**
+ * @brief Enum detailing the alignment of a bitmap upon rendering (relative to the given top leftmost point)
+ * 
+ */
 typedef enum {
-    ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
+    ALIGN_LEFT, /** <@brief Default alignment */
+    ALIGN_CENTER, /** <@brief Horizontally centers the bitmap in relation to the point */
+    ALIGN_RIGHT /** <@brief The given point becomes the top leftmost point */
 } Alignment;
 
 typedef struct BitmapFileHeader BitmapFileHeader_t;

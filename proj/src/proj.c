@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 }
 
 static int print_usage() {
-    printf("Usage: literally just 'lcom_run proj'\n");
+    printf("Usage: <assets folder absolute path>\n");
 
     return 1;
 }
@@ -44,11 +44,15 @@ static int print_usage() {
 
 int (proj_main_loop)(int argc, char *argv[]) {
 	if (argc <= 0)
-        return start_game();
-
+        return start_game(false, "");
+    if (argc >= 1) {
+        return start_game(true, argv[0]);
+    }
 	else {
 		printf("Invalid command\n");
         print_usage();
 		return 1;
 	}
+
+    return 1;
 }
