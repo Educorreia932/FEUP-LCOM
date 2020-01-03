@@ -107,6 +107,10 @@ typedef struct GameManager {
     uint32_t uart_last_sent /** <@brief Number of frames since last sent message */, uart_last_received /** <@brief Number of frames since last received message */;
 	GameModeEnum gamemode; /** <@brief The current gamemode */
     Sprite_t *connecting_sprite; /** <@brief The Sprite shown when waiting for a partner*/
+
+    bool normal_rendering; /** <@brief Used for the glitched screen effect on the switchboard */
+    void (*switch_buffer_func[2])(); /** <@brief Index 0 has the 'glitched' function, index 1 the normla function */
+
 } GameManager_t;
 
 /**

@@ -42,5 +42,6 @@ void vg_fill_black();
 void vg_fill_color_rgb_565(uint16_t color);
 
 void switch_double_buffer();
+void glitched_switch_double_buffer();
 
 /** @} end of Graphics */

@@ -148,6 +148,10 @@ inline void hw_manager_switch_double_buffer() {
 	switch_double_buffer();
 }
 
+inline void hw_manager_glitched_switch_double_buffer() {
+	glitched_switch_double_buffer();
+}
+
 inline uint8_t hw_manager_enter_video_mode() {
 	return vg_init(0x117) == NULL;
 } 

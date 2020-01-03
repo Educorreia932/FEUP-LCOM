@@ -19,3 +19,5 @@ void switchboard_player_respawn(SwitchBoard_t* sw);
 
 void update_switchboard(SwitchBoard_t* s_board);
 void render_switchboard(SwitchBoard_t* s_board);
+
+void switchboard_start_minigame();

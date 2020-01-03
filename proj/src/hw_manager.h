@@ -35,6 +35,7 @@ void hw_manager_rtc_set_alarm(uint32_t period);
 /* VIDEO WRAPPERS */
 
 void hw_manager_switch_double_buffer();
+void hw_manager_glitched_switch_double_buffer();
 
 uint8_t hw_manager_enter_video_mode();
 

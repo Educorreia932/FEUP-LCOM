@@ -151,6 +151,15 @@ inline void button_set_activation(Button_t* button, bool is_active) {
     button->is_active = is_active;
 }
 
+Rect_t* button_get_rect(Button_t* button) {
+    return &button->rect;
+}
+
+void button_move(Button_t* button, Vec2d_t delta) {
+    button->rect.x += delta.x;
+    button->rect.y += delta.y;
+}
+
 void update_button(Button_t* button) {
     if (button->is_active && button->shown) {
         if (is_cursor_inside_rect(&button->rect)) {

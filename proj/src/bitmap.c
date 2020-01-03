@@ -1,6 +1,6 @@
 #include "bitmap.h"
 #include "video.h"
-// Literally only here (for now prob idk) to get us the realtive file path
+// To get the assets relative path and to not seg fault when a file doesn't exist
 #include "game_manager.h"
 
 #define BITMAP_ID 0x4D42
@@ -49,9 +49,11 @@ Bitmap_t* new_bitmap(const char *filename) {
 
     if( access( file_path, F_OK ) == -1 ) {
         // file does not exist
-        printf("new_bmp: File with path '%s' does not exist\n", file_path);
         free(bmp);
-        return NULL;
+        exit_game();
+        printf("new_bmp: File with path '%s' does not exist\n", file_path);
+        exit(69);
+        // return NULL;
     }
 
     // open filename in read binary mode

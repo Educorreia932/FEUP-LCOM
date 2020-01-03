@@ -228,4 +228,21 @@ void switch_double_buffer() {
 	memcpy(buffer_base, double_buffer_base, size);
 }
 
+/**
+ * @brief Actualy not a but, but a feature (used for the switchboard)
+ * 
+ */
+void glitched_switch_double_buffer() {
+	for (uint16_t i = 0; i < vg_info.y_res; i += 8) {
+		uint16_t color = rand();
+		uint16_t *buff = (uint16_t*) buffer_base + vg_info.x_res * i;
+		uint16_t *double_buf = (uint16_t*) double_buffer_base + vg_info.x_res * i;
+		for (uint16_t i = 0; i < vg_info.x_res * 8; ++i) {
+			*buff = *double_buf & color;
+			++buff;
+			++double_buf;
+		}
+	}
+}
+
 /** @} end of Graphics */
