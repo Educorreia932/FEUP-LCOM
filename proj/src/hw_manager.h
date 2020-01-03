@@ -26,9 +26,11 @@ void hw_manager_mouse_ih();
 
 void hw_manager_mouse();
 
-void hw_manager_rtc_set_alarm(uint32_t period);
-
 void hw_manager_rtc_ih();
+
+int hw_manager_rtc_read_date_in_seconds();
+
+void hw_manager_rtc_set_alarm(uint32_t period);
 
 /* VIDEO WRAPPERS */
 

@@ -132,6 +132,12 @@ void hw_manager_rtc_ih() {
 	rtc_ih();
 }
 
+int hw_manager_rtc_read_date_in_seconds() {
+	date_t date = get_date();
+
+	return date.seconds + date.minutes * 60 + date.hour * 3600;
+}
+
 void hw_manager_rtc_set_alarm(uint32_t period) {
 	rtc_set_alarm(period);
 }
