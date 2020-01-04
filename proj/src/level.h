@@ -105,6 +105,14 @@ void update_arcade_level(Level_t* level);
 void update_arcade_versus(Level_t* level, uint8_t bytes[]);
 
 /**
+ * @brief Resets the needed components of an arcade mode level, in an efficient manner
+ * @details Used upon the player's death
+ * 
+ * @param level The level to be reset
+ */
+void reset_arcade_mode(Level_t* level);
+
+/**
  * @brief Renders any non arcade versus Level onto the screen
  * @details Must be called every frame
  * 

@@ -192,6 +192,7 @@ void update_level(Level_t* level) {
 }
 
 void update_arcade_level(Level_t* level) {
+	arcade_update_laser_values(level->lasers);
 	arcade_move_lasers(level->lasers);
 	arcade_add_laser(level->lasers);
 	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
@@ -204,6 +205,13 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 		update_player_two(level->player_two, bytes);
 	arcade_add_laser(level->lasers);
 }
+
+
+// single player only for now
+void reset_arcade_mode(Level_t* level) {
+	arcade_reset_lasers(level->lasers);
+}
+
 
 void render_level(Level_t *level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);

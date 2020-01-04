@@ -6,14 +6,11 @@
 #define ARCADE_LASER_MIN_HEIGHT 60
 #define ARCADE_LASER_HOLE_HEIGHT_RANGE 500
 #define ARCADE_LASER_WIDTH 20
-#define ARCADE_LASER_BASE_DELAY 120
-#define ARCADE_LASER_MOVEMENT 4
 
 #define ARCADE_LASER_LEFT_EDGE (0 + 24)
 #define ARCADE_LASER_RIGHT_EDGE (1024 - 24)
 #define ARCADE_LASER_TOP_EDGE (0 + 24)
 #define ARCADE_LASER_BOTTOM_EDGE (768 - 24)
-
 
 typedef struct Laser {
     Rect_t rect;
@@ -50,6 +47,11 @@ struct Lasers {
     uint16_t* colors;
     uint8_t num_colors;
     SpriteDynamic_t *sprite;
+
+    // Arcade exclusive
+    uint16_t next_laser; // Used for arcade mode
+    uint32_t frames_since_start;
+    uint8_t lasers_speed, lasers_delay;
 };
 
 Lasers_t* new_arcade_lasers() {
@@ -69,6 +71,10 @@ Lasers_t* new_arcade_lasers() {
 
     lasers->num_lasers = 16;
     lasers->cur_link_id = 1;
+    lasers->next_laser = 0;
+    lasers->frames_since_start = 0;
+    lasers->lasers_speed = 4;
+    lasers->lasers_delay = 120;
 
     lasers->lasers = (Laser_t**) calloc(lasers->num_lasers, sizeof(Laser_t*));
     if (lasers->lasers == NULL) {
@@ -112,6 +118,10 @@ Lasers_t* prototype_lasers() {
 
     lasers->num_lasers = 4;
     lasers->cur_link_id = 0;
+    lasers->next_laser = 0;
+    lasers->frames_since_start = 0;
+    lasers->lasers_speed = 4;
+    lasers->lasers_delay = 120;
 
     lasers->lasers = (Laser_t**) calloc(lasers->num_lasers, sizeof(Laser_t*));
     if (lasers->lasers == NULL) {
@@ -198,12 +208,55 @@ bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect) {
     return false;
 }
 
+void arcade_update_laser_values(Lasers_t *lasers) {
+    
+    ++lasers->frames_since_start;
+
+    if (lasers->frames_since_start <= 2 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 120;
+    }
+    else if (lasers->frames_since_start <= 4 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 110;
+    }
+    else if (lasers->frames_since_start <= 7 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 100;
+    }
+    else if (lasers->frames_since_start <= 11 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 90;
+    }
+    else if (lasers->frames_since_start <= 18 * 60) {
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 90;
+    }
+    else if (lasers->frames_since_start <= 22 * 60) {
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 80;
+    }
+    else if (lasers->frames_since_start <= 26 * 60) {
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 70;
+    }
+    else if (lasers->frames_since_start <= 30 * 60) {
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 60;
+    }
+    else {
+        lasers->lasers_speed = 6;
+        lasers->lasers_delay = 60;
+    }
+
+}
+
 void arcade_move_lasers(Lasers_t *lasers) {
     Laser_t** aux = lasers->lasers;
 
     for (uint32_t i = 0; i < lasers->num_lasers; i++) {
         if (*aux != NULL) {
-            (*aux)->rect.x -= ARCADE_LASER_MOVEMENT;
+            (*aux)->rect.x -= lasers->lasers_speed;
 
             if ((*aux)->rect.x < ARCADE_LASER_LEFT_EDGE) {
                 free_laser(*aux);
@@ -217,10 +270,9 @@ void arcade_move_lasers(Lasers_t *lasers) {
 }
 
 void arcade_add_laser(Lasers_t *lasers) {
-    static uint16_t next_laser = 0;
 
-    if (next_laser) 
-        --next_laser;
+    if (lasers->next_laser) 
+        --lasers->next_laser;
 
     else {
         Laser_t **aux = lasers->lasers;
@@ -242,7 +294,7 @@ void arcade_add_laser(Lasers_t *lasers) {
         }
     
         if (top != NULL && bottom != NULL) {
-            next_laser = ARCADE_LASER_BASE_DELAY;
+            lasers->next_laser = lasers->lasers_delay;
             int rng = (rand() % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT;
 
             *top = new_laser(
@@ -299,4 +351,21 @@ bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect) {
     in_empty_space = false;
 
     return false;
+}
+
+void arcade_reset_lasers(Lasers_t *lasers) {
+    lasers->next_laser = 0;
+    lasers->frames_since_start = 0;
+
+    Laser_t **aux = lasers->lasers;
+
+    // Free all lasers 
+    for (uint32_t i = 0; i < lasers->num_lasers; i++) {
+        if (*aux != NULL) {
+            free_laser(*aux);
+            *aux = NULL;
+        }
+        ++aux;
+    }
+
 }

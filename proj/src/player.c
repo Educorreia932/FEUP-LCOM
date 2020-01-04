@@ -471,6 +471,9 @@ static inline void player_respawn(Player_t *player) {
 		hw_manager_uart_send_char(HEADER_PLAYER_RESPAWN);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
+	else if (player->arcade_mode) {
+		reset_arcade_mode(get_game_manager()->level);
+	}
 }
 
 static inline void player_death_cycle(Player_t *player) {
