@@ -44,6 +44,7 @@ struct Player {
 	float speed_mult, jump_mult;
 	float y_speed, gravity;
 	float x_spawn, y_spawn;
+	uint16_t main_color, death_color;
 	
 	bool ui_controls, arcade_mode;
 	uint8_t respawn_timer; /**< @brief If != 0, player is dead */
@@ -60,8 +61,6 @@ struct Player {
 	// Single Player UI ~ NULL ptr if multiplayer
 	Slider_t *jump_slider, *speed_slider;
 	Button_t **laser_buttons;
-
-	Score_t* score; /**< @note Only used in Arcade mode  */
 
 	bool game_won;
     Score_t* time_took;
@@ -266,6 +265,9 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	player->default_powers = default_powers;
 	player->current_powers = default_powers;
 
+	player->main_color = COLOR_NO_MULTIPLY;
+	player->death_color = COLOR_RED;
+
 	// Creating player hitbox
 	player->rect = rect(
 		player->x_spawn,
@@ -363,10 +365,6 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// printf("new_testing_player: Finished making player\n");
-	player->score = NULL;
-	// Arcade
-	if (player->arcade_mode)
-		player->score = new_score(800, 75, 0, 3, COLOR_NO_MULTIPLY);
 	
 	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
 	player->game_won = false;
@@ -397,6 +395,14 @@ void free_player(Player_t* player) {
 	}
 
 	free(player);
+}
+
+inline void player_set_main_color(Player_t* player, uint16_t main_color) {
+	player->main_color = main_color;
+}
+
+inline void player_set_death_color(Player_t* player, uint16_t death_color) {
+	player->death_color = death_color;
 }
 
 inline static bool player_is_grav_inverted(Player_t *player) {
@@ -478,7 +484,7 @@ static inline void player_death_cycle(Player_t *player) {
 	
 	else {
 		if (player->arcade_mode)
-			reset_score(player->score);
+			reset_score(get_game_manager()->level->score_1);
 
 		player_respawn(player);
 	}
@@ -488,6 +494,15 @@ static inline void player_start_death(Player_t *player) {
 	set_animation_state(player->idle_sprite, 1);
 	player->current_powers = player->default_powers;
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
+	if (get_game_manager()->gamemode & GM_ARCADE) {
+		if (get_game_manager()->gamemode & GM_UART) {
+			hw_manager_uart_send_char(HEADER_ARCADE_PLAYER_DEATH);
+			hw_manager_uart_send_char(HEADER_TERMINATOR);
+		}
+		else {
+			// Write high score to a file
+		}
+	}
 }
 
 void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
@@ -599,23 +614,15 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	// ARCADE MODE ONLY
 	if (player->arcade_mode) {
-
-		if (get_game_manager()->gamemode & GM_UART) {
-
+		if (get_game_manager()->gamemode & GM_UART)
 			player_send_info(player);
+		else if (arcade_player_passes_lasers(lasers, &player->rect)) {
+			update_score(get_game_manager()->level->score_1);
+			uint16_t cur_score = score_get_value(get_game_manager()->level->score_1);
+			if (cur_score > score_get_value(get_game_manager()->level->score_2))
+				set_score(get_game_manager()->level->score_2, cur_score); 
 
-			if (arcade_player_passes_lasers(lasers, &player->rect)) {
-				update_score(player->score);
-
-				hw_manager_uart_send_char(HEADER_ARCADE_SCORE_UDPATE);
-				hw_manager_uart_send_char(HEADER_TERMINATOR);
-			}
 		}
-		else {
-			if (arcade_player_passes_lasers(lasers, &player->rect))
-				update_score(player->score);
-		}
-
 	}
 }
 
@@ -682,7 +689,7 @@ static void animator_player(Player_t* player) {
 void render_player_background(Player_t* player) {
 	if (player->respawn_timer == 0 && player->gravity != BASE_GRAVITY) {
 		// Player is alive
-		draw_sprite(player->sparks_sprite, &player->rect, COLOR_NO_MULTIPLY, SPRITE_Y_AXIS * !player->heading_right);
+		draw_sprite(player->sparks_sprite, &player->rect, player->main_color, SPRITE_Y_AXIS * !player->heading_right);
 	}
 }
 
@@ -693,12 +700,12 @@ void render_player_foreground(Player_t* player) {
 	if (player->respawn_timer == 0)
 		// Player is alive
 		if (player->grounded && player->is_idle)
-			draw_sprite(player->idle_sprite, &player->rect, COLOR_NO_MULTIPLY, sr);
+			draw_sprite(player->idle_sprite, &player->rect, player->main_color, sr);
 		else
-			draw_sprite(player->walk_sprite, &player->rect, COLOR_NO_MULTIPLY, sr);
+			draw_sprite(player->walk_sprite, &player->rect, player->main_color, sr);
 	else {
 		// Player is dead
-		draw_sprite(player->idle_sprite, &player->rect, COLOR_RED, sr);
+		draw_sprite(player->idle_sprite, &player->rect, player->death_color, sr);
 	}
 }
 
@@ -712,11 +719,8 @@ void render_player_ui(Player_t *player) {
 		render_button(player->laser_buttons[2]);
 	}
 
-	if (player->score != NULL) // Arcade mode 
-		render_score(player->score);
-
 	if (player->game_won) {
-		draw_sprite_floats(player->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+		draw_sprite_floats(player->win_screen, 0, 0, player->main_color, SPRITE_NORMAL);
 		render_score(player->time_took);
 	}
 }
@@ -747,7 +751,7 @@ struct PlayerTwo {
 	
 	bool heading_right, is_idle, is_dead, anti_gravity;
 
-	Score_t* score;
+	uint16_t main_color, death_color;
 };
 
 PlayerTwo_t* new_player_two() { 
@@ -799,17 +803,9 @@ PlayerTwo_t* new_player_two() {
 		return NULL;
 	}
 
+	player_two->main_color = COLOR_BLUE;
+	player_two->death_color = COLOR_PINK;
 	player_two->pos = vec2d(60.0f, 704.0f);
-
-	player_two->score = new_score(800, 140, 0, 3, COLOR_NO_MULTIPLY);
-
-	if (player_two->score == NULL) {
-        printf("new_player_two: Failed to create the score\n");
-		free_sprite(player_two->idle_sprite);
-		free_sprite(player_two->walk_sprite);
-        free(player_two);
-        return NULL;
-    }
 
 	return player_two;
 }
@@ -820,14 +816,16 @@ void free_player_two(PlayerTwo_t* player_two) {
 	free_sprite(player_two->walk_sprite);
 	free_sprite(player_two->sparks_sprite);
 
-	free_score(player_two->score);
-
 	free(player_two);
 
 }
 
-inline void update_player_two_score(PlayerTwo_t* player_two) {
-	update_score(player_two->score);
+inline void player_two_set_main_color(PlayerTwo_t* player_two, uint16_t main_color) {
+	player_two->main_color = main_color;
+}
+
+inline void player_two_set_death_color(PlayerTwo_t* player_two, uint16_t death_color) {
+	player_two->death_color = death_color;
 }
 
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
@@ -845,15 +843,12 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 
 	set_animation_state(player_two->sparks_sprite, bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_ANIMATION_MASK);
 
-	if (player_two->is_dead)
-		reset_score(player_two->score);
-
 }
 
 void render_player_two_background(PlayerTwo_t* player_two) {
 	if (!player_two->is_dead && player_two->anti_gravity) {
 		// Player is alive
-		draw_sprite_vec2d(player_two->sparks_sprite, player_two->pos, COLOR_BLUE, SPRITE_NORMAL);
+		draw_sprite_vec2d(player_two->sparks_sprite, player_two->pos, player_two->main_color, SPRITE_NORMAL);
 	}
 }
 
@@ -863,18 +858,14 @@ void render_player_two_foreground(PlayerTwo_t* player_two) {
 
 	if (!player_two->is_dead)
 		if (player_two->is_idle)
-			draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, COLOR_BLUE, sr);
+			draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, player_two->main_color, sr);
 		
 		else
-			draw_sprite_vec2d(player_two->walk_sprite, player_two->pos, COLOR_BLUE, sr);
+			draw_sprite_vec2d(player_two->walk_sprite, player_two->pos, player_two->main_color, sr);
 
 	else 
 		// Player is dead
-		draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, COLOR_PINK, sr);
-}
-
-void render_player_two_ui(PlayerTwo_t* player_two) {
-	render_score(player_two->score);
+		draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, player_two->death_color, sr);
 }
 
 

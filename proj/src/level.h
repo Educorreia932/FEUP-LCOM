@@ -58,6 +58,8 @@ typedef struct Level {
      */
     bool laser_master;
 
+    Score_t *score_1, *score_2;
+
 } Level_t;
 
 /**
@@ -120,6 +122,12 @@ void reset_arcade_mode(Level_t* level);
  * @param level Pointer to the Level to be rendered
  */
 void render_level(Level_t *level);
+/**
+ * @brief Renders an arcade single Level onto the screen
+ * @details Must be called every frame
+ * @param level Pointer to the Level to be rendered
+ */
+void render_arcade_single(Level_t* level);
 /**
  * @brief Renders an arcade versus Level onto the screen
  * @details Must be called every frame

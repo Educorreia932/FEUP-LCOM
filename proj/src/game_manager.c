@@ -155,6 +155,13 @@ static void gm_update_arcade_versus() {
 						}
 						gm->uart_synced = true;
 						gm->has_partner = true;
+						gm->level->laser_master = true;
+
+						player_set_main_color(gm->level->player, COLOR_NO_MULTIPLY);
+						player_set_death_color(gm->level->player, COLOR_RED);
+						player_two_set_main_color(gm->level->player_two, COLOR_BLUE);
+						player_two_set_death_color(gm->level->player_two, COLOR_PINK);
+						
 						hw_manager_uart_send_char(HEADER_ARCADE_READY);
 						hw_manager_uart_send_char(HEADER_TERMINATOR);
 						break;
@@ -165,6 +172,12 @@ static void gm_update_arcade_versus() {
 						}
 						gm->uart_synced = true;
 						gm->has_partner = true;
+						gm->level->laser_master = false;
+
+						player_set_main_color(gm->level->player, COLOR_BLUE);
+						player_set_death_color(gm->level->player, COLOR_PINK);
+						player_two_set_main_color(gm->level->player_two, COLOR_NO_MULTIPLY);
+						player_two_set_death_color(gm->level->player_two, COLOR_RED);
 						break;
 				}
 			}
@@ -183,14 +196,11 @@ static void gm_update_arcade_versus() {
 
 						received_update = true;
 						break;
-					case HEADER_ARCADE_SCORE_UDPATE:
-						if (hw_manager_uart_size() < HEADER_ARCADE_SCORE_UDPATE_SIZE) {
-							keep_going = false;
-							break;
-						}
-						update_player_two_score(gm->level->player_two);
-						break;
 					case HEADER_ARCADE_LASER:
+						hw_manager_uart_pop();
+
+						uint16_t height = (hw_manager_uart_pop() << 8) | hw_manager_uart_pop();
+						arcade_add_laser(gm->level->lasers, height);
 						break;
 				}
 			}
@@ -323,7 +333,7 @@ static void gm_render_campaign_coop() {
 }
 
 static void gm_render_arcade() {
-	render_level(gm->level);
+	render_arcade_single(gm->level);
 
 	render_cursor();
 }

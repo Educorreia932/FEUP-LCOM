@@ -269,55 +269,66 @@ void arcade_move_lasers(Lasers_t *lasers) {
 
 }
 
-void arcade_add_laser(Lasers_t *lasers) {
+uint16_t arcade_generate_laser_height() {
+    return (uint16_t) ((rand() % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT);
+}
 
-    if (lasers->next_laser) 
+bool arcade_spawn_next_laser(Lasers_t *lasers) {
+    if (lasers->next_laser) {
         --lasers->next_laser;
+        return false;
+    }
+    else
+        return true;
+}
 
-    else {
-        Laser_t **aux = lasers->lasers;
-        Laser_t **top = NULL, **bottom = NULL;
+void arcade_lasers_set_correct_delay(Lasers_t *lasers) {
+    lasers->next_laser = lasers->lasers_delay;
+}
 
-        // Is there a suitable free pair of lasers? 
-        for (uint32_t i = 0; i < lasers->num_lasers; i++) {
-            if (*aux == NULL) {
-                if (top == NULL) 
-                    top = aux;
+void arcade_add_laser(Lasers_t *lasers, uint16_t height) {
 
-                else {
-                    bottom = aux;
-                    break;
-                }
+    Laser_t **aux = lasers->lasers;
+    Laser_t **top = NULL, **bottom = NULL;
+
+    // Is there a suitable free pair of lasers? 
+    for (uint32_t i = 0; i < lasers->num_lasers; i++) {
+        if (*aux == NULL) {
+            if (top == NULL) 
+                top = aux;
+
+            else {
+                bottom = aux;
+                break;
             }
-                
-            ++aux;
         }
-    
-        if (top != NULL && bottom != NULL) {
-            lasers->next_laser = lasers->lasers_delay;
-            int rng = (rand() % ARCADE_LASER_HOLE_HEIGHT_RANGE) + ARCADE_LASER_MIN_HEIGHT;
+            
+        ++aux;
+    }
 
-            *top = new_laser(
-                rect_from_uints(
-                    ARCADE_LASER_RIGHT_EDGE - ARCADE_LASER_WIDTH,
-                    ARCADE_LASER_TOP_EDGE,
-                    ARCADE_LASER_WIDTH,
-                    ((uint16_t) rng) - ARCADE_LASER_TOP_EDGE
-                ),
-                0
-            );
+    if (top != NULL && bottom != NULL) {
 
-            *bottom = new_laser(
-                rect_from_uints(
-                    ARCADE_LASER_RIGHT_EDGE - ARCADE_LASER_WIDTH,
-                    ((uint16_t) rng) + ARCADE_LASER_HOLE_HEIGHT,
-                    ARCADE_LASER_WIDTH,
-                    ARCADE_LASER_BOTTOM_EDGE - ((uint16_t) rng)
-                        - ARCADE_LASER_HOLE_HEIGHT
-                ),
-                0
-            );
-        }
+        *top = new_laser(
+            rect_from_uints(
+                ARCADE_LASER_RIGHT_EDGE - ARCADE_LASER_WIDTH,
+                ARCADE_LASER_TOP_EDGE,
+                ARCADE_LASER_WIDTH,
+                height - ARCADE_LASER_TOP_EDGE
+            ),
+            0
+        );
+
+        *bottom = new_laser(
+            rect_from_uints(
+                ARCADE_LASER_RIGHT_EDGE - ARCADE_LASER_WIDTH,
+                height + ARCADE_LASER_HOLE_HEIGHT,
+                ARCADE_LASER_WIDTH,
+                ARCADE_LASER_BOTTOM_EDGE - height
+                    - ARCADE_LASER_HOLE_HEIGHT
+            ),
+            0
+        );
+
     }
 }
 
