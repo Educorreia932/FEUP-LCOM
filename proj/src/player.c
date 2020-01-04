@@ -76,7 +76,7 @@ static void animator_player(Player_t* player);
 // Forward declaration in order to be used in new_player()
 static uint8_t player_walk_countdown_value(Player_t* player);
 // Forward declaration in order to be used in update_player()
-static void player_send_info(Player_t* player, bool score_update);
+static void player_send_info(Player_t* player);
 
 /* UNLOCKING POWERS */
 
@@ -493,7 +493,6 @@ static inline void player_start_death(Player_t *player) {
 
 void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]) {
 	Rect_t previous_rect = player->rect;
-	bool score_update = false, died = false;
 
 	// Horizontal Movement
 	float h_delta = 0;
@@ -589,8 +588,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	if (player->respawn_timer == 0) {
-		if (lasers_collide_player(lasers, &player->rect) || player_touches_spike(spikes, &player->rect))  {
-			died = true;
+		if (lasers_collide_player(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) {
 			player_start_death(player);
 		}
 	}
@@ -600,14 +598,25 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	
 	animator_player(player);
 
+	// ARCADE MODE ONLY
 	if (player->arcade_mode) {
-		if (arcade_player_passes_lasers(lasers, &player->rect)) {
-			update_score(player->score);
-			score_update = true;
+
+		if (get_game_manager()->gamemode & GM_UART) {
+
+			player_send_info(player);
+
+			if (arcade_player_passes_lasers(lasers, &player->rect)) {
+				update_score(player->score);
+
+				hw_manager_uart_send_char(HEADER_ARCADE_SCORE_UDPATE);
+				hw_manager_uart_send_char(HEADER_TERMINATOR);
+			}
+		}
+		else {
+			if (arcade_player_passes_lasers(lasers, &player->rect))
+				update_score(player->score);
 		}
 
-		if (get_game_manager()->gamemode & GM_UART)
-			player_send_info(player, score_update);
 	}
 }
 
@@ -726,8 +735,6 @@ void render_player_ui(Player_t *player) {
 #define PLAYER_TWO_HEADING_RIGHT BIT(6)
 #define PLAYER_TWO_ANTI_GRAVITY BIT(7)
 
-#define PLAYER_TWO_INCREASE_SCORE BIT(4)
-
 /** 
  * @brief Representation of the second player while playing Arcade mode in versus
  * @note Only used in Arcade mode 
@@ -820,6 +827,10 @@ void free_player_two(PlayerTwo_t* player_two) {
 
 }
 
+inline void update_player_two_score(PlayerTwo_t* player_two) {
+	update_score(player_two->score);
+}
+
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 	player_two->pos = vec2d((float) ((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB]), (float) ((bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]));
 
@@ -834,9 +845,6 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 		set_animation_state(player_two->walk_sprite, bytes[PLAYER_TWO_ADDITIONAL_1] & PLAYER_TWO_ANIMATION_MASK);
 
 	set_animation_state(player_two->sparks_sprite, bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_ANIMATION_MASK);
-
-	if (bytes[PLAYER_TWO_ADDITIONAL_2] & PLAYER_TWO_INCREASE_SCORE)
-		update_score(player_two->score);
 
 	if (player_two->is_dead)
 		reset_score(player_two->score);
@@ -871,7 +879,7 @@ void render_player_two_ui(PlayerTwo_t* player_two) {
 }
 
 
-static void player_send_info(Player_t* player, bool score_update) {
+static void player_send_info(Player_t* player) {
 	int16_t x = (int16_t) player->rect.x;
 	int16_t y = (int16_t) player->rect.y;
 
@@ -894,7 +902,6 @@ static void player_send_info(Player_t* player, bool score_update) {
 		additional_byte_1 |= PLAYER_TWO_ANTI_GRAVITY;
 
 	additional_byte_2 = get_animation_state(player->sparks_sprite) & PLAYER_TWO_ANIMATION_MASK;
-	additional_byte_2 |= (score_update << 4);
 
 	hw_manager_uart_send_char(HEADER_PLAYER_TWO_UPDATE);
 
