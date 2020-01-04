@@ -17,6 +17,10 @@ void uart_free_receiver_queue() {
     }
 }
 
+void uart_receiver_q_clear() {
+    queue_clear(rq);
+}
+
 uint8_t uart_receiver_q_front() {
     return queue_front(rq);
 }

@@ -370,6 +370,8 @@ void gm_start_level() {
 
 	gm->level = prototype_level(!(gm->gamemode & GM_UART));
 
+	hw_manager_uart_clear();
+
 	if (gm->level == NULL) {
 		printf("gm_start_level: Failed to create the Switchboard object\n");
 		exit_game();
@@ -403,6 +405,8 @@ void gm_start_switchboard() {
 		exit(42);
 	}
 
+	hw_manager_uart_clear();
+
 	if (gm->gamemode & GM_UART) {
 		hw_manager_uart_send_char(HEADER_REQUEST_POWERS);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
@@ -425,6 +429,8 @@ void gm_start_arcade() {
 	gm->has_partner = false;
 	gm->level = new_arcade_level(!(gm->gamemode & GM_UART));
 	
+	hw_manager_uart_clear();
+
 	if (gm->level == NULL) {
 		printf("gm_start_arcade: Failed to create the Switchboard object\n");
 		exit_game();
@@ -451,6 +457,8 @@ void gm_start_main_menu() {
 	gm->uart_synced = false;
 	gm->has_partner = false;
 	gm->main_menu = new_main_menu();
+
+	hw_manager_uart_clear();
 
 	if (gm->main_menu == NULL) {
 		printf("gm_start_main_menu: Faild to create the MainMenu object\n");

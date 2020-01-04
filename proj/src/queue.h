@@ -8,6 +8,12 @@
 /** @addtogroup queue
   *
   * @brief	Handles a Queue of uint8_t data types
+  * @details Queue implementation using linked list in C
+  * @note Partial credit to https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html \n
+  * This original implementation was REALLY altered\n
+  * It was full of bugs, you could only have one queue per program, the datatype was  wrong, it has major bugs (memory leaks, wrong pointers that impacted the rest of the program), it was only two nodes (front and rear) that you had to play around with both of them as arguments\n
+  * TL:DR\n
+  * It was buggy and impossible to work with, so we added a LOT of code, fixed all its bugs and implemented a proper Queue struct
   *
   * @{
   */
@@ -39,6 +45,13 @@ Queue_t* new_queue();
  * @param q Pointer to the Queue to be freed
  */
 void free_queue(Queue_t *q);
+
+/**
+ * @brief Clears all the elements from the Queue
+ * 
+ * @param q The Queue to clear
+ */
+void queue_clear(Queue_t* q);
 
 /**
  * @brief Pushes an element onto the back of the Queue
