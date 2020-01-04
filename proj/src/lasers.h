@@ -63,11 +63,17 @@ void render_lasers(Lasers_t* lasers);
 bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect);
 
 /**
+ * @brief Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play
+ * 
+ * @param lasers Pointer to the Lasers object to update 
+ */
+void arcade_update_laser_values(Lasers_t *lasers);
+/**
  * @brief Moves all the lasers on screen onto the left, eliminating the ones that go offscreen\n 
  * Used exclusively on the arcade mode
  * @details Must be called every frame
  * 
- * @param lasers TPointer to the Lasers object to udpate
+ * @param lasers Pointer to the Lasers object to udpate
  */
 void arcade_move_lasers(Lasers_t *lasers);
 /**
@@ -88,5 +94,12 @@ void arcade_add_laser(Lasers_t *lasers);
  * False otherwise
  */
 bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect);
+
+/**
+ * @brief Resets all the lasers (arcade mode only)
+ * @details Mainly used to reset the level upon the player's death
+ * 
+ */
+void arcade_reset_lasers(Lasers_t *lasers);
 
 /** @} */

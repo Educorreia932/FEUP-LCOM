@@ -802,6 +802,7 @@ void render_score(Score_t* score) {
 }
 
 void reset_score(Score_t* score) {
+    score->value = 0;
     for (size_t i = 0; i < score->size; i++)
         update_number(score->numbers[i], 0);
 }
