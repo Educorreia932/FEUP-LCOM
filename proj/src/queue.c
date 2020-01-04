@@ -74,7 +74,7 @@ uint8_t queue_push_back(Queue_t *q, uint8_t data)
     newNode->next = NULL;
 
     // Link new node with existing last node 
-    if ( q->rear )
+    if ( q->rear != NULL )
         q->rear->next = newNode;
     
 
@@ -82,7 +82,7 @@ uint8_t queue_push_back(Queue_t *q, uint8_t data)
     q->rear = newNode;
 
     // Link first node to front if its NULL
-    if ( ! q->front )
+    if ( q->front == NULL )
     {
         q->front = q->rear;
     }
@@ -119,6 +119,11 @@ uint8_t queue_pop(Queue_t *q)
 
     // Decrement size
     --q->size;
+
+    // If the queue is now empty, set the rear to NULL
+    if (q->size == 0) {
+        q->rear = NULL;
+    }
 
     // Clear dequeued element from memory
     free(toDequque);

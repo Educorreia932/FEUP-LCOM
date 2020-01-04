@@ -401,8 +401,6 @@ void gm_start_switchboard() {
 }
 
 void gm_start_arcade() {
-	srand(12);
-	printf("%u\n", rand());
 
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
