@@ -90,6 +90,21 @@ void player_set_gravity_reversed();
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers);
 
 /**
+ * @brief Sets the main color of the Player
+ * 
+ * @param player Player to change the color of
+ * @param main_color The color to change to
+ */
+void player_set_main_color(Player_t* player, uint16_t main_color);
+/**
+ * @brief Sets the death color of the Player
+ * 
+ * @param player Player to change the color of
+ * @param main_color The color to change to
+ */
+void player_set_death_color(Player_t* player, uint16_t death_color);
+
+/**
  * @brief Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...)
  * 
  * @param player Pointer to the Player that is being updated
@@ -137,6 +152,27 @@ typedef struct PlayerTwo PlayerTwo_t;
  * NULL otherwise
  */
 PlayerTwo_t* new_player_two();
+/**
+ * @brief Frees a PlayerTwo from memory
+ * 
+ * @param player_two PlayerTwo object to be freed
+ */
+void free_player_two(PlayerTwo_t* player_two);
+
+/**
+ * @brief Sets the main color of the PlayerTwo
+ * 
+ * @param player_two PlayerTwo to change the color of
+ * @param main_color The color to change to
+ */
+void player_two_set_main_color(PlayerTwo_t* player_two, uint16_t main_color);
+/**
+ * @brief Sets the death color of the PlayerTwo
+ * 
+ * @param player_two PlayerTwo to change the color of
+ * @param main_color The color to change to
+ */
+void player_two_set_death_color(PlayerTwo_t* player_two, uint16_t death_color);
 
 /**
  * @brief Renders the background of the second Player (that consists of sparks that appear whenever its anti-gravity is on)
@@ -153,20 +189,13 @@ void render_player_two_background(PlayerTwo_t* player_two);
 void render_player_two_foreground(PlayerTwo_t* player_two);
 
 /**
- * @brief Renders the UI of the second Player (consisting only of its score)
+ * @brief Updates player two with the information received via serial port
  * 
- * @param player_two Pointer to the Player to be rendered
+ * @param player_two The Player Two to update
+ * @param bytes Information received via serial port\n
+ * If not received in time for this frame, value must be NULL
  */
-void render_player_two_ui(PlayerTwo_t* player_two);
-
-void update_player_two_score(PlayerTwo_t* player_two);
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
 
-/**
- * @brief Frees a PlayerTwo from memory
- * 
- * @param player_two PlayerTwo object to be freed
- */
-void free_player_two(PlayerTwo_t* player_two);
 
 /** @} */

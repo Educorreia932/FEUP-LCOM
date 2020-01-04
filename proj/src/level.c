@@ -1,6 +1,7 @@
 #include "level.h"
 #include "player.h"
 #include "game_manager.h"
+#include "hw_manager.h"
 
 Level_t* new_arcade_level(bool is_single_player) {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
@@ -57,7 +58,13 @@ Level_t* new_arcade_level(bool is_single_player) {
 
 	// Multiplayer
 	if (!is_single_player) {
+		level->score_1 = new_score(452, 40, 0, 1, COLOR_RED);
+		level->score_2 = new_score(532, 40, 0, 1, COLOR_BLUE);
 		level->player_two = new_player_two();
+	}
+	else {
+		level->score_1 = new_score(820, 40, 0, 3, COLOR_NO_MULTIPLY);
+		level->score_2 = new_score(820, 100, 0, 3, 0x8c51);
 	}
 
 	return level;
@@ -158,6 +165,9 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
+	level->score_1 = NULL;
+	level->score_2 = NULL;
+
 	return level;
 }
 
@@ -181,6 +191,10 @@ void free_level(Level_t *level) {
 
 	if (level->player_two != NULL)
 		free_player_two(level->player_two);
+	if (level->score_1 != NULL)
+		free_score(level->score_1);
+	if (level->score_2 != NULL)
+		free_score(level->score_2);
 
 	free(level);
 }
@@ -194,16 +208,33 @@ void update_level(Level_t* level) {
 void update_arcade_level(Level_t* level) {
 	arcade_update_laser_values(level->lasers);
 	arcade_move_lasers(level->lasers);
-	arcade_add_laser(level->lasers);
+	if (arcade_spawn_next_laser(level->lasers)) {
+		arcade_add_laser(level->lasers, arcade_generate_laser_height());
+		arcade_lasers_set_correct_delay(level->lasers);
+	}
 	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 }
 
 void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 	arcade_move_lasers(level->lasers);
+	if (level->laser_master) {
+		if (arcade_spawn_next_laser(level->lasers)) {
+			uint16_t height = arcade_generate_laser_height();
+			arcade_add_laser(level->lasers, height);
+			arcade_lasers_set_correct_delay(level->lasers);
+
+			uint8_t height_msb, height_lsb;
+			if (!(util_get_MSB(height, &height_msb) || util_get_LSB(height, &height_lsb))) {
+				hw_manager_uart_send_char(HEADER_ARCADE_LASER);
+				hw_manager_uart_send_char(height_msb);
+				hw_manager_uart_send_char(height_lsb);
+				hw_manager_uart_send_char(HEADER_TERMINATOR);
+			}
+		}
+	}
 	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 	if (bytes != NULL)
 		update_player_two(level->player_two, bytes);
-	arcade_add_laser(level->lasers);
 }
 
 
@@ -229,6 +260,20 @@ void render_level(Level_t *level) {
 	render_player_ui(level->player);
 }
 
+void render_arcade_single(Level_t* level) {
+	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+	render_platforms(level->platforms);
+	
+	render_player_background(level->player);
+	render_player_foreground(level->player);
+
+	render_lasers(level->lasers);
+	render_player_ui(level->player);
+
+	render_score(level->score_1);
+	render_score(level->score_2);
+}
+
 void render_arcade_versus(Level_t* level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_platforms(level->platforms);
@@ -241,5 +286,7 @@ void render_arcade_versus(Level_t* level) {
 
 	render_lasers(level->lasers);
 	render_player_ui(level->player);
-	render_player_two_ui(level->player_two);
+
+	render_score(level->score_1);
+	render_score(level->score_2);
 }

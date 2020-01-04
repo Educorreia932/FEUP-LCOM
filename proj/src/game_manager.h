@@ -59,10 +59,12 @@ extern char* assets_rel_path;
 #define HEADER_PLAYER_TWO_UPDATE_SIZE 8
 /** @brief Total size of the arcade ready header */
 #define HEADER_ARCADE_READY_SIZE 2
-/** @brief Total size of the arcade score update header */
-#define HEADER_ARCADE_SCORE_UDPATE_SIZE 2
 /** @brief Total size of the arcade laser header */
 #define HEADER_ARCADE_LASER_SIZE 3
+/** @brief Total size of the arcade player death header */
+#define HEADER_ARCADE_PLAYER_DEATH_SIZE 2
+/** @brief Total size of the arcade laser speed header */
+#define HEADER_ARCADE_LASER_SPEED_SIZE 3
 
 
 /**
@@ -90,8 +92,9 @@ enum UART_EVENT_HEADER {
     // Arcade
     HEADER_PLAYER_TWO_UPDATE = 'T',
     HEADER_ARCADE_READY = 'A',
-    HEADER_ARCADE_SCORE_UDPATE = 'u',
-    HEADER_ARCADE_LASER = 'r'
+    HEADER_ARCADE_LASER = 'r',
+    HEADER_ARCADE_PLAYER_DEATH = 'D',
+    HEADER_ARCADE_LASER_SPEED = 'q'
 };
 
 

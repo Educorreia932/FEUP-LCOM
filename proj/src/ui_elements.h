@@ -196,7 +196,7 @@ void free_score(Score_t* score);
  * @param score Pointer to the Score object of which we're getting the value
  * @returns The numeric value of the Score object
  */ 
-uint16_t get_score(Score_t* score);
+uint16_t score_get_value(Score_t* score);
 
 /**
  * @brief Sets the Score object value to a given one
@@ -212,7 +212,12 @@ void set_score(Score_t* score, uint16_t value);
  * @param score Pointer to the Score that is being updated
  */
 void update_score(Score_t* score);
-
+/**
+ * @brief Sets the color of a Score
+ * 
+ * @param score The Score to change the color of
+ * @param color The new color (RGB 565) for the Score
+ */
 void score_set_color(Score_t* score, uint16_t color);
 /**
  * @brief Renders a Score object

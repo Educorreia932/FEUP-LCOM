@@ -76,13 +76,35 @@ void arcade_update_laser_values(Lasers_t *lasers);
  * @param lasers Pointer to the Lasers object to udpate
  */
 void arcade_move_lasers(Lasers_t *lasers);
+
+/**
+ * @brief Generates the height for the next arcade Laser
+ * 
+ * @return uint16_t The height for the next new arcade Laser
+ */
+uint16_t arcade_generate_laser_height();
+/**
+ * @brief Handles the timing until the next Laser spawns
+ * @details Must be called every frame to work as intended
+ * @param lasers Pointer to the Lasers object to operate over
+ * @return True when a laser should spawn\n
+ * False otherwise
+ */
+bool arcade_spawn_next_laser(Lasers_t *lasers);
+/**
+ * @brief Sets the delay for the next Laser's spawn
+ * 
+ * @param lasers Pointer to the Lasers object to operate over
+ */
+void arcade_lasers_set_correct_delay(Lasers_t *lasers);
 /**
  * @brief Creates and adds a new Laser to the Lasers object, with a random height (flappy bird like) onto the right edge of the screen\n 
  * Used exclusively on the arcade mode
  * 
  * @param lasers Pointer to the Lasers object to udpate
+ * @param height The height for the new Laser
  */
-void arcade_add_laser(Lasers_t *lasers);
+void arcade_add_laser(Lasers_t *lasers, uint16_t height);
 
 /**
  * @brief Keeps track of when the player passes through a new set of Lasers, to increase it's score\n 

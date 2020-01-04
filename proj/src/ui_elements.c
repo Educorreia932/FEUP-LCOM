@@ -771,7 +771,7 @@ void free_score(Score_t* score) {
     free(score);
 }
 
-inline uint16_t get_score(Score_t* score) {
+inline uint16_t score_get_value(Score_t* score) {
     return score->value;
 }
 
