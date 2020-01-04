@@ -223,6 +223,7 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 			arcade_add_laser(level->lasers, height);
 			arcade_lasers_set_correct_delay(level->lasers);
 
+			printf("Sent: %x\n", height);
 			uint8_t height_msb, height_lsb;
 			if (!(util_get_MSB(height, &height_msb) || util_get_LSB(height, &height_lsb))) {
 				hw_manager_uart_send_char(HEADER_ARCADE_LASER);
