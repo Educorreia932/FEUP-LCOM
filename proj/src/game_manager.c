@@ -183,6 +183,15 @@ static void gm_update_arcade_versus() {
 
 						received_update = true;
 						break;
+					case HEADER_ARCADE_SCORE_UDPATE:
+						if (hw_manager_uart_size() < HEADER_ARCADE_SCORE_UDPATE_SIZE) {
+							keep_going = false;
+							break;
+						}
+						update_player_two_score(gm->level->player_two);
+						break;
+					case HEADER_ARCADE_LASER:
+						break;
 				}
 			}
 			

@@ -45,7 +45,7 @@ void render_player_background(Player_t* player);
 void render_player_foreground(Player_t* player);
 void render_player_ui(Player_t *player);
 
-typedef struct PlayerTwo PlayerTwo_t;
+typedef struct PlayerTwo /** @brief Total size of the arcade ready header */PlayerTwo_t;
 
 PlayerTwo_t* new_player_two();
 void free_player_two(PlayerTwo_t* player_two);
@@ -54,6 +54,7 @@ void render_player_two_background(PlayerTwo_t* player_two);
 void render_player_two_foreground(PlayerTwo_t* player_two);
 void render_player_two_ui(PlayerTwo_t* player_two);
 
+void update_player_two_score(PlayerTwo_t* player_two);
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
 
 /** @} */
