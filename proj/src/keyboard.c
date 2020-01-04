@@ -1,18 +1,9 @@
 #include "keyboard.h"
 
-/** @defgroup kbd Keyboard
- *  @{
- */
-
 static uint8_t scancode_bytes[2], st, valid_scancode=0;
-uint8_t scancode, is_scancode_complete=1, scancode_no_bytes;
+uint8_t scancode, is_scancode_complete = 1, scancode_no_bytes;
 static int kbd_hook_id;
 
-/**
- * @brief Subscribes keyboard interrupts 
- * Sends the bit number for the interrupt through bit_no and saves the hook id on kbd_hook_id to be used later for unsubscribing and other actions.
- * @return 0 on success, 1 otherwise
-*/
 int (kbd_subscribe_int)(uint32_t *bit_mask) {
 	if (!bit_mask) // Check if pointer is NULL
 		return 1;
@@ -26,18 +17,10 @@ int (kbd_subscribe_int)(uint32_t *bit_mask) {
 	return 0;
 }
 
-/** 
- * @brief Unsubscribes keyboard interrupts 
- * @returns 0 on success, 1 otherwise
- */
 int(kbd_unsubscribe_int)() {
 	return sys_irqrmpolicy(&kbd_hook_id);
 }
 
-/** @brief Reads a scancode from the kbc output buffer
- * @note Supports 2 byte scancodes, but it will wait for the second call to recognize the full scancode
- * @returns 0 upon success, 1 otherwise
- */
 int kbc_get_scancode() {
 	// Read status
 	if (util_sys_inb(STAT_REG, &st)) {
@@ -72,9 +55,6 @@ void kbd_ih() {
 	kbc_get_scancode();
 }
 
-/** 
- * @brief It's sole purpose is to parse both 1 & 2 byte scancodes 
- */
 void analyse_scancode() {
 	if (valid_scancode) { // Checks if the current scancode was invalid (error in the read operation)
 		// Whenever is_scancode_complete is false,
@@ -100,9 +80,6 @@ void analyse_scancode() {
 	}
 }
 
-/** 
- * @returns 0 upon success, 1 otherwise
- */
 int kbc_reenable_default_int() {
 	if (kbc_send_cmd(IN_BUF_CMD, READ_CMD_BYTE))
 		return 1;
@@ -122,5 +99,3 @@ int kbc_reenable_default_int() {
 
 	return 0;
 }
-
-/** @} end of Keyboard */

@@ -89,6 +89,7 @@ void free_level(Level_t *level);
  * @param level Pointer to the Level to update
  */
 void update_level(Level_t* level) ;
+
 /**
  * @brief Updates an arcade mode (single player) Level's required parts
  * @details Must be called every frame

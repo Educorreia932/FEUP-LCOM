@@ -1,9 +1,5 @@
 #include "video.h"
 
-/** @defgroup video_gr Graphics
- * @{
- */
-
 vbe_mode_info_summary_t vg_info;
 
 void* buffer_base = NULL;
@@ -189,7 +185,6 @@ int (vg_draw_pixel)(uint16_t x, uint16_t y, uint32_t color) {
 	return 0;	
 }
 
-// base_address + (y * x_res + x) * bytes_per_pixel;
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 
 	// Index mode
@@ -220,18 +215,11 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 }
 
-/** 
- * @brief Copies the double buffer data to the vram
- */
 void switch_double_buffer() {
 	// Copying values, since page flipping isn't possible
 	memcpy(buffer_base, double_buffer_base, size);
 }
 
-/**
- * @brief Actualy not a but, but a feature (used for the switchboard)
- * 
- */
 void glitched_switch_double_buffer() {
 	for (uint16_t i = 0; i < vg_info.y_res; i += 8) {
 		uint16_t color = rand();
@@ -244,5 +232,3 @@ void glitched_switch_double_buffer() {
 		}
 	}
 }
-
-/** @} end of Graphics */

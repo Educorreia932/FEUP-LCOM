@@ -2,6 +2,14 @@
 
 #include <lcom/lcf.h>
 
+/** @file utils.h */
+
+/** @defgroup utils Utils
+ * @brief Several useful functions that didn't exactly "fit" in any other module
+ * @{
+ */
+
+/** @brief Number of calls of util_sys_inb */
 extern unsigned long int no_of_calls;
 
 /** 
@@ -20,7 +28,7 @@ int (util_get_MSB) (uint16_t val, uint8_t *msb);
 
 /** 
  * @brief Invokes sys_inb() system call but reads the value into a uint8_t variable. 
- * @param port THe port that is to be read
+ * @param port The port that is to be read
  * @param value Address of the 8-bit variable to be update with the value read
  * @returns 0 upon success, 1 otherwise 
  */
@@ -45,6 +53,19 @@ uint8_t (kbc_read_outbf) (uint8_t port, uint8_t *content, bool isMouse);
  */
 uint8_t restore_kbc_byte();
 
+/**
+ * @brief Converts a far pointer to a physical one
+ * 
+ * @param far_ptr Far pointer to be converted
+ * @return Physical Address
+ */
 phys_bytes far_ptr_to_linear(uint32_t far_ptr);
 
+/**
+ * @brief Converts a linear pointer to a virtual one
+ * 
+ * @param linear_ptr Physical address to be converted
+ * @param map Memory map
+ * @return Converted 
+ */
 void* linear_to_virt(uint32_t linear_ptr, mmap_t *map);

@@ -3,7 +3,10 @@
 #include "i8042.h"
 #include "utils.h"
 
+/** @file mouse.h */
+
 /** @defgroup mouse Mouse
+ * @brief Code used to interact with the Mouse 
  * @{
  */
 
@@ -12,6 +15,8 @@ extern struct packet mouse_parsed_packet;
 
 /** 
  * @brief Susbcribes mouse interrupts 
+ * @details Sends the bit number for the interrupt through bit_no and saves the hook id on mouse_hook_id to be used later for unsubscribing and other actions 
+ * @param bit_mask Mask with Mouse's IRQ line
  * @returns 0 on success, non-zero otherwise
  */
 uint8_t (mouse_subscribe_int)(uint32_t *bit_mask);
@@ -36,12 +41,13 @@ uint8_t mouse_disable_int();
 
 /** 
  * @brief Handles mouse interrutps.
- * Reads the status register and the output buffer (OB).
+ * @details Reads the status register and the output buffer (OB).
  * @note If there was some error, the byte read from the OB should be discarded.
  */
 void (mouse_ih)();
 
-/** 
+/**
+ * @brief Handles the data (mouse packets) received
  * @returns 0 on success, 1 otherwise
  */ 
 uint8_t (mouse_data_handler)();
@@ -65,7 +71,7 @@ uint8_t mouse_data_reporting_disable();
 uint8_t mouse_set_stream_mode();
 
 /** 
- * @brief Sends cmd to mouse signaling we want to read a packet 
+ * @brief Sends command to mouse signaling we want to read a packet 
  * @returns 0 on success, 1 otherwise
 */
 uint8_t mouse_read_data();

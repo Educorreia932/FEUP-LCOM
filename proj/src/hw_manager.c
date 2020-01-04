@@ -83,7 +83,6 @@ void hw_manager_unsubscribe_int() {
 	// UART
 	uart_free_receiver_queue();
 	uart_unsubscribe_int();
-
 }
 
 /* INT HANDLER STUFF */
