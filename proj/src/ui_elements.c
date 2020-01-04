@@ -2,7 +2,6 @@
 #include "input_events.h"
 #include "mouse_cursor.h"
 #include "math_utils.h"
-#include "utils.h"
 
 /* COLOR CHANGES IN THE UI */
 #define COLOR_WHEN_HOVERED 0xEF5D
@@ -622,13 +621,27 @@ void render_knob(Knob_t* knob) {
 /** 
  * @brief Represents a single digit (0 to 9)
  */
-struct Number {
+typedef struct Number {
     Rect_t rect; 
     Sprite_t* sprite;
     uint8_t value;
+} Number_t;
+
+// All the file names (in the correct order)
+static const char* number_file_names[10] = {
+    "ui/0.bmp",
+    "ui/1.bmp",
+    "ui/2.bmp",
+    "ui/3.bmp",
+    "ui/4.bmp",
+    "ui/5.bmp",
+    "ui/6.bmp",
+    "ui/7.bmp",
+    "ui/8.bmp",
+    "ui/9.bmp"
 };
 
-Number_t* new_number(uint8_t value, Rect_t rect) {
+static Number_t* new_number(uint8_t value, Rect_t rect) {
     Number_t* number = (Number_t*) malloc(sizeof(Number_t));
     
     if (number == NULL) {
@@ -637,167 +650,65 @@ Number_t* new_number(uint8_t value, Rect_t rect) {
     }
     
     number->rect = rect;
-
-    char* sprite_file_name;
-
-    // Tried to play with strcat but this was the easiest way
-    switch (value) {
-        case 0:
-            sprite_file_name = "ui/0.bmp";
-            break;
-        case 1:
-            sprite_file_name = "ui/1.bmp";
-            break;
-        case 2:
-            sprite_file_name = "ui/2.bmp";
-            break;
-        case 3:
-            sprite_file_name = "ui/3.bmp";
-            break;
-        case 4:
-            sprite_file_name = "ui/4.bmp";
-            break;
-        case 5:
-            sprite_file_name = "ui/5.bmp";
-            break;
-        case 6:
-            sprite_file_name = "ui/6.bmp";
-            break;
-        case 7:
-            sprite_file_name = "ui/7.bmp";
-            break;
-        case 8:
-            sprite_file_name = "ui/8.bmp";
-            break;
-        case 9:
-            sprite_file_name = "ui/9.bmp";
-            break;
-    }
-
-    if (strcmp("", sprite_file_name) == 0)
-        number->sprite = NULL;
+    number->value = max_uint8(0, value);
     
-    else {
-        number->sprite = new_sprite(0, 0, 1, sprite_file_name);
-    
-        if (number->sprite == NULL) {
-            printf("new_button: Failed to create numbers's sprite\n");
-            free(number);
-            return NULL;
-        }
+    number->sprite = new_sprite(0, 0, 1, number_file_names[number->value]);
+
+    if (number->sprite == NULL) {
+        printf("new_button: Failed to create the Number's Sprite\n");
+        free(number);
+        return NULL;
     }
     
     return number;
 }
 
-bool update_number(Number_t* number, bool carry) {
-    if (carry) {
-        number->value++;
-
-        if (number->value == 10)
-            number->value = 0;
-
-        char* sprite_file_name;
-
-        switch (number->value) {
-            case 0:
-                sprite_file_name = "ui/0.bmp";
-                break;
-            case 1:
-                sprite_file_name = "ui/1.bmp";
-                break;
-            case 2:
-                sprite_file_name = "ui/2.bmp";
-                break;
-            case 3:
-                sprite_file_name = "ui/3.bmp";
-                break;
-            case 4:
-                sprite_file_name = "ui/4.bmp";
-                break;
-            case 5:
-                sprite_file_name = "ui/5.bmp";
-                break;
-            case 6:
-                sprite_file_name = "ui/6.bmp";
-                break;
-            case 7:
-                sprite_file_name = "ui/7.bmp";
-                break;
-            case 8:
-                sprite_file_name = "ui/8.bmp";
-                break;
-            case 9:
-                sprite_file_name = "ui/9.bmp";
-                break;
-            }
-
-        free_sprite(number->sprite);
-        number->sprite = new_sprite(0, 0, 1, sprite_file_name); 
-
-        return number->value == 0;
+static void free_number(Number_t* number) {
+    if (number == NULL) {
+        printf("free_number: Cannot free a NULL pointer\n");
+        return;
     }
 
-    return false;
+    free_sprite(number->sprite);
+
+    free(number);
 }
 
-void render_number(Number_t* number) {
-    draw_sprite(number->sprite, &number->rect, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+static bool update_number(Number_t* number, uint8_t new_value) {
+
+    if (number->value == new_value)
+        return true;
+    
+    free_sprite(number->sprite);
+
+    number->value = max_uint8(0, new_value);
+    number->sprite = new_sprite(0, 0, 1, number_file_names[number->value]);
+    if (number->sprite == NULL) {
+        // Should we panic here?
+        printf("update_number: Failed to create the Number's Sprite\n");
+        return false;
+    }
+
+    return true;
 }
 
-void set_number(Number_t* number, uint8_t value) {
-    number->value = value;
-
-    char* sprite_file_name;
-
-    switch (number->value) {
-        case 0:
-            sprite_file_name = "ui/0.bmp";
-            break;
-        case 1:
-            sprite_file_name = "ui/1.bmp";
-            break;
-        case 2:
-            sprite_file_name = "ui/2.bmp";
-            break;
-        case 3:
-            sprite_file_name = "ui/3.bmp";
-            break;
-        case 4:
-            sprite_file_name = "ui/4.bmp";
-            break;
-        case 5:
-            sprite_file_name = "ui/5.bmp";
-            break;
-        case 6:
-            sprite_file_name = "ui/6.bmp";
-            break;
-        case 7:
-            sprite_file_name = "ui/7.bmp";
-            break;
-        case 8:
-            sprite_file_name = "ui/8.bmp";
-            break;
-        case 9:
-            sprite_file_name = "ui/9.bmp";
-            break;
-        }
-
-    number->sprite = new_sprite(0, 0, 1, sprite_file_name);
+static void render_number(Number_t* number, uint16_t color_to_multiply) {
+    draw_sprite(number->sprite, &number->rect, color_to_multiply, SPRITE_NORMAL);
 }
 
 /** 
- * @brief Represents the score of the player in arcade mode, but can also be used to render a sequence of digits up to 999
+ * @brief Represents the score of the player in arcade mode, but can also be used to render a sequence of digits up to 65 535
  */
 struct Score {
-    Number_t* numbers;
-    uint16_t value;
-    size_t size;
-    float x;
-    float y;
+    Number_t** numbers;
+    uint16_t value, max_score;
+    uint8_t size;
+    uint16_t x, y;
+    uint16_t color;
 };
 
-Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) {
+Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size, uint16_t color) {
+
     Score_t* score = (Score_t*) calloc(1, sizeof(Score_t*));
     
     if (score == NULL) {
@@ -807,9 +718,26 @@ Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) {
 
     score->x = x;
     score->y = y;
-    score->size = size;
+    
+    //  Auto adjusts size to the possible values
+    score->size = clamp_uint8(size, 1, 5);
+    
+    switch (score->size) {
+        case 1:
+            score->max_score = 9; break;
+        case 2:
+            score->max_score = 99; break;
+        case 3:
+            score->max_score = 999; break;
+        case 4:
+            score->max_score = 9999; break;
+        case 5:
+            score->max_score = 0xFF; break;
+    }
+    value = min_uint16(value, score->max_score);
+    score->value = value;
 
-    score->numbers = (Number_t*) calloc(score->size, sizeof(Number_t));
+    score->numbers = (Number_t**) calloc(score->size, sizeof(Number_t*));
 
     if (score->numbers == NULL) {
         printf("new_score: Failed to allocate memory for the numbers\n");
@@ -817,11 +745,15 @@ Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) {
         return NULL;   
     }
 
-    uint16_t x_pos = x + 120;
+    score->color = color;
 
+    uint16_t x_pos = x + 40 * score->size;
+    uint16_t r;
+    
     for (size_t i = 0; i < score->size; i++) {
-        // printf("digit %u\n", get_digit(value, i));
-        score->numbers[i] = *new_number(get_digit(value, i), rect(x_pos - i * 40, y, 36, 48));
+        r = value % 10;
+        value /= 10;
+        score->numbers[i] = new_number(r, rect(x_pos - i * 40, y, 36, 48));
     }
 
     return score;
@@ -833,31 +765,44 @@ void free_score(Score_t* score) {
         return;
     }
 
-    for (size_t i = 0; i < score->size; i++)
-        if (score->numbers[i].sprite != NULL)
-            free_sprite(score->numbers[i].sprite);
-    
+    for (uint8_t i = 0; i < score->size; ++i) {
+        free_number(score->numbers[i]);
+    }
     free(score->numbers);
-
     free(score);
 }
 
-void update_score(Score_t* score) {
-    if (score->value < 999) {
-            bool carry = true;
+inline uint16_t get_score(Score_t* score) {
+    return score->value;
+}
 
-    for (size_t i = 0; i < score->size; i++)
-        carry = update_number(&score->numbers[i], carry);
+void set_score(Score_t* score, uint16_t value) {
+    uint16_t r;
+    value = min_uint16(value, score->max_score);
+    score->value = value;
+
+    for (size_t i = 0; i < score->size; i++) {
+        r = value % 10;
+        value /= 10;
+        update_number(score->numbers[i], r);
     }
+}
+
+void update_score(Score_t* score) {
+    set_score(score, score->value + 1);
+}
+
+void score_set_color(Score_t* score, uint16_t color) {
+    score->color = color;
 }
 
 void render_score(Score_t* score) {
     for (size_t i = 0; i < score->size; i++)
-        render_number(&score->numbers[i]);
+        render_number(score->numbers[i], score->color);
 }
 
 void reset_score(Score_t* score) {
     for (size_t i = 0; i < score->size; i++)
-        set_number(&score->numbers[i], 0);
+        update_number(score->numbers[i], 0);
 }
 

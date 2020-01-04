@@ -44,6 +44,7 @@
 		"utility": "c",
 		"switchboard.h": "c",
 		"cstdlib": "cpp",
-		"spikes.h": "c"
+		"spikes.h": "c",
+		"iterator": "c"
 	},
 }
