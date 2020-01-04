@@ -197,9 +197,14 @@ static void gm_update_arcade_versus() {
 						received_update = true;
 						break;
 					case HEADER_ARCADE_LASER:
+						if (hw_manager_uart_size() < HEADER_ARCADE_LASER_SIZE) {
+							keep_going = false;
+							break;
+						}
 						hw_manager_uart_pop();
 
 						uint16_t height = (hw_manager_uart_pop() << 8) | hw_manager_uart_pop();
+						printf("Received: %x\n", height);
 						arcade_add_laser(gm->level->lasers, height);
 						break;
 				}
