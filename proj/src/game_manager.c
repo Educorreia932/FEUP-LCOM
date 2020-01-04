@@ -370,6 +370,8 @@ static void gm_render_main_menu() {
 
 void gm_start_level() {
 
+	gm->normal_rendering = true;
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -400,6 +402,9 @@ void gm_start_level() {
 }
 
 void gm_start_switchboard() {
+
+	gm->normal_rendering = true;
+	
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;
@@ -430,6 +435,8 @@ void gm_start_switchboard() {
 
 void gm_start_arcade() {
 
+	gm->normal_rendering = true;
+
 	if (gm->s_board != NULL) {
 		free_switchboard(gm->s_board);
 		gm->s_board = NULL;
@@ -459,6 +466,9 @@ void gm_start_arcade() {
 }
 
 void gm_start_main_menu() {
+
+	gm->normal_rendering = true;
+	
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;

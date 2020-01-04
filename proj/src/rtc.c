@@ -94,16 +94,16 @@ void rtc_ih() {
 	cause = sys_inb(RTC_DATA_REG, &regA);
 	
 	// Alarm interrupts
-	if (cause & RTC_AIE)
-		printf("alarm");
+	// if (cause & RTC_AIE)
+		// printf("alarm");
 
 	// Update interrupts
-	if (cause & RTC_UIE)
-		printf("update");
+	// if (cause & RTC_UIE)
+		// printf("update");
 
 	// Periodic interrupts
-	if (cause & RTC_PIE)
-		printf("periodic");
+	// if (cause & RTC_PIE)
+		// printf("periodic");
 }
 
 int rtc_enable_alarm_int() {
@@ -150,5 +150,5 @@ void rtc_set_alarm(uint32_t period) {
 
 	rtc_enable_alarm_int();
 
-	printf("Alarm set to: %x:%x:%x\n", dec_to_bcd(t.hour), dec_to_bcd(t.minutes), dec_to_bcd(t.seconds));
+	// printf("Alarm set to: %x:%x:%x\n", dec_to_bcd(t.hour), dec_to_bcd(t.minutes), dec_to_bcd(t.seconds));
 }
