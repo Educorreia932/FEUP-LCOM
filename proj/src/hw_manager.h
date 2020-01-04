@@ -148,6 +148,12 @@ void hw_manager_uart_ih();
  * @param to_send 
  */
 void hw_manager_uart_send_char(uint8_t to_send);
+
+/**
+ * @brief Clear all data from the receiver Queue
+ * 
+ */
+void hw_manager_uart_clear();
 /**
  * @brief Returns the byte at the front of the data receiver Queue
  * 

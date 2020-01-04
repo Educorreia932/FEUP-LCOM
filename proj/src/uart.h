@@ -169,6 +169,7 @@ uint8_t uart_unsubscribe_int();
 void uart_initialize_receiver_queue();
 void uart_free_receiver_queue();
 
+void uart_receiver_q_clear();
 uint8_t uart_receiver_q_front();
 uint8_t uart_receiver_q_pop();
 bool uart_receiver_q_empty();

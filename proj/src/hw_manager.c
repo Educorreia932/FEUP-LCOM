@@ -169,6 +169,10 @@ inline void hw_manager_uart_send_char(uint8_t to_send) {
 	uart_send_char(to_send);
 }
 
+inline void hw_manager_uart_clear() {
+	uart_receiver_q_clear();
+}
+
 inline uint8_t hw_manager_uart_front() {
 	return uart_receiver_q_front();
 }

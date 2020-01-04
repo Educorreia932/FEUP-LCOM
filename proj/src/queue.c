@@ -1,7 +1,10 @@
 /**
- * Queue implementation using linked list in C.
- * Credit to https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html
- * Major changes done by us though
+  * @details Queue implementation using linked list in C\n
+  * Partial credit to https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html \n
+  * This original implementation was REALLY altered\n
+  * It was full of bugs, you could only have one queue per program, the datatype was  wrong, it has major bugs (memory leaks, wrong pointers that impacted the rest of the program), it was only two nodes (front and rear) that you had to play around with both of them as arguments\n
+  * TL:DR\n
+  * It was buggy as impossible to work with, so we added a LOT of code, fixed all its bugs and implemented a proper Queue struct
  */
 
 #include "queue.h"
@@ -31,6 +34,11 @@ Queue_t* new_queue() {
 }
 
 void free_queue(Queue_t* q) {
+    queue_clear(q);
+    free(q);
+}
+
+void queue_clear(Queue_t* q) {
 
     node_t *cur_node = q->front, *next_node;
 
@@ -45,9 +53,9 @@ void free_queue(Queue_t* q) {
         }
     }
 
-    free(q);
-
-    return;
+    q->front = NULL;
+    q->rear = NULL;
+    q->size = 0;
 }
 
 /**
