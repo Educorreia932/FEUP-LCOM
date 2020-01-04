@@ -4,6 +4,13 @@
 
 #include "utils.h"
 
+/** @file uart.h */
+
+/** @defgroup uart UART
+ * @brief Code used to interact with the UART and connect two PC's via Serial Port 
+ * @{
+ */
+
 #define SER_1_IRQ 4
 #define SER_2_IRQ 3
 
@@ -32,7 +39,7 @@
 #define LCR_NO_BITS_PER_CHAR (BIT(1) | BIT(0))
 #define LCR_STOP_BIT BIT(2)
 #define LCR_PARITY_CONTROL_MASK (BIT(5) | BIT(4) | BIT(3))
-// We would include no parity here, but it's a strange special case
+/** @note We would include no parity here, but it's a strange special case */
 #define LCR_PARITY_ODD BIT(3)
 #define LCR_PARITY_EVEN (BIT(4) | BIT(3))
 #define LCR_PARITY_ALWAYS_1 (BIT(5) | BIT(4))
@@ -51,17 +58,17 @@
 #define LSR_RECEIVER_DATA BIT(0)
 /**
  * @brief Set to 1 when a characters received is overwritten by another one.
- *      Reset upon reading LSR. 
+ * @details Reset upon reading LSR. 
  */
 #define LSR_OVERRUN_ERROR BIT(1)
 /**
  * @brief Set to 1 when a character with a parity error is received.
- *      Reset upon reading LSR.
+ * @details Reset upon reading LSR.
  */
 #define LSR_PARITY_ERROR BIT(2)
 /**
  * @brief Set to 1 when a received character does not have a valid Stop bit.
- *      Reset upon reading LSR.
+ * @details Reset upon reading LSR.
  */
 #define LSR_FRAMING_ERROR BIT(3)
 /**
@@ -69,9 +76,7 @@
  *  Reset upon reading LSR.
  */
 #define LSR_BREAK_INTERRUPT BIT(4)
-/**
- * @brief When set, means that the UART is ready to accept a new character for transmitting.
- */
+/* @brief When set, means that the UART is ready to accept a new character for transmitting. */
 #define LSR_THR_EMPTY BIT(5)
 /**
  * @brief When set, means that both the THR and the Transmitter Shift Register are both empty. 
@@ -120,7 +125,6 @@ erated when there is a change in the state of bits 1 to 4, i.e.
 
 ///@}
 
-
 /** @name Interrupt Identification Register (IIR) */
 ///@{
 
@@ -132,52 +136,78 @@ erated when there is a change in the state of bits 1 to 4, i.e.
  * @brief A mask to be used to distinguish the source of the interrupts.
  */
 #define IIR_INT_SOURCE_MASK (BIT(1) | BIT(2) | BIT(3))
-/**
- * @brief Receiver Line Status.
- */
+/** @brief Receiver Line Status. */
 #define IIR_INT_SOURCE_RECEIVER_LINE_STATUS (BIT(1) | BIT(2))
-/**
- * @brief Reived Data Available.
- */
+/** @brief Received Data Available. */
 #define IIR_INT_SOURCE_RECEIVED_DATA_AVAILABLE BIT(2)
-/**
- * @brief Character Timeout (FIFO), discussed below.
- */
+/** @brief Character Timeout (FIFO), discussed below. */
 #define IIR_INT_SOURCE_CHARACTER_TIMEOUT_FIFO (BIT(3) | BIT(2))
 /**
  * @brief Transmitter Holding Register Empty.
  */
 #define IIR_INT_SOURCE_THR_EMPTY BIT(1)
-/**
+/*
  * @brief Modem Status.
  */
 #define IIR_INT_SOURCE_MODEM_STATUS 0
 ///@}
 
-
-
 /* VARIABLES */
 
+/** @brief Char received via UART */
 uint8_t uart_received_char;
-
 
 /* FUNCTIONS */
 
+/** 
+ * @brief Subscribes and enables UART interrupts. 
+ * @details Sends the bit number for the interrupt through bit_no and saves the hook id on uart_hook_id to be used later for unsubscribing and other actions 
+ * @returns 0 on sucess, 1 otherwise
+ */
 uint8_t uart_subscribe_int(uint32_t *bit_mask);
 uint8_t uart_unsubscribe_int();
-
+ 
+/** @brief Creates the queue object that is going to be used as the UART information receiver */
 void uart_initialize_receiver_queue();
+
+/** @brief Frees the UART's receiver queue object*/
 void uart_free_receiver_queue();
 
+/** @brief Clears the UART's receiver queue */
 void uart_receiver_q_clear();
 uint8_t uart_receiver_q_front();
 uint8_t uart_receiver_q_pop();
+
+/**
+ * @brief Sees if the UART receiver is empty or not
+ * 
+ * @returns True, if the UART queue is empty, false otherwise
+ */
 bool uart_receiver_q_empty();
 uint8_t uart_receiver_q_size();
 
+/**
+ * @brief Prints the UART configuration in a human-readable way
+ * 
+ * @returns 0 upon success, 1 otherwise
+ */
 uint8_t uart_print_conf();
+
+/**
+ * @brief Sets the UART configuration to the one we're using
+ * 
+ * @returns 0 upon success, 1 otherwise
+ */
 uint8_t uart_set_conf();
 
+/**
+ * @brief Sends a 8-bit char over the UART
+ * 
+ * @param 8-bit char to be setn
+ * @returns 0 on success, 1 otherwise
+ */
 uint8_t uart_send_char(uint8_t to_send);
 
 void uart_ih();
+
+/** @} end of UART */

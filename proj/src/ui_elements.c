@@ -12,7 +12,6 @@
 
 /** @name Button */
 ///@{
-
 struct Button {
     Rect_t rect;
     Sprite_t* sprite;

@@ -126,7 +126,6 @@ uint8_t uart_print_conf() {
 }
 
 uint8_t uart_set_conf() {
-
     /* LCR */
     // Set stop bit to true and toggle DLAB to write the bit rate
     uint8_t lcr = LCR_STOP_BIT | LCR_DLAB;
@@ -171,7 +170,6 @@ uint8_t uart_set_conf() {
     return 0;
 }
 
-
 // Called when the when we receive the THR empty interrupt
 static void uart_thr_empty_ih() {
     
@@ -180,7 +178,6 @@ static void uart_thr_empty_ih() {
 }
 
 uint8_t uart_send_char(uint8_t to_send) {    
-
     sys_outb(COM1_BASE + UART_REG_THR, to_send);
 
     return 0;

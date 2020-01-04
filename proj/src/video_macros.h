@@ -2,27 +2,37 @@
 
 #include <lcom/lcf.h>
 
+/** @file video_macros.h */
+
+/** @addtogroup video_gr
+ * @{
+*/
+
+/** @brief Physical Address base */
 #define BASE_PHYS_ADDRESS 0
+/** @brief Memory size */
 #define MiB BIT(20)
+/** @brief Video Graphics Indexed Color Mode */
 #define VG_MODE_INDEXED 4
+/** @brief Video Graphics Direct Color Mode */
 #define VG_MODE_DIRECT 6
 
-
-/* VBE FUNCTIONS */
-
+/** @name VBE Functions 
+ * @{
+*/
+/** @brief VBE Function Indicator */
 #define VBE_AH_FUNCTION_INDICATOR 0x4F
-#define VBE_AL_CONTROLLER_INFO 0x00
+/** @brief Get Mode Info */
 #define VBE_AL_MODE_INFO 0x01
+/** @brief Set Mode */
 #define VBE_AL_SET_MODE 0x02
+/** @brief Set Mode Argument */
 #define VBE_BX_SET_MODE_ARGUMENT BIT(14)
-
+/** @brief VBE Interrupt Number */
 #define VBE_INTERRUPT_NUMBER 0x10
-
-#define VBE_CONTROLLER_MODE_LIST_TERMINATOR 0xFFFF
-
-// Returns are on the AX
+/** @brief Return Success */
+/** @note Returns are on the AX */
 #define VBE_FUNCTION_RET_SUCCESS 0x00
-#define VBE_FUNCTION_RET_FAIL 0x01
-#define VBE_FUNCTION_RET_NOT_SUPPORTED 0x02
-#define VBE_FUNCTION_RET_INVALID_IN_CURRENT_MODE 0x03
+/** @} */
 
+/** @} end of Video Macros */

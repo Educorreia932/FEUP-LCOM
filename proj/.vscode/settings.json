@@ -45,6 +45,6 @@
 		"switchboard.h": "c",
 		"cstdlib": "cpp",
 		"spikes.h": "c",
-		"iterator": "c"
+		"keyboard.h": "c"
 	},
 }

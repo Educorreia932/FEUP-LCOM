@@ -8,10 +8,6 @@
 #include "hw_manager.h"
 #include "power_ups.h"
 
-/** @defgroup player Player
- * @{
- */
-
 /* PHYSICS STUFF */
 #define BASE_GRAVITY 800.0f
 #define FALLING_MULT 1.6f
@@ -917,5 +913,3 @@ static void player_send_info(Player_t* player) {
 
 	hw_manager_uart_send_char(HEADER_TERMINATOR);
 }
-
-/** @} end of Player */
