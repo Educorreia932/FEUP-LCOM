@@ -9,7 +9,7 @@
   *
   * @brief	Handles a Queue of uint8_t data types
   * @details Queue implementation using linked list in C
-  * @note Partial credit to https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html \n
+  * @note Inspired by https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html \n
   * This original implementation was REALLY altered\n
   * It was full of bugs, you could only have one queue per program, the datatype was  wrong, it has major bugs (memory leaks, wrong pointers that impacted the rest of the program), it was only two nodes (front and rear) that you had to play around with both of them as arguments\n
   * TL:DR\n

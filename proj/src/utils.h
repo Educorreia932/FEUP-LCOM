@@ -48,8 +48,3 @@ uint8_t restore_kbc_byte();
 phys_bytes far_ptr_to_linear(uint32_t far_ptr);
 
 void* linear_to_virt(uint32_t linear_ptr, mmap_t *map);
-
-/** 
- * @brief Function to return the digit of n-th position of num. Position starts from 0
- */
-uint8_t get_digit(uint8_t num, uint8_t n);

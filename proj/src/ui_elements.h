@@ -86,24 +86,35 @@ void update_knob(Knob_t* knob);
 void render_knob(Knob_t* knob);
 
 /*----------------------------*/
-/*------    NUMBERS    -------*/
+/*------     SCORE     -------*/
 /*----------------------------*/
-
-typedef struct Number Number_t;
 
 typedef struct Score Score_t;
 
 /** 
+ * @brief Creates a new score object
+ * @details Auto adjust both the size and the value to fit the Score accordingly
+ * 
  * @param x Horizontal position
- * @param y Vertical position
+ * @param y Vertical positions
  * @param value Value to be displayed
  * @param size Number of digits to be displayed
+ * @param color Color of the rendered Score
+ * 
+ * @return Score_t* Pointer to the fully built Score object on success\n
+ * NULL otherwise
  */
-Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size) ;
+Score_t* new_score(uint16_t x, uint16_t y, uint16_t value, uint8_t size, uint16_t color);
+/**
+ * @brief Frees a Score object from memory
+ * 
+ * @param score Pointer to the Score to be freed
+ */
 void free_score(Score_t* score);
 
+uint16_t get_score(Score_t* score);
+void set_score(Score_t* score, uint16_t value);
 void update_score(Score_t* score);
-
+void score_set_color(Score_t* score, uint16_t color);
 void render_score(Score_t* score);
-
 void reset_score(Score_t* score);

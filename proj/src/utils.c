@@ -120,17 +120,3 @@ phys_bytes far_ptr_to_linear(uint32_t far_ptr) {
 void* linear_to_virt(uint32_t linear_ptr, mmap_t *map) {
 	return (void*) (((uint32_t) map->virt) + (linear_ptr - map->phys));
 }
-
-uint8_t get_digit(uint8_t num, uint8_t n) {
-    uint8_t r, t1, t2;
- 
-    t1 = pow(10, n+1);
-    r = num % t1;
- 
-    if (n > 0) {
-        t2 = pow(10, n);
-        r = r / t2;
-    }
-
-    return r;
-}

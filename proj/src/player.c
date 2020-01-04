@@ -129,7 +129,7 @@ void player_win() {
 	int seconds_end = hw_manager_rtc_read_date_in_seconds();
 	int seconds_difference = seconds_end - seconds_beginning;
 	get_game_manager()->level->player->game_won = true;
-	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3);
+	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
 }
 
 // PLAYER UPDATES
@@ -370,7 +370,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	player->score = NULL;
 	// Arcade
 	if (player->arcade_mode)
-		player->score = new_score(800, 75, 0, 3);
+		player->score = new_score(800, 75, 0, 3, COLOR_NO_MULTIPLY);
 	
 	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
 	player->game_won = false;
@@ -802,7 +802,7 @@ PlayerTwo_t* new_player_two() {
 
 	player_two->pos = vec2d(60.0f, 704.0f);
 
-	player_two->score = new_score(800, 140, 0, 3);
+	player_two->score = new_score(800, 140, 0, 3, COLOR_NO_MULTIPLY);
 
 	if (player_two->score == NULL) {
         printf("new_player_two: Failed to create the score\n");
