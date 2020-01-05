@@ -130,6 +130,13 @@ void slider_hide(Slider_t* slider);
 void slider_show(Slider_t* slider);
 void slider_activate(Slider_t* slider);
 void slider_deactivate (Slider_t* slider);
+
+/** 
+ * @brief Activates or deactivates a Slider
+ * 
+ * @param button Pointer to the Slider object to be (de)activated
+ * @param is_active Specifies whether the slider is to be set with active or not
+ */
 void slider_set_activation(Slider_t* slider, bool is_active);
 
 void update_slider(Slider_t* slider);
@@ -152,6 +159,13 @@ void knob_hide(Knob_t* knob);
 void knob_show(Knob_t* knob);
 void knob_activate(Knob_t* knob);
 void knob_deactivate (Knob_t* knob);
+
+/** 
+ * @brief Activates or deactivates a Knob
+ * 
+ * @param button Pointer to the Knob object to be (de)activated
+ * @param is_active Specifies whether the knob is to be set with active or not
+ */
 void knob_set_activation(Knob_t* knob, bool is_active);
 
 void knob_reset_state(Knob_t *knob);

@@ -208,6 +208,9 @@ uint8_t uart_set_conf();
  */
 uint8_t uart_send_char(uint8_t to_send);
 
+/**
+ * @brief Handles UART's interrupts
+ */
 void uart_ih();
 
 /** @} end of UART */
