@@ -7,6 +7,9 @@
 #define ARCADE_VERSUS_DEATH_BUFFER 30
 #define ARCADE_VERSUS_BOTH_DEAD_TIME_DEFAULT 0xFFFFFFFF
 
+// Forward declaration
+static void arcade_versus_win(Level_t *level);
+
 Level_t* new_arcade_level(bool is_single_player) {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
 
@@ -62,8 +65,8 @@ Level_t* new_arcade_level(bool is_single_player) {
 
 	// Multiplayer
 	if (!is_single_player) {
-		level->score_1 = new_score(372, 40, 0, 3, COLOR_RED);
-		level->score_2 = new_score(532, 40, 0, 3, COLOR_BLUE);
+		level->score_1 = new_score(252, 40, 0, 3, COLOR_RED);
+		level->score_2 = new_score(572, 40, 0, 3, COLOR_BLUE);
 		level->player_two = new_player_two();
 	}
 	else {
@@ -235,35 +238,41 @@ void update_arcade_level(Level_t* level) {
 }
 
 void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
-	++level->frames_since_start;
-	arcade_move_lasers(level->lasers);
-	if (level->laser_master) {
-		if (arcade_spawn_next_laser(level->lasers)) {
-			uint16_t height = arcade_generate_laser_height();
-			arcade_add_laser(level->lasers, height);
-			arcade_lasers_set_correct_delay(level->lasers);
 
-			uint8_t height_msb, height_lsb;
-			if (!(util_get_MSB(height, &height_msb) || util_get_LSB(height, &height_lsb))) {
-				hw_manager_uart_send_char(HEADER_ARCADE_LASER);
-				hw_manager_uart_send_char(height_msb);
-				hw_manager_uart_send_char(height_lsb);
-				hw_manager_uart_send_char(HEADER_TERMINATOR);
+	++level->frames_since_start;
+
+	if (level->frames_since_start < 30 * 60) {
+				arcade_move_lasers(level->lasers);
+		if (level->laser_master) {
+			if (arcade_spawn_next_laser(level->lasers)) {
+				uint16_t height = arcade_generate_laser_height();
+				arcade_add_laser(level->lasers, height);
+				arcade_lasers_set_correct_delay(level->lasers);
+
+				uint8_t height_msb, height_lsb;
+				if (!(util_get_MSB(height, &height_msb) || util_get_LSB(height, &height_lsb))) {
+					hw_manager_uart_send_char(HEADER_ARCADE_LASER);
+					hw_manager_uart_send_char(height_msb);
+					hw_manager_uart_send_char(height_lsb);
+					hw_manager_uart_send_char(HEADER_TERMINATOR);
+				}
 			}
 		}
+		update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
+		if (bytes != NULL) {
+			update_player_two(level->player_two, bytes);
+		}
 	}
-	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
-	if (bytes != NULL)
-		update_player_two(level->player_two, bytes);
-
+	else if (level->frames_since_start == 30 * 60) {
+			arcade_versus_win(level);
+	}
+	
 }
 
 void reset_arcade_mode(Level_t* level) 
 {
 	level->frames_since_start = 0;
-
 	arcade_reset_lasers(level->lasers);
-
 }
 
 void render_level(Level_t *level) {
@@ -278,6 +287,9 @@ void render_level(Level_t *level) {
 		if (level->pu[i] != NULL)
 			render_power_up(level->pu[i]);
 	}
+
+	if (level->level_over)
+		draw_sprite_floats(level->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 
 	render_player_ui(level->player);
 }
@@ -297,19 +309,62 @@ void render_arcade_single(Level_t* level) {
 }
 
 void render_arcade_versus(Level_t* level) {
-	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
-	render_platforms(level->platforms);
+	if (!level->level_over) {
+		draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+		render_platforms(level->platforms);
 
-	render_player_two_background(level->player_two);
-	render_player_two_foreground(level->player_two);
-	
-	render_player_background(level->player);
-	render_player_foreground(level->player);
+		render_player_two_background(level->player_two);
+		render_player_two_foreground(level->player_two);
+		
+		render_player_background(level->player);
+		render_player_foreground(level->player);
 
-	render_lasers(level->lasers);
-	render_player_ui(level->player);
+		render_lasers(level->lasers);
+		render_player_ui(level->player);
+
+	}
+	else
+		if (level->win_screen != NULL)
+			draw_sprite_floats(level->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 
 	render_score(level->score_1);
 	render_score(level->score_2);
 }
 
+static void arcade_versus_win(Level_t *level) {
+
+	level->level_over = true;
+
+	uint16_t score_1, score_2;
+	score_1 = score_get_value(level->score_1);
+	score_2 = score_get_value(level->score_2);
+
+	free_score(level->score_1);
+	level->score_1 = NULL;
+	free_score(level->score_2);
+	level->score_2 = NULL;
+
+	if (score_1 == score_2) {
+		level->win_screen = new_sprite(0, 0, 1, "arcade_draw.bmp");
+	}
+	else if (score_1 > score_2) {
+		if (level->laser_master) {
+			level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
+		}
+		else {
+			level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
+		}
+	}
+	else {
+		if (level->laser_master) {
+			level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
+		}
+		else {
+			level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
+		}
+	}
+
+	level->score_1 = new_score(252, 300, score_1, 3, COLOR_RED);
+	level->score_2 = new_score(572, 300, score_2, 3, COLOR_BLUE);
+	
+}

@@ -64,7 +64,6 @@ struct Player {
 	Slider_t *jump_slider, *speed_slider;
 	Button_t **laser_buttons;
 
-	bool game_won;
     Score_t* time_took;
 };
 
@@ -125,10 +124,12 @@ void player_win() {
 	int seconds_beginning =	get_game_manager()->level->player->seconds_beginning;
 	int seconds_end = hw_manager_rtc_read_date_in_seconds();
 	int seconds_difference = seconds_end - seconds_beginning;
-	get_game_manager()->level->player->game_won = true;
+	get_game_manager()->level->level_over = true;
 	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
 
-	if (get_game_manager()->gamemode & GM_UART) {
+	get_game_manager()->level->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
+
+	if (get_game_manager()->gamemode & GM_LEVEL_UART) {
 		uint8_t seconds_difference_LSB, seconds_difference_MSB;
 
 		util_get_LSB(seconds_difference, &seconds_difference_LSB);
@@ -376,7 +377,6 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	// printf("new_testing_player: Finished making player\n");
 
 	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
-	player->game_won = false;
 	player->time_took = NULL;
 
 	return player;
@@ -595,7 +595,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	}
 
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
-		if (pu[i] != NULL && !player->game_won)
+		if (pu[i] != NULL && !get_game_manager()->level->level_over)
 			update_power_up(pu[i], &(player->rect));
 	}
 
@@ -732,7 +732,7 @@ void render_player_foreground(Player_t* player) {
 }
 
 void render_player_ui(Player_t *player) {
-	if (!player->game_won){
+	if (!get_game_manager()->level->level_over){
 		if (player->ui_controls) {
 		render_slider(player->speed_slider);
 		render_slider(player->jump_slider);
@@ -742,11 +742,8 @@ void render_player_ui(Player_t *player) {
 		render_button(player->laser_buttons[2]);
 		}
 	}
-
-	if (player->game_won) {
-		draw_sprite_floats(get_game_manager()->level->win_screen, 0, 0, player->main_color, SPRITE_NORMAL);
+	else
 		render_score(player->time_took);
-	}
 }
 
 #define PLAYER_TWO_X_MSB 0
