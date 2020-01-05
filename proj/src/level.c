@@ -81,6 +81,15 @@ Level_t* prototype_level(bool is_single_player) {
 		return NULL;
 	}
 
+	// Winning Screen
+	level->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
+	if (level->win_screen == NULL) {
+		printf("prototype_level: Failed to create the winning screen Sprite\n");
+		free_sprite(level->win_screen);
+		free(level);
+		return NULL;
+	}
+
 	// Player
 	level->player = new_player(is_single_player, false, UNLOCKED_JUMP | UNLOCKED_SPEED);
 	if (level->player == NULL) {
@@ -244,7 +253,6 @@ void reset_arcade_mode(Level_t* level) {
 	arcade_reset_lasers(level->lasers);
 }
 
-
 void render_level(Level_t *level) {
 	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
 	render_player_background(level->player);
@@ -291,3 +299,4 @@ void render_arcade_versus(Level_t* level) {
 	render_score(level->score_1);
 	render_score(level->score_2);
 }
+

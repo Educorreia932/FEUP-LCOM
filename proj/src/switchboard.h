@@ -44,6 +44,7 @@ void switchboard_set_default_powers(SwitchBoard_t* sw, PlayerUnlockedPowers defa
  * @param sw Pointer to the Switchboard to operate over
  * @param new_powers Adds all the powers of this enum to the switchboard
  */
+
 void switchboard_unlock_powers(SwitchBoard_t* sw, PlayerUnlockedPowers new_powers);
 /**
  * @brief Called when the player respawns, so that all the needed powers are reset
@@ -51,6 +52,14 @@ void switchboard_unlock_powers(SwitchBoard_t* sw, PlayerUnlockedPowers new_power
  * @param sw Pointer to the Switchboard to operate over
  */
 void switchboard_player_respawn(SwitchBoard_t* sw);
+
+/**
+ * @brief The player won the game, now the winning screen must be displayed
+ * 
+ * @param sw Pointer to the Switchboard to operate over
+ * @param seconds_difference The time in seconds the player took to complete the level
+ */
+void switchboard_win(SwitchBoard_t* sw, uint16_t seconds_difference);
 
 /**
  * @brief Updates the needed information of the Switchboard

@@ -40,7 +40,7 @@
 
 struct Player {
 	Rect_t rect;
-	Sprite_t *idle_sprite, *walk_sprite, *sparks_sprite, *win_screen;
+	Sprite_t *idle_sprite, *walk_sprite, *sparks_sprite;
 	float speed_mult, jump_mult;
 	float y_speed, gravity;
 	float x_spawn, y_spawn;
@@ -125,6 +125,18 @@ void player_win() {
 	int seconds_difference = seconds_end - seconds_beginning;
 	get_game_manager()->level->player->game_won = true;
 	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
+
+	if (get_game_manager()->gamemode & GM_UART) {
+		uint8_t seconds_difference_LSB, seconds_difference_MSB;
+
+		util_get_LSB(seconds_difference, &seconds_difference_LSB);
+		util_get_MSB(seconds_difference, &seconds_difference_MSB);
+
+		hw_manager_uart_send_char(HEADER_GAME_WON);
+		hw_manager_uart_send_char(seconds_difference_MSB);
+		hw_manager_uart_send_char(seconds_difference_LSB);
+		hw_manager_uart_send_char(HEADER_TERMINATOR);
+	}
 }
 
 // PLAYER UPDATES
@@ -186,27 +198,20 @@ static void player_set_laser_1() {
 }
 
 static void player_set_laser_2() {
-	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)	lasers_set_link_id(get_game_manager()->level->lasers, 2);
+	if (get_game_manager()->level->player->current_powers & UNLOCKED_LASERS)
+		lasers_set_link_id(get_game_manager()->level->lasers, 2);
 }
 
 Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers default_powers) {
 	Player_t* player = (Player_t*) calloc(1, sizeof(Player_t));
-	
+
 	if (player == NULL) {
 		printf("new_player: Failed to allocate memory for the player object\n");
 		return NULL;
 	}
 
-	// Winning Screen
-	player->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
-	if (player->win_screen == NULL) {
-		printf("new_player: Failed to create the winning screen Sprite\n");
-		free(player);
-		return NULL;
-	}
-
 	// Idle animation
-	player->idle_sprite = new_sprite(0, 0, 2, 
+	player->idle_sprite = new_sprite(0, 0, 2,
 		"player/idle_0.bmp",
 		"player/idle_1.bmp"
 	);
@@ -217,7 +222,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// Walking animation
-	player->walk_sprite = new_sprite(0, 0, 5, 
+	player->walk_sprite = new_sprite(0, 0, 5,
 		"player/walk_0.bmp",
 		"player/walk_1.bmp",
 		"player/walk_2.bmp",
@@ -271,8 +276,8 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	// Creating player hitbox
 	player->rect = rect(
 		player->x_spawn,
-		player->y_spawn, 
-		(float) sprite_get_width(player->idle_sprite), 
+		player->y_spawn,
+		(float) sprite_get_width(player->idle_sprite),
 		(float) sprite_get_height(player->idle_sprite)
 	);
 
@@ -280,7 +285,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	player->ui_controls = ui_controls;
 
 	if (ui_controls) {
-		// Creating the extra single player UI 
+		// Creating the extra single player UI
 		player->jump_slider = new_slider("ui/small_vertical_slider.bmp", "ui/small_slider_handle.bmp", player_set_jump, vec2d(2, 20), 255, vec2d(4, 25), vec2d(4, 90));
 		if (player->jump_slider == NULL) {
 			printf("new_player: Failed to create jump slider\n");
@@ -292,7 +297,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 		}
 		if (!(player->current_powers & UNLOCKED_JUMP))
 			slider_deactivate(player->jump_slider);
-		
+
 		player->speed_slider = new_slider("ui/small_horizontal_slider.bmp", "ui/small_slider_handle.bmp", player_set_speed, vec2d(20, 2), 255, vec2d(25, 4), vec2d(90, 4));
 		if (player->speed_slider == NULL) {
 			printf("new_player: Failed to create speed slider\n");
@@ -365,7 +370,7 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// printf("new_testing_player: Finished making player\n");
-	
+
 	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
 	player->game_won = false;
 	player->time_took = NULL;
@@ -378,7 +383,7 @@ void free_player(Player_t* player) {
 		printf("free_player: Cannot free a NULL pointer\n");
 		return;
   	}
-	
+
 	free_sprite(player->idle_sprite);
 	free_sprite(player->walk_sprite);
 	free_sprite(player->sparks_sprite);
@@ -409,7 +414,6 @@ inline static bool player_is_grav_inverted(Player_t *player) {
 	return player->gravity < 0 ? true : false;
 }
 
-// TODO: This is_grounded is very sketchy, improve it later down the road
 static bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 	Rect_t r;
 	if (player->gravity > 0) {
@@ -455,7 +459,7 @@ static inline void player_respawn(Player_t *player) {
 		}
 	}
 
-	PowerUp_t **power_ups = get_game_manager()->level->pu; 
+	PowerUp_t **power_ups = get_game_manager()->level->pu;
 	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
 		if (power_ups[i] != NULL)
 			respawn_powerup(power_ups[i]);
@@ -468,7 +472,7 @@ static inline void player_respawn(Player_t *player) {
 	set_animation_state(player->idle_sprite, 0);
 	set_animation_state(player->walk_sprite, 0);
 	set_animation_state(player->sparks_sprite, 0);
-	
+
 	if (get_game_manager()->gamemode & GM_UART) {
 		hw_manager_uart_send_char(HEADER_PLAYER_RESPAWN);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
@@ -481,7 +485,7 @@ static inline void player_respawn(Player_t *player) {
 static inline void player_death_cycle(Player_t *player) {
 	if (player->respawn_timer != 1)
 		--player->respawn_timer;
-	
+
 	else {
 		if (player->arcade_mode)
 			reset_score(get_game_manager()->level->score_1);
@@ -535,7 +539,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 			++direction;
 			player->heading_right = true;
 		}
-		
+
 		if (get_key(KBD_ARROW_LEFT) || get_key(KBD_A)) {
 			--direction;
 			player->heading_right = false;
@@ -548,7 +552,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 		player->is_idle = false;
 
 		player->rect.x += h_delta / 2;
-		
+
 		if (does_collide_platforms(plat, &player->rect)) {
 			player->rect.x -= h_delta / 4;
 
@@ -556,7 +560,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 				player->rect = previous_rect;
 		}
 
-		else {	
+		else {
 			previous_rect = player->rect;
 			player->rect.x += h_delta / 2;
 			if (does_collide_platforms(plat, &player->rect))
@@ -572,7 +576,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	if (player->y_speed * player->gravity > 0)
 		player->y_speed += DELTATIME * player->gravity;
-	
+
 	else
 		player->y_speed += DELTATIME * FALLING_MULT * player->gravity;
 
@@ -590,7 +594,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	player->rect.y += player->y_speed * DELTATIME
 		+ 0.5f * powf(DELTATIME, 2) * player->gravity;
-	
+
 	if (does_collide_platforms(plat, &player->rect)) {
 		player->rect = previous_rect;
 		player->y_speed /= 3;
@@ -609,7 +613,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	else
 		player_death_cycle(player);
-	
+
 	animator_player(player);
 
 	// ARCADE MODE ONLY
@@ -643,7 +647,6 @@ static uint8_t player_walk_countdown_value(Player_t* player) {
 	);
 }
 
-
 static void animator_player(Player_t* player) {
 	// For now, both run independently
 	// If player is alive
@@ -669,7 +672,7 @@ static void animator_player(Player_t* player) {
 				player->anim_idle_countdown = PLAYER_IDLE_COUNTDOWN_OPEN;
 			set_animation_state(player->idle_sprite, (state+1) % 2);
 		}
-		
+
 		else
 			--player->anim_idle_countdown;
 
@@ -681,7 +684,7 @@ static void animator_player(Player_t* player) {
 
 		else
 			--player->anim_walk_countdown;
-		
+
 	}
 
 }
@@ -710,17 +713,19 @@ void render_player_foreground(Player_t* player) {
 }
 
 void render_player_ui(Player_t *player) {
-	if (player->ui_controls) {
+	if (!player->game_won){
+		if (player->ui_controls) {
 		render_slider(player->speed_slider);
 		render_slider(player->jump_slider);
 
 		render_button(player->laser_buttons[0]);
 		render_button(player->laser_buttons[1]);
 		render_button(player->laser_buttons[2]);
+		}
 	}
 
 	if (player->game_won) {
-		draw_sprite_floats(player->win_screen, 0, 0, player->main_color, SPRITE_NORMAL);
+		draw_sprite_floats(get_game_manager()->level->win_screen, 0, 0, player->main_color, SPRITE_NORMAL);
 		render_score(player->time_took);
 	}
 }
@@ -738,9 +743,9 @@ void render_player_ui(Player_t *player) {
 #define PLAYER_TWO_HEADING_RIGHT BIT(6)
 #define PLAYER_TWO_ANTI_GRAVITY BIT(7)
 
-/** 
+/**
  * @brief Representation of the second player while playing Arcade mode in versus
- * @note Only used in Arcade mode 
+ * @note Only used in Arcade mode
  */
 
 struct PlayerTwo {
@@ -748,22 +753,22 @@ struct PlayerTwo {
 	Sprite_t* idle_sprite;
 	Sprite_t* walk_sprite;
 	Sprite_t* sparks_sprite;
-	
+
 	bool heading_right, is_idle, is_dead, anti_gravity;
 
 	uint16_t main_color, death_color;
 };
 
-PlayerTwo_t* new_player_two() { 
+PlayerTwo_t* new_player_two() {
 	PlayerTwo_t* player_two = (PlayerTwo_t*) calloc(1, sizeof(PlayerTwo_t));
-	
+
 	if (player_two == NULL) {
 		printf("new_player: Failed to allocate memory for the player two object\n");
 		return NULL;
 	}
 
 	// Idle animation
-	player_two->idle_sprite = new_sprite(0, 0, 2, 
+	player_two->idle_sprite = new_sprite(0, 0, 2,
 		"player/idle_0.bmp",
 		"player/idle_1.bmp"
 	);
@@ -774,7 +779,7 @@ PlayerTwo_t* new_player_two() {
 	}
 
 	// Walking animation
-	player_two->walk_sprite = new_sprite(0, 0, 5, 
+	player_two->walk_sprite = new_sprite(0, 0, 5,
 		"player/walk_0.bmp",
 		"player/walk_1.bmp",
 		"player/walk_2.bmp",
@@ -859,11 +864,11 @@ void render_player_two_foreground(PlayerTwo_t* player_two) {
 	if (!player_two->is_dead)
 		if (player_two->is_idle)
 			draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, player_two->main_color, sr);
-		
+
 		else
 			draw_sprite_vec2d(player_two->walk_sprite, player_two->pos, player_two->main_color, sr);
 
-	else 
+	else
 		// Player is dead
 		draw_sprite_vec2d(player_two->idle_sprite, player_two->pos, player_two->death_color, sr);
 }
@@ -874,9 +879,9 @@ static void player_send_info(Player_t* player) {
 	int16_t y = (int16_t) player->rect.y;
 
 	uint8_t x_lsb, x_msb, y_lsb, y_msb, additional_byte_1 = 0, additional_byte_2 = 0;
-	
-	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb)) 
-		return; 
+
+	if (util_get_LSB(x, &x_lsb) || util_get_MSB(x, &x_msb) || util_get_LSB(y, &y_lsb) || util_get_MSB(y, &y_msb))
+		return;
 
 	if (player->is_idle && player->grounded) {
 		additional_byte_1 = get_animation_state(player->idle_sprite) & PLAYER_TWO_ANIMATION_MASK;
