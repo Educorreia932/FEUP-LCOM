@@ -53,8 +53,6 @@ struct Player {
 
 	bool heading_right, is_idle, grounded;
 
-	int seconds_beginning;
-
 	PlayerUnlockedPowers default_powers, current_powers;
 
 	// Animation stuff
@@ -64,7 +62,6 @@ struct Player {
 	Slider_t *jump_slider, *speed_slider;
 	Button_t **laser_buttons;
 
-    Score_t* time_took;
 };
 
 // Forward declaration to be used in update_player()
@@ -121,11 +118,9 @@ void player_unlock_gravity() {
 }
 
 void player_win() {
-	int seconds_beginning =	get_game_manager()->level->player->seconds_beginning;
-	int seconds_end = hw_manager_rtc_read_date_in_seconds();
-	int seconds_difference = seconds_end - seconds_beginning;
+	int seconds_difference = hw_manager_rtc_read_date_in_seconds() - get_game_manager()->level->time_upon_start;
 	get_game_manager()->level->level_over = true;
-	get_game_manager()->level->player->time_took = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
+	get_game_manager()->level->timer = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
 
 	get_game_manager()->level->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
 
@@ -375,9 +370,6 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	}
 
 	// printf("new_testing_player: Finished making player\n");
-
-	player->seconds_beginning = hw_manager_rtc_read_date_in_seconds();
-	player->time_took = NULL;
 
 	return player;
 }
@@ -732,19 +724,16 @@ void render_player_foreground(Player_t* player) {
 }
 
 void render_player_ui(Player_t *player) {
-	if (!get_game_manager()->level->level_over){
-		if (player->ui_controls) {
+	if (player->ui_controls) {
 		render_slider(player->speed_slider);
 		render_slider(player->jump_slider);
 
 		render_button(player->laser_buttons[0]);
 		render_button(player->laser_buttons[1]);
 		render_button(player->laser_buttons[2]);
-		}
 	}
-	else
-		render_score(player->time_took);
 }
+
 
 #define PLAYER_TWO_X_MSB 0
 #define PLAYER_TWO_X_LSB 1
