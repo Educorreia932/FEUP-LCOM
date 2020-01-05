@@ -25,6 +25,10 @@
  * 
  */
 typedef struct Level {
+	/**
+	 * @brief When true, the level is over (render the victory screen) 
+	 */
+    bool level_over;
     /**
     * @brief The number of frames since the Level started
     */
