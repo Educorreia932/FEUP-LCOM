@@ -29,6 +29,7 @@ typedef struct Level {
      * @brief The Sprite used for this Level's background
      */
     Sprite_t* background;
+    Sprite_t* win_screen;
     /**
      * @brief The various platforms and walls that make up the Level
      */
@@ -122,6 +123,7 @@ void reset_arcade_mode(Level_t* level);
  * @param level Pointer to the Level to be rendered
  */
 void render_level(Level_t *level);
+
 /**
  * @brief Renders an arcade single Level onto the screen
  * @details Must be called every frame

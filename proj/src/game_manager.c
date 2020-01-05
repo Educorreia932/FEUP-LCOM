@@ -244,6 +244,7 @@ static void gm_update_switchboard() {
 		gm->uart_last_received = 0;
 		bool keep_going = true;
 		while (!hw_manager_uart_is_empty() && keep_going) {
+			// printf("%u\n", hw_manager_uart_front());
 			if (!gm->uart_synced) {
 				switch (hw_manager_uart_front()) {
 					case HEADER_AVAILABLE_LEVEL:
@@ -292,8 +293,22 @@ static void gm_update_switchboard() {
 						hw_manager_uart_pop();
 						switchboard_set_default_powers(gm->s_board, hw_manager_uart_front());
 						break;
+					case HEADER_GAME_WON:
+						if (hw_manager_uart_size() < HEADER_GAME_WON_SIZE) {
+							keep_going = false;
+							break;
+						}
+
+						hw_manager_uart_pop();
+
+						uint16_t seconds_difference = (hw_manager_uart_pop() << 8) | hw_manager_uart_pop();
+
+						switchboard_win(gm->s_board, seconds_difference);
+
+						break;
 				}
 			}
+
 			if (keep_going)
 				gm_uart_erase_message();
 		}

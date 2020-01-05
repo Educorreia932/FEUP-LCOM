@@ -32,11 +32,10 @@ static void update_minigame1(struct Minigame1* mg);
 static void render_minigame1(struct Minigame1* mg);
 static void minigame1_spawn_buttons(struct Minigame1* mg);
 
-
 /* SWITCHBOARD ITSELF */
 
 struct SwitchBoard {
-    Sprite_t *background;
+    Sprite_t *background, *win_screen;
     Button_t *laser_buttons[3];
     Slider_t *speed_slider, *jump_slider;
     Knob_t *gravity_knob;
@@ -48,6 +47,9 @@ struct SwitchBoard {
     bool is_player_alive;
 
     uint16_t time_to_reset_rendering;
+
+    bool game_won;
+    Score_t* time_took;
 };
 
 void switchboard_start_minigame(SwitchBoard_t* s_board) {
@@ -124,6 +126,11 @@ void switchboard_player_respawn(SwitchBoard_t* sw) {
     switchboard_update_powers(sw);
 }
 
+void switchboard_win(SwitchBoard_t* sw, uint16_t seconds_difference) {
+    sw->game_won = true;
+    sw->time_took = new_score(420, 300, seconds_difference, 3, COLOR_NO_MULTIPLY);
+}
+
 SwitchBoard_t* new_switchboard() {
     SwitchBoard_t* s_board = (SwitchBoard_t*) malloc(sizeof(SwitchBoard_t));
     if (s_board == NULL) {
@@ -131,12 +138,25 @@ SwitchBoard_t* new_switchboard() {
         return NULL;
     }
 
+    s_board->game_won = false;
+    s_board->time_took = NULL;
+
+    // Background
     s_board->background = new_sprite(0, 0, 1, "ui/switch_board.bmp");
     if (s_board->background == NULL) {
         printf("new_switchboard: Failed to create background Sprite\n");
         free(s_board);
         return NULL;
     }
+
+    // Winning Screen
+	s_board->win_screen = new_sprite(0, 0, 1, "win_screen.bmp");
+	if (s_board->win_screen == NULL) {
+		printf("new_switchboad: Failed to create the winning screen Sprite\n");
+		free_sprite(s_board->win_screen);
+		free(s_board);
+		return NULL;
+	}
 
     s_board->laser_buttons[0] = new_button_auto_size("ui/laser_button_red.bmp", send_laser0, vec2d(840, 180));
     if (s_board->laser_buttons[0] == NULL) {
@@ -240,7 +260,9 @@ void update_switchboard(SwitchBoard_t* s_board) {
         hw_manager_rtc_set_alarm(MINIGAME_INITIAL_WAIT_TIME);
         s_board->set_first_alarm = false;
     }
-    update_minigame1(s_board->mg1);
+
+    if (!s_board->game_won)
+        update_minigame1(s_board->mg1);
 
     if (s_board->time_to_reset_rendering == 0) {
         get_game_manager()->normal_rendering = true;
@@ -252,19 +274,25 @@ void update_switchboard(SwitchBoard_t* s_board) {
 }
 
 void render_switchboard(SwitchBoard_t* s_board) {
-    draw_sprite_floats(s_board->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+    if (!s_board->game_won) {
+        draw_sprite_floats(s_board->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
     
-    render_minigame1(s_board->mg1);
+        render_minigame1(s_board->mg1);
 
-    render_button(s_board->laser_buttons[0]);
-    render_button(s_board->laser_buttons[1]);
-    render_button(s_board->laser_buttons[2]);
+        render_button(s_board->laser_buttons[0]);
+        render_button(s_board->laser_buttons[1]);
+        render_button(s_board->laser_buttons[2]);
+        
+        render_slider(s_board->speed_slider);
+        render_slider(s_board->jump_slider);
+        render_knob(s_board->gravity_knob);
+    }
     
-    render_slider(s_board->speed_slider);
-    render_slider(s_board->jump_slider);
-    render_knob(s_board->gravity_knob);
+    else {
+        draw_sprite_floats(s_board->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+        render_score(s_board->time_took);
+    }
 }
-
 
 /* MINIGAMES */
 // These 8 next functions are to avoid having to implement and ID system into the UI buttons

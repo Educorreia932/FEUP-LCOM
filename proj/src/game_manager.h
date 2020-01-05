@@ -53,6 +53,8 @@ extern char* assets_rel_path;
 #define HEADER_REQUEST_POWERS_SIZE 2
 /** @brief Total size of the response powers header */
 #define HEADER_RESPONSE_POWERS_SIZE 3
+/** @brief Total size of the game won header */
+#define HEADER_GAME_WON_SIZE 4
 
 // Arcade
 /** @brief Total size of the player two update header */
@@ -88,6 +90,7 @@ enum UART_EVENT_HEADER {
     HEADER_PLAYER_UPDATE = 'U',
     HEADER_REQUEST_POWERS = 'P',
     HEADER_RESPONSE_POWERS = 'p',
+    HEADER_GAME_WON = 'W',
 
     // Arcade
     HEADER_PLAYER_TWO_UPDATE = 'T',

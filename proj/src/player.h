@@ -6,6 +6,7 @@
 #include "lasers.h"
 #include "spikes.h"
 #include "power_ups.h"
+#include "ui_elements.h"
 
 /** @file player.h */
 
@@ -134,7 +135,7 @@ void render_player_foreground(Player_t* player);
  * 
  * @param player Pointer to the Player to be rendered
  */
-void render_player_ui(Player_t *player);
+void render_player_ui(Player_t* player);
 
 /**
  * @brief Frees a given Player object from memory
@@ -142,6 +143,10 @@ void render_player_ui(Player_t *player);
  * @param player Player object to be freed
  */
 void free_player(Player_t* player);
+
+/** @name Second Player 
+ * @{
+*/
 
 typedef struct PlayerTwo PlayerTwo_t;
 
@@ -197,5 +202,7 @@ void render_player_two_foreground(PlayerTwo_t* player_two);
  */
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]);
 
+
+/** @} end of Second Player */
 
 /** @} */
