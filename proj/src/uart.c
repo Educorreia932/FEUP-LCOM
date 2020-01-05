@@ -211,9 +211,7 @@ uint8_t uart_receive_char() {
 
 }
 
-
 void uart_ih() {
-    
     // Read iir
     uint8_t iir;
     util_sys_inb(COM1_BASE + UART_REG_IIR, &iir);
