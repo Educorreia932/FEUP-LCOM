@@ -70,7 +70,23 @@ typedef struct Level {
      */
     bool laser_master;
 
+	/**
+	 * @brief Multipurpouse scores
+	 * @details In single arcade, they show the current score and the high score\n
+	 * In arcade versus, they show the scores of both players
+	 */
     Score_t *score_1, *score_2;
+
+	/**
+	 * @brief The timer to be shown on arcade versus mode
+	 */
+    Score_t *timer;
+
+	/**
+	 * @brief The time (as indicated by the RTC) of when the gamemode started
+	 * 
+	 */
+	uint32_t time_upon_start;
 
 } Level_t;
 
@@ -147,5 +163,13 @@ void render_arcade_single(Level_t* level);
  * @param level Pointer to the Level to be rendererd
  */
 void render_arcade_versus(Level_t* level);
+
+/**
+ * @brief Ends the arcade versus gamemode
+ * @details To be called when the RTC interrupt is received
+ * 
+ * @param level Pointer to the level to terminate
+ */
+void arcade_versus_win(Level_t *level);
 
 /** @} */

@@ -3,12 +3,8 @@
 #include "game_manager.h"
 #include "hw_manager.h"
 
-#define ARCADE_VERSUS_SPAWN_BUFFER 30
-#define ARCADE_VERSUS_DEATH_BUFFER 30
-#define ARCADE_VERSUS_BOTH_DEAD_TIME_DEFAULT 0xFFFFFFFF
-
-// Forward declaration
-static void arcade_versus_win(Level_t *level);
+// Measured in seconds
+#define ARCADE_VERSUS_GAME_TIME 45
 
 Level_t* new_arcade_level(bool is_single_player) {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
@@ -67,6 +63,7 @@ Level_t* new_arcade_level(bool is_single_player) {
 	if (!is_single_player) {
 		level->score_1 = new_score(252, 40, 0, 3, COLOR_RED);
 		level->score_2 = new_score(572, 40, 0, 3, COLOR_BLUE);
+		level->timer = new_score(452, 100, ARCADE_VERSUS_GAME_TIME, 2, COLOR_NO_MULTIPLY);
 		level->player_two = new_player_two();
 	}
 	else {
@@ -215,18 +212,29 @@ void free_level(Level_t *level) {
 		free_score(level->score_1);
 	if (level->score_2 != NULL)
 		free_score(level->score_2);
+	if (level->timer != NULL)
+		free_score(level->timer);
 
 	free(level);
 }
 
-// Actual level stuff
 
 void update_level(Level_t* level) {
+
+	if (level->frames_since_start == 0) {
+		level->time_upon_start = hw_manager_rtc_read_date_in_seconds();
+	}
+
 	++level->frames_since_start;
   	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 }
 
 void update_arcade_level(Level_t* level) {
+
+	if (level->frames_since_start == 0) {
+		level->time_upon_start = hw_manager_rtc_read_date_in_seconds();
+	}
+
 	++level->frames_since_start;
 	arcade_update_laser_values(level->lasers, level->frames_since_start);
 	arcade_move_lasers(level->lasers);
@@ -239,9 +247,15 @@ void update_arcade_level(Level_t* level) {
 
 void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 
+	if (level->frames_since_start == 0) {
+		if (level->laser_master)
+			hw_manager_rtc_set_alarm(ARCADE_VERSUS_GAME_TIME);
+		level->time_upon_start = hw_manager_rtc_read_date_in_seconds();
+	}
+
 	++level->frames_since_start;
 
-	if (level->frames_since_start < 30 * 60) {
+	if (!level->level_over) {
 				arcade_move_lasers(level->lasers);
 		if (level->laser_master) {
 			if (arcade_spawn_next_laser(level->lasers)) {
@@ -262,11 +276,11 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 		if (bytes != NULL) {
 			update_player_two(level->player_two, bytes);
 		}
-	}
-	else if (level->frames_since_start == 30 * 60) {
-			arcade_versus_win(level);
-	}
-	
+
+		set_score(level->timer, ARCADE_VERSUS_GAME_TIME - (level->frames_since_start / 60));
+
+	}	
+
 }
 
 void reset_arcade_mode(Level_t* level) 
@@ -276,22 +290,27 @@ void reset_arcade_mode(Level_t* level)
 }
 
 void render_level(Level_t *level) {
-	draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
-	render_player_background(level->player);
-	render_spikes(level->spikes);
-	render_platforms(level->platforms);
-	render_player_foreground(level->player);
-	render_lasers(level->lasers);
-	
-	for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
-		if (level->pu[i] != NULL)
-			render_power_up(level->pu[i]);
+
+	if (!level->level_over) {
+		draw_sprite_floats(level->background, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+		render_player_background(level->player);
+		render_spikes(level->spikes);
+		render_platforms(level->platforms);
+		render_player_foreground(level->player);
+		render_lasers(level->lasers);
+		
+		for (uint8_t i = 0; i < MAX_POWERUPS; ++i) {
+			if (level->pu[i] != NULL)
+				render_power_up(level->pu[i]);
+		}
+
+		render_player_ui(level->player);
+	}
+	else {
+		draw_sprite_floats(level->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
+		render_score(level->timer);
 	}
 
-	if (level->level_over)
-		draw_sprite_floats(level->win_screen, 0, 0, COLOR_NO_MULTIPLY, SPRITE_NORMAL);
-
-	render_player_ui(level->player);
 }
 
 void render_arcade_single(Level_t* level) {
@@ -322,6 +341,7 @@ void render_arcade_versus(Level_t* level) {
 		render_lasers(level->lasers);
 		render_player_ui(level->player);
 
+		render_score(level->timer);
 	}
 	else
 		if (level->win_screen != NULL)
@@ -331,40 +351,49 @@ void render_arcade_versus(Level_t* level) {
 	render_score(level->score_2);
 }
 
-static void arcade_versus_win(Level_t *level) {
+void arcade_versus_win(Level_t *level) {
 
-	level->level_over = true;
+	// To make sure an unhandled late RTC alarm never triggers this one
+	if (level->frames_since_start != 0) {
 
-	uint16_t score_1, score_2;
-	score_1 = score_get_value(level->score_1);
-	score_2 = score_get_value(level->score_2);
-
-	free_score(level->score_1);
-	level->score_1 = NULL;
-	free_score(level->score_2);
-	level->score_2 = NULL;
-
-	if (score_1 == score_2) {
-		level->win_screen = new_sprite(0, 0, 1, "arcade_draw.bmp");
-	}
-	else if (score_1 > score_2) {
 		if (level->laser_master) {
-			level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
+			hw_manager_uart_send_char(HEADER_ARCADE_ENDGAME);
+			hw_manager_uart_send_char(HEADER_TERMINATOR);
+		}
+
+		level->level_over = true;
+
+		uint16_t score_1, score_2;
+		score_1 = score_get_value(level->score_1);
+		score_2 = score_get_value(level->score_2);
+
+		free_score(level->score_1);
+		level->score_1 = NULL;
+		free_score(level->score_2);
+		level->score_2 = NULL;
+
+		if (score_1 == score_2) {
+			level->win_screen = new_sprite(0, 0, 1, "arcade_draw.bmp");
+		}
+		else if (score_1 > score_2) {
+			if (level->laser_master) {
+				level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
+			}
+			else {
+				level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
+			}
 		}
 		else {
-			level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
+			if (level->laser_master) {
+				level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
+			}
+			else {
+				level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
+			}
 		}
-	}
-	else {
-		if (level->laser_master) {
-			level->win_screen = new_sprite(0, 0, 1, "arcade_lost.bmp");
-		}
-		else {
-			level->win_screen = new_sprite(0, 0, 1, "arcade_win.bmp");
-		}
+
+		level->score_1 = new_score(252, 275, score_1, 3, COLOR_RED);
+		level->score_2 = new_score(572, 275, score_2, 3, COLOR_BLUE);
 	}
 
-	level->score_1 = new_score(252, 300, score_1, 3, COLOR_RED);
-	level->score_2 = new_score(572, 300, score_2, 3, COLOR_BLUE);
-	
 }

@@ -220,6 +220,13 @@ static void gm_update_arcade_versus() {
 						uint16_t height = (hw_manager_uart_pop() << 8) | hw_manager_uart_pop();
 						arcade_add_laser(gm->level->lasers, height);
 						break;
+					case HEADER_ARCADE_ENDGAME:
+						if (hw_manager_uart_size() < HEADER_ARCADE_ENDGAME_SIZE) {
+							keep_going = false;
+							break;
+						}
+						arcade_versus_win(gm->level);
+						break;
 				}
 			}
 			
@@ -729,6 +736,9 @@ uint8_t start_game(bool override_path, char *assets_path) {
 						hw_manager_rtc_ih();
 						if (gm->gamemode & GM_SWITCHBOARD)
 							switchboard_start_minigame(gm->s_board);
+						else if (gm->gamemode & GM_ARCADE_UART)
+							if (gm->level->laser_master)
+								arcade_versus_win(gm->level);
 					}
 
 					if (msg.m_notify.interrupts & uart_bit_mask) {

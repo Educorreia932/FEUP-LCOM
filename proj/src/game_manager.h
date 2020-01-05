@@ -67,7 +67,8 @@ extern char* assets_rel_path;
 #define HEADER_ARCADE_LASER_SIZE 3
 /** @brief Total size of the arcade laser speed header */
 #define HEADER_ARCADE_LASER_SPEED_SIZE 3
-
+/** @brief Total size of the arcade endgame header */
+#define HEADER_ARCADE_ENDGAME_SIZE 2
 
 /**
  * @brief Enum with all the serial port headers
@@ -97,7 +98,8 @@ enum UART_EVENT_HEADER {
     HEADER_ARCADE_READY = 'A',
     HEADER_ARCADE_SCORE_UPDATE = 'u',
     HEADER_ARCADE_LASER = 'r',
-    HEADER_ARCADE_LASER_SPEED = 'q'
+    HEADER_ARCADE_LASER_SPEED = 'q',
+    HEADER_ARCADE_ENDGAME = 'g'
 };
 
 
