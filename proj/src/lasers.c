@@ -50,7 +50,6 @@ struct Lasers {
 
     // Arcade exclusive
     uint16_t next_laser; // Used for arcade mode
-    uint32_t frames_since_start;
     uint8_t lasers_speed, lasers_delay;
 };
 
@@ -72,7 +71,6 @@ Lasers_t* new_arcade_lasers() {
     lasers->num_lasers = 16;
     lasers->cur_link_id = 1;
     lasers->next_laser = 0;
-    lasers->frames_since_start = 0;
     lasers->lasers_speed = 4;
     lasers->lasers_delay = 120;
 
@@ -119,7 +117,6 @@ Lasers_t* prototype_lasers() {
     lasers->num_lasers = 4;
     lasers->cur_link_id = 0;
     lasers->next_laser = 0;
-    lasers->frames_since_start = 0;
     lasers->lasers_speed = 4;
     lasers->lasers_delay = 120;
 
@@ -208,39 +205,39 @@ bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect) {
     return false;
 }
 
-void arcade_update_laser_values(Lasers_t *lasers) {
+void arcade_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start) {
     
-    ++lasers->frames_since_start;
+    ++frames_since_start;
 
-    if (lasers->frames_since_start <= 2 * 60) {
+    if (frames_since_start <= 2 * 60) {
         lasers->lasers_speed = 4;
         lasers->lasers_delay = 120;
     }
-    else if (lasers->frames_since_start <= 4 * 60) {
+    else if (frames_since_start <= 4 * 60) {
         lasers->lasers_speed = 4;
         lasers->lasers_delay = 110;
     }
-    else if (lasers->frames_since_start <= 7 * 60) {
+    else if (frames_since_start <= 7 * 60) {
         lasers->lasers_speed = 4;
         lasers->lasers_delay = 100;
     }
-    else if (lasers->frames_since_start <= 11 * 60) {
+    else if (frames_since_start <= 11 * 60) {
         lasers->lasers_speed = 4;
         lasers->lasers_delay = 90;
     }
-    else if (lasers->frames_since_start <= 18 * 60) {
+    else if (frames_since_start <= 18 * 60) {
         lasers->lasers_speed = 5;
         lasers->lasers_delay = 90;
     }
-    else if (lasers->frames_since_start <= 22 * 60) {
+    else if (frames_since_start <= 22 * 60) {
         lasers->lasers_speed = 5;
         lasers->lasers_delay = 80;
     }
-    else if (lasers->frames_since_start <= 26 * 60) {
+    else if (frames_since_start <= 26 * 60) {
         lasers->lasers_speed = 5;
         lasers->lasers_delay = 70;
     }
-    else if (lasers->frames_since_start <= 30 * 60) {
+    else if (frames_since_start <= 30 * 60) {
         lasers->lasers_speed = 5;
         lasers->lasers_delay = 60;
     }
@@ -366,7 +363,9 @@ bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect) {
 
 void arcade_reset_lasers(Lasers_t *lasers) {
     lasers->next_laser = 0;
-    lasers->frames_since_start = 0;
+
+    lasers->lasers_delay = 120;
+    lasers->lasers_speed = 4;
 
     Laser_t **aux = lasers->lasers;
 

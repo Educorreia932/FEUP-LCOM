@@ -106,6 +106,13 @@ void player_set_main_color(Player_t* player, uint16_t main_color);
 void player_set_death_color(Player_t* player, uint16_t death_color);
 
 /**
+ * @brief Manually respawns the player
+ * 
+ * @param player Pointer to the Player to respawn
+ */
+void player_respawn(Player_t *player);
+
+/**
  * @brief Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...)
  * 
  * @param player Pointer to the Player that is being updated
@@ -115,6 +122,28 @@ void player_set_death_color(Player_t* player, uint16_t death_color);
  * @param pu Pointer to the Powerups of the level (to check if the Player obtained any one of them)
  */
 void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes_t* spikes, PowerUp_t* pu[]);
+
+/**
+ * @brief Enables the Player to respawn automatically
+ * @details Auto respawn is enabled by default
+ * @param player Pointer to the Player to enable auto respawn
+ */
+void player_enable_auto_respawn(Player_t *player);
+/**
+ * @brief 
+ * @details Auto respawn is enabled by default
+ * @param player 
+ */
+void player_disable_auto_respawn(Player_t *player);
+
+/**
+ * @brief Returns True when the Player is dead
+ * 
+ * @param player Pointer to the Player
+ * @return True when the Player is dead\n
+ * False otherwise
+ */
+bool player_is_dead(Player_t *player);
 
 /**
  * @brief Renders the background of the Player (that consists of sparks that appear whenever its anti-gravity is on)
@@ -178,6 +207,14 @@ void player_two_set_main_color(PlayerTwo_t* player_two, uint16_t main_color);
  * @param main_color The color to change to
  */
 void player_two_set_death_color(PlayerTwo_t* player_two, uint16_t death_color);
+
+/**
+ * @brief Returns whether the Player Two is dead or not
+ * 
+ * @param player_two Pointer to the Player Two object
+ * @return True when the player 2 is dead, false otherwise
+ */
+bool player_two_is_dead(PlayerTwo_t *player_two);
 
 /**
  * @brief Renders the background of the second Player (that consists of sparks that appear whenever its anti-gravity is on)

@@ -8,8 +8,12 @@ static GameManager_t* gm;
 
 char *assets_rel_path = "home/lcom/labs/proj/assets/";
 
-// Add move verification here
+// Forward declaration for get_game_manager()
+static void initialize_game_manager();
+
 GameManager_t* get_game_manager() {
+	if (gm == NULL)
+		initialize_game_manager();
 	return gm;
 }
 
@@ -160,7 +164,7 @@ static void gm_update_arcade_versus() {
 						player_set_main_color(gm->level->player, COLOR_NO_MULTIPLY);
 						player_set_death_color(gm->level->player, COLOR_RED);
 						player_two_set_main_color(gm->level->player_two, COLOR_BLUE);
-						player_two_set_death_color(gm->level->player_two, COLOR_PINK);
+						player_two_set_death_color(gm->level->player_two, COLOR_PURPLE);
 						
 						hw_manager_uart_send_char(HEADER_ARCADE_READY);
 						hw_manager_uart_send_char(HEADER_TERMINATOR);
@@ -175,7 +179,7 @@ static void gm_update_arcade_versus() {
 						gm->level->laser_master = false;
 
 						player_set_main_color(gm->level->player, COLOR_BLUE);
-						player_set_death_color(gm->level->player, COLOR_PINK);
+						player_set_death_color(gm->level->player, COLOR_PURPLE);
 						player_two_set_main_color(gm->level->player_two, COLOR_NO_MULTIPLY);
 						player_two_set_death_color(gm->level->player_two, COLOR_RED);
 						break;
@@ -196,6 +200,16 @@ static void gm_update_arcade_versus() {
 
 						received_update = true;
 						break;
+					case HEADER_ARCADE_SCORE_UPDATE:
+						if (hw_manager_uart_size() < HEADER_ARCADE_SCORE_UPDATE_SIZE) {
+							keep_going = false;
+							break;
+						}
+						if (gm->level->laser_master)
+							update_score(gm->level->score_2);
+						else
+							update_score(gm->level->score_1);
+						break;
 					case HEADER_ARCADE_LASER:
 						if (hw_manager_uart_size() < HEADER_ARCADE_LASER_SIZE) {
 							keep_going = false;
@@ -204,7 +218,6 @@ static void gm_update_arcade_versus() {
 						hw_manager_uart_pop();
 
 						uint16_t height = (hw_manager_uart_pop() << 8) | hw_manager_uart_pop();
-						printf("Received: %x\n", height);
 						arcade_add_laser(gm->level->lasers, height);
 						break;
 				}
@@ -483,7 +496,7 @@ void gm_start_arcade() {
 void gm_start_main_menu() {
 
 	gm->normal_rendering = true;
-	
+
 	if (gm->level != NULL) {
 		free_level(gm->level);
 		gm->level = NULL;
