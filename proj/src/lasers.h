@@ -66,8 +66,9 @@ bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect);
  * @brief Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play
  * 
  * @param lasers Pointer to the Lasers object to update 
+ * @param frames_since_start The number of frames since the start of the level
  */
-void arcade_update_laser_values(Lasers_t *lasers);
+void arcade_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start);
 /**
  * @brief Moves all the lasers on screen onto the left, eliminating the ones that go offscreen\n 
  * Used exclusively on the arcade mode

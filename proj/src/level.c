@@ -3,6 +3,10 @@
 #include "game_manager.h"
 #include "hw_manager.h"
 
+#define ARCADE_VERSUS_SPAWN_BUFFER 30
+#define ARCADE_VERSUS_DEATH_BUFFER 30
+#define ARCADE_VERSUS_BOTH_DEAD_TIME_DEFAULT 0xFFFFFFFF
+
 Level_t* new_arcade_level(bool is_single_player) {
 	Level_t* level = (Level_t*) calloc(1, sizeof(Level_t));
 
@@ -58,14 +62,16 @@ Level_t* new_arcade_level(bool is_single_player) {
 
 	// Multiplayer
 	if (!is_single_player) {
-		level->score_1 = new_score(452, 40, 0, 1, COLOR_RED);
-		level->score_2 = new_score(532, 40, 0, 1, COLOR_BLUE);
+		level->score_1 = new_score(372, 40, 0, 3, COLOR_RED);
+		level->score_2 = new_score(532, 40, 0, 3, COLOR_BLUE);
 		level->player_two = new_player_two();
 	}
 	else {
 		level->score_1 = new_score(820, 40, 0, 3, COLOR_NO_MULTIPLY);
 		level->score_2 = new_score(820, 100, 0, 3, 0x8c51);
 	}
+
+	level->frames_since_start = 0;
 
 	return level;
 }
@@ -177,6 +183,8 @@ Level_t* prototype_level(bool is_single_player) {
 	level->score_1 = NULL;
 	level->score_2 = NULL;
 
+	level->frames_since_start = 0;
+
 	return level;
 }
 
@@ -211,11 +219,13 @@ void free_level(Level_t *level) {
 // Actual level stuff
 
 void update_level(Level_t* level) {
+	++level->frames_since_start;
   	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 }
 
 void update_arcade_level(Level_t* level) {
-	arcade_update_laser_values(level->lasers);
+	++level->frames_since_start;
+	arcade_update_laser_values(level->lasers, level->frames_since_start);
 	arcade_move_lasers(level->lasers);
 	if (arcade_spawn_next_laser(level->lasers)) {
 		arcade_add_laser(level->lasers, arcade_generate_laser_height());
@@ -225,6 +235,7 @@ void update_arcade_level(Level_t* level) {
 }
 
 void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
+	++level->frames_since_start;
 	arcade_move_lasers(level->lasers);
 	if (level->laser_master) {
 		if (arcade_spawn_next_laser(level->lasers)) {
@@ -232,7 +243,6 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 			arcade_add_laser(level->lasers, height);
 			arcade_lasers_set_correct_delay(level->lasers);
 
-			printf("Sent: %x\n", height);
 			uint8_t height_msb, height_lsb;
 			if (!(util_get_MSB(height, &height_msb) || util_get_LSB(height, &height_lsb))) {
 				hw_manager_uart_send_char(HEADER_ARCADE_LASER);
@@ -245,12 +255,15 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 	update_player(level->player, level->platforms, level->lasers, level->spikes, level->pu);
 	if (bytes != NULL)
 		update_player_two(level->player_two, bytes);
+
 }
 
+void reset_arcade_mode(Level_t* level) 
+{
+	level->frames_since_start = 0;
 
-// single player only for now
-void reset_arcade_mode(Level_t* level) {
 	arcade_reset_lasers(level->lasers);
+
 }
 
 void render_level(Level_t *level) {

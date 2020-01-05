@@ -26,9 +26,16 @@
  */
 typedef struct Level {
     /**
+    * @brief The number of frames since the Level started
+    */
+    uint32_t frames_since_start;
+    /**
      * @brief The Sprite used for this Level's background
      */
     Sprite_t* background;
+    /**
+     * @brief The sprite used for the victory screen
+     */
     Sprite_t* win_screen;
     /**
      * @brief The various platforms and walls that make up the Level

@@ -17,6 +17,7 @@
 #define COLOR_RED 0xF800 /** <@brief A red color filter */
 #define COLOR_BLUE 0x001F /** <@brief A blue color filter */
 #define COLOR_PINK 0xFB39 /** <@brief A pink color filter */
+#define COLOR_PURPLE 0xB01F  /** <@brief A purple colro filter */
 
 /**
  * @brief Renders a bitmap to the screen, while allowing it to be animated

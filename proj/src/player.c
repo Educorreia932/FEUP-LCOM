@@ -46,6 +46,8 @@ struct Player {
 	float x_spawn, y_spawn;
 	uint16_t main_color, death_color;
 	
+	bool auto_respawn;
+
 	bool ui_controls, arcade_mode;
 	uint8_t respawn_timer; /**< @brief If != 0, player is dead */
 
@@ -267,6 +269,8 @@ Player_t* new_player(bool ui_controls, bool arcade_mode, PlayerUnlockedPowers de
 	player->anim_walk_countdown = player_walk_countdown_value(player);
 	player->anim_spark_countdown = PLAYER_SPARK_COUNTDOWN;
 
+	player->auto_respawn = true;
+
 	player->default_powers = default_powers;
 	player->current_powers = default_powers;
 
@@ -435,7 +439,7 @@ static bool player_is_grounded(Player_t* player, Platforms_t* plat) {
 	return does_collide_platforms(plat, &r);
 }
 
-static inline void player_respawn(Player_t *player) {
+void player_respawn(Player_t *player) {
 	player->rect.x = player->x_spawn;
 	player->rect.y = player->y_spawn;
 	player->y_speed = 0;
@@ -479,19 +483,15 @@ static inline void player_respawn(Player_t *player) {
 	}
 	else if (player->arcade_mode) {
 		reset_arcade_mode(get_game_manager()->level);
+		reset_score(get_game_manager()->level->score_1);
 	}
 }
 
 static inline void player_death_cycle(Player_t *player) {
 	if (player->respawn_timer != 1)
 		--player->respawn_timer;
-
-	else {
-		if (player->arcade_mode)
-			reset_score(get_game_manager()->level->score_1);
-
+	else if (player->auto_respawn)
 		player_respawn(player);
-	}
 }
 
 static inline void player_start_death(Player_t *player) {
@@ -499,13 +499,7 @@ static inline void player_start_death(Player_t *player) {
 	player->current_powers = player->default_powers;
 	player->respawn_timer = PLAYER_RESPAWN_TIME + 1;
 	if (get_game_manager()->gamemode & GM_ARCADE) {
-		if (get_game_manager()->gamemode & GM_UART) {
-			hw_manager_uart_send_char(HEADER_ARCADE_PLAYER_DEATH);
-			hw_manager_uart_send_char(HEADER_TERMINATOR);
-		}
-		else {
-			// Write high score to a file
-		}
+		// Write high score to file (if needed)
 	}
 }
 
@@ -515,7 +509,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 	// Horizontal Movement
 	float h_delta = 0;
 
-	if (player->respawn_timer == 0) {
+	if (!player_is_dead(player)) {
 		if (player->ui_controls) {
 			update_slider(player->jump_slider);
 			update_slider(player->speed_slider);
@@ -582,7 +576,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	// Jump button
 	player->grounded = false;
-	if (player->respawn_timer == 0)
+	if (!player_is_dead(player))
 		// Player is alive
 		player->grounded = player_is_grounded(player, plat);
 		if (get_key_down(KBD_Z) || get_key_down(KBD_SPACEBAR))
@@ -605,7 +599,7 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 			update_power_up(pu[i], &(player->rect));
 	}
 
-	if (player->respawn_timer == 0) {
+	if (!player_is_dead(player)) {
 		if (lasers_collide_player(lasers, &player->rect) || player_touches_spike(spikes, &player->rect)) {
 			player_start_death(player);
 		}
@@ -618,16 +612,41 @@ void update_player(Player_t* player, Platforms_t* plat, Lasers_t* lasers, Spikes
 
 	// ARCADE MODE ONLY
 	if (player->arcade_mode) {
+
+		if (arcade_player_passes_lasers(lasers, &player->rect)) {
+			if (get_game_manager()->gamemode & GM_UART) {
+				hw_manager_uart_send_char(HEADER_ARCADE_SCORE_UPDATE);
+				hw_manager_uart_send_char(HEADER_TERMINATOR);
+
+				if (get_game_manager()->level->laser_master)
+					update_score(get_game_manager()->level->score_1);
+				else
+					update_score(get_game_manager()->level->score_2);
+			}
+			else {
+				update_score(get_game_manager()->level->score_1);
+				uint16_t cur_score = score_get_value(get_game_manager()->level->score_1);
+				if (cur_score > score_get_value(get_game_manager()->level->score_2))
+					set_score(get_game_manager()->level->score_2, cur_score); 
+			}
+		}
+
 		if (get_game_manager()->gamemode & GM_UART)
 			player_send_info(player);
-		else if (arcade_player_passes_lasers(lasers, &player->rect)) {
-			update_score(get_game_manager()->level->score_1);
-			uint16_t cur_score = score_get_value(get_game_manager()->level->score_1);
-			if (cur_score > score_get_value(get_game_manager()->level->score_2))
-				set_score(get_game_manager()->level->score_2, cur_score); 
 
-		}
 	}
+}
+
+inline void player_enable_auto_respawn(Player_t *player) {
+	player->auto_respawn = true;
+}
+
+inline void player_disable_auto_respawn(Player_t *player) {
+	player->auto_respawn = false;
+}
+
+inline bool player_is_dead(Player_t *player) {
+	return player->respawn_timer != 0;
 }
 
 /*
@@ -650,7 +669,7 @@ static uint8_t player_walk_countdown_value(Player_t* player) {
 static void animator_player(Player_t* player) {
 	// For now, both run independently
 	// If player is alive
-	if (player->respawn_timer == 0) {
+	if (!player_is_dead(player)) {
 
 		// Treat Sparks
 		if (player->anim_spark_countdown == 0) {
@@ -690,7 +709,7 @@ static void animator_player(Player_t* player) {
 }
 
 void render_player_background(Player_t* player) {
-	if (player->respawn_timer == 0 && player->gravity != BASE_GRAVITY) {
+	if (player->gravity != BASE_GRAVITY) {
 		// Player is alive
 		draw_sprite(player->sparks_sprite, &player->rect, player->main_color, SPRITE_Y_AXIS * !player->heading_right);
 	}
@@ -700,7 +719,7 @@ void render_player_foreground(Player_t* player) {
 	SpriteReverse sr = SPRITE_Y_AXIS * player->heading_right
 		+ SPRITE_X_AXIS * player_is_grav_inverted(player);
 
-	if (player->respawn_timer == 0)
+	if (!player_is_dead(player))
 		// Player is alive
 		if (player->grounded && player->is_idle)
 			draw_sprite(player->idle_sprite, &player->rect, player->main_color, sr);
@@ -833,6 +852,10 @@ inline void player_two_set_death_color(PlayerTwo_t* player_two, uint16_t death_c
 	player_two->death_color = death_color;
 }
 
+inline bool player_two_is_dead(PlayerTwo_t *player_two) {
+	return player_two->is_dead;
+}
+
 void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 	player_two->pos = vec2d((float) ((bytes[PLAYER_TWO_X_MSB] << 8) | bytes[PLAYER_TWO_X_LSB]), (float) ((bytes[PLAYER_TWO_Y_MSB] << 8) | bytes[PLAYER_TWO_Y_LSB]));
 
@@ -851,7 +874,7 @@ void update_player_two(PlayerTwo_t* player_two, uint8_t bytes[]) {
 }
 
 void render_player_two_background(PlayerTwo_t* player_two) {
-	if (!player_two->is_dead && player_two->anti_gravity) {
+	if (player_two->anti_gravity) {
 		// Player is alive
 		draw_sprite_vec2d(player_two->sparks_sprite, player_two->pos, player_two->main_color, SPRITE_NORMAL);
 	}
@@ -890,7 +913,7 @@ static void player_send_info(Player_t* player) {
 	else
 		additional_byte_1 = get_animation_state(player->walk_sprite) & PLAYER_TWO_ANIMATION_MASK;
 
-	if (player->respawn_timer != 0)
+	if (player_is_dead(player))
 		additional_byte_1 |= PLAYER_TWO_IS_DEAD;
 	additional_byte_1 |= (player->heading_right << 6);
 	if (player_is_grav_inverted(player))
