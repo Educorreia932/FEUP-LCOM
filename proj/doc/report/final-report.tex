@@ -470,7 +470,9 @@ O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que
 
 \section{Call Graph}
 
-Pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game, pelo que decidimos incluir o gráfico para cada modo de jogo que temos e o menu principal.
+O nosso '\textit{main\_loop()}', o \textit{start\_game()} tem várias funções de update (static), mas visto elas estarem dentro de um objeto (\textit{GameManager}) e são atribuídas aquando da sua instanciação, elas não são detetadas pelo Doxygen. Algo peculiar foi que ao dar set da flag \textit{EXTRACT\_ALL} no Doxyfile, ele deixou de gerar sequer alguns \textit{call graphs} (nomeadamente start\_level, start\_switchboard, start\_arcade e start\_main\_menu).
+
+Em suma, tanto quanto percebems, pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game() (tendo em conta tudo que ele realmente chama), pelo que decidimos incluir o gráfico para o início de cada modo de jogo que temos e o menu principal em adição ao do start\_game().
 
 \subsection{Menu Principal}
 
@@ -567,7 +569,7 @@ Cada \textit{Rect} é composto pelas \textbf{coordenadas} do seu ponto superior 
 
 \subsection{Sistema de Colisões}
 
-O nosso sistema de colisões foi construído pensando em várias \textbf{camadas}, isto para permitir que um determinado objecto só colida com os necessários, como por exemplo, podemos querer verificar se um jogador colide com uma plataforma, ficando parado no sítio onde colidir, ou se morre por colidir com \textit{lasers} --- \textit{lasers\_collide\_player()} ou espinhos --- \textit{player\_touches\_spike()}.
+O nosso sistema de colisões foi construído pensando em várias \textbf{camadas}, isto para permitir que um determinado objecto só colida com os necessários, como, por exemplo, podemos querer verificar se um jogador colide com uma plataforma, ficando parado no sítio onde colidir, ou se morre por colidir com \textit{lasers} --- \textit{lasers\_collide\_player()} ou espinhos --- \textit{player\_touches\_spike()}. Isto seria dificultado se estivessem todos juntos 'na mesma camada'.
 
 \section{Rendering}
 
@@ -717,7 +719,7 @@ A sua posição no ecrã e o seu estado são enviadas por UART e atualizadas no 
 
 % Chamar atenção de em singleplayer ter UI
 
-\subsection{Power Ups}
+\subsubsection{Power Ups}
 
 Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
 
