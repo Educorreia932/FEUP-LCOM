@@ -178,8 +178,7 @@ Implementada com FIFOs.
 \section{Geometry}
 
 \paragraph{}
-O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões.
-
+O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
 \subsection{Vec2d}
 
 \paragraph{}
@@ -246,7 +245,8 @@ Módulo desenvolvido por:
 
 \section{Level}
 
-Esta classe representa todo um nível e os seus consituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
+Esta classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
+Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade\newline
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
 
@@ -259,6 +259,9 @@ O módulo \textit{Player} trata de gerir a representação de um jogador e da su
 \subsection{Player}
 
 \subsection{PlayerTwo}
+
+\paragraph{}
+Apenas é utilizado no modo Arcade - Versus para representar um segundo jogador que está a jogar noutra máquina. 
 
 Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%) 
 
@@ -351,7 +354,7 @@ Módulo desenvolvido por:
 
 \section{RTC}
 
-O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()}, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
+O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()} possuindo uma verificação antes de o fazer para obter a hora correta, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
 
 Módulo desenvolvido por: Eduardo Correia
 

@@ -1,9 +1,5 @@
 #include "mouse.h"
 
-/** @defgroup mouse Mouse
- * @{
- */
-
 /** @name Global variables */
 ///@{
 bool mouse_ih_error = false, is_mouse_packet_complete = false;
@@ -193,5 +189,3 @@ uint8_t mouse_data_handler() {
         return 0;
     }
 }
-
-/** @} end of Mouse */

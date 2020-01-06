@@ -10,7 +10,13 @@
  * @{
  */
 
-extern bool mouse_ih_error, is_mouse_packet_complete;
+/** @brief Indicates if an error occured in the mouse interttupt handler */
+extern bool mouse_ih_error;
+
+/** @brief Indicates if the mouse packet is complete for parsing */
+extern bool is_mouse_packet_complete;
+
+/** @brief Structure that contains the parsed content of a mouse packet */
 extern struct packet mouse_parsed_packet;
 
 /** 
