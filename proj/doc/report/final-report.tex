@@ -470,9 +470,17 @@ O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que
 
 \section{Call Graph}
 
-O nosso '\textit{main\_loop()}', o \textit{start\_game()} tem várias funções de update (static), mas visto elas estarem dentro de um objeto (\textit{GameManager}) e são atribuídas aquando da sua instanciação, elas não são detetadas pelo Doxygen. Algo peculiar foi que ao dar set da flag \textit{EXTRACT\_ALL} no Doxyfile, ele deixou de gerar sequer alguns \textit{call graphs} (nomeadamente start\_level, start\_switchboard, start\_arcade e start\_main\_menu).
+O nosso \textbf{\textit{main\_loop()}}, o \textit{start\_game()} tem várias funções de \textbf{\textit{update}} (static), mas visto elas estarem dentro de um objeto (\textit{GameManager}) e são atribuídas aquando da sua instanciação, elas não são detetadas pelo Doxygen. Algo peculiar foi que ao dar set da flag \textit{EXTRACT\_ALL} no Doxyfile, ele deixou de gerar sequer alguns \textit{call graphs} (nomeadamente start\_level, start\_switchboard, start\_arcade e start\_main\_menu).
 
 Em suma, tanto quanto entendemos, pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game() (tendo em conta tudo que ele realmente chama), pelo que decidimos incluir o gráfico para o início de cada modo de jogo que temos e o menu principal em adição ao do start\_game().
+
+\subsection{Start Game}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gm_start_game}
+	\caption{Call Graph - gm\_start\_game()}
+\end{figure}
 
 \subsection{Menu Principal}
 
@@ -482,7 +490,7 @@ Em suma, tanto quanto entendemos, pelo facto de utilizarmos \textit{function poi
 	\caption{Call Graph - gm\_start\_main\_menu()}
 \end{figure}
 
-\subsection{Arcade}
+\subsection{Start Arcade}
 
 \begin{figure}[H]
 	\centering
@@ -490,7 +498,7 @@ Em suma, tanto quanto entendemos, pelo facto de utilizarmos \textit{function poi
 	\caption{Call Graph - gm\_start\_arcade()}
 \end{figure}
 
-\subsection{Level}
+\subsection{Start Level}
 
 \begin{figure}[H]
 	\centering
@@ -498,7 +506,7 @@ Em suma, tanto quanto entendemos, pelo facto de utilizarmos \textit{function poi
 	\caption{Call Graph - gm\_start\_level()}
 \end{figure}
 
-\subsection{Switchboard}
+\subsection{Start Switchboard}
 
 \begin{figure}[H]
 	\centering
@@ -738,19 +746,10 @@ Existem portanto três powerups:
 
 A diferença do modo Singleplayer para o modo Co-Op 1 reside no facto de, devido ao facto de já não existir uma \textit{Switchboard}, os elementos de interface gráfica que se encontravam lá situados, terão de ser acoplados no pŕoprio nível. Para isso colocamos sliders mais pequenos no canto, junto com os botões dos lasers, por cima das paredes, de modo a não interferir com a jogabilidade visualmente e subsituímos a Knob pela tecla X.
 
-\subsubsection{Co-Op Player 1 - Watt}
-
-Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos estes \textit{headers} para indicar que informação estava a ser enviada:
-
-\begin{itemize}
-	\item 
-\end{itemize}
-
-\subsubsection{Co-Op Player 2 - Switchboard}
+\subsection{Co-Op}
+Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos \textit{headers} para indicar que informação estava a ser enviada.
 
 \subsection{Arcade}
-
-\subsubsection{Arcade Single}
 
 \subsubsection{Arcade Versus}
 
