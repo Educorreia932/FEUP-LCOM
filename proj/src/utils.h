@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file utils.h */
+/** @file */
 
 /** @defgroup utils Utils
  * @brief Several useful functions that didn't exactly "fit" in any other module

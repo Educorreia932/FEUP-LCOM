@@ -4,7 +4,7 @@
 
 #include "utils.h"
 
-/** @file uart.h */
+/** @file */
 
 /** @defgroup uart UART
  * @brief Code used to interact with the UART and connect two PC's via Serial Port 

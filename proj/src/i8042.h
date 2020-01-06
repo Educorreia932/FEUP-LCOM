@@ -3,7 +3,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file i8042.h */
+/** @file */
 
 /** @addtogroup kbd
  * 

@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file bitmap.h */
+/** @file */
 
 /** @addtogroup sprite */
 

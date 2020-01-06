@@ -1,4 +1,4 @@
-/** @file math_utils.h */
+/** @file */
 
 #pragma once
 

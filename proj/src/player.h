@@ -8,7 +8,7 @@
 #include "power_ups.h"
 #include "ui_elements.h"
 
-/** @file player.h */
+/** @file */
 
 /** @defgroup player
  *  @brief Represents the character Watt, be it the Campaign or Arcade mode, singleplayer or multiplayer

@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file main_menu.h */
+/** @file */
 
 /** @defgroup ui UI */
 /** @addtogroup ui

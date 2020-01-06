@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "input_events.h"
 
-/** @file hw_manager.h */
+/** @file */
 
 /** @defgroup hw_man Hardware Manager */
 /** @addtogroup hw_man

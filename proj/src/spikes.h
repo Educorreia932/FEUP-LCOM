@@ -4,7 +4,7 @@
 
 #include "geometry.h"
 
-/** @file spikes.h */
+/** @file */
 
 /** @addtogroup level @{ */
 

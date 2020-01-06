@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "geometry.h"
 
-/** @file sprite.h */
+/** @file */
 
 /** @defgroup sprite Sprite */
 /** @addtogroup sprite

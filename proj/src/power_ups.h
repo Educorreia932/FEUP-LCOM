@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "geometry.h"
 
-/** @file power_ups.h */
+/** @file */
 
 /** @addtogroup level @{ */
 

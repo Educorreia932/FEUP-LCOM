@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file geometry.h */
+/** @file */
 
 /** @defgroup geometry Geometry */
 

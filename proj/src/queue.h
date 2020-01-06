@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file queue.h */
+/** @file */
 
 /** @defgroup queue Queue */
 /** @addtogroup queue

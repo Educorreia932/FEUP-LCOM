@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "geometry.h"
 
-/** @file lasers.h */
+/** @file */
 
 /** @addtogroup level @{ */
 

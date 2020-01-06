@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file input_events.h */
+/** @file */
 
 /** @defgroup inputs User Inputs */
 /** @addtogroup inputs

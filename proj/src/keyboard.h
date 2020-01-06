@@ -4,7 +4,7 @@
 #include "i8042.h"
 #include "utils.h"
 
-/** @file keyboard.h */
+/** @file */
 
 /** @defgroup kbd Keyboard
  * @brief Code used to interact with the Keyboard

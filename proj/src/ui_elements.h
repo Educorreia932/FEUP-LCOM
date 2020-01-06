@@ -4,7 +4,7 @@
 #include "geometry.h"
 #include "sprite.h"
 
-/** @file ui_elements.h */
+/** @file */
 
 /** @addtogroup ui 
  * @{
