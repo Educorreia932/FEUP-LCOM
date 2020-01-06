@@ -718,7 +718,7 @@ A sua posição no ecrã e o seu estado são enviadas por UART e atualizadas no 
 
 % Chamar atenção de em singleplayer ter UI
 
-\subsection{Power Ups}
+\subsubsection{Power Ups}
 
 Ao longo do modo Campaign, o \textbf{jogador} precisa de obter \textbf{\textit{powerups}} para ganhar novas \textbf{funcionalidades} de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
 
@@ -732,11 +732,19 @@ Existem portanto três powerups:
 	\item \textbf{Exit} --- Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
 \end{itemize}
 
-\subsubsection{Single player}
+\subsubsection{Singleplayer}
 
-\subsubsection{Co-op player 1 - Watt}
+A diferença do modo Singleplayer para o modo Co-Op 1 reside no facto de, devido ao facto de já não existir uma \textit{Switchboard}, os elementos de interface gráfica que se encontravam lá situados, terão de ser acoplados no pŕoprio nível. Para isso colocamos sliders mais pequenos no canto, junto com os botões dos lasers, por cima das paredes, de modo a não interferir com a jogabilidade visualmente e subsituímos a Knob pela tecla X.
 
-\subsubsection{Co-op player 2 - Switchboard}
+\subsubsection{Co-Op Player 1 - Watt}
+
+Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos estes \textit{headers} para indicar que informação estava a ser enviada:
+
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\subsubsection{Co-Op Player 2 - Switchboard}
 
 \subsection{Arcade}
 
