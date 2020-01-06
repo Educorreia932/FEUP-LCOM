@@ -470,7 +470,6 @@ O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que
 
 \section{Call Graph}
 
-TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
 
 \section{Peso Relativo dos Módulos no Projeto}
 
@@ -659,7 +658,7 @@ A classe Lasers representa o conjunto de lasers que existirão em cada nível.
 
 No modo Campaign estes serão quatro, dois azuis, um vermelho e um rosa, só duas cores de lasers é que estarão ativas de cada vez (podendo-se definir quais cores) e não mudam de posição.
 
-Já no modo Arcade
+Já no modo Arcade, o conjunto de lasers é todo da mesma cor (vermelho), estão sempre ativos e são constantemente gerados novos pares de lasers que surgem da ponta direita do ecrã --- \textit{arcade\_add\_laser()} com um intervalo de tempo até surgirem novos, e se deslocam até à esquerda do mapa --- \textit{arcade\_move\_lasers()}, sendo destruídos quando lá chegam \textit{}
 
 \subsection{Player}
 
@@ -667,7 +666,8 @@ Animações
 
 \subsection{PlayerTwo}
 
-
+O PlayerTwo posui a utilidade de representar um segundo jogador que está a jogar noutro computador no modo Arcade
+Posição por UART 
 
 \subsection{Campaign}
 
