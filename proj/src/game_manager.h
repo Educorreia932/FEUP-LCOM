@@ -149,37 +149,46 @@ typedef struct GameManager {
  * @brief Get the game manager object
  * 
  * @return Pointer to the game manager singleton
+ * @callgraph
  */
 GameManager_t* get_game_manager();
 
 /**
  * @brief Sets up a new level. For careful use by the main menu 
  * @warning Before calling these fuctions, set the gm->gamemode to the correct one
+ * @callgraph
  */
 void gm_start_level();
 /**
  * @brief Sets up a new switchboard. For careful use by the main menu 
  * @warning Before calling these fuctions, set the gm->gamemode to the correct one
+ * @callgraph
  */
 void gm_start_switchboard();
 /**
  * @brief Sets up a new arcade. For careful use by the main menu 
  * @warning Before calling these fuctions, set the gm->gamemode to the correct one
+ * @callgraph
  */
 void gm_start_arcade();
 /**
  * @brief Sets up a new main menu. For careful use by the main menu 
  * @warning Before calling these fuctions, set the gm->gamemode to the correct one
+ * @callgraph
  */
 void gm_start_main_menu();
 
 /**
  * @brief Used for exiting the game, even on catastrophic errors
+ * @callgraph
  */
 void exit_game();
 
 /** 
  * @brief Starts (and plays) the game
  * @returns 0 on success, 1 otherwise
+ * @callgraph
  */
 uint8_t start_game(bool override_path, char *assets_path);
+
+/** @} */

@@ -5,7 +5,7 @@
 
 #include "i8254.h"
 
-/** @file timer.h */
+/** @file */
 
 /** @defgroup timer Timer
  * @brief Code used to interact with the Timer0

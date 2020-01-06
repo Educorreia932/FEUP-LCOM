@@ -3,7 +3,7 @@
 #include "i8042.h"
 #include "utils.h"
 
-/** @file mouse.h */
+/** @file */
 
 /** @defgroup mouse Mouse
  * @brief Code used to interact with the Mouse 

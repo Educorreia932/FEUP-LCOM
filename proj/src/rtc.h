@@ -2,7 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @file rtc.h */
+/** @file */
 
 /** @defgroup rtc RTC
  * @brief Code used to interact with the Real Time Clock 

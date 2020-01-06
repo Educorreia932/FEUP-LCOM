@@ -4,7 +4,7 @@
 
 #include "player.h"
 
-/** @file switchboard.h */
+/** @file */
 
 /** @addtogroup ui
   * @{

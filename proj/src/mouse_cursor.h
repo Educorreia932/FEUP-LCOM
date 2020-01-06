@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "geometry.h"
 
-/** @file mouse_cursor.h */
+/** @file */
 
 /** @addtogroup inputs
   *

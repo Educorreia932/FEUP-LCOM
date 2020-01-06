@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "geometry.h"
 
-/** @file platforms.h */
+/** @file */
 
 /** @addtogroup level @{ */
 

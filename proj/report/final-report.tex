@@ -178,6 +178,10 @@ Implementada com FIFOs.
 
 \section{Geometry}
 
+Peso relativo: 5\%
+
+Módulo desenvolvido por: Tiago
+
 \paragraph{}
 O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
 \subsection{Vec2d}
@@ -197,11 +201,14 @@ Este módulo é usado para colisões e para o UI.
 \paragraph{}
 Sistema de colisões. \newline
 
-Módulo desenvolvido por: 
 
 \section{Bitmap}
 
 \paragraph{}
+Peso relativo: 3\%
+
+Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
+
 O código que usamos ler bitmaps foi parcialmente retirado da internet, mas com várias alterações para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}}que usamos (criados no GIMP).
 
 Todos os ficheiros externos necessários (\textit{bitmaps}) encontram-se organizados dentro de uma pasta \textbf{\textit{assets}}, cuja localização pode ser específicada ao iniciar o jogo (até um limite de 255 caracteres, incluindo os ficheiros no interior dessa pasta).
@@ -213,10 +220,12 @@ Ao desenvolver o projeto considerámos necessário uma maneira de poder renderiz
 Existe ainda a possibilidade de cada pixel ser "multiplicado" por uma cor. Devido ao custo pesado de computação desta operação, decidimos que usar uma operação bitwise entre a cor do pixel e da cor a multiplicar, visto que o efeito que ela produz seja satisfatório o suficiente para as nossas necessidades, mantendo um baixo custo computacional. Esta operação irá sempre escurecer a cor do \textit{bitmap} original, e quando aplicado a um pixel branco irá ficar apenas a cor a multiplicar. Esta propriedade foi usada a renderizar todas as plataformas e paredes. 
 
 Todos os \textit{bitmaps} podem ser desenhados com "transparência", isto é, definimos a cor rosa, \textbf{0xFF00FF} (em RBG 888), como a cor que será sempre ignorada ao desenhar. \newline
-
-Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
  
 \section{Sprite}
+
+Peso relativo: 5\%
+
+Módulo desenvolvido por: Tiago Silva
 
 \paragraph{}
 No nosso programa existem duas classes de \textit{sprite}: a \textbf{normal} e a \textbf{dinâmica}. A dinâmica é usada sempre que quisermos usar a função bitmap\_draw\_dynamic() referida acima, a normal é usada em todos os outros casos.
@@ -229,31 +238,69 @@ A máquina de estados responsável por controlar qual o valor deste estado (por 
 
 Cada \textit{sprite} criada também tem um \textit{offset} individual que é utilizado ao renderizar o \textit{bitmap} no ecrã. Existe ainda um getter das \textit{sprites} (\textbf{Vec2d\_t sprite\_get\_size(Sprite\_t *s)})que permite obter o tamanho do primeiro \textit{bitmap} carregado, especialmente útil para obter dinâmicamente a \textit{hitbox} do \textit{player} e dos botões.\newline
 
-Módulo desenvolvido por: Tiago Silva
 
 \section{Game Manager}
 
-Módulo desenvolvido por: 
+\paragraph{}
+Peso relativo: 9\%
+
+Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%)
 
 \section{Hardware Manager}
 
 \paragraph{}
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
 Este módulo foi uma tentativa de tentar encapsular ao máximo todo o conhecimento e funções responáveis por interagir com o hardware num único sítio o e transparecer o mínimo possível sobre as nossas implementações internas do \textit{timer}, \textit{keyboard}, \textit{mouse}, etc..
 
 Infelizmente existem outros módulos com um grande conhecimento destes protocolos, como o \textit{InputEvents}, o \textit{GameManager} e tudo o que envolvesse o \textit{serial port}.\newline
 
-Módulo desenvolvido por: 
-
 \section{Level}
+
+\paragraph{}
+Peso relativo: 8\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
 
 Esta classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
 Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade\newline
 
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+\section{Platforms}
+
+\paragraph
+Peso relativo: 3\%
+
+Módulo desenvolvido por: Tiago Silva
+
+\section{Lasers}
+
+\paragraph
+Peso relativo: 5\%
+
+Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
+
+\section{Spikes}
+
+\paragraph
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Eduardo Correia
 
 \section{Switchboard}
 
+\paragraph{}
+Peso relativo: 3\%
+
+Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
+
 \section{Player}
+
+\paragraph{}
+Peso relativo: 7\%
+
+Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%) 
 
 O módulo \textit{Player} trata de gerir a representação de um jogador e da sua interface no nosso projeto bem como a sua interação com os restantes módulos. 
 
@@ -264,9 +311,12 @@ O módulo \textit{Player} trata de gerir a representação de um jogador e da su
 \paragraph{}
 Apenas é utilizado no modo Arcade - Versus para representar um segundo jogador que está a jogar noutra máquina. 
 
-Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%) 
-
 \section{UI Elements}
+
+\paragraph{}
+Peso relativo: 6\%
+
+Módulo desenvolvido por: Eduardo Correia (25\%) e Tiago Silva (75\%) 
 
 O módulo \textit{UI Elements} possui diversas subdivisões, uma vez que utilizámos vários elementos bastante diferentes entre si de interface com o utilizador, sendo estes os seguintes.\footnotemark
 
@@ -297,18 +347,59 @@ A "classe" \textbf{\textit{Score}} serve para representar um número com um dete
 
 É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
 
-Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%) 
 
 \section{Powerup}
+
+\paragraph{}
+Peso relativo: 2\%
+
+Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
 
 \section{Timer}
 
 \paragraph{}
 \textit{Código importado do Lab 2}\footnotemark\newline
+Mas com melhorias.
+
+Peso relativo: 4\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
 
 \section{Keyboard}
+
+\textit{Código importado do Lab 3}\footnotemark[\value{footnote}]\newline
+
+Peso relativo: 4\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
+\section{Mouse}
+
+\paragraph{}
+Peso relativo: 4\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
+Para abordar completamente o uso mais direto do \textit{Mouse} é necessário cobrir duas partes, o \textit{MouseInputEvents} e o \textit{MouseCursor}, sendo que o segundo tira partido do primeiro.
+
+Tal como o \textit{KbdInputEvents}, estas duas classes são também \textit{singletons}.
+
+
+\section{InputEvents}
+
+\paragraph{}
+Peso relativo: 3\%
+
+Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
+
+\subsection{MouseInputEvents}
+
+\paragraph{}
+Esta "classe" guarda e expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
+
+Para permitir saber se um dado botão começou a ser premido num determinado frame e para garantir que o \textit{delta} do rato entre frames é o correto, recorremos ao mesmo truque do \textit{KbdInputEvents}, utilizando a função \textbf{reset\_mouse\_input\_state()}.
+
+\subsection{KbdInputEvents}
 
 \paragraph{}
 Para guardar o input do \textit{keyboard} recorremos à classe \textit{KbdInputEvents}, que mantém um registo sobre todos os \textit{scancodes} de 1 \textit{byte} e sobre um subset específico de \textit{scandodes} de 2 \textit{bytes}.
@@ -323,47 +414,100 @@ O \textit{KeyboardMap} utilizado como argumento é um \textit{enum} com todas as
 
 Para detetar se uma tecla foi premida num certo frame, foi necessário limpar esse segundo map no final de cada frame, isto é, após a chamada da função \textit{update()}, para garantir que os inputs são interpretados corretamente, recorrendo à função \textbf{reset\_kbd\_input\_state()}.\newline
 
-\textit{Código importado do Lab 3}\footnotemark[\value{footnote}]\newline
-
-Módulo desenvolvido por: 
-
-\section{Mouse}
+\section{MouseCursor}
 
 \paragraph{}
-Para abordar completamente o uso mais direto do \textit{Mouse} é necessário cobrir duas partes, o \textit{MouseInputEvents} e o \textit{MouseCursor}, sendo que o segundo tira partido do primeiro.
-Tal como o \textit{KbdInputEvents}, estas duas classes são também \textit{singletons}.
+Peso relativo: 2\%
 
-\subsection{MouseInputEvents}
+Módulo desenvolvido por: Tiago Silva
 
-\paragraph{}
-Esta "classe" guarda e expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
-
-Para permitir saber se um dado botão começou a ser premido num determinado frame e para garantir que o \textit{delta} do rato entre frames é o correto, recorremos ao mesmo truque do \textit{KbdInputEvents}, utilizando a função \textbf{reset\_mouse\_input\_state()}.
-
-\subsection{MouseCursor}
-
-\paragraph{}
 Representa o cursor do rato\newline
 
 Módulo desenvolvido por: 
 
 \section{Video}
 
+\paragraph{}
+Peso relativo: 6\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
 \textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
 
 \footnotetext{No código importado dos labs fizemos ligeiras alterações, como remover funções que não utilizamos (por exemplo, naquilo em que optássemos por usar \textit{interrupts} removemos o código que lidava com \textit{pollling}) e especificar uma abordagem geral para uma específica ao projeto, para ser mais eficaz (como usar a placa gráfica num modo apenas, correspondente ao que optámos por utilizar no nosso jogo).}
 
+\section{Video Macros}
+
+\paragraph
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
 \section{RTC}
 
-O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()} possuindo uma verificação antes de o fazer para obter a hora correta, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
+\paragraph{}
+Peso relativo: 2\%
 
 Módulo desenvolvido por: Eduardo Correia
 
+O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()} possuindo uma verificação antes de o fazer para obter a hora correta, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
+
 \section{UART}
+
+\paragraph{}
+Peso relativo: 5\%
 
 Módulo desenvolvido por: Eduardo Correia (20\%) e Tiago Silva (80\%)
  
+\section{Utils}
+
+\paragraph
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+
+\section{MathUtils}
+
+\paragraph
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Tiago Silva
+
+\section{Queue}
+
+\paragraph
+Peso relativo: 4\%
+
+Módulo desenvolvido por: Tiago Silva
+
+Inspirado pela implementação de um site, mas essa Implementação tinha tantos erros e limitações, que foi praticamente reescrita completamente
+
+\section{Main Menu}
+
+\paragraph
+Peso relativo: 3\%
+
+Módulo desenvolvido por: Tiago Silva
+
+\section{i8042}
+
+\paragraph
+Peso relativo: 0.5\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+
+\section{i8254}
+
+\paragraph
+Peso relativo: 0.5\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva
+
 \section{Proj}
+
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Tiago Silva
 
 %O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que menos tem peso no projeto, uma vez que só trata de chamar a função de iniciar o jogo --- \textit{start_game}. O \textit{GameManager} trata de tudo o resto.
 
@@ -376,25 +520,41 @@ TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
 \begin{center}
 	\begin{tabular}{|c|c|} 
 		\hline
-			Módulo & Peso relativo \\ 
+			Módulo & Peso relativo (\%) \\
 		\hline
 		\hline
-			Geometry & \\
-			Bitmap & \\
-			Sprite & \\
-			Game Manager & \\
-			Hardware Manager & \\
-			Level & \\
-			Switchboard & \\ 
-			Player & \\
-			UI Elements & \\
-			Powerup & \\
-			Timer & \\
-			Keyboard & \\
-			Mouse & \\
-			Video & \\
-			RTC & \\
-			Proj & \\
+			Geometry & 5 \\
+			Bitmap & 3 \\
+			Sprite & 5 \\
+			Game Manager & 9 \\
+			Hardware Manager & 1 \\
+			Level & 8 \\
+			Platforms & 3 \\
+			Lasers & 5 \\
+			Spikes & 1 \\
+			Switchboard & 3 \\ 
+			Player & 7 \\
+			UI Elements & 6 \\
+			Powerup & 2 \\
+			Timer & 4 \\
+			Keyboard & 4 \\
+			Mouse & 4 \\
+			InputEvents & 3 \\
+			MouseCursor & 2 \\
+			Video & 6 \\
+			Video Macros & 1 \\
+			RTC & 2 \\
+			UART & 5 \\
+			Utils & 1 \\
+			Math Utils & 1 \\
+			Queue & 4 \\
+			Main Menu & 3 \\
+			i8042 & 0.5 \\
+			i8254 & 0.5 \\
+			Proj & 1 \\
+		\hline
+		\hline
+			Total & 100 \\
 		\hline
 	\end{tabular}
 \end{center}

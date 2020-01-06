@@ -5,7 +5,7 @@
 
 // Constants for programming the i8254 Timer. 
 
-/** @file i8254.h */
+/** @file */
 
 /** @addtogroup timer 
  *  @{

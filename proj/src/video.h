@@ -3,7 +3,7 @@
 #include <lcom/lcf.h>
 #include "video_macros.h"
 
-/** @file video.h */
+/** @file */
 
 /** @defgroup video_gr Graphics
  * @brief Code used to set Minix in Graphic mode and render images

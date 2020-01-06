@@ -10,7 +10,7 @@
 #include "input_events.h"
 #include "ui_elements.h"
 
-/** @file level.h */
+/** @file */
 
 /** @defgroup level Level */
 /** @addtogroup level
