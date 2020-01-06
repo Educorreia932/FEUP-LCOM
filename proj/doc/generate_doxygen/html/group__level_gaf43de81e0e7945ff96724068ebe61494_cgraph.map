@@ -1,0 +1,4 @@
+<map id="render_arcade_versus" name="render_arcade_versus">
+<area shape="rect" id="node1" title="Renders an arcade versus Level onto the screen." alt="" coords="5,5,171,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="219,5,361,32"/>
+</map>

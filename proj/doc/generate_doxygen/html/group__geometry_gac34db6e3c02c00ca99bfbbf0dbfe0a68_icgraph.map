@@ -1,0 +1,4 @@
+<map id="new_rect" name="new_rect">
+<area shape="rect" id="node1" title="Creates a pointer to a rectangle." alt="" coords="220,13,301,39"/>
+<area shape="rect" id="node2" href="$lasers_8h.html#a9100bce750e8dafd38a5576f1657b639" title="Keeps track of when the player passes through a new set of Lasers, to increase it&#39;s score &#160;Used exclu..." alt="" coords="5,5,172,47"/>
+</map>

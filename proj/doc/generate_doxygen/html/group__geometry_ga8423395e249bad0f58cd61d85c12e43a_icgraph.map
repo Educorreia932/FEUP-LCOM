@@ -1,0 +1,8 @@
+<map id="rect_collision" name="rect_collision">
+<area shape="rect" id="node1" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="227,122,335,149"/>
+<area shape="rect" id="node2" href="$lasers_8h.html#a9100bce750e8dafd38a5576f1657b639" title="Keeps track of when the player passes through a new set of Lasers, to increase it&#39;s score &#160;Used exclu..." alt="" coords="9,5,175,47"/>
+<area shape="rect" id="node3" href="$platforms_8h.html#a767772361716f12893d647f2a148b51e" title="Checks if a player&#39;s rect (hitbox) collides with any platform or wall." alt="" coords="5,71,179,98"/>
+<area shape="rect" id="node4" href="$lasers_8h.html#aad7c542c8e26fd4d895dbdfe850b350f" title="Checks if a player collides with any of the Lasers&#39; Lasers." alt="" coords="13,122,171,149"/>
+<area shape="rect" id="node5" href="$spikes_8h.html#a80e11c2a8a1b3db1e0ae143e673c1d14" title="Checks if the Player&#39;s position is colliding with any of the Spikes." alt="" coords="11,173,173,199"/>
+<area shape="rect" id="node6" href="$power__ups_8h.html#aac8da90b11e869342c7f8bbbdbe1a137" title="Checks if a Player&#39;s Rect_t would collect the Power Up and collects it." alt="" coords="23,223,161,250"/>
+</map>

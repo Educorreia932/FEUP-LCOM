@@ -1,0 +1,8 @@
+<map id="update_button" name="update_button">
+<area shape="rect" id="node1" title="Updates a Button object color in case it&#39;s being hovered or not." alt="" coords="412,56,528,83"/>
+<area shape="rect" id="node2" href="$group__ui.html#gaba9f40abbb6aed9ef0fd9c9c16f6a242" title="Updates the needed elements of the main menu @description Must be called every frame." alt="" coords="212,5,363,32"/>
+<area shape="rect" id="node3" href="$group__player.html#ga4bff32e009db0e0387d5bc2aa1b50439" title="Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...." alt="" coords="230,56,345,83"/>
+<area shape="rect" id="node6" href="$group__ui.html#ga223aa9507be1a014ec479a592b7f2429" title="Updates the needed information of the Switchboard." alt="" coords="211,107,364,133"/>
+<area shape="rect" id="node4" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="5,31,163,57"/>
+<area shape="rect" id="node5" href="$group__level.html#ga4b11db44e03c0bc773e0fedb89fbe62e" title="Updates a regular Level&#39;s required parts." alt="" coords="31,81,137,108"/>
+</map>

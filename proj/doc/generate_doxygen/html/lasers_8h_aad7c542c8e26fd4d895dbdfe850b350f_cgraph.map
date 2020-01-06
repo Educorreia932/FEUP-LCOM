@@ -1,0 +1,5 @@
+<map id="lasers_collide_player" name="lasers_collide_player">
+<area shape="rect" id="node1" title="Checks if a player collides with any of the Lasers&#39; Lasers." alt="" coords="5,31,164,57"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="243,5,327,32"/>
+<area shape="rect" id="node3" href="$group__geometry.html#ga8423395e249bad0f58cd61d85c12e43a" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="212,56,357,83"/>
+</map>

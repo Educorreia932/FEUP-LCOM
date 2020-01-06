@@ -1,0 +1,8 @@
+<map id="rtc_enable_alarm_int" name="rtc_enable_alarm_int">
+<area shape="rect" id="node1" title="Enables RTC alarm interrupts." alt="" coords="628,56,787,83"/>
+<area shape="rect" id="node2" href="$group__rtc.html#ga86868f4dbbd2d168e80cb5991dbe5ece" title="Sets an RTC alarm." alt="" coords="469,56,580,83"/>
+<area shape="rect" id="node3" href="$group__hw__man.html#ga64bf0e1143c65e7fd49c6a9f5ced7f28" title="Sets an alarm on the real time clock for a &#39;period&#39; ammount of seconds." alt="" coords="264,49,421,90"/>
+<area shape="rect" id="node4" href="$group__ui.html#ga4c408e862d0a8f85199aef31a9c3139e" title="Starts a new minigame on the Switchboard." alt="" coords="5,5,216,32"/>
+<area shape="rect" id="node5" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="27,56,195,83"/>
+<area shape="rect" id="node6" href="$group__ui.html#ga223aa9507be1a014ec479a592b7f2429" title="Updates the needed information of the Switchboard." alt="" coords="34,107,187,133"/>
+</map>

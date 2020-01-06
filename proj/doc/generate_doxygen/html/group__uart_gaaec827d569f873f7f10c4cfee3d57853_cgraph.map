@@ -1,0 +1,4 @@
+<map id="uart_receiver_q_empty" name="uart_receiver_q_empty">
+<area shape="rect" id="node1" title="Sees if the UART receiver is empty or not." alt="" coords="5,5,177,32"/>
+<area shape="rect" id="node2" href="$group__queue.html#ga7ed3bc45d5b9b91b1f11c48dd7067928" title="Returns true when the Queue is empty." alt="" coords="225,5,355,32"/>
+</map>

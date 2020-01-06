@@ -1,0 +1,5 @@
+<map id="rtc_enable_alarm_int" name="rtc_enable_alarm_int">
+<area shape="rect" id="node1" title="Enables RTC alarm interrupts." alt="" coords="5,31,164,57"/>
+<area shape="rect" id="node2" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="214,5,346,32"/>
+<area shape="rect" id="node3" href="$group__rtc.html#ga9b5d85527d676067a8c05780ec46d4f1" title="Writes a RTC register in memory." alt="" coords="212,56,348,83"/>
+</map>

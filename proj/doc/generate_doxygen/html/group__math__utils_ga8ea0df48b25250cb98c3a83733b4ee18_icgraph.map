@@ -1,0 +1,6 @@
+<map id="Q_rsqrt" name="Q_rsqrt">
+<area shape="rect" id="node1" title="Returns The inverse of the square root of number." alt="" coords="463,46,532,73"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga10e57dda4684d1ad44cf5a64df4fdcc5" title="The inverse of the distance between two points in a plane." alt="" coords="235,5,415,47"/>
+<area shape="rect" id="node3" href="$group__geometry.html#gad26fb175506f3dd52a78dfe2a320e726" title="Returns the inverse of the norm of a given vector." alt="" coords="245,71,404,112"/>
+<area shape="rect" id="node4" href="$group__geometry.html#ga723ce76207dc0e762e0fc27e6ec8ceac" title="Normalizes a given vector." alt="" coords="5,78,187,105"/>
+</map>

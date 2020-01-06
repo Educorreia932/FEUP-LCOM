@@ -1,0 +1,7 @@
+<map id="normalize_vec2d" name="normalize_vec2d">
+<area shape="rect" id="node1" title="Normalizes a given vector." alt="" coords="5,35,139,61"/>
+<area shape="rect" id="node2" href="$group__geometry.html#gad26fb175506f3dd52a78dfe2a320e726" title="Returns the inverse of the norm of a given vector." alt="" coords="187,5,344,32"/>
+<area shape="rect" id="node4" href="$group__geometry.html#ga5cc4e5f78138578c0e16b8cf924f2c22" title="Returns a vector multiplied by a scalar." alt="" coords="193,57,338,98"/>
+<area shape="rect" id="node3" href="$group__math__utils.html#ga8ea0df48b25250cb98c3a83733b4ee18" title="Returns The inverse of the square root of number." alt="" coords="392,5,461,32"/>
+<area shape="rect" id="node5" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="396,64,457,91"/>
+</map>

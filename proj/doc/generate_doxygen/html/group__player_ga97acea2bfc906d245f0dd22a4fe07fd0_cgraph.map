@@ -1,0 +1,4 @@
+<map id="player_set_jump" name="player_set_jump">
+<area shape="rect" id="node1" title="Changes the jump height of the player." alt="" coords="5,5,136,32"/>
+<area shape="rect" id="node2" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="184,5,336,32"/>
+</map>

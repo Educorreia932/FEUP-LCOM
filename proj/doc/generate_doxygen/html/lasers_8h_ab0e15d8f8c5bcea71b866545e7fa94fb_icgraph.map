@@ -1,0 +1,4 @@
+<map id="arcade_reset_lasers" name="arcade_reset_lasers">
+<area shape="rect" id="node1" title="Resets all the lasers (arcade mode only)" alt="" coords="204,5,356,32"/>
+<area shape="rect" id="node2" href="$group__level.html#gadbf1baab63e26a063b38d4dc81dd78a8" title="Resets the needed components of an arcade mode level, in an efficient manner." alt="" coords="5,5,156,32"/>
+</map>

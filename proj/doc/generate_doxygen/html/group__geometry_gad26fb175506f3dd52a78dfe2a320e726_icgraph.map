@@ -1,0 +1,4 @@
+<map id="inverse_norm_vec2d" name="inverse_norm_vec2d">
+<area shape="rect" id="node1" title="Returns the inverse of the norm of a given vector." alt="" coords="187,5,344,32"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga723ce76207dc0e762e0fc27e6ec8ceac" title="Normalizes a given vector." alt="" coords="5,5,139,32"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="prototype_level" name="prototype_level">
+<area shape="rect" id="node1" title="Creates a new level with the configuration of the prototype level of the Campaign." alt="" coords="172,5,296,32"/>
+<area shape="rect" id="node2" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="5,5,124,32"/>
+</map>

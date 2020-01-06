@@ -1,0 +1,4 @@
+<map id="free_rect" name="free_rect">
+<area shape="rect" id="node1" title="Frees the rect from memory." alt="" coords="5,5,85,32"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="133,5,180,32"/>
+</map>

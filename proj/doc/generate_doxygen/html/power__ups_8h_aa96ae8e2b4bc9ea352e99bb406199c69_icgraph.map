@@ -1,0 +1,4 @@
+<map id="collect_powerup" name="collect_powerup">
+<area shape="rect" id="node1" title="Collects a given Power Up." alt="" coords="191,5,319,32"/>
+<area shape="rect" id="node2" href="$power__ups_8h.html#aac8da90b11e869342c7f8bbbdbe1a137" title="Checks if a Player&#39;s Rect_t would collect the Power Up and collects it." alt="" coords="5,5,143,32"/>
+</map>

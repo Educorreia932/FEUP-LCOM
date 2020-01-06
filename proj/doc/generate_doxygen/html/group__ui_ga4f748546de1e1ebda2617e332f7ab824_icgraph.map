@@ -1,0 +1,10 @@
+<map id="free_knob" name="free_knob">
+<area shape="rect" id="node1" title="Frees a given Knob object from memory." alt="" coords="547,107,633,133"/>
+<area shape="rect" id="node2" href="$group__ui.html#gadb7381db53ff6792b61e91f381a5ec90" title="Frees a given Switchboard object from memory." alt="" coords="364,69,499,96"/>
+<area shape="rect" id="node7" href="$group__ui.html#ga2d800113c0d60ffe2784f4cec6221b9d" title="Creates a new Switchboard object." alt="" coords="364,132,499,159"/>
+<area shape="rect" id="node3" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="167,5,298,32"/>
+<area shape="rect" id="node4" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="173,56,292,83"/>
+<area shape="rect" id="node5" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="151,107,315,133"/>
+<area shape="rect" id="node6" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,107,101,133"/>
+<area shape="rect" id="node8" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="149,157,316,184"/>
+</map>

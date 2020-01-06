@@ -1,0 +1,5 @@
+<map id="arcade_spawn_next_laser" name="arcade_spawn_next_laser">
+<area shape="rect" id="node1" title="Handles the timing until the next Laser spawns." alt="" coords="221,31,412,57"/>
+<area shape="rect" id="node2" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="11,5,168,32"/>
+<area shape="rect" id="node3" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,56,173,83"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="player_get_default_powers" name="player_get_default_powers">
+<area shape="rect" id="node1" title="Gets the player&#39;s default powers." alt="" coords="5,5,149,47"/>
+<area shape="rect" id="node2" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="197,13,349,39"/>
+</map>

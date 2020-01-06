@@ -1,0 +1,6 @@
+<map id="update_cursor" name="update_cursor">
+<area shape="rect" id="node1" title="Updates the needed data for the cursor to be rendered." alt="" coords="5,56,120,83"/>
+<area shape="rect" id="node2" href="$group__math__utils.html#gac4962a360233b958f57485e262bc172a" title="Clamps the value between the established min and max." alt="" coords="207,5,279,32"/>
+<area shape="rect" id="node3" href="$group__inputs.html#gac8127f5d303efa89d0cd3fc28822f9bc" title="Returns the mouse&#39;s movement along the x axis over the last frame." alt="" coords="168,56,317,83"/>
+<area shape="rect" id="node4" href="$group__inputs.html#gafd232e992c9582abd5049070176826f4" title="Returns the mouse&#39;s movement along the x axis over the last frame." alt="" coords="168,107,317,133"/>
+</map>

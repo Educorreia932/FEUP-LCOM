@@ -1,0 +1,4 @@
+<map id="render_slider" name="render_slider">
+<area shape="rect" id="node1" title="Renders a Slider object." alt="" coords="184,5,291,32"/>
+<area shape="rect" id="node2" href="$group__player.html#ga28a8acb428a4666271dd72113d58516c" title="Renders the UI of the Player (the buttons and sliders necessary in Campaign &#45; Singleplayer mode,..." alt="" coords="5,5,136,32"/>
+</map>

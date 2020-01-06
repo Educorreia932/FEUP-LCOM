@@ -1,0 +1,4 @@
+<map id="render_switchboard" name="render_switchboard">
+<area shape="rect" id="node1" title="Renders the Switchboard&#39;s UI onto the screen." alt="" coords="5,5,156,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="204,5,347,32"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="switchboard_start_minigame" name="switchboard_start_minigame">
+<area shape="rect" id="node1" title="Starts a new minigame on the Switchboard." alt="" coords="5,56,216,83"/>
+<area shape="rect" id="node2" href="$group__hw__man.html#ga64bf0e1143c65e7fd49c6a9f5ced7f28" title="Sets an alarm on the real time clock for a &#39;period&#39; ammount of seconds." alt="" coords="264,49,421,90"/>
+<area shape="rect" id="node3" href="$group__rtc.html#ga86868f4dbbd2d168e80cb5991dbe5ece" title="Sets an RTC alarm." alt="" coords="469,56,580,83"/>
+<area shape="rect" id="node4" href="$group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b" title="Reads the current date from the RTC." alt="" coords="668,5,747,32"/>
+<area shape="rect" id="node6" href="$group__rtc.html#gaae8111e1cb8e86c24e0becc84ee4ce29" title="Enables RTC alarm interrupts." alt="" coords="628,56,787,83"/>
+<area shape="rect" id="node7" href="$group__rtc.html#ga9b5d85527d676067a8c05780ec46d4f1" title="Writes a RTC register in memory." alt="" coords="835,93,971,120"/>
+<area shape="rect" id="node5" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="837,31,969,57"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="kbc_read_outbf" name="kbc_read_outbf">
+<area shape="rect" id="node1" title="Reads scancodes from the keyboard&#39;s output buffer." alt="" coords="240,5,363,32"/>
+<area shape="rect" id="node2" href="$group__kbd.html#gae90e98eed9f79914d3055b0c347f2067" title="Reenables the keyboard interrupts Avoids having to call the executable from a remote shell to restore..." alt="" coords="5,5,192,32"/>
+</map>

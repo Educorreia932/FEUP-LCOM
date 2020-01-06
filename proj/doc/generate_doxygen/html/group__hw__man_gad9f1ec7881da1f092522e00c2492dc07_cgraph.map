@@ -1,0 +1,5 @@
+<map id="hw_manager_uart_ih" name="hw_manager_uart_ih">
+<area shape="rect" id="node1" title="Wrapper for serial port interrupt handler (ih)" alt="" coords="5,5,164,32"/>
+<area shape="rect" id="node2" href="$group__uart.html#ga67d2da4dd20c731989c130bbe2cd4c85" title="Handles UART&#39;s interrupts." alt="" coords="212,5,279,32"/>
+<area shape="rect" id="node3" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="327,5,425,32"/>
+</map>

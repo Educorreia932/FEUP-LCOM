@@ -1,0 +1,4 @@
+<map id="queue_push_back" name="queue_push_back">
+<area shape="rect" id="node1" title="Pushes an element onto the back of the Queue." alt="" coords="5,5,144,32"/>
+<area shape="rect" id="node2" href="$group__queue.html#gabba53c76b94e2935bf100bd02251765d" title="Returns true when the Queue is at its max capacity." alt="" coords="192,5,300,32"/>
+</map>

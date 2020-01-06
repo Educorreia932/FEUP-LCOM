@@ -1,0 +1,6 @@
+<map id="render_player_foreground" name="render_player_foreground">
+<area shape="rect" id="node1" title="Renders the foreground of the Player (that consists of all of tis body)" alt="" coords="5,31,196,57"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga35d8530fc91406f3175c01ee6d563fa1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="255,5,353,32"/>
+<area shape="rect" id="node4" href="$group__player.html#ga14e1009b9e2ddf0c8e0b7f4d57589997" title="Returns True when the Player is dead." alt="" coords="244,56,364,83"/>
+<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="412,5,555,32"/>
+</map>

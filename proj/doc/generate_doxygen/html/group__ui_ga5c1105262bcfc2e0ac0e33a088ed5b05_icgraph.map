@@ -1,0 +1,5 @@
+<map id="new_score" name="new_score">
+<area shape="rect" id="node1" title="Creates a new score object." alt="" coords="184,31,275,57"/>
+<area shape="rect" id="node2" href="$group__player.html#gae14101abdc2c267b9df8604ed60f95f1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="24,5,117,32"/>
+<area shape="rect" id="node3" href="$group__ui.html#gaa7a78a00cde6fc882073b8468bce9365" title="The player won the game, now the winning screen must be displayed." alt="" coords="5,56,136,83"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="switchboard_win" name="switchboard_win">
+<area shape="rect" id="node1" title="The player won the game, now the winning screen must be displayed." alt="" coords="5,81,136,108"/>
+<area shape="rect" id="node2" href="$group__ui.html#ga5c1105262bcfc2e0ac0e33a088ed5b05" title="Creates a new score object." alt="" coords="184,81,275,108"/>
+<area shape="rect" id="node3" href="$group__math__utils.html#ga97d1a08de1a9a8020362a119116e7e9e" title="Clamps the value between the established min and max." alt="" coords="323,31,425,57"/>
+<area shape="rect" id="node6" href="$group__math__utils.html#ga03fbc2214f5cb19e88f5dfade75b9adf" title="Retuns the minimum of two numbers." alt="" coords="327,81,421,108"/>
+<area shape="rect" id="node7" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="332,132,416,159"/>
+<area shape="rect" id="node4" href="$group__math__utils.html#ga3bcf908f7ca21d713dad8942966236a0" title="Retuns the maximum of two numbers." alt="" coords="473,5,564,32"/>
+<area shape="rect" id="node5" href="$group__math__utils.html#ga3302a52c6d231924e42b2d44b52bd17b" title="Retuns the minimum of two numbers." alt="" coords="475,56,562,83"/>
+</map>

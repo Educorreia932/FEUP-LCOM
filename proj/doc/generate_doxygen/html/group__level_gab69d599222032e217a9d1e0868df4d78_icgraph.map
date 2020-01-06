@@ -1,0 +1,4 @@
+<map id="new_arcade_level" name="new_arcade_level">
+<area shape="rect" id="node1" title="Creats a new level with the arcade mode&#39;s layout." alt="" coords="184,5,323,32"/>
+<area shape="rect" id="node2" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="5,5,136,32"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="hw_manager_subscribe_int" name="hw_manager_subscribe_int">
+<area shape="rect" id="node1" title="Subscribes to all needed interrupts." alt="" coords="5,300,204,327"/>
+<area shape="rect" id="node2" href="$group__kbd.html#ga99e555c759ab6db31098acfbd7eba0c0" title="Subscribes keyboard interrupts Sends the bit number for the interrupt through bit_no and saves the ho..." alt="" coords="278,5,417,32"/>
+<area shape="rect" id="node3" href="$group__mouse.html#gaaee403e96f143a0f2098f19e24b18fe5" title="Enables stream mode data reporting by sending the respective command to the mouse." alt="" coords="263,57,431,98"/>
+<area shape="rect" id="node4" href="$group__mouse.html#ga16f703dcb9ea77049ce1b229dfd783db" title="Disables mouse interrupts." alt="" coords="275,123,419,149"/>
+<area shape="rect" id="node5" href="$group__mouse.html#ga96d888f56278aa377c374da0882df347" title="Enables mouse interrupts." alt="" coords="277,173,418,200"/>
+<area shape="rect" id="node6" href="$group__mouse.html#gaf03bfb6b1067850f58142b0bef71e9fd" title="Sets mouse to stream mode." alt="" coords="252,224,443,251"/>
+<area shape="rect" id="node7" href="$group__mouse.html#ga2c8d42f1ee35d7704da8d120a8e83dd8" title="Susbcribes mouse interrupts." alt="" coords="268,275,427,301"/>
+<area shape="rect" id="node8" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="281,325,413,352"/>
+<area shape="rect" id="node9" href="$group__rtc.html#gadf3fcc7fec442255bfe9064272fba686" title="Subscribes and enables RTC interrupts." alt="" coords="281,376,413,403"/>
+<area shape="rect" id="node10" href="$group__timer.html#ga17375a3088de21f5780dd6503625abdd" title="Subscribes and enables Timer 0 interrupts." alt="" coords="268,427,427,453"/>
+<area shape="rect" id="node11" href="$group__uart.html#gabeb0a374ff7bc33d3ca9955cdebbca8f" title="Creates the queue object that is going to be used as the UART information receiver." alt="" coords="262,478,433,519"/>
+<area shape="rect" id="node13" href="$group__uart.html#gac6e0a53521a69f3ec0bb4a9d4e7c0bbe" title="Sets the UART configuration to the one we&#39;re using." alt="" coords="292,544,403,571"/>
+<area shape="rect" id="node14" href="$group__uart.html#gac80b4a476f86d9109cc476ba46006220" title="Subscribes and enables UART interrupts." alt="" coords="277,595,418,621"/>
+<area shape="rect" id="node12" href="$group__queue.html#gae3ac2a0e29203aaa204c4275bda4cb44" title="Called to create a new Queue." alt="" coords="491,485,587,512"/>
+</map>

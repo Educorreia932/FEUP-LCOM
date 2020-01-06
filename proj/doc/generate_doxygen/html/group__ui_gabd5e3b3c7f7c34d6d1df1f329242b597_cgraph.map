@@ -1,0 +1,7 @@
+<map id="update_button" name="update_button">
+<area shape="rect" id="node1" title="Updates a Button object color in case it&#39;s being hovered or not." alt="" coords="5,56,121,83"/>
+<area shape="rect" id="node2" href="$group__inputs.html#ga60054718001244332587e52e6453466e" title="Checks if the cursor is hovering inside the area defined by the rect." alt="" coords="169,31,328,57"/>
+<area shape="rect" id="node5" href="$group__inputs.html#ga4ab738c504ee9cd61c12b5ddd3221d82" title="Returns true if the mouse left button has started getting pressed this frame." alt="" coords="171,81,326,108"/>
+<area shape="rect" id="node3" href="$group__geometry.html#ga2cdaa8c9b7328f81072de6d4adfb3c04" title="Returns wether a given point is inside a rect or not." alt="" coords="376,5,575,32"/>
+<area shape="rect" id="node4" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="433,56,517,83"/>
+</map>

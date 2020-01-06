@@ -1,0 +1,30 @@
+<map id="new_slider" name="new_slider">
+<area shape="rect" id="node1" title="Creates a new Slider object." alt="" coords="5,157,97,184"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga42b432c638e02f812344825d3bb04e8b" title="Frees the Sprite passed on the pointer." alt="" coords="973,5,1065,32"/>
+<area shape="rect" id="node4" href="$group__sprite.html#ga16e3a1481425eb4b3a334e2ff25b52df" title="Creates a new Sprite object." alt="" coords="166,81,259,108"/>
+<area shape="rect" id="node23" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="171,132,255,159"/>
+<area shape="rect" id="node24" href="$group__sprite.html#ga83a61461cb63cb12fadab77d060b388a" title="Returns the Sprite&#39;s height." alt="" coords="145,183,280,209"/>
+<area shape="rect" id="node26" href="$group__sprite.html#ga326d1ea2b2f8a6005a742c8ed7e61f2a" title="Returns the Sprite&#39;s width." alt="" coords="147,233,278,260"/>
+<area shape="rect" id="node28" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="158,284,267,311"/>
+<area shape="rect" id="node3" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="1155,5,1256,32"/>
+<area shape="rect" id="node5" href="$bitmap_8h.html#aa439cff99ad1beb16927bad34b5ba7f9" title="Creates a new Bitmap object from a given filename." alt="" coords="349,107,451,133"/>
+<area shape="rect" id="node6" href="$group__gm.html#ga191afc58fb9f5bc145a58eefac945575" title="Used for exiting the game, even on catastrophic errors." alt="" coords="520,132,611,159"/>
+<area shape="rect" id="node7" href="$group__inputs.html#ga7bfb9944fb850356f8cb66bf76bfa4d0" title="Frees the occupied data when the cursor is no longer needed." alt="" coords="724,56,819,83"/>
+<area shape="rect" id="node8" href="$group__inputs.html#ga52f1b7e0eaa69270d2d5ca48bee3a5d8" title="Frees the keyboard input events from memory (to be used at the very end of a program)" alt="" coords="686,107,857,133"/>
+<area shape="rect" id="node9" href="$group__inputs.html#ga67a7db0e98a2115527db07d10a4422fb" title="Frees the mouse input events from memory (to be used at the very end of a program)" alt="" coords="676,157,867,184"/>
+<area shape="rect" id="node10" href="$group__hw__man.html#gab9e702bb7a2420b44630c78a3044db0d" title="Exits video mode and reenters text mode." alt="" coords="659,208,884,235"/>
+<area shape="rect" id="node11" href="$group__hw__man.html#ga85f9b82aad6e1743ce456e4598d6bc3d" title="Unsubscribes all the interrupts and resets the configuration of the needed devices." alt="" coords="664,267,879,293"/>
+<area shape="rect" id="node12" href="$group__kbd.html#gaee0a7b54ee426fade9c780418d110fe0" title="Unsubscribes keyboard interrupts." alt="" coords="942,56,1097,83"/>
+<area shape="rect" id="node13" href="$group__mouse.html#ga45e70bb75220cdf494f8ef7ed1a9e3cc" title="Disables mouse data reporting." alt="" coords="935,107,1103,149"/>
+<area shape="rect" id="node14" href="$group__mouse.html#ga3862616379d29306d83d79b14ea07427" title="Unsubcribes mouse interrupts." alt="" coords="932,173,1107,200"/>
+<area shape="rect" id="node15" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="953,224,1085,251"/>
+<area shape="rect" id="node16" href="$group__rtc.html#gab8f17bf5280c908c8b199a90fefcc758" title="Unsubscribes the RTC interrupts." alt="" coords="945,275,1093,301"/>
+<area shape="rect" id="node17" href="$group__rtc.html#ga9b5d85527d676067a8c05780ec46d4f1" title="Writes a RTC register in memory." alt="" coords="951,325,1087,352"/>
+<area shape="rect" id="node18" href="$group__timer.html#ga7b15990f508a89c4af040f384e132716" title="Unsubscribes Timer 0 interrupts." alt="" coords="932,376,1107,403"/>
+<area shape="rect" id="node19" href="$group__uart.html#gae30fd9313255082919e514e310164451" title="Frees the UART&#39;s receiver queue object." alt="" coords="949,427,1090,469"/>
+<area shape="rect" id="node22" href="$group__uart.html#ga41c1277688ee861e2d81aa712406d45e" title="Unsubscribes UART interrupts." alt="" coords="941,493,1098,520"/>
+<area shape="rect" id="node20" href="$group__queue.html#gaac97bf17f8f621edb1ae055cdb2bad5b" title="Frees an entire Queue (alongside all of its stored data)" alt="" coords="1158,435,1253,461"/>
+<area shape="rect" id="node21" href="$group__queue.html#ga71dc22164d9283381f746937781eac7c" title="Clears all the elements from the Queue." alt="" coords="1304,435,1405,461"/>
+<area shape="rect" id="node25" href="$bitmap_8h.html#a07d5d01c46c51590d6fb1ac41d7c0125" title="Returns the height (in pixels) of a given Bitmap." alt="" coords="328,183,472,209"/>
+<area shape="rect" id="node27" href="$bitmap_8h.html#a6a1d349f2ddf0d64f78864c293e4c40d" title="Returns the width (in pixels) of a given Bitmap." alt="" coords="331,233,469,260"/>
+</map>

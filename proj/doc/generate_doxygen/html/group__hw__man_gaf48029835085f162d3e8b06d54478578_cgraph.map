@@ -1,0 +1,5 @@
+<map id="hw_manager_uart_clear" name="hw_manager_uart_clear">
+<area shape="rect" id="node1" title="Clear all data from the receiver Queue." alt="" coords="5,5,184,32"/>
+<area shape="rect" id="node2" href="$group__uart.html#gadc19fdf5f6938c25bdb38c85c2b015a6" title="Clears the UART&#39;s receiver queue." alt="" coords="232,5,395,32"/>
+<area shape="rect" id="node3" href="$group__queue.html#ga71dc22164d9283381f746937781eac7c" title="Clears all the elements from the Queue." alt="" coords="443,5,544,32"/>
+</map>

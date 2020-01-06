@@ -1,0 +1,4 @@
+<map id="render_slider" name="render_slider">
+<area shape="rect" id="node1" title="Renders a Slider object." alt="" coords="5,5,112,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="160,5,303,32"/>
+</map>

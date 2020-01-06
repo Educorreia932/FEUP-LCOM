@@ -1,0 +1,13 @@
+<map id="player_win" name="player_win">
+<area shape="rect" id="node1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="5,64,99,91"/>
+<area shape="rect" id="node2" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="154,5,306,32"/>
+<area shape="rect" id="node3" href="$group__hw__man.html#ga52de9e74e3dc802f83955e68f1a09762" title="Returns the current date measured in seconds." alt="" coords="147,57,313,98"/>
+<area shape="rect" id="node6" href="$group__ui.html#ga5c1105262bcfc2e0ac0e33a088ed5b05" title="Creates a new score object." alt="" coords="185,133,275,160"/>
+<area shape="rect" id="node4" href="$group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b" title="Reads the current date from the RTC." alt="" coords="373,53,452,80"/>
+<area shape="rect" id="node5" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="512,53,644,80"/>
+<area shape="rect" id="node7" href="$group__math__utils.html#ga97d1a08de1a9a8020362a119116e7e9e" title="Clamps the value between the established min and max." alt="" coords="361,104,464,131"/>
+<area shape="rect" id="node10" href="$group__math__utils.html#ga03fbc2214f5cb19e88f5dfade75b9adf" title="Retuns the minimum of two numbers." alt="" coords="365,155,460,181"/>
+<area shape="rect" id="node11" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="371,205,455,232"/>
+<area shape="rect" id="node8" href="$group__math__utils.html#ga3bcf908f7ca21d713dad8942966236a0" title="Retuns the maximum of two numbers." alt="" coords="533,104,623,131"/>
+<area shape="rect" id="node9" href="$group__math__utils.html#ga3302a52c6d231924e42b2d44b52bd17b" title="Retuns the minimum of two numbers." alt="" coords="535,155,621,181"/>
+</map>
