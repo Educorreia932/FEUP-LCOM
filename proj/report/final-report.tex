@@ -226,7 +226,7 @@ O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para
 
 Peso relativo: 9\%
 
-Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%)
+Módulo desenvolvido por: Eduardo Correia (25\%) e Tiago Silva (75\%)
 \newline
 
 Módulo essencial que gere todos os aspetos do jogo, desde as mensagens recebidas da UART ao \textbf{driver\_receive()} e aos ciclos de update e rendering. É instanciado e usado como um \textit{singleton}.
@@ -311,16 +311,7 @@ Peso relativo: 2\%
 Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
 \newline
 
-Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
-
-Existem portanto três powerups:
-\newline
-
---- \textbf{Laser} - Após o jogador obter este powerup, torna possível controlar qual das três cores dos lasers está inativa, controlada pelo próprio jogador nos \textit{sliders} do canto superior esquerdo do nível, se estiver a jogar Singleplayer, e pela Switchboard se estiver a jogar Co-Op. Representada por um pequeno computador.
-
---- \textbf{Anti-Gravity} - Após o jogador obter este powerup, torna possível alterar o sentido da gravidade durante instantes (passando a ser puxado para o teto) através da tecla X (em Singleplayer) ou de uma \textit{Knob}  (em  modo Co-Op) que simultaneamente ilustra o tempo que o efeito de anti-gravidade estará ativo. Representada por uma maçã com um símbolo de uma seta.
-
---- \textbf{Exit} Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
+Classe que representa tanto os poderes que o \textit{Player} obtém como a saída do \textit{Level} no modo de jogo \textit{Campaign Single} e \textit{Campaign Co-op}.
 
 \section{Timer}
 
@@ -420,13 +411,11 @@ Peso relativo: 3\%
 
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 
-\subsection{KbdInputEvents}
+Composto pelo \textit{KbdInputEvents} e pelo \textit{MouseInputEvents}.
 
 Para guardar o input do \textit{keyboard} recorremos à classe \textit{KbdInputEvents}, que mantém um registo sobre todos os \textit{scancodes} de 1 \textit{byte} e sobre um subset específico de \textit{scandodes} de 2 \textit{bytes}.
 
-\subsection{MouseInputEvents}
-
-Esta "classe" guarda e expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
+Para guardar o input do rato recorremos à classe \textit{MouseInputEvents}, que expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
 
 \section{MouseCursor}
 
@@ -434,9 +423,7 @@ Peso relativo: 2\%
 
 Módulo desenvolvido por: Tiago Silva
 
-Representa o cursor do rato\newline
-
-Módulo desenvolvido por: 
+Representa o cursor do rato, atualizando a sua posição no ecrã e renderizando o cursor em si (quando a sua flag assim está definida).\newline
 
 \section{Utils}
 
@@ -554,6 +541,8 @@ O nosso sistema de rendering foi pensado como tendo várias camadas, isto é, sa
 
 A solução encontrada para esta questão foi dedicar diversas funções de \textit{rendering} ao \textit{GameManager}. Isto permitiu-nos renderizar um nível em \textit{Campaign singleplayer}, a \textit{Switchboard} num dos computadores em \textit{Campaign Co-op}, os níveis e os diversos contadores (\textit{Score}) em modo \textit{Arcade}, etc.. O método de trocar entre estas funções de render será abordado quando analisarmos o \textit{GameManager}.
 
+Outro aspeto peculiar é podermos aplicar filtros sobre o ecrã inteiro sem diminuir drasticamente o performance. Podemos definir várias funções extra para assumirem o papel de copiar do buffer temporário para o \textit{frame buffer}, que usam efeitos especiais, como foi realizado na \textit{Switchboard} para o efeito de o ecrã aparenter ter 'estática' na imagem (só quando o utilizador não cumpre uma tarefa corretamente).
+
 \subsection{Bitmap}
 
 O código que usamos ler bitmaps foi parcialmente retirado da internet, mas com várias alterações para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}}que usamos (criados no GIMP).
@@ -657,19 +646,62 @@ Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente ex
 
 \section{Level}
 
+% -> Level editor :(
+\section{Platforms e Spikes}
+
+\section{Lasers}
+
 \subsection{Player}
 
 Animações
 
 \subsection{Campaign}
 
+\subsection{Power Ups}
+
+Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
+
+Existem portanto três powerups:
+\newline
+
+--- \textbf{Laser} - Após o jogador obter este powerup, torna possível controlar qual das três cores dos lasers está inativa, controlada pelo próprio jogador nos \textit{sliders} do canto superior esquerdo do nível, se estiver a jogar Singleplayer, e pela Switchboard se estiver a jogar Co-Op. Representada por um pequeno computador.
+
+--- \textbf{Anti-Gravity} - Após o jogador obter este powerup, torna possível alterar o sentido da gravidade durante instantes (passando a ser puxado para o teto) através da tecla X (em Singleplayer) ou de uma \textit{Knob}  (em  modo Co-Op) que simultaneamente ilustra o tempo que o efeito de anti-gravidade estará ativo. Representada por uma maçã com um símbolo de uma seta.
+
+--- \textbf{Exit} Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
+
+\subsubsection{Single player}
+
+\subsubsection{Co-op player 1 - Watt}
+
+\subsubsection{Co-op player 2 - Switchboard}
+
 \subsection{Arcade}
+
+\subsubsection{Arcade Single}
+
+\subsubsection{Arcade Versus}
 
 \section{Game Manager}
 
-\section{}
+O \textit{GameManager} é o responsável por coordenar todas as várias componentes do nosso projeto, para não mencionar o facto de o \textit{proj\_main\_loop()} estar integrado dentro da função do GameManager \textit{start\_game()}.
 
-% É possível mudar o path absoluto das imagens com um argumento da linha de comandos.
+Esta classe é composta por apontadores para os três tipos de classes 'principais', o \textit{Level}, a \textit{Switchboard} e o \textit{MainMenu}. Tem dois \textit{arrays} de apontadores para funções que representam as diversas funções de \textit{update} e \textit{render} que existem. Um membro dado do tipo \textit{GameModeEnum} que representa o modo de jogo atual. Dois apontadores para função que representam as funções de double buffering que desenvolvemos. Diversos \textit{booleans} para sabermos os estado da UART a qualquer altura. Para finalizar, tem uma variável responsável por detetar se o utilizador premiu duas vezes a tecla Esc num curto intervalo de tempo.
+
+\subsection{Update e Render}
+
+\subsection{GameModeEnum}
+
+Este enum representa sempre o modo de jogo atual, através da atribuição de significado a cada bit. Ou seja, sendo o BIT(0) o bit que indica se o
+
+% -> Function pointers da amizade
+% -> Path dos assets
+% -> É um singleton
+% -> Mensagens da UART
+% -> É o main loop
+% -> Handle do double Esc
+% -> Cuidado com a memória, os free e os seg faults
+% -> GameModeEnum
 
 \chapter{Conclusões}
 
