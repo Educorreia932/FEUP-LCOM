@@ -129,6 +129,10 @@ Possui também um modo \textbf{\textit{versus}} (Figura \ref{fig:arcade_versus})
 	\label{fig:arcade_you_win}
 \end{figure}
 
+\section{Relatório}
+
+Se for necessário re-compilar este relatório, em distribuições baseadas em \textit{Arch}, basta instalar a package \textit{texlive-core}, e depois correr o comando \textit{latexmk -pdf final-report.tex} a partir do diretório onde o ficheiro \textit{final-repot.tex} se encontrar.
+
 \chapter{Estado do Projeto}
 
 \section{Dispositivos Usados}
@@ -531,13 +535,19 @@ Existe um conjunto de operações que podemos efetuar com esta classe, nomeadame
 
 \subsection{Rect}
 
-Este módulo é usado para colisões e para o UI. 
+A classe \textit{Rect} representa, ao seu nível mais simples, \textit{retângulos}. Eles são usados para representar a \textit{hitbox} dos diversos elementos do jogo (\textit{Player}, \textit{Lasers}, \textit{Platforms}, ...) como dos \textit{UI elements} (que área do ecrã é dedicada a ativar um botão, por exemplo).
+
+Cada \textit{Rect} é composto pelas coordenadas do seu ponto mais acima e à esquerda, tanto como pela sua largura e altura. Existem vários construtores disponíveis com propósitos diferentes: \textit{rect()}, \textit{rect\_from\_vec2d()}, \textit{rect\_from\_points()} (gera o retângulo definido por dois pontos).
 
 \subsection{Sistema de Colisões}
 
-Sistema de colisões.
+O nosso sistema de colisões foi construído pensando em várias camadas, isto para permitir que um determinado objecto só colida com os necessários.
 
 \section{Rendering}
+
+O nosso sistema de rendering foi pensado como tendo várias camadas, isto é, sabemos que temos que desenhar o \textit{Player} por cima do \textit{background}, e que temos que desenhar os \textit{Lasers} por cima deles.
+
+A solução encontrada para esta questão foi dedicar diversas funções de \textit{rendering} ao \textit{GameManager}. Isto permitiu-nos renderizar um nível em \textit{Campaign singleplayer}, a \textit{Switchboard} num dos computadores em \textit{Campaign Co-op}, os níveis e os diversos contadores (\textit{Score}) em modo \textit{Arcade}, etc.. O método de trocar entre estas funções de render será abordado quando analisarmos o \textit{GameManager}.
 
 \subsection{Bitmap}
 
@@ -627,15 +637,15 @@ Para resumir de forma simplificada o seu modo de funcionamento, o utilizador cli
 
 Outra característica adicional, é que o utilizador não pode rodar na direção errada, isto é: Se a direção do início para o fim for no sentido do ponteiro do relógio, se o utilizador arrastar no sentido contrário até à posição final, o \textit{handle} não se irá mover até o utilizador voltar à posição do \textit{handle} no ecrã.
 
-Este elemento foi bastante desafiante, visto a complexidade do método usado para determinar o ângulo e a posição do \textit{handle} dado o ângulo determinado. Foram usadas extensivamente as funções associadas ao \textit{Vec2d} de \textit{circumference\_vec2d()}, \textit{angle\_vec2d()} (que por sua vez necessita do \textit{prod\_vec\_vec2d()}), \textit{sum\_vec2d()}, \textit{subtract\_vec2d()}, entre outras.
+Este elemento foi bastante desafiante, visto a complexidade do método usado para determinar o ângulo e a posição do \textit{handle} dado o ângulo determinado. Foram usadas extensivamente as funções associadas ao \textit{Vec2d} de \textit{circumference\_vec2d()}, \textit{angle\_vec2d()} (que por sua vez necessita do \textit{prod\_vec\_vec2d()} e do \textit{norm\_vec2d()}), \textit{sum\_vec2d()}, \textit{subtract\_vec2d()}, entre outras.
 
 \subsection{Number}
 
-A "classe" \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade --- \textit{updade\_number()}.
+A classe \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade --- \textit{updade\_number()}.
 
 \subsection{Score}
 
-A "classe" \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). É utilizada para mostrar a pontuação atual de um jogador no modo de jogo \textit{arcade}, o tempo restante no modo \textit{arcade versus}, e para exibir o tempo (em segundos) que o jogador demorou a concluir o nível no modo \textit{campaign} (tanto \textit{single player} como \textit{co-op}).
+A classe \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). É utilizada para mostrar a pontuação atual de um jogador no modo de jogo \textit{arcade}, o tempo restante no modo \textit{arcade versus}, e para exibir o tempo (em segundos) que o jogador demorou a concluir o nível no modo \textit{campaign} (tanto \textit{single player} como \textit{co-op}).
 
 É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
 
@@ -667,7 +677,7 @@ Frequentemente tínhamos dificuldade em encontrar o que procurávamos, a documen
 
 Por outro lado, a cadeira possuiu ainda um lado bastante positivo, na medida em que: Aprendemos novas abordagens e técnicas da informática, aprofundámos o nosso conhecimento de programação a baixo nível e pela primeira vez até agora no curso, tivemos um projeto de maior dimensão e também com uma maior liberdade para explorarmos ao máximo as potencialidades do que aprendemos nas aulas.
 
-Quanto às nossas maiores dificuldades, estas foram principalmente a implementação da UART, uma vez que os Interrutps \textit{THR Empty} nem sempre funcionavam devidamente e devido ao facto do seu bug ser relativamente difícil (o que se aplica na realidade ao projeto inteiro).
+Quanto às nossas maiores dificuldades, estas foram principalmente a implementação da UART, uma vez que os Interrutps \textit{THR Empty} nem sempre funcionavam devidamente e devido ao facto do seu debug ser relativamente difícil (o que se aplica na realidade ao projeto inteiro).
 
 Em suma, achamos que tiramos um bom proveito desta cadeira e que nos vai expandir os horizontes no futuro, gostaríamos portanto de agradecer aos docentes da cadeira pela sua prestação a leccionar, pelo esclarecimento das dúvidas que foram surgindo ao longo do semestre e pelo acompanhamento nas aulas práticas. Quanto a este último tópico, fomos constantemente coordenando com o professor os aspetos a melhorar a nível de \textit{hardware}, tendo ele salientado o facto de não enviarmos informação em quantidade e frequência o suficiente pela UART. Cremos ter corrigido essa questão com a implementação do modo Arcade - Versus e de resto, como não foram apontadas mais falhas relevantes, acreditarmos ter cumprido com as nossas expetativas para este projeto.
 
