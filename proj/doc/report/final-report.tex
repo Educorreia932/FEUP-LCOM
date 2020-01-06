@@ -248,7 +248,7 @@ Infelizmente existem outros módulos com um grande conhecimento destes protocolo
 
 Peso relativo: 8\%
 
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%) 
 \newline
 
 Vão haver essencialmente dois níveis, um para a \textbf{Campaign} --- new\_prototype\_level() e outro para \textbf{Arcade} --- new\_arcade\_level(), sendo possível iniciar cada um destes como singleplayer ou não atraveś do parâmetro (bool is\_singleplayer).
@@ -622,7 +622,7 @@ Cada \textit{sprite} criada também tem um \textbf{\textit{offset}} individual q
 
 Com o propósito de criar um \textbf{\textit{dispatcher}} eficiente, foi usado um \textbf{\textit{map}} para mapear cada \textit{scancode} ao seu valor respetivo. É registada sempre se uma tecla está a ser pressionada e se uma tecla foi pressionada durante este frame (isto é, se o utilizador empurrou para baixo a tecla).
 
-A função \textit{kbd\_input\_events\_process\_scancode()} trata de interpretar qualquer scancode que seja recebido do \textit{keyboard}.
+A função \textit{kbd\_input\_events\_process\_scancode()} trata de interpretar qualquer scancode que seja recebido do \textit{keyboard}. Visto recebermos mais de 90\% do teclado (incluindo numpad), estamos a um pequeno passo de distância de permitir o utilizador escrever texto no nosso programa.
 
 Para mais é permitido um acesso mais simples a estas informações a partir de qualquer ponto do programa, esta classe foi tornada um \textit{singleton}, com dois \textit{getters} para saber se uma \textbf{tecla} se encontra premida --- \textit{get\_key()}, e se uma \textbf{tecla} foi premida neste frame, \textit{get\_key\_down()}.
 
@@ -693,7 +693,8 @@ Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente \t
 
 \section{Level}
 
-% -> Level editor :(
+A nossa classe \textit{Level} é extremamente versátil, o que nos permitiu efetuar tanto a \textit{Campaign} como o \textit{Arcade} usando-o. Originalmente tencionávamos criar um \textit{level editor}, daí a natureza tão modular do \textit{Level}, mas como implementámos o modo \textit{Arcade} para satisfazer melhor os critérios do uso da UART, acabámos por não ter tempo suficiente para o terminar.
+
 \subsection{Platforms e Spikes}
 
 A classe Platforms representa o conjunto de \textbf{plataformas} que existirão em cada \textbf{nível}, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}. Estas podem ou não serem \textbf{paredes} (is\_wall).
@@ -716,17 +717,17 @@ Por último, sempre que o \textit{Player} toca num destes \textit{lasers}, estes
 
 \subsubsection{Físicas}
 
-O player é o único objeto ao qual é aplicado um sistema de físicas (embora só no eixo vertical). O intuito das físicas não foi elas serem realistas, mas tal como podemos aprender com os jogos mais bem sucedidos deste \textit{genre} (\textit{platformer}), o mais importante é que elas sejam bastanet satisfatórias de jogar, algo que acreditamos ter conseguido.
+O \textit{Player} é o único objeto ao qual é aplicado um sistema de \textbf{físicas} (embora só no eixo \textbf{vertical}). O intuito das físicas não foi elas serem \textbf{realistas}, mas tal como podemos aprender com os jogos mais bem sucedidos deste \textit{genre} (\textit{platformer}), o mais importante é que elas sejam bastante \textbf{satisfatórias} de jogar, algo que acreditamos ter conseguido.
 
-O jogador tem sempre uma velocidade vertical, e sofre uma força gravítica (com sentido do ou positivo ou negativo do eixo). Sempre que o jogador está a 'cair', isto é, a sua velocidade tem o mesmo sentido que a gravidade atual, o efeito da gravidade é multiplicado. Se o jogador fosse contra algum obstáculo (verticalmente), a sua velocidade é drasticamente reduzida de modo a impedir que ele ultrapasse/entre dentro do obstáculo.
+O jogador tem sempre uma \textbf{velocidade} vertical (podendo ser nula), e sofre uma \textbf{força gravítica} (com \textbf{sentido} do eixo positivo ou negativo). Sempre que o jogador está a \textbf{"cair"}, isto é, a sua velocidade tem o mesmo sentido que a \textbf{gravidade} atual, o efeito da gravidade é \textbf{multiplicado}. Se o jogador fosse contra algum \textbf{obstáculo} (verticalmente), a sua velocidade é drasticamente \textbf{reduzida} de modo a impedir que ele ultrapasse/entre dentro do obstáculo.
 
 \subsubsection{Animações}
 
-O jogador tem um sistema complexo de animações, tendo animações \textit{idle} (quando se encontra parado e no chão), animações de andar/correr e ainda animações de 'faíscas' que são mostradas exclusivamente quando o jogador ativa a anti-gravidade.
+O jogador tem um sistema complexo de \textbf{animações}, tendo animações \textbf{\textit{idle}} (quando se encontra \textbf{parado} e no chão), animações de \textbf{andar/correr} e ainda animações de \textbf{"faíscas"} que são mostradas exclusivamente quando o jogador ativa a \textbf{anti-gravidade}.
 
-Para transitar entre cada animação utilizamos várias máquinas de estados (uma para a idle animation, uma para a walk animation e outra para a das 'faíscas'). As animações vão dando cycle entre elas a um ritmo fixo.
+Para transitar entre cada animação utilizamos várias \textbf{máquinas de estados} (uma para a \textit{idle animation}, uma para a \textit{walk animation} e outra para a das 'faíscas'). As animações vão dando \textit{cycle} entre elas a um ritmo fixo.
 
-Entre a animação de idle e walk só é renderizada uma de cada vez, portanto temos algumas variáveis responsáveis por essa decisão (inpirado pelo sistema usado pelo Unity, tal como mencionado anteriormente). Dependedo de se o jogador se encontrar vivo ou morto, e de se ele se encontrar no chão (\textit{grounded}) e sem qualquer input. Para a \textit{Sprite} do player morrer simplesmente reaproveitamos um dos frames da animação de idle, mas recolorida.
+Entre a animação de \textit{idle} e \textit{walk} só é renderizada uma de cada vez, portanto temos algumas variáveis responsáveis por essa decisão (inpirado pelo sistema usado pelo \textit{Unity}, tal como mencionado anteriormente, no nosso caso as animações serão geridas pelo \textit{animator\_player()} de modo a serem renderizadas de modo correto pelo \textit{render\_player\_background()} \(|\) \textit{render1\_player\_foreground()}). Dependendo se o jogador se encontrar vivo ou morto, e de se ele se encontrar no chão (\textit{grounded}) e sem qualquer input. Para a \textit{Sprite} do player morrer simplesmente reaproveitamos um dos frames da animação de idle, mas recolorida.
 
 Para evitar a duplicação de \textit{Sprites}, utilizamos a vantagem de refletir a imagem sobre si pŕopria para renderizar o jogador em todas as direções, isto é a andar para esquerda, para a direita e para cada uma delas, a andar com a gravidade para baixo (normal) ou para cima (a personagem 'caminha' no teto).
 
@@ -741,8 +742,6 @@ A cada frame são sempre enviadas via UART infomações do Player para o PlayerT
 Visto ser o tanto maior 'pacote' que enviamos via UART como o que é enviado com maior frequência, existem casos em que ele não chega a tempo ao outro jogador. Isto implica existirem frames em que o jogador recebe dois pacotes ao mesmo tempo. Para resolver esta situação, só atualizamos a informação do PlayerTwo quando recebemos o seu pacote respetivo. Durante frames em que recebemos múltiplos pacotes, só damos parse ao último recebido.
 
 \subsection{Campaign}
-
-% Chamar atenção de em singleplayer ter UI
 
 \subsubsection{Power Ups}
 
@@ -763,9 +762,18 @@ Existem portanto três powerups:
 A diferença do modo Singleplayer para o modo Co-Op 1 reside no facto de, devido ao facto de já não existir uma \textit{Switchboard}, os elementos de interface gráfica que se encontravam lá situados, terão de ser acoplados no pŕoprio nível. Para isso colocamos sliders mais pequenos no canto, junto com os botões dos lasers, por cima das paredes, de modo a não interferir com a jogabilidade visualmente e subsituímos a Knob pela tecla X.
 
 \subsection{Co-Op}
+
 Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos \textit{headers} para indicar que informação estava a ser enviada.
 
+Será ainda de destacar que em modo Co-op, na \textit{Switchboard}, temos um minijogo permanente, em que baseado num alarme do RTC, instancia alguns 'ciruitos'/'balões' em que o utilizador tem que clicar para destruir, pois caso cheguem ao final do ecrã, irão ativar temporariamente um filtro de distorção tipo 'interferência' no ecrã. Será de notar que estes 'circuitos' aparecem por baixo da switchboard (truque com a order no renderer e uma \textit{mask}).
+
 \subsection{Arcade Versus}
+
+Neste modo de jogo foi necessário sincronizar bastante informaçao, tal como as suas pontuações, os jogadores e os lasers. A relação e o envio de informação relativos ao Player e ao PlayerTwo já foram descritos anteriormente, mas falta abordar os lasers.
+
+Na 'sincronização' inicial dos dois jogadores é definido um papel a que chamámos \textit{laser master}, que é sempre o primeiro dos dois jogadores a abrir o modo de jogo (e coincidentalmente sempre o jogador vermelho). O computador que ficar com este papel fica responsável por gerir o \textit{spawn} dos lasers tal como descrito no capítulo deles. Este computador é o única que cria os lasers, sabe quando vem o próximo e a velocidade deles. A cada alteração da velocidade dos lasers, o \textit{laser master} envia uma mensagem ao outro a indicar essa alteração (e o seu novo valor). A cada \textit{spawn} de um laser, o \textit{laser master} envia a altura do novo laser ao outro.
+
+O \textit{laser master} é o responsável por terminar o jogo, como tal também envia uma mensagem ao outro jogador a notificá-lo deste evento. Os timers dos dois jogadores no entanto estão implementados a mostrar o tempo usando o número de frames desde o começo do jogo. Inicialmente usávamos leituras ao RTC para obter esse tempo, mas visto que o RTC dos dois PCs mudava o segundo em alturas diferentes (um dos PCs ficava sempre atrasado/adiantado por cerca de 0.5 segundo), o que nos levou à solução descrita acima.
 
 \section{Game Manager}
 
@@ -831,6 +839,14 @@ Um dos maiores problemas dessa implementação (que foi referido na secção do 
 Após desenvolver a Queue, planeavamos ter uma \textit{Queue} (a nível de software) para receção e outra para transmissão, mas dado os desenvolvimentos da UART, foi decidido usar apenas a queue de receção.
 
 \section{RTC}
+
+Neste projeto utilizamos o RTC maioritariamente em três vertentes diferentes. Como "Timer" no modo de jogo Campaign, lendo a hora a que este se inicia e acaba para calcular o tempo decorrido (para facilitar as contas, decidimos fazê-lo em segundos), para realizar uma contagem decrescente no modo de jogo Arcade - Versus, colocando um alarme para o final período de tempo que pretendemos contar e por último, para coordenar os instantes a que são geradas novos "balões" na Switchboard, através de vários alarmes.
+
+Para tal, usamos sobretudo as funções \textit{get\_date()} e \textit{rtc\_set\_alarm()}.
+
+Elaboramos ainda diversas funções auxiliares, nomeadamente para ler e escrever dos registos do RTC (\textit{rtc\_read\_register()} | \textit{rtc\_write\_register()}) e para converter BCD e decimal e vice-versa (uma vez que a informação obtida pelo \textit{get\_date()} pode estar em BCD e desejamos interpretá-la como decimal ou porque queremos dar set de um alarme que nos é passado em decimal e temos de o passar para BCD para voltar a escrever no registo).
+
+Como na leitura da data podem surgir erros (a data pode alterar-se, enquanto a lemos) fazemos uma verificação se esta se encontra em atualização e só então, se não estiver, é que a lemos.
 
 \chapter{Conclusões}
 
