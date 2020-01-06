@@ -595,7 +595,7 @@ O path para o diretório \textit{Assets} (onde se encontram todas as imagens), p
 
 \subsection{Sprite}
 
-No nosso programa existem duas classes de \textit{sprite}: a \textbf{normal} e a \textbf{dinâmica}. A dinâmica é usada sempre que quisermos usar a função bitmap\_draw\_dynamic() referida acima, a normal é usada em todos os outros casos.
+No nosso programa existem duas classes de \textit{sprite}: a \textbf{normal} e a \textbf{dinâmica}. A dinâmica é usada sempre que quisermos usar a função bitmap\_draw\_dynamic() referida acima, a normal é usada em todos os outros casos. Todas as \textit{sprites} têm \textit{getters} para o seu tamanho, que são usados mais tarde para gerar automaticamente as \textit{hitboxes} do \textit{player} e dos botões.
 
 Foi tomada a decisão de implementar as animações seguindo o popular \textit{Unity}. Este \textit{game engine} tem uma propriedade \textit{Animator} que pode ser acoplado a qualquer objeto com um \textit{Renderer}. O \textit{Animator} é apenas uma máquina de estados que indica, no momento de renderizar o objeto no ecrã, qual a \textit{Sprite}, textura ou \textit{3D Model} a usar.
 
@@ -790,6 +790,22 @@ A classe \textit{GameManager} também é responsável por garantir que toda a me
 A mecânica de premir Esc duas vezes consecutivamente para ou voltar ao \textit{MainMenu} ou sair do jogo é manuseada pelo \textit{GameManager}. Dependedo do \textit{GameModeEnum} atual ele faz a ação correta.
 
 Seguindo a indicação do docente Souto, decidimos permitir que o \textit{path} absoluto para o diretório dos \textit{assets} seja definida como um \textit{command line argument}. Por omissão é utilizado o \textit{path} que usámos durante o desenvolvimento do programa.
+
+\section{UART}
+
+O UART foi implementado usando FIFOs e interrupções, com a ajuda de uma Queue de receção a nível de software (abordada na secção seguinte). Decorreram diversos problemas durante o desenvolvimento deste módulo, por exemplo subscrevíamos a interrupções de receiver e do THR vazio, mas não recebíamos sempre a interrupção do THR vazio, a não ser que tentássemos descobrir se o THR se encontrava vazio durante outros processamos (sem ter recebido a notificação). Nesses casos o IIR indicava existir a interrupção, mas ela não era recebida.
+
+Em grande parte por causa deste facto não conseguimos implementar o serial port com todas as verificações que desejaríamos, mas pelo menos conseguimos pô-lo bastante estável. Ocorreram mais problemas enquanto não descobrimos um erro crítico com a Queue que usámos (abordado no próximo capítulo), mas depois de corrigida não ocorreram mais problemas.
+
+\subsection{Queue}
+
+Inicialmente fomos ver a implementação da Queue a um website (https://codeforwin.org/2018/08/queue-implementation-using-linked-list-in-c.html), mas ela estava bastante longe das nossas necessidades. Como tal, tivemos que reescrever grande parte dela, alterando-a para permitir mais do que uma Queue por projeto, criando uma estrutura Queue que funcionasse mesmo como uma Queue, resolvemos diversos problemas de lógica, segmentation fault e de memory leaks. Em geral, pouco se pode aproveitar da Queue que vimos originalmente, mas decidimos mencionar em que foi encontrada a implementação para respeitar os requeridas deste projeto.
+
+Um dos maiores problemas dessa implementação (que foi referido na secção do serial port) era que ao dar pop() da queue quando ela tinha um elemento levava a que ela apagasse o nodo da lista ligada (implementação interna da Queue) mas não alterava o apontador rear para NULL, o que mais tarde (ao reinserir nesse local de memória) causava ou segmentation faults ou reescrevia dados de outro local qualquer do projeto (por exemplo chegou a alterar consecutivamente o dynamic sprite size do SpriteDynamic para um endereço de memória, o que os impedia de serem renderizados). Visto quão comum a operação de dar pop() do único elemento da Queue é, o erro teve proporções muito elevadas.
+
+Após desenvolver a Queue, planeavamos ter uma \textit{Queue} (a nível de software) para receção e outra para transmissão, mas dado os desenvolvimentos da UART, foi decidido usar apenas a queue de receção.
+
+\section{RTC}
 
 \chapter{Conclusões}
 
