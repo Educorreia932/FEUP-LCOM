@@ -44,6 +44,7 @@ static void gm_uart_erase_message() {
 // }
 
 static void gm_update_campaign_single() {
+	printf("Level update\n");
 	update_cursor();
 	update_level(get_game_manager()->level);
 }
@@ -364,7 +365,7 @@ static void gm_update_switchboard() {
 
 static void gm_update_main_menu() {
 	update_cursor();
-	update_main_menu(gm->main_menu);
+	update_main_menu(&gm->main_menu);
 	gm_uart_erase_message();
 }
 
@@ -414,6 +415,8 @@ static void gm_render_main_menu() {
 
 void gm_start_level() {
 
+	printf("start_level\n");
+
 	gm->normal_rendering = true;
 
 	if (gm->s_board != NULL) {
@@ -443,9 +446,12 @@ void gm_start_level() {
 		hw_manager_uart_send_char(HEADER_AVAILABLE_LEVEL);
 		hw_manager_uart_send_char(HEADER_TERMINATOR);
 	}
+
 }
 
 void gm_start_switchboard() {
+
+	printf("start_switchboard\n");
 
 	gm->normal_rendering = true;
 	
@@ -479,6 +485,8 @@ void gm_start_switchboard() {
 
 void gm_start_arcade() {
 
+	printf("start_arcade\n");
+
 	gm->normal_rendering = true;
 
 	if (gm->s_board != NULL) {
@@ -510,6 +518,8 @@ void gm_start_arcade() {
 }
 
 void gm_start_main_menu() {
+
+	printf("start_main_menu\n");
 
 	gm->normal_rendering = true;
 
@@ -624,11 +634,19 @@ void update() {
 	if (get_key_down(KBD_ESC)) {
 		if (gm->esc_counter <= GM_ESC_COUNTDOWN_WINDOW) {
 			// Go back a Menu
-			if (gm->gamemode & GM_MAIN_MENU)
-				gm->game_ongoing = false;
+			if (gm->gamemode & GM_MAIN_MENU) {
+				// Exit tutorials
+				if (gm->main_menu != NULL && main_menu_in_submenu(gm->main_menu)) {
+					main_menu_exit_submenu(gm->main_menu);
+					gm->esc_counter = GM_ESC_COUNTDOWN_WINDOW + 1;
+				}
+				else // Exit game
+					gm->game_ongoing = false;
+			}
 			else {
 				gm->gamemode = GM_MAIN_MENU;
 				gm_start_main_menu();
+				gm->esc_counter = GM_ESC_COUNTDOWN_WINDOW + 1;
 			}
 		}
 		else
