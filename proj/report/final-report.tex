@@ -105,7 +105,7 @@ Para sair deste ecrã e regressar ao menu principal o utilizador deve pressionar
 
 \textbf{\textit{Arcade}} é um modo de jogo alternativo, baseado na mecânica de \textbf{anti-gravidade} do outro modo de jogo. Neste o jogador terá de se desviar de \textbf{lasers} que vêm na sua direção (passando por entre estes) tentanto aguentar o máximo de tempo possível sem tocar neles e perder. Por cada par de \textbf{lasers} que o jogador passa o seu \textbf{\textit{score}} (\textbf{canto superior direito} - Figura \ref{fig:arcade_singleplayer}) aumenta por um ponto. O \textbf{\textit{score}} superior, a \textbf{branco}, representa a sua pontuação atual (que é reposta de cada vez que este toca num \textbf{laser}), já o \textbf{\textit{score}} inferior, a \textbf{cinzento}, representa a maior pontuação (\textbf{\textit{highscore}}) do jogador que ele conseguiu obter durante a partida.
 
-Possui também um modo \textbf{\textit{versus}}, em que dois utilizadores jogam simultaneamente para ver quem obtém a maior pontuação. Para distinguir entre os dois jogadores, um deles é apresentado com uma cor \textbf{azulada}, tal como o seu \textbf{\textit{score}} (Figura \ref{fig:arcade_versus}).
+Possui também um modo \textbf{\textit{versus}} (Figura \ref{fig:arcade_versus}), em que dois utilizadores jogam simultaneamente para ver quem obtém a maior pontuação durante um tempo limite (de 45 segundos, após o qual aparece um ecrã a informar de quem foi a vitória e a pontuação respetiva de cada jogador - Figura \ref{fig:arcade_you_win}). Para distinguir entre os dois jogadores, um deles é apresentado com uma cor \textbf{azulada}, tal como o seu \textbf{\textit{score}} e o outro a vermelho (Figura \ref{fig:arcade_versus}).
 
 \begin{figure}[H]
 	\centering
@@ -119,6 +119,14 @@ Possui também um modo \textbf{\textit{versus}}, em que dois utilizadores jogam 
 	\includegraphics[width=0.6\textwidth]{arcade_versus}
 	\caption{Arcade - Versus}
 	\label{fig:arcade_versus}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{arcade_you_win}
+	\caption{Arcade - You Win}
+	\label{fig:arcade_you_win}
 \end{figure}
 
 \chapter{Estado do Projeto}
@@ -184,10 +192,10 @@ Implementada com \textit{FIFO}s e uma receiver \textit{Queue} a nível de \texti
 
 Peso relativo: 5\%
 
-Módulo desenvolvido por: Tiago
+Módulo desenvolvido por: Tiago Silva
 \newline
 
-O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
+O módulo \textbf{\textit{Geometry}} é dividido em duas partes, \textbf{\textit{Vec2d}} e \textbf{\textit{Rect}}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
 
 \section{Bitmap}
 
@@ -196,9 +204,10 @@ Peso relativo: 3\%
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 \newline
 
-Código de nível mais baixo que carrega um \textit{bitmap} individual para a memória, lendo o seu header e a imagem em si.
-Tem a capacidade de renderizar imagens normalmente, ou invertidas segundo os eixos x e y delas (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textit{bitmap} dinâmico, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
-Permite transparência e aplicar uma cor sobre o que é renderizado. O \textit{path} absoluto para os \textit{assets} pode ser alterado como um \textit{command line argument}.
+O módulo \textbf{\textit{Bitmap}} consiste em código de nível mais baixo que carrega um \textbf{\textit{bitmap}} individual para a memória, lendo o seu header e a imagem em si.
+Tem a capacidade de renderizar imagens \textbf{normalmente}, ou \textbf{invertidas} segundo os eixos \textit{x} e \textit{y} delas (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textbf{\textit{bitmap} dinâmico}, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
+Permite transparência e aplicar uma cor sobre o que é renderizado
+O \textit{path} absoluto para os \textit{assets} pode ser alterado como um \textit{command line argument}.
  
 \section{Sprite}
 
@@ -207,21 +216,23 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
-Wrapper para o bitmap, tanto o normal como o dinâmico. Como acréscimo, tem uma 'camada' extra que permite a animação de qualquer \textit{Sprite}.
+O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para o bitmap (tanto o normal como o dinâmico). Como acréscimo, tem uma 'camada' extra que permite a animação de qualquer \textit{Sprite}.
 
 \section{Game Manager}
-
-Módulo essencial que gere todos os aspetos do jogo, desde as mensagens recebidas da UART ao \textbf{driver\_receive()} e aos ciclos de update e rendering. É instanciado e usado como um \textit{singleton}.
 
 Peso relativo: 9\%
 
 Módulo desenvolvido por: Eduardo Correia (30\%) e Tiago Silva (70\%)
+\newline
+
+Módulo essencial que gere todos os aspetos do jogo, desde as mensagens recebidas da UART ao \textbf{driver\_receive()} e aos ciclos de update e rendering. É instanciado e usado como um \textit{singleton}.
 
 \section{Hardware Manager}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
 
 Este módulo foi uma tentativa de tentar encapsular ao máximo todo o conhecimento e funções responáveis por interagir com o hardware num único sítio o e transparecer o mínimo possível sobre as nossas implementações internas do \textit{timer}, \textit{keyboard}, \textit{mouse}, etc..
 
@@ -234,8 +245,8 @@ Peso relativo: 8\%
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
 \newline
 
-Esta classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
-Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade\newline
+O módulo \textbf{\textit{Level}} classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
+Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade --- new\_arcade\_level(), sendo possível iniciar cada um destes como singleplayer ou não atraveś do parâmetro (bool is\_singleplayer).
 
 \section{Platforms}
 
@@ -251,12 +262,16 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
 \newline
 
+Os \textit{lasers} são o obstáculo mais comum que o jogador irá encontrar, tendo de evitá-los para não morrer. Cada um possui uma cor que serve também como ID para sabe que lasers estão ativos (estarão sempre todos ativos exceto o de cor correspondente ao ID inativo, controlado pelo utilizador).
+
 \section{Spikes}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Eduardo Correia
 \newline
+
+São o segundo obstáculo 
 
 \section{Switchboard}
 
@@ -290,34 +305,109 @@ O módulo \textit{UI Elements} consiste em vários elementos da \textit{graphica
 Peso relativo: 2\%
 
 Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
+\newline
+
+Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional.
+Existem portanto três powerups:
+\newline
+
+--- \textbf{Laser} - 
+
+--- \textbf{Anti-Gravity} -
+
+--- \textbf{Exit} - Não é exatamente 	
 
 \section{Timer}
 
-\textit{Código importado do Lab 2}\footnotemark\newline
-Mas com melhorias.
-
 Peso relativo: 4\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
+
+\textit{Código importado do Lab 2 (com melhorias)}\footnotemark[\value{footnote}]
+
+\section{i8042}
+
+Peso relativo: 0.5\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
+
+\textit{Código importado do Lab 2}\footnotemark
 
 \section{Keyboard}
 
-\textit{Código importado do Lab 3}\footnotemark[\value{footnote}]\newline
-
 Peso relativo: 4\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
+
+\textit{Código importado do Lab 3}\footnotemark[\value{footnote}]
 
 \section{Mouse}
 
 Peso relativo: 4\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
 
-Para abordar completamente o uso mais direto do \textit{Mouse} é necessário cobrir duas partes, o \textit{MouseInputEvents} e o \textit{MouseCursor}, sendo que o segundo tira partido do primeiro.
+\textit{Código importado do Lab 4}\footnotemark[\value{footnote}]
 
-Tal como o \textit{KbdInputEvents}, estas duas classes são também \textit{singletons}.
+\section{i8254}
 
+Peso relativo: 0.5\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva
+\newline
+
+\textit{Código importado do Lab 3/4}\footnotemark[\value{footnote}]
+
+\section{Video}
+
+Peso relativo: 6\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
+
+\textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
+
+\section{Video Macros}
+
+Peso relativo: 1\%
+
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
+
+\textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
+
+\footnotetext{No código importado dos labs fizemos ligeiras alterações, como remover funções que não utilizamos (por exemplo, naquilo em que optássemos por usar \textit{interrupts} removemos o código que lidava com \textit{pollling}) e especificar uma abordagem geral para uma específica ao projeto, para ser mais eficaz (como usar a placa gráfica num modo apenas, correspondente ao que optámos por utilizar no nosso jogo).}
+
+\section{RTC}
+
+Peso relativo: 2\%
+
+Módulo desenvolvido por: Eduardo Correia
+\newline
+
+O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()} possuindo uma verificação antes de o fazer para obter a hora correta, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
+
+\section{UART}
+
+Peso relativo: 5\%
+
+Módulo desenvolvido por: Eduardo Correia (20\%) e Tiago Silva (80\%)
+\newline
+
+Este é o módulo que lida com o serial port e com a troca de informação entre os dois computadores que estarão a executar o jogo. Foi feita com FIFO's e em modo full-duplex
+ 
+\section{Queue}
+
+Peso relativo: 4\%
+
+Módulo desenvolvido por: Tiago Silva
+\newline
+
+Implementação relativamente simples da estrutura de dados \textit{queue} para uso com a UART. Foi inspirada pela implementação de um site, mas essa mesma possuía diversos erros e limitações, acabando por ser reescrita completamente na prática.
 
 \section{InputEvents}
 
@@ -325,13 +415,13 @@ Peso relativo: 3\%
 
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 
-\subsection{MouseInputEvents}
-
-Esta "classe" guarda e expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
-
 \subsection{KbdInputEvents}
 
 Para guardar o input do \textit{keyboard} recorremos à classe \textit{KbdInputEvents}, que mantém um registo sobre todos os \textit{scancodes} de 1 \textit{byte} e sobre um subset específico de \textit{scandodes} de 2 \textit{bytes}.
+
+\subsection{MouseInputEvents}
+
+Esta "classe" guarda e expõe para o resto do programa os botões premidos pelo utilizador, se eles estão a ser premidos neste instante e se eles começaram a ser pressionados neste frame. Regista também o \textit{delta} do movimento do rato no eixo do x e y em cada frame.
 
 \section{MouseCursor}
 
@@ -343,55 +433,23 @@ Representa o cursor do rato\newline
 
 Módulo desenvolvido por: 
 
-\section{Video}
-
-Peso relativo: 6\%
-
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
-
-\textit{Código importado do Lab 5}\footnotemark[\value{footnote}]
-
-\footnotetext{No código importado dos labs fizemos ligeiras alterações, como remover funções que não utilizamos (por exemplo, naquilo em que optássemos por usar \textit{interrupts} removemos o código que lidava com \textit{pollling}) e especificar uma abordagem geral para uma específica ao projeto, para ser mais eficaz (como usar a placa gráfica num modo apenas, correspondente ao que optámos por utilizar no nosso jogo).}
-
-\section{Video Macros}
-
-Peso relativo: 1\%
-
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
-
-\section{RTC}
-
-Peso relativo: 2\%
-
-Módulo desenvolvido por: Eduardo Correia
-
-O módulo do RTC é responsável por obter informação acerca da hora atual --- \textit{get\_date()} possuindo uma verificação antes de o fazer para obter a hora correta, bem como programar alarmes. --- \textit{rtc\_set\_alarm()}. --- rtc.c \newline
-
-\section{UART}
-
-Peso relativo: 5\%
-
-Módulo desenvolvido por: Eduardo Correia (20\%) e Tiago Silva (80\%)
- 
 \section{Utils}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+\newline
+
+Este módulo consiste num conjunto de funções com utilidade diversa que foram usadas um pouco por todo o projeto. A maioria destas funções foram desenvolvidas ao longo dos \textit{labs} e lidam principalmente com escrita e leitura para endereços de memória, bem como manipulação de bits.
 
 \section{MathUtils}
 
 Peso relativo: 1\%
 
-Módulo desenvolvido por: Tiago Silva
+Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
+\newline
 
-\section{Queue}
-
-Peso relativo: 4\%
-
-Módulo desenvolvido por: Tiago Silva
-
-Inspirado pela implementação de um site, mas essa Implementação tinha tantos erros e limitações, que foi praticamente reescrita completamente
+Semelhante ao \textit{Utils}, porém, por questão de organização, decidimos separar as funcionalidades matemáticas num ficheiro à parte. A maior parte das suas funções consistem em adptações de funções já existentes (no \textit{math.h}) mas com diferentes tipos de dados (no caso caso, float, uint16\_t e uint8\_t).
 
 \section{Main Menu}
 
@@ -399,25 +457,13 @@ Peso relativo: 3\%
 
 Módulo desenvolvido por: Tiago Silva
 
-\section{i8042}
-
-Peso relativo: 0.5\%
-
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
-
-\section{i8254}
-
-Peso relativo: 0.5\%
-
-Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva
-
 \section{Proj}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Tiago Silva
 
-%O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que menos tem peso no projeto, uma vez que só trata de chamar a função de iniciar o jogo --- \textit{start_game}. O \textit{GameManager} trata de tudo o resto.
+O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que menos tem peso no projeto, uma vez que só trata de chamar a função de iniciar o jogo --- \textit{start\_game} com o \textit{path} absoluto para as imagens passado como argumento na linha de comandos. O \textit{GameManager} trata de toda a lógica do jogo.
 
 \section{Call Graph}
 
@@ -445,20 +491,20 @@ TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
 			UI Elements & 6 \\
 			Powerup & 2 \\
 			Timer & 4 \\
+			i8042 & 0.5 \\
 			Keyboard & 4 \\
 			Mouse & 4 \\
-			InputEvents & 3 \\
-			MouseCursor & 2 \\
+			i8254 & 0.5 \\
 			Video & 6 \\
 			Video Macros & 1 \\
 			RTC & 2 \\
 			UART & 5 \\
+			Queue & 4 \\
+			InputEvents & 3 \\
+			MouseCursor & 2 \\
 			Utils & 1 \\
 			Math Utils & 1 \\
-			Queue & 4 \\
 			Main Menu & 3 \\
-			i8042 & 0.5 \\
-			i8254 & 0.5 \\
 			Proj & 1 \\
 		\hline
 		\hline
@@ -623,7 +669,7 @@ Por outro lado, a cadeira possuiu ainda um lado bastante positivo, na medida em 
 
 Quanto às nossas maiores dificuldades, estas foram principalmente a implementação da UART, uma vez que os Interrutps \textit{THR Empty} nem sempre funcionavam devidamente e devido ao facto do seu bug ser relativamente difícil (o que se aplica na realidade ao projeto inteiro).
 
-Por último, achamos que tiramos um bom proveito desta cadeira e que nos vai expandir os horizontes no futuro, gostaríamos portanto de agradecer aos docentes da cadeira pela sua prestação a leccionar e a esclarecer as dúvidas que foram surgindo ao longo do semestre.
+Em suma, achamos que tiramos um bom proveito desta cadeira e que nos vai expandir os horizontes no futuro, gostaríamos portanto de agradecer aos docentes da cadeira pela sua prestação a leccionar, pelo esclarecimento das dúvidas que foram surgindo ao longo do semestre e pelo acompanhamento nas aulas práticas. Quanto a este último tópico, fomos constantemente coordenando com o professor os aspetos a melhorar a nível de \textit{hardware}, tendo ele salientado o facto de não enviarmos informação em quantidade e frequência o suficiente pela UART. Cremos ter corrigido essa questão com a implementação do modo Arcade - Versus e de resto, como não foram apontadas mais falhas relevantes, acreditarmos ter cumprido com as nossas expetativas para este projeto.
 
 \paragraph{}
 
