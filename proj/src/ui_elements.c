@@ -274,7 +274,6 @@ inline void slider_set_activation(Slider_t* slider, bool is_active) {
     slider->is_active = is_active;
 }
 
-
 void update_slider(Slider_t* slider) {
     if (slider->is_active && slider->shown) {
         if (slider->being_moved) {
@@ -456,7 +455,6 @@ inline void knob_deactivate (Knob_t* knob) {
 inline void knob_set_activation(Knob_t* knob, bool is_active) {
     knob->is_active = is_active;
 }
-
 
 static float knob_get_cursor_angle(Knob_t *knob) {
     float angle = angle_vec2d(vec2d(1, 0), subtract_vec2d(                        cursor_get_pos(), knob->center));

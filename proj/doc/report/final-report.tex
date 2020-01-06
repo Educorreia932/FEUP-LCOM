@@ -658,15 +658,15 @@ Tal como o botão, o slider também tem um apontador para função (\textbf{void
 
 \subsection{Knob}
 
-Uma espécie de 'maçaneta' que pode ser rodada, clicando na sua extremidade com o botão esquerdo do rato e arrastando-a, ativando algum efeito durante o tempo que ocorre entre o instante em que é rodada até rodar de volta à sua posição inicial.
+Uma espécie de \textbf{"maçaneta"} que pode ser \textbf{rodada}, clicando na sua \textbf{extremidade} com o \textbf{botão esquerdo} do rato e \textbf{arrastando-a}, ativando algum \textbf{efeito} durante o tempo que ocorre entre o instante em que é \textbf{rodada} até rodar de \textbf{volta} à sua posição inicial.
 
-Uma \textit{knob} tem um \textit{handle}, isto é, a componente em que o utilizador clica e arrasta pelo ecrã, um apontador para função chamado quando o utlizador larga o \textit{handle} (\textit{on\_drop}) e outro quando o \textit{handle} volta à sua posição inicial (\textit{on\_reset}).
+Uma \textit{knob} tem um \textbf{\textit{handle}}, isto é, a \textbf{componente }em que o utilizador \textbf{clica} e \textbf{arrasta} pelo ecrã, um apontador para função chamado quando o utlizador larga o \textit{handle}  --- \textit{on\_drop()} e outro quando o \textit{handle} volta à sua posição inicial --- \textit{on\_reset()}.
 
-Para resumir de forma simplificada o seu modo de funcionamento, o utilizador clica no \textit{handle} e arrasta-a na direção da posição final (mas é sempre analisado o ângulo e nunca a posição absoluta). Quando o utilizador larga o \textit{handle}, ele chama o seu apontador para função \textit{on\_drop}. O \textit{handle} irá automaticamente voltar para a sua posição original. Durante este período o utilizador não pode interagir com a \textit{Knob}. Quando o \textit{handle} volta à sua posição original, chama o seu apontador para função \textit{on\_reset} e permite novamente a interação com o utilizador.
+Para resumir de forma simplificada o seu \textbf{modo de funcionamento}, o utilizador clica no \textit{handle} e arrasta-a na \textbf{direção} da posição final (mas é sempre analisado o \textbf{ângulo} e nunca a posição absoluta). Quando o utilizador larga o \textit{handle}, ele chama o seu apontador para função \textit{on\_drop}. O \textit{handle} irá automaticamente voltar para a sua posição original. Durante este \textbf{período} o utilizador não pode interagir com a \textit{Knob}. Quando o \textit{handle} volta à sua posição original, chama o seu apontador para função \textit{on\_reset} e permite novamente a interação com o utilizador.
 
-Outra característica adicional, é que o utilizador não pode rodar na direção errada, isto é: Se a direção do início para o fim for no sentido do ponteiro do relógio, se o utilizador arrastar no sentido contrário até à posição final, o \textit{handle} não se irá mover até o utilizador voltar à posição do \textit{handle} no ecrã.
+Outra característica adicional, é que o utilizador não pode rodar na direção \textbf{errada}, isto é: Se a direção do início para o fim for no sentido do ponteiro do relógio, se o utilizador arrastar no sentido contrário até à posição final, o \textit{handle} não se irá \textbf{mover} até o utilizador voltar à posição do \textit{handle} no ecrã.
 
-Este elemento foi bastante desafiante, visto a complexidade do método usado para determinar o ângulo e a posição do \textit{handle} dado o ângulo determinado. Foram usadas extensivamente as funções associadas ao \textit{Vec2d} de \textit{circumference\_vec2d()}, \textit{angle\_vec2d()} (que por sua vez necessita do \textit{prod\_vec\_vec2d()} e do \textit{norm\_vec2d()}), \textit{sum\_vec2d()}, \textit{subtract\_vec2d()}, entre outras.
+Este elemento foi bastante \textbf{desafiante}, visto a \textbf{complexidade} do método usado para determinar o \textbf{ângulo} e a \textbf{posição} do \textit{handle} dado o \textbf{ângulo} determinado. Foram usadas extensivamente as \textbf{funções} associadas ao \textit{Vec2d} de \textit{circumference\_vec2d()}, \textit{angle\_vec2d()} (que por sua vez necessita do \textit{prod\_vec\_vec2d()} e do \textit{norm\_vec2d()}), \textit{sum\_vec2d()}, \textit{subtract\_vec2d()}, entre outras.
 
 \subsection{Number}
 
@@ -676,32 +676,30 @@ A classe \textbf{\textit{Number}} serve para representar um único algarismo ent
 
 A classe \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). É utilizada para mostrar a pontuação atual de um jogador no modo de jogo \textit{arcade}, o tempo restante no modo \textit{arcade versus}, e para exibir o tempo (em segundos) que o jogador demorou a concluir o nível no modo \textit{campaign} (tanto \textit{single player} como \textit{co-op}).
 
-É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
+É possível iniciar o \textit{Score} com um \textbf{valor} inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. 
 
-Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente expandidas para renderizar texto, bastaria alterar o tipo de dados para char e renderizá-lo (a pior parte seria os \textit{Sprites} necessários para compor uma \textit{font}). Quanto à disposição do texto, bastava fazer com que o \textit{Score} deixasse de ter tamanho fixo.
+Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente \textbf{expandidas} para renderizar \textbf{texto}, bastaria alterar o tipo de dados para \textit{char} e renderizá-lo (a pior parte seria os \textit{Sprites} necessários para compor uma \textit{font}). Quanto à disposição do texto, bastava fazer com que o \textit{Score} deixasse de ter tamanho fixo.
 
 \section{Level}
 
 % -> Level editor :(
 \subsection{Platforms e Spikes}
 
-A classe Platforms representa o conjunto de plataformas que existirão em cada nível, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}. Estas podem ou não serem paredes.
+A classe Platforms representa o conjunto de \textbf{plataformas} que existirão em cada \textbf{nível}, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}. Estas podem ou não serem \textbf{paredes} (is\_wall).
 
-Os espinhos são em tudo semelhantes às plataformas exceto pela sua aparência e pelo facto do jogador morrer ao tocar nestes. Estão apenas presentes no Level do modo Campaign.
+Os espinhos são em tudo semelhantes às plataformas exceto pela sua aparência e pelo facto do jogador morrer ao tocar nestes. Estão apenas presentes no nível do modo Campaign.
 
 \subsection{Lasers}
 
-A classe Lasers representa o conjunto de lasers que existirão em cada nível. 
+A classe Lasers representa o conjunto de \textbf{lasers} que existirão em cada nível. 
 
-No modo Campaign estes serão quatro, dois azuis, um vermelho e um rosa, só duas cores de lasers é que estarão ativas de cada vez (podendo-se definir quais cores --- \textit{lasers\_set\_link\_id()}) e não mudam de posição.
+No modo Campaign estes serão \textbf{quatro}, dois azuis, um vermelho e um rosa, só os lasers de uma dada \textbf{cor} é que estarão \textbf{inativos} de cada vez (podendo-se definir qual --- \textit{lasers\_set\_link\_id()}) e não mudam de posição.
 
-Já no modo Arcade, o conjunto de lasers é todo da mesma cor (vermelho), estão sempre ativos e são gerados novos pares de lasers --- \textit{arcade\_add\_laser()}, com uma altura aleatória --- \textit{arcade\_generate\_laser\_height()} periodicamente --- \textit{arcade\_lasers\_set\_correct\_delay()}, que surgem da ponta direita do ecrã --- \textit{arcade\_spawn\_next\_laser()}, e se deslocam até à esquerda do mapa --- \textit{arcade\_move\_lasers()}, com uma certa velocidade \textit{arcade\_lasers\_set\_speed()}, sendo destruídos quando lá chegam.
+Já no modo Arcade, o conjunto de lasers é todo da \textbf{mesma cor} (vermelho), estão sempre \textbf{ativos} e são \textbf{gerados} novos pares de lasers --- \textit{arcade\_add\_laser()}, com uma \textbf{altura aleatória} --- \textit{arcade\_generate\_laser\_height()} \textbf{periodicamente} --- \textit{arcade\_lasers\_set\_correct\_delay()}, que surgem da ponta \textbf{direita} do ecrã --- \textit{arcade\_spawn\_next\_laser()}, e se \textbf{deslocam} até à \textbf{esquerda} do mapa --- \textit{arcade\_move\_lasers()}, com uma certa \textbf{velocidade} \textit{arcade\_lasers\_set\_speed()}, sendo \textbf{destruídos} quando lá chegam.
 
-A frequência a que os lasers surgem e a velocidade a que eles movem são ainda parâmetros que vão-se alterando conforme o jogador vai progredindo --- \textit{arcade\_update\_laser\_values} | \textit{arcade\_versus\_update\_laser\_values()}.
+A \textbf{frequência} a que os lasers \textbf{surgem} e a \textbf{velocidade} a que eles \textbf{movem} são ainda \textbf{parâmetros} que vão-se \textbf{alterando} conforme o jogador vai progredindo --- \textit{arcade\_update\_laser\_values} | \textit{arcade\_versus\_update\_laser\_values()}.
 
-Por último, sempre que o Player toca num destes lasers, estes são repostos, tal como a sua frequência a que são gerados e a sua velocidade --- \textit{arcade\_reset\_lasers()}, caso contrário, se ele conseguir passar por entre os lasers --- \textit{arcade\_player\_passes\_lasers()} recebe um ponto.
-
-É possível voltar atrás e passar pelo mesmo laser outra vez, mas visto a dificuldade bastante elevada desta manobra, decidimos deixá-lo no jogo, visto que se o jogador a conseguir fazer, merece o ponto extra.
+Por último, sempre que o \textit{Player} toca num destes \textit{lasers}, estes são \textbf{repostos}, tal como a \textbf{frequência} a que são gerados e a sua \textbf{velocidade} --- \textit{arcade\_reset\_lasers()}, caso contrário, se ele conseguir \textbf{passar} por entre os lasers --- \textit{arcade\_player\_passes\_lasers()} recebe um ponto.
 
 \subsection{Player}
 
@@ -709,7 +707,7 @@ Animações
 
 \subsection{PlayerTwo}
 
-O PlayerTwo posui a utilidade de representar um segundo jogador que está a jogar noutro computador no modo Arcade. 
+O PlayerTwo posui a utilidade de representar um \textbf{segundo jogador} que está a jogar noutro computador no modo Arcade. 
 
 O que é um Player num PC é representado como PlayerTwo no outro.
 
@@ -721,22 +719,31 @@ A sua posição no ecrã e o seu estado são enviadas por UART e atualizadas no 
 
 \subsubsection{Power Ups}
 
-Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
+Ao longo do modo Campaign, o \textbf{jogador} precisa de obter \textbf{\textit{powerups}} para ganhar novas \textbf{funcionalidades} de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
 
 Existem portanto três powerups:
-\newline
 
---- \textbf{Laser} - Após o jogador obter este powerup, torna possível controlar qual das três cores dos lasers está inativa, controlada pelo próprio jogador nos \textit{sliders} do canto superior esquerdo do nível, se estiver a jogar Singleplayer, e pela Switchboard se estiver a jogar Co-Op. Representada por um pequeno computador.
+\begin{itemize}
+	\item \textbf{Laser} --- Após o jogador obter este powerup, torna possível controlar qual das três cores dos lasers está inativa, controlada pelo próprio jogador nos \textit{sliders} do canto superior esquerdo do nível, se estiver a jogar Singleplayer, e pela Switchboard se estiver a jogar Co-Op. Representada por um pequeno computador.
 
---- \textbf{Anti-Gravity} - Após o jogador obter este powerup, torna possível alterar o sentido da gravidade durante instantes (passando a ser puxado para o teto) através da tecla X (em Singleplayer) ou de uma \textit{Knob}  (em  modo Co-Op) que simultaneamente ilustra o tempo que o efeito de anti-gravidade estará ativo. Representada por uma maçã com um símbolo de uma seta.
+	\item \textbf{Anti-Gravity} --- Após o jogador obter este powerup, torna possível alterar o sentido da gravidade durante instantes (passando a ser puxado para o teto) através da \textbf{tecla \textit{X}} (em Singleplayer) ou de uma \textit{Knob}  (em  modo Co-Op) que simultaneamente ilustra o tempo que o efeito de anti-gravidade estará ativo. Representada por uma maçã com um símbolo de uma seta.
 
---- \textbf{Exit} Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
+	\item \textbf{Exit} --- Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
+\end{itemize}
 
-\subsubsection{Single player}
+\subsubsection{Singleplayer}
 
-\subsubsection{Co-op player 1 - Watt}
+A diferença do modo Singleplayer para o modo Co-Op 1 reside no facto de, devido ao facto de já não existir uma \textit{Switchboard}, os elementos de interface gráfica que se encontravam lá situados, terão de ser acoplados no pŕoprio nível. Para isso colocamos sliders mais pequenos no canto, junto com os botões dos lasers, por cima das paredes, de modo a não interferir com a jogabilidade visualmente e subsituímos a Knob pela tecla X.
 
-\subsubsection{Co-op player 2 - Switchboard}
+\subsubsection{Co-Op Player 1 - Watt}
+
+Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos estes \textit{headers} para indicar que informação estava a ser enviada:
+
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\subsubsection{Co-Op Player 2 - Switchboard}
 
 \subsection{Arcade}
 
