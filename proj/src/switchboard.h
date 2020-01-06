@@ -12,7 +12,7 @@
 
 /**
  * @brief The Switchboard is a special menu that was developed to be used alongside a second instance of this game to play the co-op campaign\n
- * As such, it requires many information about the player, such as the powers he ahs unlocked (as only the switchboard may activate them)
+ * As such, it requires many information about the player, such as the powers he has unlocked (as only the switchboard may activate them)
  * 
  */
 typedef struct SwitchBoard SwitchBoard_t;

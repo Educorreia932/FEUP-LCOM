@@ -165,6 +165,12 @@ uint8_t uart_received_char;
  * @returns 0 on sucess, 1 otherwise
  */
 uint8_t uart_subscribe_int(uint32_t *bit_mask);
+
+/** 
+ * @brief Unsubscribes UART interrupts. 
+ *
+ * @returns 0 on sucess, 1 otherwise
+ */
 uint8_t uart_unsubscribe_int();
  
 /** @brief Creates the queue object that is going to be used as the UART information receiver */
@@ -175,7 +181,19 @@ void uart_free_receiver_queue();
 
 /** @brief Clears the UART's receiver queue */
 void uart_receiver_q_clear();
+
+/**
+ * @brief Gets the receiver queue's front
+ * 
+ * @returns Receiver queue last element
+ */
 uint8_t uart_receiver_q_front();
+
+/**
+ * @brief Pop's the top element from the receiver queue
+ * 
+ * @returns Receiver queue last element
+ */
 uint8_t uart_receiver_q_pop();
 
 /**
@@ -184,6 +202,12 @@ uint8_t uart_receiver_q_pop();
  * @returns True, if the UART queue is empty, false otherwise
  */
 bool uart_receiver_q_empty();
+
+/**
+ * @brief Gets the receiver queue size
+ * 
+ * @returns The receiver queue size
+ */
 uint8_t uart_receiver_q_size();
 
 /**
