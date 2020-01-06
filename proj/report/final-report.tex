@@ -182,32 +182,19 @@ Implementada com \textit{FIFO}s e uma receiver \textit{Queue} a nível de \texti
 
 \section{Geometry}
 
-
 Peso relativo: 5\%
 
 Módulo desenvolvido por: Tiago
+\newline
 
 O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
-\subsection{Vec2d}
-
-Este módulo é usado para representar vetores de duas dimensões, e consequentemente, pontos no espaço. Cada \textit{vec2d} é composto pelas suas componentes horizontal (x) e vertical (y), seguindo o referencial do frame buffer (x no sentido da esquerda para a direita e y no sentido de cima para baixo).
-
-Existe um conjunto de operações que podemos efetuar com esta classe, nomeadamente somar, subtrair, multiplicar por um escalar, a norma do vetor, o ângulo entre dois vetores (usado para a \textit{Knob}), produto escalar, a distância entre dois pontos do plano, calcular a posição de um ponto em coordenadas polares, entre outros (todas estas funções encontram-se expostas no Doxygen deste módulo).
-
-\subsection{Rect}
-
-Este módulo é usado para colisões e para o UI. 
-
-\subsection{Sistema de Colisões}
-
-Sistema de colisões. \newline
-
 
 \section{Bitmap}
 
 Peso relativo: 3\%
 
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
+\newline
 
 Código de nível mais baixo que carrega um \textit{bitmap} individual para a memória, lendo o seu header e a imagem em si.
 Tem a capacidade de renderizar imagens normalmente, ou invertidas segundo os eixos x e y delas (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textit{bitmap} dinâmico, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
@@ -215,11 +202,12 @@ Permite transparência e aplicar uma cor sobre o que é renderizado.
  
 \section{Sprite}
 
-Wrapper para o bitmap, tanto o normal como o dinâmico. Como acréscimo, tem uma 'camada' extra que permite a animação de qualquer \textit{Sprite}.
-
 Peso relativo: 5\%
 
 Módulo desenvolvido por: Tiago Silva
+\newline
+
+Wrapper para o bitmap, tanto o normal como o dinâmico. Como acréscimo, tem uma 'camada' extra que permite a animação de qualquer \textit{Sprite}.
 
 \section{Game Manager}
 
@@ -244,6 +232,7 @@ Infelizmente existem outros módulos com um grande conhecimento destes protocolo
 Peso relativo: 8\%
 
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
+\newline
 
 Esta classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
 Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade\newline
@@ -253,30 +242,35 @@ Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_l
 Peso relativo: 3\%
 
 Módulo desenvolvido por: Tiago Silva
+\newline
 
 \section{Lasers}
 
 Peso relativo: 5\%
 
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
+\newline
 
 \section{Spikes}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Eduardo Correia
+\newline
 
 \section{Switchboard}
 
 Peso relativo: 3\%
 
 Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
+\newline
 
 \section{Player}
 
 Peso relativo: 7\%
 
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%) 
+\newline
 
 O módulo \textit{Player} trata de gerir a representação de um jogador e da sua interface no nosso projeto bem como a sua interação com os restantes módulos. 
 
@@ -291,36 +285,9 @@ Apenas é utilizado no modo Arcade - Versus para representar um segundo jogador 
 Peso relativo: 6\%
 
 Módulo desenvolvido por: Eduardo Correia (25\%) e Tiago Silva (75\%) 
+\newline
 
-O módulo \textit{UI Elements} possui diversas subdivisões, uma vez que utilizámos vários elementos bastante diferentes entre si de interface com o utilizador, sendo estes os seguintes.\footnotemark
-
-\subsection{Button}
-
-Tal como o nome indica, esta "classe" representa um simples botão com uma aparência desejada e formato retangular que pode ser clicado para ativar alguma funcionalidade.
-Caso esteja ativo e o utilizador clicar nele com o cursor do rato, ativa a sua funcionalidade.
-
-\subsection{Slider}
-
-Uma barra vertical ou horizontal com um manípulo no seu interior que pode ser deslizado e colocado numa posição que provocará um efeito de \textit{magnitude} proporcional à posição do manípulo no \textit{Slider} relativamente à sua extremidade.
-
-\subsection{Knob}
-
-Uma espécie de "maçaneta" que pode ser rodada, clicando na sua extremidade com o botão esquerdo do rato e arrastando-a, ativando algum efeito durante o tempo que ocorre entre o instante em que é rodada até rodar de volta à sua posição inicial.
-
-\footnotetext{Os três primeiros elementos possuem um estado de ativo ou inativo e a qualquer momento é possível mudar o seu estado --- set\_activation(). Caso um elemento esteja inativo, a sua cor aparece ligeiramente menos saturada e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é clicável, se for um \textit{Slider}, não é "deslizável" e por último, se for uma \textit{Knob}, não é "rodável". Se estiver ativo, a sua aparência é normal e já é interagível.}
-
-\subsection{Number}
-
-A "classe" \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()}.
-
-\footnotetext{Caso o algarismo seja 9, passa para 0}
-
-\subsection{Score}
-
-A "classe" \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). Possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, também é usada para exibir o tempo (em segundos) que o jogador demorou a concluir o nível do modo \textit{campaign}.
-
-É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
-
+O módulo \textit{UI Elements} consiste em vários elementos da \textit{graphical user interface} que são utilizados pelo programa. Consiste em botões, \textit{sliders}, \textit{knobs} e \textit{scoreboards}.\footnotemark
 
 \section{Powerup}
 
@@ -506,6 +473,28 @@ TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
 
 \chapter{Detalhes de Implementação}
 
+\section{Geometry}
+
+
+Peso relativo: 5\%
+
+Módulo desenvolvido por: Tiago
+
+O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
+\subsection{Vec2d}
+
+Este módulo é usado para representar vetores de duas dimensões, e consequentemente, pontos no espaço. Cada \textit{vec2d} é composto pelas suas componentes horizontal (x) e vertical (y), seguindo o referencial do frame buffer (x no sentido da esquerda para a direita e y no sentido de cima para baixo).
+
+Existe um conjunto de operações que podemos efetuar com esta classe, nomeadamente somar, subtrair, multiplicar por um escalar, a norma do vetor, o ângulo entre dois vetores (usado para a \textit{Knob}), produto escalar, a distância entre dois pontos do plano, calcular a posição de um ponto em coordenadas polares, entre outros (todas estas funções encontram-se expostas no Doxygen deste módulo).
+
+\subsection{Rect}
+
+Este módulo é usado para colisões e para o UI. 
+
+\subsection{Sistema de Colisões}
+
+Sistema de colisões.
+
 \section{Rendering}
 
 \subsection{Bitmap}
@@ -554,6 +543,33 @@ Para permitir saber se um dado botão começou a ser premido num determinado fra
 
 
 \section{Graphical User Interface}
+
+\subsection{Button}
+
+Tal como o nome indica, esta "classe" representa um simples botão com uma aparência desejada e formato retangular que pode ser clicado para ativar alguma funcionalidade.
+Caso esteja ativo e o utilizador clicar nele com o cursor do rato, ativa a sua funcionalidade.
+
+\subsection{Slider}
+
+Uma barra vertical ou horizontal com um manípulo no seu interior que pode ser deslizado e colocado numa posição que provocará um efeito de \textit{magnitude} proporcional à posição do manípulo no \textit{Slider} relativamente à sua extremidade.
+
+\subsection{Knob}
+
+Uma espécie de "maçaneta" que pode ser rodada, clicando na sua extremidade com o botão esquerdo do rato e arrastando-a, ativando algum efeito durante o tempo que ocorre entre o instante em que é rodada até rodar de volta à sua posição inicial.
+
+\footnotetext{Os três primeiros elementos possuem um estado de ativo ou inativo e a qualquer momento é possível mudar o seu estado --- set\_activation(). Caso um elemento esteja inativo, a sua cor aparece ligeiramente menos saturada e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é clicável, se for um \textit{Slider}, não é "deslizável" e por último, se for uma \textit{Knob}, não é "rodável". Se estiver ativo, a sua aparência é normal e já é interagível.}
+
+\subsection{Number}
+
+A "classe" \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()}.
+
+\footnotetext{Caso o algarismo seja 9, passa para 0}
+
+\subsection{Score}
+
+A "classe" \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). Possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, também é usada para exibir o tempo (em segundos) que o jogador demorou a concluir o nível do modo \textit{campaign}.
+
+É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
 
 \section{Level}
 
