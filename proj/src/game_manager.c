@@ -698,8 +698,8 @@ uint8_t start_game(bool override_path, char *assets_path) {
 	uint32_t uart_bit_mask;
 	
 	if (hw_manager_subscribe_int(&timer0_bit_mask, &kbd_bit_mask, &mouse_bit_mask, &rtc_bit_mask, &uart_bit_mask)) {
-		printf("start_game: Failed to enable interrupts\n");
 		exit_game();
+		printf("stat_game: Failed fo enable interrupts\nPlease try again\n");
 		exit(42);
 	}
 

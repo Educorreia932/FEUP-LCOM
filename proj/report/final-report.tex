@@ -688,20 +688,48 @@ O \textit{GameManager} é o responsável por coordenar todas as várias componen
 
 Esta classe é composta por apontadores para os três tipos de classes 'principais', o \textit{Level}, a \textit{Switchboard} e o \textit{MainMenu}. Tem dois \textit{arrays} de apontadores para funções que representam as diversas funções de \textit{update} e \textit{render} que existem. Um membro dado do tipo \textit{GameModeEnum} que representa o modo de jogo atual. Dois apontadores para função que representam as funções de double buffering que desenvolvemos. Diversos \textit{booleans} para sabermos os estado da UART a qualquer altura. Para finalizar, tem uma variável responsável por detetar se o utilizador premiu duas vezes a tecla Esc num curto intervalo de tempo.
 
-\subsection{Update e Render}
+\subsection{Singleton}
+
+Como cencetualmente só pode existir um \textit{GameManager}, para permitir que o restante código seja mais simples e tenha fácil acesso ao \textit{GameManager}, decidimos torná-lo num \textbf{\textit{Singleton}}. Esta técnica muito usada na indústria dos vídeo jogos implica que só pode existir uma única instância do \textit{GameManager} na aplicação inteira. Para isto o GameManager é definido como um \textit{static GameManager *gm}, e para aceder ao GameManager fora do ficheiro game\_manager.c é utilizada a função \textit{get\_game\_manager()}, que retorna um apontador para o \textit{GameManager} e inicializa-o se ele ainda não o tiver sido.
 
 \subsection{GameModeEnum}
 
-Este enum representa sempre o modo de jogo atual, através da atribuição de significado a cada bit. Ou seja, sendo o BIT(0) o bit que indica se o
+Este enum representa sempre o modo de jogo atual, através da atribuição de significado a cada bit. Ou seja, sendo o BIT(0) o bit que indica se a UART é utilizada ou não, o BIT(1) a indicar se é um \textit{Level} normal (\textit{Campaign}). Assim podemos identificar unicamente o modo de jogo atual com um \textit{bitwise and}.
 
-% -> Function pointers da amizade
-% -> Path dos assets
-% -> É um singleton
-% -> Mensagens da UART
-% -> É o main loop
-% -> Handle do double Esc
-% -> Cuidado com a memória, os free e os seg faults
-% -> GameModeEnum
+Mode de jogo 2 (b10) indica que nos encontramos em \textit{Campaign Singleplayer}, mas modo de jogo 3 (b11) indica que nos encontramos em \textit{Campaign Co-op Player 1}.
+
+\subsection{Update e Render}
+
+Devido a cada um dos modos de jogo ter um método de atualizar a informação e de a renderizar diferente, adotamos o método de ter um \textit{array} de apontadores de funções cujo índice é o próprio \textit{GameModeEnum}. Isto faz com que a chamada da função estática \textit{update()} e \textit{render()} cada uma chame dentro dela a função correta para o modo de jogo atual.
+
+Assim evitamos a necessidade de um \textit{switch case} todos os frames para determinar qual a função correta. Para diminuir a probabilidade de \textit{segmentation faults}, as funções do array que não têm um valor possível são preenchidas com um apontador para uma função void vazia.
+
+\subsection{Mensagens recebidas via UART}
+
+Todas as nossas mensagens são pacotes de tamanho irregular que começam num \textit{header} predefinido e terminam num terminador \textit{Header\_Terminator}. A menor mensagem tem tamanho 2 e a maior 8. Após cada mensagem limpamos toda a \textit{Receiver Queue} até ela estar ou vazia ou encontrarmos um terminador. Propositadamente, se algum erro ocorrer na \textit{Queue}, receberemos o valor 0xFF (o valor de \textit{HEADER\_TERMINATOR}), portanto é um mecanismo de prevenção de erros. Se recebermos um \textit{header} que não estávamos à espera, essa mensagem é simplesmente eliminada.
+
+Quando é iniciado um novo modo de jogo, a \textit{receiver Queue} do RTC é limpa, para garantir que não vamos ler mensagens antigas.
+
+As mensagens recebidas via UART são processadas apenas pela função de \textit{update} correta, isto é, o programa ignora as mensagens de que ele não está à espera (por exemplo receber uma mensagem da \textit{Switchboard} em \textit{Arcade Mode}).
+Existem duas etapas em cada função de \textit{update}: Uma primeira etapa em que os \textit{serial ports} ainda não estão 'sincronizados' (por isto entenda-se que não estão juntos no mesmo \textit{Gamemode}), depois de eles estarem 'sincronizados' ele espera um conjunto diferente de mensagens da \textit{UART}.
+
+Em cada frame lemos e interpretamos o maior número de mensagens possíveis. Para garantir que não lemos uma mensagem incompleta no entanto, verificamos sempre se a Queue tem pelo menos o tamanho do 'pacote' que estamos a receber. Nesse caso 
+
+\subsection{Main loop}
+
+O \textit{main loop}} está dentro da função \textit{start\_game()}}. Esta última função inicializa todas as classes necessárias (\textit{InputEvents}, \textit{MouseCursor}, \textit{GameManager}), subscreve a todas as interrupções, inicializa uma seed aleatória no \textit{srand()}.
+
+Durante o ciclo do \textit{driver\_receive()}, processamos o mais rápido possível os interrupção e aquando de uma interrupção do \textit{timer 0}, chamamos as funções \textit{update()}, \textit{render()} e a função para tratar do \textit{double buffering}, nesta ordem.
+
+Ao terminar o \textit{start\_game()} dá \textit{unsubcribe} aos interrupts, ele liberta a memória ainda ocupada (por exemplo pelos \textit{InputEvents} ou pela \textit{Queue}) e termina o jogo.
+
+\subsection{Outros aspetos}
+
+A classe \textit{GameManager} também é responsável por garantir que toda a memória ocupada é libertada assim que possível, de modo a evitar memory leaks (que acreditamos ter corrigido todas) e \textit{segmentation faults}. Caso aconteça algum \textit{segmentation fault}, ao correr o programa novamente ele não irá conseguir subscrever aos interrupts, mas implementámos uma verificação nesse caso em que pede ao utilizador para correr novamente o programa (pois resolvemos o problema nesta 'iteração' do jogo).
+
+A mecânica de premir Esc duas vezes consecutivamente para ou voltar ao \textit{MainMenu} ou sair do jogo é manuseada pelo \textit{GameManager}. Dependedo do \textit{GameModeEnum} atual ele faz a ação correta.
+
+Seguindo a indicação do docente Souto, decidimos permitir que o \textit{path} absoluto para o diretório dos \textit{assets} seja definida como um \textit{command line argument}. Por omissão é utilizado o \textit{path} que usámos durante o desenvolvimento do programa.
 
 \chapter{Conclusões}
 
