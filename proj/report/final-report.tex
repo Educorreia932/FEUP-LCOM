@@ -198,7 +198,7 @@ Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 
 Código de nível mais baixo que carrega um \textit{bitmap} individual para a memória, lendo o seu header e a imagem em si.
 Tem a capacidade de renderizar imagens normalmente, ou invertidas segundo os eixos x e y delas (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textit{bitmap} dinâmico, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
-Permite transparência e aplicar uma cor sobre o que é renderizado.
+Permite transparência e aplicar uma cor sobre o que é renderizado. O \textit{path} absoluto para os \textit{assets} pode ser alterado como um \textit{command line argument}.
  
 \section{Sprite}
 
@@ -274,11 +274,7 @@ Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
 
 O módulo \textit{Player} trata de gerir a representação de um jogador e da sua interface no nosso projeto bem como a sua interação com os restantes módulos. 
 
-\subsection{Player}
-
-\subsection{PlayerTwo}
-
-Apenas é utilizado no modo Arcade - Versus para representar um segundo jogador que está a jogar noutra máquina. 
+A classe \textit{PlayerTwo} apenas é utilizado no modo Arcade - Versus para representar um segundo jogador que está a jogar noutra máquina. 
 
 \section{UI Elements}
 
@@ -509,7 +505,9 @@ Ao desenvolver o projeto considerámos necessário uma maneira de poder renderiz
 
 Existe ainda a possibilidade de cada pixel ser "multiplicado" por uma cor. Devido ao custo pesado de computação desta operação, decidimos que usar uma operação bitwise entre a cor do pixel e da cor a multiplicar, visto que o efeito que ela produz seja satisfatório o suficiente para as nossas necessidades, mantendo um baixo custo computacional. Esta operação irá sempre escurecer a cor do \textit{bitmap} original, e quando aplicado a um pixel branco irá ficar apenas a cor a multiplicar. Esta propriedade foi usada a renderizar todas as plataformas e paredes. 
 
-Todos os \textit{bitmaps} podem ser desenhados com "transparência", isto é, definimos a cor rosa, \textbf{0xFF00FF} (em RBG 888), como a cor que será sempre ignorada ao desenhar. \newline
+Todos os \textit{bitmaps} podem ser desenhados com "transparência", isto é, definimos a cor rosa, \textbf{0xFF00FF} (em RBG 888), como a cor que será sempre ignorada ao desenhar.
+
+O path para o diretório \textit{Assets} (onde se encontram todas as imagens), pode ser alterado como um \textit{command line argument} ao correr o projeto.
 
 \subsection{Sprite}
 
@@ -544,32 +542,58 @@ Para permitir saber se um dado botão começou a ser premido num determinado fra
 
 \section{Graphical User Interface}
 
+Este módulo é composto pelas classes Botão, \textit{Slider}, \textit{Knob}, \textit{Number} (usado internamente para o Score) e o \textit{Score}.
+
+Todos os elementos de \textit{UI} com que o utilizador pode interagir (botão, \textit{sliders} e \textit{knob}) têm as propriedades de \textit{hidden} e \textit{active}. Quando a propriedade \textit{hidden} se encontra ativa, não é renderizado e não é possível o utilizador interagir com ele. Quando a propriedade \textit{active} se encontra ativa, ele é renderizado e é possível o utilizador interagir com ele (se não estiver ativo, é renderizado com uma cor mais escura e o utilizador não pode interagir com ele, propriedade usada quando um jogador não tem acesso a um \textit{power up}).
+
+Estes possuem ainda um estado de ativo ou inativo e a qualquer momento é possível mudar o seu estado --- set\_activation(). Caso um elemento esteja inativo, a sua cor aparece ligeiramente menos saturada e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é clicável, se for um \textit{Slider}, não é 'arrastável' e, por último, se for uma \textit{Knob}, não é possível rodá-la. Se estiver ativo, a sua aparência é normal e já é permitida a interação com o utilizador.
+
+Sempre que o utilizador passa o cursor por cima de algum elemento de \textit{UI} com que ele possa interagir, ele será rendered com uma saturação ligeiramente diferente, com o propósito de dar \textit{feedback} visual ao utilizador de que ele pode interagir com o elemento.
+
+Um desafio inesperado (mas óbvio) que surgiu neste módulo foi que quando o utilizador 'agarra' num elemento de UI, por exemplo o \textit{slider} ou a \textit{knob}, temos que ter em conta o offset desde o ponto que indica onde uma \textit{Sprite} é desenhada e o ponto onde o utilizador clicou, tendo que fazer sempre um cálculo para garantir que interpretamos e renderizamos corretamente as ações do utilizador.  
+
 \subsection{Button}
 
 Tal como o nome indica, esta "classe" representa um simples botão com uma aparência desejada e formato retangular que pode ser clicado para ativar alguma funcionalidade.
 Caso esteja ativo e o utilizador clicar nele com o cursor do rato, ativa a sua funcionalidade.
 
+Para este propósito, cada botão pode ser instanciado com a sua pŕopria \textit{Sprite} ou usar uma já definida noutro ponto do jogo (para evitar carregar os mesmos \textit{bitmaps} em memória e duplicados.
+
+Cada botão também tem definida uma \textit{hitbox}, isto é, a área do ecrã em que o cursor pode ativar o botão. Ao instanciar um botão temos a escolha de ajustar esta \textit{hitbox} automaticamente ao tamanho da \textit{Sprite}.
+
+Para os botões provocarem alterações no código, cada um deles tem um apontador para função (\textbf{void (*func)()}) que é chamado quando o utilizador clica nele.
+
 \subsection{Slider}
 
-Uma barra vertical ou horizontal com um manípulo no seu interior que pode ser deslizado e colocado numa posição que provocará um efeito de \textit{magnitude} proporcional à posição do manípulo no \textit{Slider} relativamente à sua extremidade.
+Uma barra vertical ou horizontal com um manípulo no seu interior que pode ser deslizado e colocado numa posição que provocará um efeito de \textit{magnitude} proporcional à posição do manípulo no \textit{Slider} relativamente à sua extremidade. Este \textit{slider} é composto por uma \textit{sprite} de \textit{background} e outra para o \textit{handle} (parte com que o utilizador interage).
+
+Cada \textit{slider} tem um ponto inicial e final, que podem estar alinhados em qualquer direção (horizontal, vertical, diagonal), desde que o inicial seja o ponto mais acima e à esquerda. Esta restrição não traz qualquer problema, pois quando implementámos o \textit{slider} vertical para o multiplicador do salto, em que o início deveria ser em baixo, simplesmente interpretamos o input ao contrário (255 passa a 0 e vice-versa).
+
+Tal como o botão, o slider também tem um apontador para função (\textbf{void (*func)(uint8\_t)}), que é chamada sempre que o utilizador larga a \textit{handle}, enviando como argumento uma aproximação entre [0, número de estados máximos] (normalmente 255) da posição em que o utilizador largou o \textit{handle}, desdo o ponto inicial até ao ponto final.
 
 \subsection{Knob}
 
-Uma espécie de "maçaneta" que pode ser rodada, clicando na sua extremidade com o botão esquerdo do rato e arrastando-a, ativando algum efeito durante o tempo que ocorre entre o instante em que é rodada até rodar de volta à sua posição inicial.
+Uma espécie de 'maçaneta' que pode ser rodada, clicando na sua extremidade com o botão esquerdo do rato e arrastando-a, ativando algum efeito durante o tempo que ocorre entre o instante em que é rodada até rodar de volta à sua posição inicial.
 
-\footnotetext{Os três primeiros elementos possuem um estado de ativo ou inativo e a qualquer momento é possível mudar o seu estado --- set\_activation(). Caso um elemento esteja inativo, a sua cor aparece ligeiramente menos saturada e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é clicável, se for um \textit{Slider}, não é "deslizável" e por último, se for uma \textit{Knob}, não é "rodável". Se estiver ativo, a sua aparência é normal e já é interagível.}
+Uma \textit{knob} tem um \textit{handle}, isto é, a componente em que o utilizador clica e arrasta pelo ecrã, um apontador para função chamado quando o utlizador larga o \textit{handle} (\textit{on\_drop}) e outro quando o \textit{handle} volta à sua posição inicial (\textit{on\_reset}).
+
+Para resumir de forma simplificada o seu modo de funcionamento, o utilizador clica no \textit{handle} e arrasta-a na direção da posição final (mas é sempre analisado o ângulo e nunca a posição absoluta). Quando o utilizador larga o \textit{handle}, ele chama o seu apontador para função \textit{on\_drop}. O \textit{handle} irá automaticamente voltar para a sua posição original. Durante este período o utilizador não pode interagir com a \textit{Knob}. Quando o \textit{handle} volta à sua posição original, chama o seu apontador para função \textit{on\_reset} e permite novamente a interação com o utilizador.
+
+Outra característica adicional, é que o utilizador não pode rodar na direção errada, isto é: Se a direção do início para o fim for no sentido do ponteiro do relógio, se o utilizador arrastar no sentido contrário até à posição final, o \textit{handle} não se irá mover até o utilizador voltar à posição do \textit{handle} no ecrã.
+
+Este elemento foi bastante desafiante, visto a complexidade do método usado para determinar o ângulo e a posição do \textit{handle} dado o ângulo determinado. Foram usadas extensivamente as funções associadas ao \textit{Vec2d} de \textit{circumference\_vec2d()}, \textit{angle\_vec2d()} (que por sua vez necessita do \textit{prod\_vec\_vec2d()}), \textit{sum\_vec2d()}, \textit{subtract\_vec2d()}, entre outras.
 
 \subsection{Number}
 
-A "classe" \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade\footnotemark --- \textit{updade\_number()}.
-
-\footnotetext{Caso o algarismo seja 9, passa para 0}
+A "classe" \textbf{\textit{Number}} serve para representar um único algarismo entre 0 e 9, sendo ainda possível incrementá-lo dinamicamente por um unidade --- \textit{updade\_number()}.
 
 \subsection{Score}
 
-A "classe" \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). Possui como principal propósito apresentar a pontuação atual de um jogador no modo de jogo \textit{arcade}, porém, também é usada para exibir o tempo (em segundos) que o jogador demorou a concluir o nível do modo \textit{campaign}.
+A "classe" \textbf{\textit{Score}} serve para representar um número com um determinado número de algarismos (\textit{Numbers}). É utilizada para mostrar a pontuação atual de um jogador no modo de jogo \textit{arcade}, o tempo restante no modo \textit{arcade versus}, e para exibir o tempo (em segundos) que o jogador demorou a concluir o nível no modo \textit{campaign} (tanto \textit{single player} como \textit{co-op}).
 
 É possível iniciar o \textit{Score} com um valor inteiro positivo qualquer --- new\_score(), bem como repô-lo (colocar a 0) --- \textit{reset\_score()} ou mudar o seu valor --- \textit{set\_score()}. \newline
+
+Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente expandidas para renderizar texto, bastaria alterar o tipo de dados para char e renderizá-lo (a pior parte seria os \textit{Sprites} necessários para compor uma \textit{font}). Quanto à disposição do texto, bastava fazer com que o \textit{Score} deixasse de ter tamanho fixo.
 
 \section{Level}
 
