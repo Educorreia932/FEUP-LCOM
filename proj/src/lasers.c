@@ -1,6 +1,8 @@
 #include "lasers.h"
 #include "geometry.h"
 #include "sprite.h"
+#include "hw_manager.h"
+#include "game_manager.h"
 
 #define ARCADE_LASER_HOLE_HEIGHT 160
 #define ARCADE_LASER_MIN_HEIGHT 60
@@ -248,6 +250,43 @@ void arcade_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start) {
 
 }
 
+void arcade_versus_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start) {
+    
+    ++frames_since_start;
+
+    if (frames_since_start <= 10 * 60) {
+        hw_manager_uart_send_char(HEADER_ARCADE_LASER_SPEED);
+        hw_manager_uart_send_char(4);
+        hw_manager_uart_send_char(HEADER_TERMINATOR);
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 120;
+    }
+    else if (frames_since_start <= 20 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 110;
+    }
+    else if (frames_since_start <= 25 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 100;
+    }
+    else if (frames_since_start <= 30 * 60) {
+        lasers->lasers_speed = 4;
+        lasers->lasers_delay = 90;
+    }
+    else if (frames_since_start <= 35 * 60) {
+        hw_manager_uart_send_char(HEADER_ARCADE_LASER_SPEED);
+        hw_manager_uart_send_char(5);
+        hw_manager_uart_send_char(HEADER_TERMINATOR);
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 90;
+    }
+    else {
+        lasers->lasers_speed = 5;
+        lasers->lasers_delay = 80;
+    }
+
+}
+
 void arcade_move_lasers(Lasers_t *lasers) {
     Laser_t** aux = lasers->lasers;
 
@@ -378,4 +417,8 @@ void arcade_reset_lasers(Lasers_t *lasers) {
         ++aux;
     }
 
+}
+
+void arcade_lasers_set_speed(Lasers_t *lasers, uint8_t new_speed) {
+    lasers->lasers_speed = new_speed;
 }

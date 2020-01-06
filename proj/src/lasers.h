@@ -64,11 +64,21 @@ bool lasers_collide_player(Lasers_t* lasers, Rect_t* rect);
 
 /**
  * @brief Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play
+ * @details Tailored for single player mode
  * 
  * @param lasers Pointer to the Lasers object to update 
  * @param frames_since_start The number of frames since the start of the level
  */
 void arcade_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start);
+/**
+ * @brief Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play
+ * @details Tailored for Versus mode
+ * 
+ * @param lasers Pointer to the Lasers object to update 
+ * @param frames_since_start The number of frames since the start of the level
+ */
+void arcade_versus_update_laser_values(Lasers_t *lasers, uint32_t frames_since_start);
+
 /**
  * @brief Moves all the lasers on screen onto the left, eliminating the ones that go offscreen\n 
  * Used exclusively on the arcade mode
@@ -122,7 +132,16 @@ bool arcade_player_passes_lasers(Lasers_t* lasers, Rect_t* rect);
  * @brief Resets all the lasers (arcade mode only)
  * @details Mainly used to reset the level upon the player's death
  * 
+ * @param lasers Pointer to the Lasers to reset
  */
 void arcade_reset_lasers(Lasers_t *lasers);
+
+/**
+ * @brief Manually sets the speed of the Lasers
+ * 
+ * @param lasers Pointer to the Lasers to change the speed of
+ * @param new_speed The new speed for the Lasers
+ */
+void arcade_lasers_set_speed(Lasers_t *lasers, uint8_t new_speed);
 
 /** @} */

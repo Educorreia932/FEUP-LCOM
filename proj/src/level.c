@@ -256,7 +256,12 @@ void update_arcade_versus(Level_t* level, uint8_t bytes[]) {
 	++level->frames_since_start;
 
 	if (!level->level_over) {
-				arcade_move_lasers(level->lasers);
+
+		if (level->laser_master)
+			arcade_versus_update_laser_values(level->lasers, level->frames_since_start);
+		
+		arcade_move_lasers(level->lasers);
+
 		if (level->laser_master) {
 			if (arcade_spawn_next_laser(level->lasers)) {
 				uint16_t height = arcade_generate_laser_height();
