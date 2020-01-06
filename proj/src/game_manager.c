@@ -537,9 +537,6 @@ void gm_start_main_menu() {
 
 }
 
-/** 
- * @param gamemode Indicates the gamemode to start the game on
- */
 static void initialize_game_manager() {
 	// Avoid overwriting the old one
 	if (gm != NULL) {
