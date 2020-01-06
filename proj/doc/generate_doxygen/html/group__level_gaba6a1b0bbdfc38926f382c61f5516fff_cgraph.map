@@ -1,0 +1,4 @@
+<map id="render_arcade_single" name="render_arcade_single">
+<area shape="rect" id="node1" title="Renders an arcade single Level onto the screen." alt="" coords="5,5,167,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="215,5,357,32"/>
+</map>

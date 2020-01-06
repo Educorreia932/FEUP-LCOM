@@ -1,0 +1,6 @@
+<map id="kbc_get_scancode" name="kbc_get_scancode">
+<area shape="rect" id="node1" title="Reads a scancode from the kbc output buffer." alt="" coords="467,5,608,32"/>
+<area shape="rect" id="node2" href="$group__kbd.html#ga3b35eecf289446fe614818dd6ab6d5bf" title="Handles Keyboard interrupts." alt="" coords="353,5,419,32"/>
+<area shape="rect" id="node3" href="$group__hw__man.html#gac65a199a78f094da1e90ef2d72a6f301" title="Wrapper for the keyboard interrupt handler (ih)" alt="" coords="149,5,305,32"/>
+<area shape="rect" id="node4" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
+</map>

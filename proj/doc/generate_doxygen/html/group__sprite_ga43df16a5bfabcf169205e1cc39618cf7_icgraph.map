@@ -1,0 +1,6 @@
+<map id="draw_sprite_dynamic" name="draw_sprite_dynamic">
+<area shape="rect" id="node1" title="Draws a SpriteDynamic on the screen." alt="" coords="188,56,349,83"/>
+<area shape="rect" id="node2" href="$lasers_8h.html#adca416f003dba80708c87f73c9ef84da" title="Renders a Lasers object&#39;s lasers onto the screen." alt="" coords="17,5,128,32"/>
+<area shape="rect" id="node3" href="$platforms_8h.html#a7de358ff86d11b03493e88b454bcf3dd" title="Renders a Platforms&#39; platforms and walls onto the screen." alt="" coords="5,56,140,83"/>
+<area shape="rect" id="node4" href="$spikes_8h.html#abfa5605ed3a692d378f45aa145d47fbc" title="Renders the Spikes onto the screen." alt="" coords="17,107,129,133"/>
+</map>

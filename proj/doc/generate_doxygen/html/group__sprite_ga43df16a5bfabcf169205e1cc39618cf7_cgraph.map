@@ -1,0 +1,4 @@
+<map id="draw_sprite_dynamic" name="draw_sprite_dynamic">
+<area shape="rect" id="node1" title="Draws a SpriteDynamic on the screen." alt="" coords="5,5,167,32"/>
+<area shape="rect" id="node2" href="$bitmap_8h.html#a520f3f00d4ae274a764bfca71db4b377" title="Draws a Bitmap on the screen." alt="" coords="215,5,385,32"/>
+</map>

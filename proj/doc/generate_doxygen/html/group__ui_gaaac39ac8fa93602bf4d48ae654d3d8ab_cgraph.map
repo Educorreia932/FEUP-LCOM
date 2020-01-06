@@ -1,0 +1,5 @@
+<map id="update_score" name="update_score">
+<area shape="rect" id="node1" title="Increments the numeric value of a Score object by one." alt="" coords="5,5,115,32"/>
+<area shape="rect" id="node2" href="$group__ui.html#ga05550f334267b5827b4cbb05a2cd3c9c" title="Sets the Score object value to a given one." alt="" coords="163,5,247,32"/>
+<area shape="rect" id="node3" href="$group__math__utils.html#ga03fbc2214f5cb19e88f5dfade75b9adf" title="Retuns the minimum of two numbers." alt="" coords="295,5,389,32"/>
+</map>

@@ -1,0 +1,30 @@
+<map id="free_cursor" name="free_cursor">
+<area shape="rect" id="node1" title="Frees the occupied data when the cursor is no longer needed." alt="" coords="1263,68,1357,95"/>
+<area shape="rect" id="node2" href="$group__gm.html#ga191afc58fb9f5bc145a58eefac945575" title="Used for exiting the game, even on catastrophic errors." alt="" coords="1124,68,1215,95"/>
+<area shape="rect" id="node3" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="151,112,315,139"/>
+<area shape="rect" id="node4" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,112,101,139"/>
+<area shape="rect" id="node5" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="149,631,316,657"/>
+<area shape="rect" id="node6" href="$bitmap_8h.html#aa439cff99ad1beb16927bad34b5ba7f9" title="Creates a new Bitmap object from a given filename." alt="" coords="973,271,1076,297"/>
+<area shape="rect" id="node7" href="$group__sprite.html#ga16e3a1481425eb4b3a334e2ff25b52df" title="Creates a new Sprite object." alt="" coords="801,701,894,728"/>
+<area shape="rect" id="node22" href="$group__sprite.html#ga758953e72b80abc5115e1416829050fa" title="Creates a new SpriteDynamic object." alt="" coords="769,271,925,297"/>
+<area shape="rect" id="node8" href="$group__inputs.html#ga60e2e46cda5bf936b069e1c3aeaacb22" title="The cursor must be initialized in order for all the functions of this file to work." alt="" coords="371,375,496,401"/>
+<area shape="rect" id="node9" href="$group__level.html#gab69d599222032e217a9d1e0868df4d78" title="Creats a new level with the arcade mode&#39;s layout." alt="" coords="364,980,503,1007"/>
+<area shape="rect" id="node11" href="$group__ui.html#gade4f95e5ffcc3798ef9eb39cf1281b05" title="Creates a new Button object." alt="" coords="587,752,685,779"/>
+<area shape="rect" id="node12" href="$group__ui.html#ga9c9719921e7cbb0d7e65657b56872df2" title="Creates a new Button object and auto sizes the button." alt="" coords="553,651,719,677"/>
+<area shape="rect" id="node13" href="$group__ui.html#ga0fd0cda08247a49ab594b57e1fc13062" title="Creates a new Main Menu object." alt="" coords="367,499,500,525"/>
+<area shape="rect" id="node14" href="$group__ui.html#ga2d800113c0d60ffe2784f4cec6221b9d" title="Creates a new Switchboard object." alt="" coords="366,701,501,728"/>
+<area shape="rect" id="node15" href="$group__ui.html#gabf213442f09686631afa816b69215474" title="Creates a new Knob object." alt="" coords="592,853,680,880"/>
+<area shape="rect" id="node16" href="$group__player.html#gacb0fc7b85cf56e44c1188446fc59c49e" title="Creates a Player object." alt="" coords="587,955,685,981"/>
+<area shape="rect" id="node17" href="$group__level.html#ga418f2ef493d4e5e7ecc6d4d69cc00cb8" title="Creates a new level with the configuration of the prototype level of the Campaign." alt="" coords="371,904,495,931"/>
+<area shape="rect" id="node19" href="$group__player.html#gab878c7fe0caac2ae16962f9ad231bf98" title="Creates a PlayerTwo object." alt="" coords="572,549,700,576"/>
+<area shape="rect" id="node20" href="$power__ups_8h.html#a357c3279c8ac8d42acb2ea0351231d58" title="Creates a new Power Up object." alt="" coords="577,600,695,627"/>
+<area shape="rect" id="node21" href="$group__ui.html#ga7ccdb0782a5ee5a2641e52585ce27ded" title="Creates a new Slider object." alt="" coords="590,701,682,728"/>
+<area shape="rect" id="node10" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="167,980,298,1007"/>
+<area shape="rect" id="node18" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="173,904,292,931"/>
+<area shape="rect" id="node23" href="$lasers_8h.html#aa9e953d8a58c0f35f12f877ada6c9f00" title="Creates a Lasers object with the layout for arcade mode." alt="" coords="563,296,709,323"/>
+<area shape="rect" id="node24" href="$platforms_8h.html#af12013678da5b4ee10473fcfd3be9aff" title="Creates a Platforms object with the layout needed for the arcade mode." alt="" coords="551,347,721,373"/>
+<area shape="rect" id="node25" href="$spikes_8h.html#af4d4a05aa1a6b4db8c75ea01ae7859ca" title="Creates the Spikes for the arcade mode." alt="" coords="562,397,710,424"/>
+<area shape="rect" id="node26" href="$lasers_8h.html#abb501806fe9d03a9b6475e8d4d3510b2" title="Creates a Lasers object with the layout for the prototype campaign Level." alt="" coords="571,144,701,171"/>
+<area shape="rect" id="node27" href="$platforms_8h.html#aaddea4690934b1bd7aaa6bc642ffa86f" title="Creates a Platforms object with the layout of the prototype campaign Level." alt="" coords="559,195,713,221"/>
+<area shape="rect" id="node28" href="$spikes_8h.html#a477841cb67913c89edf986f3aeb6229a" title="Creates the Spikes for the prototype Campaign mode." alt="" coords="569,245,703,272"/>
+</map>

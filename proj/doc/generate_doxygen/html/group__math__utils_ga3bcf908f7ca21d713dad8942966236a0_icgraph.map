@@ -1,0 +1,7 @@
+<map id="max_uint8" name="max_uint8">
+<area shape="rect" id="node1" title="Retuns the maximum of two numbers." alt="" coords="473,31,564,57"/>
+<area shape="rect" id="node2" href="$group__math__utils.html#ga97d1a08de1a9a8020362a119116e7e9e" title="Clamps the value between the established min and max." alt="" coords="323,31,425,57"/>
+<area shape="rect" id="node3" href="$group__ui.html#ga5c1105262bcfc2e0ac0e33a088ed5b05" title="Creates a new score object." alt="" coords="184,31,275,57"/>
+<area shape="rect" id="node4" href="$group__player.html#gae14101abdc2c267b9df8604ed60f95f1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="24,5,117,32"/>
+<area shape="rect" id="node5" href="$group__ui.html#gaa7a78a00cde6fc882073b8468bce9365" title="The player won the game, now the winning screen must be displayed." alt="" coords="5,56,136,83"/>
+</map>

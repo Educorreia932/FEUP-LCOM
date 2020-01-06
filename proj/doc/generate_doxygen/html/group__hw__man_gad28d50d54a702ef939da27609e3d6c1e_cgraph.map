@@ -1,0 +1,4 @@
+<map id="hw_manager_timer0_ih" name="hw_manager_timer0_ih">
+<area shape="rect" id="node1" title="Wrapper for timer0 interrupt handler (ih)" alt="" coords="5,5,180,32"/>
+<area shape="rect" id="node2" href="$group__timer.html#ga64962794ad44ba890b8b12dc1fac6d2e" title="Handles Timer 0 interrupts." alt="" coords="228,5,373,32"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="queue_front" name="queue_front">
+<area shape="rect" id="node1" title="Peeks and returns the element on the front of the Queue." alt="" coords="440,5,540,32"/>
+<area shape="rect" id="node2" href="$group__uart.html#ga894ffa9c3fed8bf77e18ab5f58e0348f" title="Gets the receiver queue&#39;s front." alt="" coords="231,5,392,32"/>
+<area shape="rect" id="node3" href="$group__hw__man.html#ga44cd074425eaf7f7c6d388c4f8994b8a" title="Returns the byte at the front of the data receiver Queue." alt="" coords="5,5,183,32"/>
+</map>

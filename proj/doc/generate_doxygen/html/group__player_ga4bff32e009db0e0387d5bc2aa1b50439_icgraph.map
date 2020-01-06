@@ -1,0 +1,5 @@
+<map id="update_player" name="update_player">
+<area shape="rect" id="node1" title="Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...." alt="" coords="211,31,325,57"/>
+<area shape="rect" id="node2" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="5,5,163,32"/>
+<area shape="rect" id="node3" href="$group__level.html#ga4b11db44e03c0bc773e0fedb89fbe62e" title="Updates a regular Level&#39;s required parts." alt="" coords="31,56,137,83"/>
+</map>

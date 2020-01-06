@@ -1,0 +1,12 @@
+<map id="get_date" name="get_date">
+<area shape="rect" id="node1" title="Reads the current date from the RTC." alt="" coords="684,161,763,188"/>
+<area shape="rect" id="node2" href="$group__hw__man.html#ga52de9e74e3dc802f83955e68f1a09762" title="Returns the current date measured in seconds." alt="" coords="469,99,636,141"/>
+<area shape="rect" id="node7" href="$group__rtc.html#ga86868f4dbbd2d168e80cb5991dbe5ece" title="Sets an RTC alarm." alt="" coords="497,191,608,217"/>
+<area shape="rect" id="node3" href="$group__player.html#gae14101abdc2c267b9df8604ed60f95f1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="296,5,389,32"/>
+<area shape="rect" id="node4" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="264,56,421,83"/>
+<area shape="rect" id="node5" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="27,124,195,151"/>
+<area shape="rect" id="node6" href="$group__level.html#ga4b11db44e03c0bc773e0fedb89fbe62e" title="Updates a regular Level&#39;s required parts." alt="" coords="289,157,396,184"/>
+<area shape="rect" id="node8" href="$group__hw__man.html#ga64bf0e1143c65e7fd49c6a9f5ced7f28" title="Sets an alarm on the real time clock for a &#39;period&#39; ammount of seconds." alt="" coords="264,209,421,250"/>
+<area shape="rect" id="node9" href="$group__ui.html#ga4c408e862d0a8f85199aef31a9c3139e" title="Starts a new minigame on the Switchboard." alt="" coords="5,191,216,217"/>
+<area shape="rect" id="node10" href="$group__ui.html#ga223aa9507be1a014ec479a592b7f2429" title="Updates the needed information of the Switchboard." alt="" coords="34,241,187,268"/>
+</map>

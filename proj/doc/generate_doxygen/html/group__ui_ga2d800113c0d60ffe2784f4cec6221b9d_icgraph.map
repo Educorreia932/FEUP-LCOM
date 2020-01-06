@@ -1,0 +1,4 @@
+<map id="new_switchboard" name="new_switchboard">
+<area shape="rect" id="node1" title="Creates a new Switchboard object." alt="" coords="220,5,355,32"/>
+<area shape="rect" id="node2" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="5,5,172,32"/>
+</map>

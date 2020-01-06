@@ -1,0 +1,30 @@
+<map id="update_arcade_level" name="update_arcade_level">
+<area shape="rect" id="node1" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="5,213,163,240"/>
+<area shape="rect" id="node2" href="$lasers_8h.html#a21f8ec1e6cbe877fbebf7f7255a43700" title="Creates and adds a new Laser to the Lasers object, with a random height (flappy bird like) onto the r..." alt="" coords="238,5,374,32"/>
+<area shape="rect" id="node4" href="$lasers_8h.html#af2ef8b216f7db92e8767c54cef93a263" title="Generates the height for the next arcade Laser." alt="" coords="221,57,391,98"/>
+<area shape="rect" id="node5" href="$lasers_8h.html#aef519a0ba177fb2f134aa17ebbfb323d" title="Sets the delay for the next Laser&#39;s spawn." alt="" coords="211,122,401,163"/>
+<area shape="rect" id="node6" href="$lasers_8h.html#ac51a55f7fbae2dda05db22a661763eba" title="Moves all the lasers on screen onto the left, eliminating the ones that go offscreen &#160;Used exclusivel..." alt="" coords="228,188,384,215"/>
+<area shape="rect" id="node7" href="$lasers_8h.html#a080ecf5c992be595788d58741986d7d1" title="Handles the timing until the next Laser spawns." alt="" coords="211,239,401,265"/>
+<area shape="rect" id="node8" href="$lasers_8h.html#a6c178685a7be22cfd5477d37b21c863f" title="Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play." alt="" coords="227,290,385,331"/>
+<area shape="rect" id="node9" href="$group__hw__man.html#ga52de9e74e3dc802f83955e68f1a09762" title="Returns the current date measured in seconds." alt="" coords="223,355,389,397"/>
+<area shape="rect" id="node12" href="$group__player.html#ga4bff32e009db0e0387d5bc2aa1b50439" title="Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...." alt="" coords="249,481,363,508"/>
+<area shape="rect" id="node3" href="$group__geometry.html#ga15d0d50c36cda9b20bfa4a4042c4d21b" title="Same as the default constructor, only that is receives uint16_t instead of floats as arguments." alt="" coords="449,5,611,32"/>
+<area shape="rect" id="node10" href="$group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b" title="Reads the current date from the RTC." alt="" coords="491,137,569,164"/>
+<area shape="rect" id="node11" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="678,76,810,103"/>
+<area shape="rect" id="node13" href="$group__inputs.html#ga57ed6ad15be34ca24409108faeae3b7a" title="Check if the user has started pressing a given key this frame." alt="" coords="473,684,587,711"/>
+<area shape="rect" id="node14" href="$group__player.html#ga14e1009b9e2ddf0c8e0b7f4d57589997" title="Returns True when the Player is dead." alt="" coords="470,355,590,381"/>
+<area shape="rect" id="node15" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="935,608,1019,635"/>
+<area shape="rect" id="node16" href="$group__ui.html#gabd5e3b3c7f7c34d6d1df1f329242b597" title="Updates a Button object color in case it&#39;s being hovered or not." alt="" coords="472,532,588,559"/>
+<area shape="rect" id="node20" href="$group__ui.html#gaae473eff7203be79d3ab0a1a6eba65a6" title="Updates a Slider&#39;s handle position." alt="" coords="475,405,585,432"/>
+<area shape="rect" id="node17" href="$group__inputs.html#ga60054718001244332587e52e6453466e" title="Checks if the cursor is hovering inside the area defined by the rect." alt="" coords="665,532,823,559"/>
+<area shape="rect" id="node19" href="$group__inputs.html#ga4ab738c504ee9cd61c12b5ddd3221d82" title="Returns true if the mouse left button has started getting pressed this frame." alt="" coords="667,583,821,609"/>
+<area shape="rect" id="node18" href="$group__geometry.html#ga2cdaa8c9b7328f81072de6d4adfb3c04" title="Returns wether a given point is inside a rect or not." alt="" coords="877,532,1076,559"/>
+<area shape="rect" id="node21" href="$group__inputs.html#ga31d94f41551052f955bd84cf71ef9761" title="Gets the current x coordinate of the cursor inside the limits of the screen." alt="" coords="691,481,797,508"/>
+<area shape="rect" id="node22" href="$group__inputs.html#gaeac349420db25b2833f635bce8e8e6df" title="Gets the current y coordinate of the cursor inside the limits of the screen." alt="" coords="691,127,797,153"/>
+<area shape="rect" id="node23" href="$group__geometry.html#gae0461786e491482dc00bce3c3bc1e6fb" title="The distance between two points in a plane." alt="" coords="659,177,829,204"/>
+<area shape="rect" id="node24" href="$group__math__utils.html#gac4962a360233b958f57485e262bc172a" title="Clamps the value between the established min and max." alt="" coords="708,228,780,255"/>
+<area shape="rect" id="node25" href="$group__inputs.html#ga51107d865749157b78e204498ee14438" title="Returns true if the mouse left button is currently pressed." alt="" coords="687,329,801,356"/>
+<area shape="rect" id="node26" href="$group__geometry.html#gaef9a9d2a369ceb28076f3fd9899d0a9a" title="Returns the top leftmost point of the rectangle." alt="" coords="666,431,822,457"/>
+<area shape="rect" id="node27" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="922,380,1031,407"/>
+<area shape="rect" id="node28" href="$group__geometry.html#ga92bd59f7f930989b473cc1ad840c2d0c" title="Returns the difference between two vectors." alt="" coords="659,279,829,305"/>
+</map>

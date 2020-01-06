@@ -1,0 +1,14 @@
+<map id="bitmap_get_width" name="bitmap_get_width">
+<area shape="rect" id="node1" title="Returns the width (in pixels) of a given Bitmap." alt="" coords="940,81,1079,108"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga326d1ea2b2f8a6005a742c8ed7e61f2a" title="Returns the Sprite&#39;s width." alt="" coords="761,81,892,108"/>
+<area shape="rect" id="node3" href="$group__ui.html#ga9c9719921e7cbb0d7e65657b56872df2" title="Creates a new Button object and auto sizes the button." alt="" coords="547,5,713,32"/>
+<area shape="rect" id="node9" href="$group__ui.html#gabf213442f09686631afa816b69215474" title="Creates a new Knob object." alt="" coords="586,56,674,83"/>
+<area shape="rect" id="node10" href="$group__ui.html#ga7ccdb0782a5ee5a2641e52585ce27ded" title="Creates a new Slider object." alt="" coords="584,107,676,133"/>
+<area shape="rect" id="node11" href="$group__sprite.html#ga6b810c2d3e7634ea1b7af2ef7d4a0dfd" title="Returns a Vec2d with the Sprite&#39;s size." alt="" coords="570,157,690,184"/>
+<area shape="rect" id="node4" href="$group__ui.html#ga0fd0cda08247a49ab594b57e1fc13062" title="Creates a new Main Menu object." alt="" coords="365,5,498,32"/>
+<area shape="rect" id="node7" href="$group__ui.html#ga2d800113c0d60ffe2784f4cec6221b9d" title="Creates a new Switchboard object." alt="" coords="364,56,499,83"/>
+<area shape="rect" id="node5" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="151,5,315,32"/>
+<area shape="rect" id="node6" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
+<area shape="rect" id="node8" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="149,56,316,83"/>
+<area shape="rect" id="node12" href="$power__ups_8h.html#a357c3279c8ac8d42acb2ea0351231d58" title="Creates a new Power Up object." alt="" coords="372,157,491,184"/>
+</map>

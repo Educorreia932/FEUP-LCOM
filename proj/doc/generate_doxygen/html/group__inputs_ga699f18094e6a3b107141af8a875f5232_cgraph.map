@@ -1,0 +1,5 @@
+<map id="render_cursor" name="render_cursor">
+<area shape="rect" id="node1" title="Renders the cursor onto the screen." alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga5c10d2609ecbfe167b1e9d0aaafd0c82" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="164,5,308,32"/>
+<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="356,5,499,32"/>
+</map>

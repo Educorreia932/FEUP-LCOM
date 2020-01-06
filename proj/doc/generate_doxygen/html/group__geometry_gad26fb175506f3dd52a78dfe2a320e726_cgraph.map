@@ -1,0 +1,4 @@
+<map id="inverse_norm_vec2d" name="inverse_norm_vec2d">
+<area shape="rect" id="node1" title="Returns the inverse of the norm of a given vector." alt="" coords="5,5,163,32"/>
+<area shape="rect" id="node2" href="$group__math__utils.html#ga8ea0df48b25250cb98c3a83733b4ee18" title="Returns The inverse of the square root of number." alt="" coords="211,5,280,32"/>
+</map>

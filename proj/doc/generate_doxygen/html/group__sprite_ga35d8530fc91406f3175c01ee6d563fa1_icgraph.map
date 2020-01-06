@@ -1,0 +1,9 @@
+<map id="draw_sprite" name="draw_sprite">
+<area shape="rect" id="node1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="427,107,525,133"/>
+<area shape="rect" id="node2" href="$group__ui.html#gaf34266aa8fd2775dc485db79cbdff1f8" title="Renders a Button object." alt="" coords="225,5,338,32"/>
+<area shape="rect" id="node4" href="$group__ui.html#gaf5ce6ac5d67627c3739b20236c3e0735" title="Renders a Knob object." alt="" coords="230,56,333,83"/>
+<area shape="rect" id="node5" href="$group__player.html#ga4480369120feb7365e45b22466b49f06" title="Renders the background of the Player (that consists of sparks that appear whenever its anti&#45;gravity i..." alt="" coords="184,107,379,133"/>
+<area shape="rect" id="node6" href="$group__player.html#ga9f623942a31c76f115e4dfca64869ec3" title="Renders the foreground of the Player (that consists of all of tis body)" alt="" coords="186,157,377,184"/>
+<area shape="rect" id="node7" href="$power__ups_8h.html#afc50176e63031773ee741e1092c47dc3" title="Renders a Power Up onto the screen." alt="" coords="214,208,349,235"/>
+<area shape="rect" id="node3" href="$group__player.html#ga28a8acb428a4666271dd72113d58516c" title="Renders the UI of the Player (the buttons and sliders necessary in Campaign &#45; Singleplayer mode,..." alt="" coords="5,5,136,32"/>
+</map>

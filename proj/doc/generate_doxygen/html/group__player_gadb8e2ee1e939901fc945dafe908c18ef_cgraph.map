@@ -1,0 +1,7 @@
+<map id="free_player" name="free_player">
+<area shape="rect" id="node1" title="Frees a given Player object from memory." alt="" coords="5,56,101,83"/>
+<area shape="rect" id="node2" href="$group__ui.html#ga86d86927542b48f52ca25d8ad6d90127" title="Frees a given Button object from memory." alt="" coords="149,5,247,32"/>
+<area shape="rect" id="node3" href="$group__sprite.html#ga42b432c638e02f812344825d3bb04e8b" title="Frees the Sprite passed on the pointer." alt="" coords="295,56,387,83"/>
+<area shape="rect" id="node5" href="$group__ui.html#ga64cd012e0ef40aa5f708640d0bcde638" title="Frees a given Slider object from memory." alt="" coords="153,107,243,133"/>
+<area shape="rect" id="node4" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="435,56,536,83"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="free_spikes" name="free_spikes">
+<area shape="rect" id="node1" title="Frees the Spikes object from memory." alt="" coords="5,5,101,32"/>
+<area shape="rect" id="node2" href="$group__sprite.html#ga9af1f4ab26492c0b908cd3644bc79fcd" title="Frees a SpriteDynamic." alt="" coords="149,5,304,32"/>
+<area shape="rect" id="node3" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="352,5,453,32"/>
+</map>

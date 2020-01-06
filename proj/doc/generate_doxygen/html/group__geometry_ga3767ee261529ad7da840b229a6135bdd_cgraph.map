@@ -1,0 +1,4 @@
+<map id="circumference_vec2d" name="circumference_vec2d">
+<area shape="rect" id="node1" title="Converts a point in polar coordinates (in relation to any center) to cartesian coordinates." alt="" coords="5,5,167,32"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="215,5,276,32"/>
+</map>

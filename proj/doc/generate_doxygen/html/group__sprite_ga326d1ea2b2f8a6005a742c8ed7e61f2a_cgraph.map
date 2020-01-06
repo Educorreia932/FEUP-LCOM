@@ -1,0 +1,4 @@
+<map id="sprite_get_width" name="sprite_get_width">
+<area shape="rect" id="node1" title="Returns the Sprite&#39;s width." alt="" coords="5,5,136,32"/>
+<area shape="rect" id="node2" href="$bitmap_8h.html#a6a1d349f2ddf0d64f78864c293e4c40d" title="Returns the width (in pixels) of a given Bitmap." alt="" coords="184,5,323,32"/>
+</map>

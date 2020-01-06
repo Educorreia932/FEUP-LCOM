@@ -1,0 +1,4 @@
+<map id="set_score" name="set_score">
+<area shape="rect" id="node1" title="Sets the Score object value to a given one." alt="" coords="5,5,89,32"/>
+<area shape="rect" id="node2" href="$group__math__utils.html#ga03fbc2214f5cb19e88f5dfade75b9adf" title="Retuns the minimum of two numbers." alt="" coords="137,5,232,32"/>
+</map>

@@ -1,0 +1,14 @@
+var searchData=
+[
+  ['get_5fanimation_5fstate_708',['get_animation_state',['../group__sprite.html#gaf95f61adf2cb0868c6564ceb7c7ae162',1,'get_animation_state(const Sprite_t *s):&#160;sprite.c'],['../group__sprite.html#gaf95f61adf2cb0868c6564ceb7c7ae162',1,'get_animation_state(const Sprite_t *s):&#160;sprite.c']]],
+  ['get_5fdate_709',['get_date',['../group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b',1,'get_date():&#160;rtc.c'],['../group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b',1,'get_date():&#160;rtc.c']]],
+  ['get_5fdigit_710',['get_digit',['../group__math__utils.html#ga1610984075cbd9ddb1de7e5d428182d9',1,'get_digit(uint16_t num, uint8_t n):&#160;math_utils.c'],['../group__math__utils.html#ga1610984075cbd9ddb1de7e5d428182d9',1,'get_digit(uint16_t num, uint8_t n):&#160;math_utils.c']]],
+  ['get_5fgame_5fmanager_711',['get_game_manager',['../group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c',1,'get_game_manager():&#160;game_manager.c'],['../group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c',1,'get_game_manager():&#160;game_manager.c']]],
+  ['get_5fkey_712',['get_key',['../group__inputs.html#gafb2cd2d9af8e2ed01a662f32fbec9050',1,'get_key(KeyboardMap_t map):&#160;input_events.c'],['../group__inputs.html#gafb2cd2d9af8e2ed01a662f32fbec9050',1,'get_key(KeyboardMap_t map):&#160;input_events.c']]],
+  ['get_5fkey_5fdown_713',['get_key_down',['../group__inputs.html#ga57ed6ad15be34ca24409108faeae3b7a',1,'get_key_down(KeyboardMap_t map):&#160;input_events.c'],['../group__inputs.html#ga57ed6ad15be34ca24409108faeae3b7a',1,'get_key_down(KeyboardMap_t map):&#160;input_events.c']]],
+  ['glitched_5fswitch_5fdouble_5fbuffer_714',['glitched_switch_double_buffer',['../group__video__gr.html#ga33fe0a40bdc7aec207811ea099802fe0',1,'glitched_switch_double_buffer():&#160;video.c'],['../group__video__gr.html#ga33fe0a40bdc7aec207811ea099802fe0',1,'glitched_switch_double_buffer():&#160;video.c']]],
+  ['gm_5fstart_5farcade_715',['gm_start_arcade',['../group__gm.html#gac657eba27b543773b133cec64b429c6a',1,'gm_start_arcade():&#160;game_manager.c'],['../group__gm.html#gac657eba27b543773b133cec64b429c6a',1,'gm_start_arcade():&#160;game_manager.c']]],
+  ['gm_5fstart_5flevel_716',['gm_start_level',['../group__gm.html#ga313ec369bc39122235ceff59f7836535',1,'gm_start_level():&#160;game_manager.c'],['../group__gm.html#ga313ec369bc39122235ceff59f7836535',1,'gm_start_level():&#160;game_manager.c']]],
+  ['gm_5fstart_5fmain_5fmenu_717',['gm_start_main_menu',['../group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf',1,'gm_start_main_menu():&#160;game_manager.c'],['../group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf',1,'gm_start_main_menu():&#160;game_manager.c']]],
+  ['gm_5fstart_5fswitchboard_718',['gm_start_switchboard',['../group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b',1,'gm_start_switchboard():&#160;game_manager.c'],['../group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b',1,'gm_start_switchboard():&#160;game_manager.c']]]
+];

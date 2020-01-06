@@ -1,0 +1,5 @@
+<map id="hw_manager_rtc_read_date_in_seconds" name="hw_manager_rtc_read_date_in_seconds">
+<area shape="rect" id="node1" title="Returns the current date measured in seconds." alt="" coords="5,5,172,47"/>
+<area shape="rect" id="node2" href="$group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b" title="Reads the current date from the RTC." alt="" coords="220,13,299,39"/>
+<area shape="rect" id="node3" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="347,13,479,39"/>
+</map>

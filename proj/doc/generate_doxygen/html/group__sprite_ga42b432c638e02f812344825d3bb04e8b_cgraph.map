@@ -1,0 +1,4 @@
+<map id="free_sprite" name="free_sprite">
+<area shape="rect" id="node1" title="Frees the Sprite passed on the pointer." alt="" coords="5,5,97,32"/>
+<area shape="rect" id="node2" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="145,5,247,32"/>
+</map>

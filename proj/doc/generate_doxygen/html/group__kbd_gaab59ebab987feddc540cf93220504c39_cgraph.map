@@ -1,0 +1,4 @@
+<map id="kbc_get_scancode" name="kbc_get_scancode">
+<area shape="rect" id="node1" title="Reads a scancode from the kbc output buffer." alt="" coords="5,5,147,32"/>
+<area shape="rect" id="node2" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="195,5,293,32"/>
+</map>

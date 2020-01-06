@@ -1,0 +1,15 @@
+<map id="free_level" name="free_level">
+<area shape="rect" id="node1" title="Frees a level from memory." alt="" coords="5,183,92,209"/>
+<area shape="rect" id="node2" href="$lasers_8h.html#a94a77bf600b04a92b4e2c778542b289c" title="Frees a Lasers object from memory." alt="" coords="152,107,247,133"/>
+<area shape="rect" id="node5" href="$platforms_8h.html#a5ef0888b9adf4169d76f3b8a2ed3eb45" title="Frees a Platforms object from memory." alt="" coords="140,5,259,32"/>
+<area shape="rect" id="node6" href="$group__player.html#gadb8e2ee1e939901fc945dafe908c18ef" title="Frees a given Player object from memory." alt="" coords="151,208,247,235"/>
+<area shape="rect" id="node8" href="$group__sprite.html#ga42b432c638e02f812344825d3bb04e8b" title="Frees the Sprite passed on the pointer." alt="" coords="509,196,601,223"/>
+<area shape="rect" id="node10" href="$group__player.html#ga6fa44431f452f05cdda2304cf7b68ade" title="Frees a PlayerTwo from memory." alt="" coords="321,360,447,387"/>
+<area shape="rect" id="node11" href="$power__ups_8h.html#a72054f418ef131f75f771c816a76e44b" title="Frees a Power Up from memory." alt="" coords="325,95,443,121"/>
+<area shape="rect" id="node12" href="$group__ui.html#ga62e815a839e755188609ff32cc36d846" title="Frees a Score object from memory." alt="" coords="154,335,245,361"/>
+<area shape="rect" id="node13" href="$spikes_8h.html#a486edc8313635f567b39c74cc9beaf03" title="Frees the Spikes object from memory." alt="" coords="151,56,247,83"/>
+<area shape="rect" id="node3" href="$group__sprite.html#ga9af1f4ab26492c0b908cd3644bc79fcd" title="Frees a SpriteDynamic." alt="" coords="307,44,461,71"/>
+<area shape="rect" id="node4" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="649,171,751,197"/>
+<area shape="rect" id="node7" href="$group__ui.html#ga86d86927542b48f52ca25d8ad6d90127" title="Frees a given Button object from memory." alt="" coords="335,196,433,223"/>
+<area shape="rect" id="node9" href="$group__ui.html#ga64cd012e0ef40aa5f708640d0bcde638" title="Frees a given Slider object from memory." alt="" coords="339,145,429,172"/>
+</map>

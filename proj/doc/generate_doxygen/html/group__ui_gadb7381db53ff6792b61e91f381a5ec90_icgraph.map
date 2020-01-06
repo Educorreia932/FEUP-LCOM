@@ -1,0 +1,7 @@
+<map id="free_switchboard" name="free_switchboard">
+<area shape="rect" id="node1" title="Frees a given Switchboard object from memory." alt="" coords="361,56,496,83"/>
+<area shape="rect" id="node2" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="166,5,297,32"/>
+<area shape="rect" id="node3" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="172,56,291,83"/>
+<area shape="rect" id="node4" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="149,107,313,133"/>
+<area shape="rect" id="node5" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,107,101,133"/>
+</map>

@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['game_5fmanager_2eh_106',['game_manager.h',['../game__manager_8h.html',1,'']]],
+  ['game_5fongoing_107',['game_ongoing',['../struct_game_manager.html#a32a90462867559b646e19109cc0e5b1d',1,'GameManager']]],
+  ['gamemanager_108',['GameManager',['../struct_game_manager.html',1,'']]],
+  ['gamemanager_5ft_109',['GameManager_t',['../group__gm.html#ga92313056e4e1a2ffe19a6c70165b7cc8',1,'game_manager.h']]],
+  ['gamemode_110',['GameMode',['../group__gm.html#gaaf5ef5a17b53e9997c837b07015589de',1,'game_manager.h']]],
+  ['gamemodeenum_111',['GameModeEnum',['../group__gm.html#ga7c31206662d3dfd824dd6ebf63b68ded',1,'game_manager.h']]],
+  ['geometry_112',['Geometry',['../group__geometry.html',1,'']]],
+  ['geometry_2eh_113',['geometry.h',['../geometry_8h.html',1,'']]],
+  ['get_5fanimation_5fstate_114',['get_animation_state',['../group__sprite.html#gaf95f61adf2cb0868c6564ceb7c7ae162',1,'get_animation_state(const Sprite_t *s):&#160;sprite.c'],['../group__sprite.html#gaf95f61adf2cb0868c6564ceb7c7ae162',1,'get_animation_state(const Sprite_t *s):&#160;sprite.c']]],
+  ['get_5fdate_115',['get_date',['../group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b',1,'get_date():&#160;rtc.c'],['../group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b',1,'get_date():&#160;rtc.c']]],
+  ['get_5fdigit_116',['get_digit',['../group__math__utils.html#ga1610984075cbd9ddb1de7e5d428182d9',1,'get_digit(uint16_t num, uint8_t n):&#160;math_utils.c'],['../group__math__utils.html#ga1610984075cbd9ddb1de7e5d428182d9',1,'get_digit(uint16_t num, uint8_t n):&#160;math_utils.c']]],
+  ['get_5fgame_5fmanager_117',['get_game_manager',['../group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c',1,'get_game_manager():&#160;game_manager.c'],['../group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c',1,'get_game_manager():&#160;game_manager.c']]],
+  ['get_5fkey_118',['get_key',['../group__inputs.html#gafb2cd2d9af8e2ed01a662f32fbec9050',1,'get_key(KeyboardMap_t map):&#160;input_events.c'],['../group__inputs.html#gafb2cd2d9af8e2ed01a662f32fbec9050',1,'get_key(KeyboardMap_t map):&#160;input_events.c']]],
+  ['get_5fkey_5fdown_119',['get_key_down',['../group__inputs.html#ga57ed6ad15be34ca24409108faeae3b7a',1,'get_key_down(KeyboardMap_t map):&#160;input_events.c'],['../group__inputs.html#ga57ed6ad15be34ca24409108faeae3b7a',1,'get_key_down(KeyboardMap_t map):&#160;input_events.c']]],
+  ['glitched_5fswitch_5fdouble_5fbuffer_120',['glitched_switch_double_buffer',['../group__video__gr.html#ga33fe0a40bdc7aec207811ea099802fe0',1,'glitched_switch_double_buffer():&#160;video.c'],['../group__video__gr.html#ga33fe0a40bdc7aec207811ea099802fe0',1,'glitched_switch_double_buffer():&#160;video.c']]],
+  ['global_5ftimer0_5fcounter_121',['global_timer0_counter',['../group__timer.html#ga2985d414abb378790acde584b9058d2f',1,'global_timer0_counter():&#160;timer.c'],['../group__timer.html#ga2985d414abb378790acde584b9058d2f',1,'global_timer0_counter():&#160;timer.c']]],
+  ['game_20manager_122',['Game Manager',['../group__gm.html',1,'']]],
+  ['gm_5fstart_5farcade_123',['gm_start_arcade',['../group__gm.html#gac657eba27b543773b133cec64b429c6a',1,'gm_start_arcade():&#160;game_manager.c'],['../group__gm.html#gac657eba27b543773b133cec64b429c6a',1,'gm_start_arcade():&#160;game_manager.c']]],
+  ['gm_5fstart_5flevel_124',['gm_start_level',['../group__gm.html#ga313ec369bc39122235ceff59f7836535',1,'gm_start_level():&#160;game_manager.c'],['../group__gm.html#ga313ec369bc39122235ceff59f7836535',1,'gm_start_level():&#160;game_manager.c']]],
+  ['gm_5fstart_5fmain_5fmenu_125',['gm_start_main_menu',['../group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf',1,'gm_start_main_menu():&#160;game_manager.c'],['../group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf',1,'gm_start_main_menu():&#160;game_manager.c']]],
+  ['gm_5fstart_5fswitchboard_126',['gm_start_switchboard',['../group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b',1,'gm_start_switchboard():&#160;game_manager.c'],['../group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b',1,'gm_start_switchboard():&#160;game_manager.c']]],
+  ['green_5ffield_5fposition_127',['green_field_position',['../structvbe__mode__info__summary__t.html#ab8b93464b45fc154dd465dc0229ed177',1,'vbe_mode_info_summary_t']]],
+  ['green_5fmask_128',['green_mask',['../structvbe__mode__info__summary__t.html#a7c4b6e486b91c636cecaa0b53682b72a',1,'vbe_mode_info_summary_t']]],
+  ['graphics_129',['Graphics',['../group__video__gr.html',1,'']]]
+];

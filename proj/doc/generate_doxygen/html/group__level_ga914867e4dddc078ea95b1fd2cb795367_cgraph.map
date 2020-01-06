@@ -1,0 +1,6 @@
+<map id="arcade_versus_win" name="arcade_versus_win">
+<area shape="rect" id="node1" title="Ends the arcade versus gamemode." alt="" coords="5,31,152,57"/>
+<area shape="rect" id="node2" href="$group__hw__man.html#ga5abdf7d6637e6a8dbf99b6748a5ac28f" title="Sends a byte through the serial port." alt="" coords="200,31,412,57"/>
+<area shape="rect" id="node3" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="460,5,612,32"/>
+<area shape="rect" id="node4" href="$group__uart.html#gafdf3493c91394238152427ff1418e7ad" title="Sends a 8&#45;bit char over the UART." alt="" coords="475,56,597,83"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="glitched_switch_double_buffer" name="glitched_switch_double_buffer">
+<area shape="rect" id="node1" title="&quot;Glitches&quot; the screen, making it appear with a TV noise like appearance" alt="" coords="221,5,396,47"/>
+<area shape="rect" id="node2" href="$group__hw__man.html#gadcd08c3086c47cd601dcaeaec85de837" title="Same as hw_manager_switch_double_buffer(), but applies a warped, glitchy effect." alt="" coords="5,5,173,47"/>
+</map>

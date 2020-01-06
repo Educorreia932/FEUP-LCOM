@@ -1,0 +1,5 @@
+<map id="clamp_uint8" name="clamp_uint8">
+<area shape="rect" id="node1" title="Clamps the value between the established min and max." alt="" coords="5,31,108,57"/>
+<area shape="rect" id="node2" href="$group__math__utils.html#ga3bcf908f7ca21d713dad8942966236a0" title="Retuns the maximum of two numbers." alt="" coords="156,5,247,32"/>
+<area shape="rect" id="node3" href="$group__math__utils.html#ga3302a52c6d231924e42b2d44b52bd17b" title="Retuns the minimum of two numbers." alt="" coords="158,56,245,83"/>
+</map>

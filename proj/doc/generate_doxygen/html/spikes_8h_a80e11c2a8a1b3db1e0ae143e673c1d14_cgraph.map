@@ -1,0 +1,4 @@
+<map id="player_touches_spike" name="player_touches_spike">
+<area shape="rect" id="node1" title="Checks if the Player&#39;s position is colliding with any of the Spikes." alt="" coords="5,5,168,32"/>
+<area shape="rect" id="node2" href="$group__geometry.html#ga8423395e249bad0f58cd61d85c12e43a" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="216,5,361,32"/>
+</map>
