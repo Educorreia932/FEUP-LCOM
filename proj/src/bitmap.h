@@ -32,7 +32,7 @@ typedef struct Bitmap Bitmap_t;
  * @return Bitmap_t* Returns a pointer to the fully built Bitmap object on success\n
  * NULL otherwise 
  */
-Bitmap_t *new_bitmap(const char *filename);
+Bitmap_t* new_bitmap(const char *filename);
 
 /**
  * @brief Frees a given Bitmap from memory

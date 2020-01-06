@@ -199,17 +199,17 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
-O módulo \textbf{\textit{Geometry}} é dividido em duas partes, \textbf{\textit{Vec2d}} e \textbf{\textit{Rect}}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
+O módulo \textbf{\textit{Geometry}} é dividido em duas partes, \textbf{\textit{Vec2d}}, que representa um vector bidemensional e \textbf{\textit{Rect}}, que representa um retângulo, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. É possível fazer diversas operações sobre estes dois elementos, como fazer produto escalar, soma e subtração... entre outras, no caso do Vec2d e verificar interseções, por exemplo, no caso do Rect.
 
-\section{Bitmap}
+\section{Bitmap} 
 
 Peso relativo: 3\%
 
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 \newline
 
-O módulo \textbf{\textit{Bitmap}} consiste em código de nível mais baixo que carrega um \textbf{\textit{bitmap}} individual para a memória, lendo o seu header e a imagem em si.
-Tem a capacidade de renderizar imagens \textbf{normalmente}, ou \textbf{invertidas} segundo os eixos \textit{x} e \textit{y} delas (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textbf{\textit{bitmap} dinâmico}, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
+O módulo \textbf{\textit{Bitmap}} consiste em código de nível mais baixo que carrega um \textbf{\textit{bitmap}} individual para a memória, lendo o seu header e a imagem em si --- new\_bitmap().
+Tem a capacidade de renderizar imagens \textbf{normalmente} --- draw\_bitmap(), ou \textbf{invertidas} segundo os eixos \textit{x} --- \textit{draw\_bitmap\_reversed\_x\_axis()}, \textit{y} ---  \textit{draw\_bitmap\_reversed\_y\_axis()} ou ambos \textit{draw\_bitmap\_reversed\_both\_axis()} (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textbf{\textit{bitmap} dinâmico}, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
 Permite transparência e aplicar uma cor sobre o que é renderizado
 O \textit{path} absoluto para os \textit{assets} pode ser alterado como um \textit{command line argument}.
  
@@ -220,7 +220,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
-O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para o bitmap (tanto o normal como o dinâmico). Como acréscimo, tem uma 'camada' extra que permite a animação de qualquer \textit{Sprite}.
+O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para o bitmap (tanto o normal como o dinâmico). Como acréscimo, tem uma "camada" extra que permite a animação de qualquer \textit{Sprite}, alternando o \textit{bitmap} a ser desenhada no ecrã na posição da \textit{Sprite} em questão.
 
 \section{Game Manager}
 
@@ -266,7 +266,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
 \newline
 
-Os \textit{lasers} são o obstáculo mais comum que o jogador irá encontrar, tendo de evitá-los para não morrer. Cada um possui uma cor que serve também como ID para sabe que lasers estão ativos (estarão sempre todos ativos exceto o de cor correspondente ao ID inativo, controlado pelo utilizador).
+Os \textit{lasers} são o obstáculo mais comum que o jogador irá encontrar, tendo de evitá-los para não morrer. Cada um possui uma cor que serve também como ID para sabe que lasers estão ativos (estarão sempre todos ativos exceto o de cor correspondente ao ID inativo, controlado pelo utilizador no modo Campaign).
 
 \section{Spikes}
 
@@ -275,7 +275,7 @@ Peso relativo: 1\%
 Módulo desenvolvido por: Eduardo Correia
 \newline
 
-São o segundo obstáculo 
+São o segundo obstáculo principal do jogo. Mais simples que os lasers e ao contrário destes, são imutáveis e estáticos, não é possível "desativá-los", de modo que o jogador será de encontrar maneiras de se desviar destes para os ultrapassar. Estão apenas presente no modo Campaign.
 
 \section{Switchboard}
 
@@ -311,15 +311,16 @@ Peso relativo: 2\%
 Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
 \newline
 
-Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional.
+Ao longo do modo Campaign, o jogador precisa de obter powerups para ganhar novas funcionalidades de modo a passar o nível. Cada vez que apanha um powerup, desbloqueia o controlo de uma mecânica adicional e só é possível obtê-los uma única vez (a não ser que o jogador morra, sendo eles repostos na sua posição inicial).
+
 Existem portanto três powerups:
 \newline
 
---- \textbf{Laser} - 
+--- \textbf{Laser} - Após o jogador obter este powerup, torna possível controlar qual das três cores dos lasers está inativa, controlada pelo próprio jogador nos \textit{sliders} do canto superior esquerdo do nível, se estiver a jogar Singleplayer, e pela Switchboard se estiver a jogar Co-Op. Representada por um pequeno computador.
 
---- \textbf{Anti-Gravity} -
+--- \textbf{Anti-Gravity} - Após o jogador obter este powerup, torna possível alterar o sentido da gravidade durante instantes (passando a ser puxado para o teto) através da tecla X (em Singleplayer) ou de uma \textit{Knob}  (em  modo Co-Op) que simultaneamente ilustra o tempo que o efeito de anti-gravidade estará ativo. Representada por uma maçã com um símbolo de uma seta.
 
---- \textbf{Exit} - Não é exatamente 	
+--- \textbf{Exit} Ao contrário dos outros powerups, a saída não dá qualquer poder ao jogador, mas por uma questão de simplificação do código, ela está implementada como um power\_up, visto partilhar todas as características com eles (só pode ser 'apanhada' uma vez por nível, ativa uma função noutro lado para causar um efeito, tem uma Sprite). Representado como uma placa de saída de emergência fundida com o símbolo de ligação à terra.
 
 \section{Timer}
 
@@ -460,12 +461,16 @@ Semelhante ao \textit{Utils}, porém, por questão de organização, decidimos s
 Peso relativo: 3\%
 
 Módulo desenvolvido por: Tiago Silva
+\newline
+
+Quando o utilizador inicia o jogo pela primeira vez ou sai de um modo jogo (Campaign ou Arcade) ele depara-se com o Main Menu. Este trata-se de um conjunto de botões que após clicadas iniciam o modo de jogo corresponde. Sempre que isso acontece, toda a informação do modo de jogo anterior (se houver algum) é libertada para prevenir memory leaks e é tratado de iniciar o próximo modo de jogo devidamente.
 
 \section{Proj}
 
 Peso relativo: 1\%
 
 Módulo desenvolvido por: Tiago Silva
+\newline
 
 O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que menos tem peso no projeto, uma vez que só trata de chamar a função de iniciar o jogo --- \textit{start\_game} com o \textit{path} absoluto para as imagens passado como argumento na linha de comandos. O \textit{GameManager} trata de toda a lógica do jogo.
 
@@ -594,7 +599,6 @@ Para detetar se uma tecla foi premida num certo frame, foi necessário limpar es
 \subsection{MouseInputEvents e MouseCursor}
 
 Para permitir saber se um dado botão começou a ser premido num determinado frame e para garantir que o \textit{delta} do rato entre frames é o correto, recorremos ao mesmo truque do \textit{KbdInputEvents}, utilizando a função \textbf{reset\_mouse\_input\_state()}.
-
 
 \section{Graphical User Interface}
 
