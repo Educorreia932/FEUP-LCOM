@@ -727,7 +727,7 @@ O jogador tem um sistema complexo de \textbf{animações}, tendo animações \te
 
 Para transitar entre cada animação utilizamos várias \textbf{máquinas de estados} (uma para a \textit{idle animation}, uma para a \textit{walk animation} e outra para a das 'faíscas'). As animações vão dando \textit{cycle} entre elas a um ritmo fixo.
 
-Entre a animação de \textit{idle} e \textit{walk} só é renderizada uma de cada vez, portanto temos algumas variáveis responsáveis por essa decisão (inpirado pelo sistema usado pelo \textit{Unity}, tal como mencionado anteriormente, no nosso caso as animações serão geridas pelo \textit{animator\_player()} de modo a serem renderizadas de modo correto pelo \textit{render\_player\_background()} \(|\) \textit{render1\_player\_foreground()}). Dependendo se o jogador se encontrar vivo ou morto, e de se ele se encontrar no chão (\textit{grounded}) e sem qualquer input. Para a \textit{Sprite} do player morrer simplesmente reaproveitamos um dos frames da animação de idle, mas recolorida.
+Entre a animação de \textit{idle} e \textit{walk} só é renderizada uma de cada vez, portanto temos algumas variáveis responsáveis por essa decisão (inpirado pelo sistema usado pelo \textit{Unity}, tal como mencionado anteriormente, no nosso caso as animações serão geridas pelo \textit{animator\_player()} de modo a serem renderizadas de modo correto pelo \textit{render\_player\_background()} \(|\) \textit{render\_player\_foreground()}). Dependendo se o jogador se encontrar vivo ou morto, e de se ele se encontrar no chão (\textit{grounded}) e sem qualquer input. Para a \textit{Sprite} do player morrer simplesmente reaproveitamos um dos frames da animação de idle, mas recolorida.
 
 Para evitar a duplicação de \textit{Sprites}, utilizamos a vantagem de refletir a imagem sobre si pŕopria para renderizar o jogador em todas as direções, isto é a andar para esquerda, para a direita e para cada uma delas, a andar com a gravidade para baixo (normal) ou para cima (a personagem 'caminha' no teto).
 
@@ -826,9 +826,17 @@ Seguindo a indicação do docente Souto, decidimos permitir que o \textit{path} 
 
 \section{UART}
 
-O UART foi implementado usando FIFOs e interrupções, com a ajuda de uma Queue de receção a nível de software (abordada na secção seguinte). Decorreram diversos problemas durante o desenvolvimento deste módulo, por exemplo subscrevíamos a interrupções de receiver e do THR vazio, mas não recebíamos sempre a interrupção do THR vazio, a não ser que tentássemos descobrir se o THR se encontrava vazio durante outros processamos (sem ter recebido a notificação). Nesses casos o IIR indicava existir a interrupção, mas ela não era recebida.
+O UART foi implementado usando FIFOs e interrupções, com a ajuda de uma Queue de receção a nível de software (abordada na secção seguinte). Manualmente configuramos ambas os serial port --- \textit{uart\_set\_conf()} a usarem a mesma configuração no início do programa: 8 bits de transmissão, paridade ímpar e dois stop bits. Para verificar as configurações também foi desenvolvida uma função para as imprimir de uma forma \textit{human readable} --- \textit{uart\_print\_conf()}.
+
+Decorreram diversos problemas durante o desenvolvimento deste módulo, por exemplo subscrevíamos a interrupções de receiver e do THR vazio, mas não recebíamos sempre a interrupção do THR vazio, a não ser que tentássemos descobrir se o THR se encontrava vazio durante outros processamos (sem ter recebido a notificação). Nesses casos o IIR indicava existir a interrupção, mas ela não era recebida.
 
 Em grande parte por causa deste facto não conseguimos implementar o serial port com todas as verificações que desejaríamos, mas pelo menos conseguimos pô-lo bastante estável. Ocorreram mais problemas enquanto não descobrimos um erro crítico com a Queue que usámos (abordado no próximo capítulo), mas depois de corrigida não ocorreram mais problemas.
+
+Para qualquer parte do nosso projeto poder enviar um pacote via serial port com facilidade, utilizamos o wrapper do hw\_manager() --- \textit{hw\_manager\_uart\_send\_char()} para enviar um uint8\_t de cada vez.
+
+Uma característica que decidimos implementar é detetar quando um dos jogadores se desconectou, seja por fecharem a \textit{virtual machine}, perderem a conexão ou voltarem ao menu principal.
+
+Ambos os PCs têm dois contadores, um que conta o número de frames desde a última mensagem recebida --- \textit{uart\_receive\_char()}, e outro desde a última mensagem enviada. Se a algum momento a última mensagem recebida ultrapassar o tempo predefinido (macro \textit{UART\_DC\_TIME}, atualmente 3 segundos), volta ao menu principal, visto o outro jogador ter-se desconectado por algum motivo. Para prevenir que, por exemplo, no modo \textit{Campaign Co-op}, em que as mensagens enviadas podem ter um intervalo de tempo superior a 3 segundos entre elas, definimos também que se o tempo desde a última mensagem enviada ultrapassar metade do tempo máximo da de receção (neste caso seria de 1.5 segundos), enviará um \textit{header} especial dedicado só a assegurar o outro PC de que ainda estamos conectados. Estas interações são descritas pelo valor da variável \textit{synced} do \textit{GameManager}.
 
 \subsection{Queue}
 
@@ -838,13 +846,17 @@ Um dos maiores problemas dessa implementação (que foi referido na secção do 
 
 Após desenvolver a Queue, planeavamos ter uma \textit{Queue} (a nível de software) para receção e outra para transmissão, mas dado os desenvolvimentos da UART, foi decidido usar apenas a queue de receção.
 
+Implementámos as seguintes operações base duma Queue: queue\_pop(), queue\_push\_back(), queue\_front(), queue\_back() (visto que a nossa implementação de listas ligadas o permite), queue\_is\_empty(), queue\_is\_full(), queue\_clear(). Por default, o construtor cria uma queue vazia.
+
+No que toca à receiver Queue, destas operações, decidimos expor apenas algumas delas através de wrappers do hw\_manager, com o prefixo \textit{hw\_manager\_uart\_q\_}: pop(), front(), is\_empty(), size() e clear().
+
 \section{RTC}
 
 Neste projeto utilizamos o RTC maioritariamente em três vertentes diferentes. Como "Timer" no modo de jogo Campaign, lendo a hora a que este se inicia e acaba para calcular o tempo decorrido (para facilitar as contas, decidimos fazê-lo em segundos), para realizar uma contagem decrescente no modo de jogo Arcade - Versus, colocando um alarme para o final período de tempo que pretendemos contar e por último, para coordenar os instantes a que são geradas novos "balões" na Switchboard, através de vários alarmes.
 
 Para tal, usamos sobretudo as funções \textit{get\_date()} e \textit{rtc\_set\_alarm()}.
 
-Elaboramos ainda diversas funções auxiliares, nomeadamente para ler e escrever dos registos do RTC (\textit{rtc\_read\_register()} | \textit{rtc\_write\_register()}) e para converter BCD e decimal e vice-versa (uma vez que a informação obtida pelo \textit{get\_date()} pode estar em BCD e desejamos interpretá-la como decimal ou porque queremos dar set de um alarme que nos é passado em decimal e temos de o passar para BCD para voltar a escrever no registo).
+Elaboramos ainda diversas funções auxiliares, nomeadamente para ler e escrever dos registos do RTC (\textit{rtc\_read\_register()} | \textit{rtc\_write\_register()}) e para converter BCD em decimal --- \textit{bcd\_to\_dec()} e vice-versa --- \textit{dec\_to\_bcd()} (uma vez que a informação obtida pelo \textit{get\_date()} pode estar em BCD e desejamos interpretá-la como decimal ou porque queremos dar set de um alarme que nos é passado em decimal e temos de o passar para BCD para voltar a escrever no registo).
 
 Como na leitura da data podem surgir erros (a data pode alterar-se, enquanto a lemos) fazemos uma verificação se esta se encontra em atualização e só então, se não estiver, é que a lemos.
 
