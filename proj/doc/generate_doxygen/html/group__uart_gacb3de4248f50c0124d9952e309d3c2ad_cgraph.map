@@ -1,4 +1,0 @@
-<map id="uart_print_conf" name="uart_print_conf">
-<area shape="rect" id="node1" title="Prints the UART configuration in a human&#45;readable way." alt="" coords="5,5,125,32"/>
-<area shape="rect" id="node2" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="173,5,272,32"/>
-</map>

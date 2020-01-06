@@ -1,4 +1,0 @@
-<map id="free_sprite_dynamic" name="free_sprite_dynamic">
-<area shape="rect" id="node1" title="Frees a SpriteDynamic." alt="" coords="5,5,160,32"/>
-<area shape="rect" id="node2" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="208,5,309,32"/>
-</map>

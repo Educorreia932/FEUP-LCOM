@@ -1,9 +1,0 @@
-<map id="min_uint16" name="min_uint16">
-<area shape="rect" id="node1" title="Retuns the minimum of two numbers." alt="" coords="343,56,437,83"/>
-<area shape="rect" id="node2" href="$group__math__utils.html#ga446c4c940f4995f1b975af6f7ed693ce" title="Clamps the value between the established min and max." alt="" coords="184,5,295,32"/>
-<area shape="rect" id="node3" href="$group__ui.html#ga5c1105262bcfc2e0ac0e33a088ed5b05" title="Creates a new score object." alt="" coords="194,56,285,83"/>
-<area shape="rect" id="node6" href="$group__ui.html#ga05550f334267b5827b4cbb05a2cd3c9c" title="Sets the Score object value to a given one." alt="" coords="197,107,281,133"/>
-<area shape="rect" id="node4" href="$group__player.html#gae14101abdc2c267b9df8604ed60f95f1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="24,5,117,32"/>
-<area shape="rect" id="node5" href="$group__ui.html#gaa7a78a00cde6fc882073b8468bce9365" title="The player won the game, now the winning screen must be displayed." alt="" coords="5,56,136,83"/>
-<area shape="rect" id="node7" href="$group__ui.html#gaaac39ac8fa93602bf4d48ae654d3d8ab" title="Increments the numeric value of a Score object by one." alt="" coords="16,107,125,133"/>
-</map>

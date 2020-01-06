@@ -1,4 +1,0 @@
-<map id="set_score" name="set_score">
-<area shape="rect" id="node1" title="Sets the Score object value to a given one." alt="" coords="163,5,247,32"/>
-<area shape="rect" id="node2" href="$group__ui.html#gaaac39ac8fa93602bf4d48ae654d3d8ab" title="Increments the numeric value of a Score object by one." alt="" coords="5,5,115,32"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="kbc_send_cmd" name="kbc_send_cmd">
-<area shape="rect" id="node1" title="Sends a KBC command." alt="" coords="240,31,359,57"/>
-<area shape="rect" id="node2" href="$group__kbd.html#gae90e98eed9f79914d3055b0c347f2067" title="Reenables the keyboard interrupts Avoids having to call the executable from a remote shell to restore..." alt="" coords="5,5,192,32"/>
-<area shape="rect" id="node3" href="$group__utils.html#ga180016d2e427849ad460ef3aac6def40" title="Restores KBC byte to default state (returned by minix_get_dflt_kbc_byte())" alt="" coords="31,56,166,83"/>
-</map>

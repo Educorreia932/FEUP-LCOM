@@ -1,7 +1,0 @@
-<map id="hw_manager_rtc_read_date_in_seconds" name="hw_manager_rtc_read_date_in_seconds">
-<area shape="rect" id="node1" title="Returns the current date measured in seconds." alt="" coords="221,74,388,115"/>
-<area shape="rect" id="node2" href="$group__player.html#gae14101abdc2c267b9df8604ed60f95f1" title="Handles the &quot;win&quot; of the player (when he reaches the exit)" alt="" coords="43,5,136,32"/>
-<area shape="rect" id="node3" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="11,56,168,83"/>
-<area shape="rect" id="node4" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,107,173,133"/>
-<area shape="rect" id="node5" href="$group__level.html#ga4b11db44e03c0bc773e0fedb89fbe62e" title="Updates a regular Level&#39;s required parts." alt="" coords="36,157,143,184"/>
-</map>

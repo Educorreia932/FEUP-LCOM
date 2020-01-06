@@ -1,6 +1,0 @@
-<map id="hw_manager_kbd_ih" name="hw_manager_kbd_ih">
-<area shape="rect" id="node1" title="Wrapper for the keyboard interrupt handler (ih)" alt="" coords="5,5,161,32"/>
-<area shape="rect" id="node2" href="$group__kbd.html#ga3b35eecf289446fe614818dd6ab6d5bf" title="Handles Keyboard interrupts." alt="" coords="209,5,275,32"/>
-<area shape="rect" id="node3" href="$group__kbd.html#gaab59ebab987feddc540cf93220504c39" title="Reads a scancode from the kbc output buffer." alt="" coords="323,5,464,32"/>
-<area shape="rect" id="node4" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="512,5,611,32"/>
-</map>

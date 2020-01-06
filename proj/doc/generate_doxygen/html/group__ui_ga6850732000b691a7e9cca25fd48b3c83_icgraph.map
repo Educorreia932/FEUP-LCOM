@@ -1,6 +1,0 @@
-<map id="free_main_menu" name="free_main_menu">
-<area shape="rect" id="node1" title="Frees a created Main Menu." alt="" coords="220,56,352,83"/>
-<area shape="rect" id="node2" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="23,5,154,32"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="29,56,148,83"/>
-<area shape="rect" id="node4" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="5,107,172,133"/>
-</map>

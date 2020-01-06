@@ -1,5 +1,0 @@
-<map id="hw_manager_mouse" name="hw_manager_mouse">
-<area shape="rect" id="node1" title="Processes the data read by the mouse ih." alt="" coords="5,35,163,61"/>
-<area shape="rect" id="node2" href="$group__mouse.html#ga2e97e0dd526db31a6d45e90826cc4146" title="Handles the data (mouse packets) received." alt="" coords="211,5,369,32"/>
-<area shape="rect" id="node3" href="$group__inputs.html#gad08b183b0c7f2a6696f587bd15d03ba3" title="To be called after the interrupt handler of the mouse, to process the new received mouse packet." alt="" coords="211,57,369,98"/>
-</map>

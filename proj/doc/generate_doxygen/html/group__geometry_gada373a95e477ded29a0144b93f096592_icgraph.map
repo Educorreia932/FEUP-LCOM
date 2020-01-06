@@ -1,7 +1,0 @@
-<map id="rect_from_vec2d" name="rect_from_vec2d">
-<area shape="rect" id="node1" title="Constructs a rectangle from two vectors." alt="" coords="569,31,700,57"/>
-<area shape="rect" id="node2" href="$group__ui.html#gabf213442f09686631afa816b69215474" title="Creates a new Knob object." alt="" coords="418,5,506,32"/>
-<area shape="rect" id="node5" href="$power__ups_8h.html#a357c3279c8ac8d42acb2ea0351231d58" title="Creates a new Power Up object." alt="" coords="403,56,521,83"/>
-<area shape="rect" id="node3" href="$group__ui.html#ga2d800113c0d60ffe2784f4cec6221b9d" title="Creates a new Switchboard object." alt="" coords="220,5,355,32"/>
-<area shape="rect" id="node4" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="5,5,172,32"/>
-</map>

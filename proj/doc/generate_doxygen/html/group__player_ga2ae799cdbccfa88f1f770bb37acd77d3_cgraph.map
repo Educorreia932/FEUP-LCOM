@@ -1,5 +1,0 @@
-<map id="render_player_two_background" name="render_player_two_background">
-<area shape="rect" id="node1" title="Renders the background of the second Player (that consists of sparks that appear whenever its anti&#45;gr..." alt="" coords="5,5,232,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga5c10d2609ecbfe167b1e9d0aaafd0c82" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="280,5,424,32"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="472,5,615,32"/>
-</map>

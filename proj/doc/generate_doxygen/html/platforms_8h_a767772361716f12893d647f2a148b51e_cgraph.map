@@ -1,5 +1,0 @@
-<map id="does_collide_platforms" name="does_collide_platforms">
-<area shape="rect" id="node1" title="Checks if a player&#39;s rect (hitbox) collides with any platform or wall." alt="" coords="5,31,179,57"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="257,5,341,32"/>
-<area shape="rect" id="node3" href="$group__geometry.html#ga8423395e249bad0f58cd61d85c12e43a" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="227,56,372,83"/>
-</map>

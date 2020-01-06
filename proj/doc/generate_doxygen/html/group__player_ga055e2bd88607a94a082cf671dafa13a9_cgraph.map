@@ -1,5 +1,0 @@
-<map id="render_player_two_foreground" name="render_player_two_foreground">
-<area shape="rect" id="node1" title="Renders the foreground of the second Player (that consists of all of tis body)" alt="" coords="5,5,227,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga5c10d2609ecbfe167b1e9d0aaafd0c82" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="275,5,419,32"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="467,5,609,32"/>
-</map>

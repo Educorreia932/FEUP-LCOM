@@ -1,6 +1,0 @@
-<map id="arcade_player_passes_lasers" name="arcade_player_passes_lasers">
-<area shape="rect" id="node1" title="Keeps track of when the player passes through a new set of Lasers, to increase it&#39;s score &#160;Used exclu..." alt="" coords="5,49,172,90"/>
-<area shape="rect" id="node2" href="$group__geometry.html#gac34db6e3c02c00ca99bfbbf0dbfe0a68" title="Creates a pointer to a rectangle." alt="" coords="233,5,352,32"/>
-<area shape="rect" id="node3" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="413,31,497,57"/>
-<area shape="rect" id="node4" href="$group__geometry.html#ga8423395e249bad0f58cd61d85c12e43a" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="220,107,365,133"/>
-</map>

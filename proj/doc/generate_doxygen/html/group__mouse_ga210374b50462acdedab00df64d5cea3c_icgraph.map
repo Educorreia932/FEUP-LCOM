@@ -1,5 +1,0 @@
-<map id="mouse_ih" name="mouse_ih">
-<area shape="rect" id="node1" title="Handles mouse interrutps." alt="" coords="373,5,459,32"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#ga90b72a71dd94f04bda56c7e31ea3f7c2" title="Wrapper for the mouse interrupt handler (ih)" alt="" coords="149,5,325,32"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

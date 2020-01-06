@@ -1,4 +1,0 @@
-<map id="sprite_get_height" name="sprite_get_height">
-<area shape="rect" id="node1" title="Returns the Sprite&#39;s height." alt="" coords="5,5,140,32"/>
-<area shape="rect" id="node2" href="$bitmap_8h.html#a07d5d01c46c51590d6fb1ac41d7c0125" title="Returns the height (in pixels) of a given Bitmap." alt="" coords="188,5,332,32"/>
-</map>

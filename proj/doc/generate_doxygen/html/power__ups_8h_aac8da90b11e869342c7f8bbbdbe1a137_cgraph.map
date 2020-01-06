@@ -1,5 +1,0 @@
-<map id="update_power_up" name="update_power_up">
-<area shape="rect" id="node1" title="Checks if a Player&#39;s Rect_t would collect the Power Up and collects it." alt="" coords="5,31,143,57"/>
-<area shape="rect" id="node2" href="$power__ups_8h.html#aa96ae8e2b4bc9ea352e99bb406199c69" title="Collects a given Power Up." alt="" coords="199,5,327,32"/>
-<area shape="rect" id="node3" href="$group__geometry.html#ga8423395e249bad0f58cd61d85c12e43a" title="Retuns true if the two rectangles overlap (aka: are colliding)" alt="" coords="191,56,336,83"/>
-</map>

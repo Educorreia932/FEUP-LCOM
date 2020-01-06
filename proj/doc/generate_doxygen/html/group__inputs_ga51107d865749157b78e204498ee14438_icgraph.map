@@ -1,9 +1,0 @@
-<map id="mouse_get_lb" name="mouse_get_lb">
-<area shape="rect" id="node1" title="Returns true if the mouse left button is currently pressed." alt="" coords="571,31,684,57"/>
-<area shape="rect" id="node2" href="$group__ui.html#ga22c151b6db0ca69682f3175530e271cf" title="Updates the Knob&#39;s handle position." alt="" coords="414,5,521,32"/>
-<area shape="rect" id="node4" href="$group__ui.html#gaae473eff7203be79d3ab0a1a6eba65a6" title="Updates a Slider&#39;s handle position." alt="" coords="412,56,523,83"/>
-<area shape="rect" id="node3" href="$group__ui.html#ga223aa9507be1a014ec479a592b7f2429" title="Updates the needed information of the Switchboard." alt="" coords="211,5,364,32"/>
-<area shape="rect" id="node5" href="$group__player.html#ga4bff32e009db0e0387d5bc2aa1b50439" title="Updates a player state (position on screen, animation, whether is dead or not, unlocked powerups...." alt="" coords="230,56,345,83"/>
-<area shape="rect" id="node6" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="5,31,163,57"/>
-<area shape="rect" id="node7" href="$group__level.html#ga4b11db44e03c0bc773e0fedb89fbe62e" title="Updates a regular Level&#39;s required parts." alt="" coords="31,81,137,108"/>
-</map>

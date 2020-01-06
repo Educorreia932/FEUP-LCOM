@@ -1,7 +1,0 @@
-<map id="new_player" name="new_player">
-<area shape="rect" id="node1" title="Creates a Player object." alt="" coords="371,31,468,57"/>
-<area shape="rect" id="node2" href="$group__level.html#gab69d599222032e217a9d1e0868df4d78" title="Creats a new level with the arcade mode&#39;s layout." alt="" coords="184,5,323,32"/>
-<area shape="rect" id="node4" href="$group__level.html#ga418f2ef493d4e5e7ecc6d4d69cc00cb8" title="Creates a new level with the configuration of the prototype level of the Campaign." alt="" coords="191,56,315,83"/>
-<area shape="rect" id="node3" href="$group__gm.html#gac657eba27b543773b133cec64b429c6a" title="Sets up a new arcade. For careful use by the main menu." alt="" coords="5,5,136,32"/>
-<area shape="rect" id="node5" href="$group__gm.html#ga313ec369bc39122235ceff59f7836535" title="Sets up a new level. For careful use by the main menu." alt="" coords="11,56,130,83"/>
-</map>

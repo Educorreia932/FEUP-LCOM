@@ -1,5 +1,0 @@
-<map id="arcade_generate_laser_height" name="arcade_generate_laser_height">
-<area shape="rect" id="node1" title="Generates the height for the next arcade Laser." alt="" coords="221,23,392,65"/>
-<area shape="rect" id="node2" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="11,5,168,32"/>
-<area shape="rect" id="node3" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,56,173,83"/>
-</map>

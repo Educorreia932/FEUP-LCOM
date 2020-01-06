@@ -1,4 +1,0 @@
-<map id="arcade_versus_update_laser_values" name="arcade_versus_update_laser_values">
-<area shape="rect" id="node1" title="Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play." alt="" coords="221,5,389,47"/>
-<area shape="rect" id="node2" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,13,173,39"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="arcade_versus_update_laser_values" name="arcade_versus_update_laser_values">
-<area shape="rect" id="node1" title="Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play." alt="" coords="5,23,173,65"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#ga5abdf7d6637e6a8dbf99b6748a5ac28f" title="Sends a byte through the serial port." alt="" coords="221,31,433,57"/>
-<area shape="rect" id="node3" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="481,5,633,32"/>
-<area shape="rect" id="node4" href="$group__uart.html#gafdf3493c91394238152427ff1418e7ad" title="Sends a 8&#45;bit char over the UART." alt="" coords="497,56,618,83"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="hw_manager_uart_clear" name="hw_manager_uart_clear">
-<area shape="rect" id="node1" title="Clear all data from the receiver Queue." alt="" coords="364,31,543,57"/>
-<area shape="rect" id="node2" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="151,5,315,32"/>
-<area shape="rect" id="node4" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="149,56,316,83"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

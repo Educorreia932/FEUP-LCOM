@@ -1,7 +1,0 @@
-<map id="rtc_set_alarm" name="rtc_set_alarm">
-<area shape="rect" id="node1" title="Sets an RTC alarm." alt="" coords="5,56,116,83"/>
-<area shape="rect" id="node2" href="$group__rtc.html#ga875a43b8e393750cf2ced665ca87ed1b" title="Reads the current date from the RTC." alt="" coords="204,5,283,32"/>
-<area shape="rect" id="node4" href="$group__rtc.html#gaae8111e1cb8e86c24e0becc84ee4ce29" title="Enables RTC alarm interrupts." alt="" coords="164,56,323,83"/>
-<area shape="rect" id="node5" href="$group__rtc.html#ga9b5d85527d676067a8c05780ec46d4f1" title="Writes a RTC register in memory." alt="" coords="371,93,507,120"/>
-<area shape="rect" id="node3" href="$group__rtc.html#gaf6f18245f611a9c8f64055feae5ec73d" title="Reads a RTC register from memory." alt="" coords="373,31,505,57"/>
-</map>

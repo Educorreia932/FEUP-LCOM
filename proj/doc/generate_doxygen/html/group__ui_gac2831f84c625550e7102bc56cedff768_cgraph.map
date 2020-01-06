@@ -1,4 +1,0 @@
-<map id="render_main_menu" name="render_main_menu">
-<area shape="rect" id="node1" title="Renders the needed elements of the main menu @description Must be called every frame." alt="" coords="5,5,153,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="201,5,344,32"/>
-</map>

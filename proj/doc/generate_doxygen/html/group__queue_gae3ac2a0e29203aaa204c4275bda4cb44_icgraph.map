@@ -1,6 +1,0 @@
-<map id="new_queue" name="new_queue">
-<area shape="rect" id="node1" title="Called to create a new Queue." alt="" coords="615,13,711,39"/>
-<area shape="rect" id="node2" href="$group__uart.html#gabeb0a374ff7bc33d3ca9955cdebbca8f" title="Creates the queue object that is going to be used as the UART information receiver." alt="" coords="396,5,567,47"/>
-<area shape="rect" id="node3" href="$group__hw__man.html#ga0c72b14478361d90e9b4691d66ae299c" title="Subscribes to all needed interrupts." alt="" coords="149,13,348,39"/>
-<area shape="rect" id="node4" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,13,101,39"/>
-</map>

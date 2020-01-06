@@ -1,4 +1,0 @@
-<map id="kbc_read_outbf" name="kbc_read_outbf">
-<area shape="rect" id="node1" title="Reads scancodes from the keyboard&#39;s output buffer." alt="" coords="5,5,128,32"/>
-<area shape="rect" id="node2" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="176,5,275,32"/>
-</map>

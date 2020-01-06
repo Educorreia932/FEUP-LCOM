@@ -1,5 +1,0 @@
-<map id="update_player_two" name="update_player_two">
-<area shape="rect" id="node1" title="Updates player two with the information received via serial port." alt="" coords="5,31,152,57"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga57cfbab5ad250f2a5e007b53e518612e" title="Set the animation state." alt="" coords="200,5,355,32"/>
-<area shape="rect" id="node3" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="223,56,332,83"/>
-</map>

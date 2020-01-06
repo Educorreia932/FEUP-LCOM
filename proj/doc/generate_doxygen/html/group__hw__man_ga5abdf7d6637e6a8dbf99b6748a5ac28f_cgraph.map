@@ -1,5 +1,0 @@
-<map id="hw_manager_uart_send_char" name="hw_manager_uart_send_char">
-<area shape="rect" id="node1" title="Sends a byte through the serial port." alt="" coords="5,31,217,57"/>
-<area shape="rect" id="node2" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="265,5,417,32"/>
-<area shape="rect" id="node3" href="$group__uart.html#gafdf3493c91394238152427ff1418e7ad" title="Sends a 8&#45;bit char over the UART." alt="" coords="281,56,402,83"/>
-</map>

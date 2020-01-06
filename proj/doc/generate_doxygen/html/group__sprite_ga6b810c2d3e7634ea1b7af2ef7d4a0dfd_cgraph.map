@@ -1,8 +1,0 @@
-<map id="sprite_get_size" name="sprite_get_size">
-<area shape="rect" id="node1" title="Returns a Vec2d with the Sprite&#39;s size." alt="" coords="5,56,125,83"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga83a61461cb63cb12fadab77d060b388a" title="Returns the Sprite&#39;s height." alt="" coords="173,5,308,32"/>
-<area shape="rect" id="node4" href="$group__sprite.html#ga326d1ea2b2f8a6005a742c8ed7e61f2a" title="Returns the Sprite&#39;s width." alt="" coords="175,56,306,83"/>
-<area shape="rect" id="node6" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="186,107,295,133"/>
-<area shape="rect" id="node3" href="$bitmap_8h.html#a07d5d01c46c51590d6fb1ac41d7c0125" title="Returns the height (in pixels) of a given Bitmap." alt="" coords="356,5,500,32"/>
-<area shape="rect" id="node5" href="$bitmap_8h.html#a6a1d349f2ddf0d64f78864c293e4c40d" title="Returns the width (in pixels) of a given Bitmap." alt="" coords="359,56,497,83"/>
-</map>

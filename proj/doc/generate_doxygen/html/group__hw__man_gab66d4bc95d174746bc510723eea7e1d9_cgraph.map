@@ -1,6 +1,0 @@
-<map id="hw_manager_uart_pop" name="hw_manager_uart_pop">
-<area shape="rect" id="node1" title="Returns and pops the byte at the front of the data receiver Queue." alt="" coords="5,5,176,32"/>
-<area shape="rect" id="node2" href="$group__uart.html#gaed520051f7303a4b429d1e70c39cad0c" title="Pop&#39;s the top element from the receiver queue." alt="" coords="224,5,379,32"/>
-<area shape="rect" id="node3" href="$group__queue.html#gaf214483bbf35c2a8d220c7da32006907" title="Removes an element from the front of the Queue, returning it in the process." alt="" coords="427,5,520,32"/>
-<area shape="rect" id="node4" href="$group__queue.html#ga7ed3bc45d5b9b91b1f11c48dd7067928" title="Returns true when the Queue is empty." alt="" coords="568,5,697,32"/>
-</map>

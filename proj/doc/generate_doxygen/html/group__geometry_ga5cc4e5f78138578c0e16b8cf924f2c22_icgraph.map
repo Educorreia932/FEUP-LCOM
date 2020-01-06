@@ -1,4 +1,0 @@
-<map id="multiply_by_scalar_vec2d" name="multiply_by_scalar_vec2d">
-<area shape="rect" id="node1" title="Returns a vector multiplied by a scalar." alt="" coords="187,5,332,47"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga723ce76207dc0e762e0fc27e6ec8ceac" title="Normalizes a given vector." alt="" coords="5,13,139,39"/>
-</map>

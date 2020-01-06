@@ -1,8 +1,0 @@
-<map id="update_main_menu" name="update_main_menu">
-<area shape="rect" id="node1" title="Updates the needed elements of the main menu @description Must be called every frame." alt="" coords="5,56,156,83"/>
-<area shape="rect" id="node2" href="$group__ui.html#gabd5e3b3c7f7c34d6d1df1f329242b597" title="Updates a Button object color in case it&#39;s being hovered or not." alt="" coords="204,56,320,83"/>
-<area shape="rect" id="node3" href="$group__inputs.html#ga60054718001244332587e52e6453466e" title="Checks if the cursor is hovering inside the area defined by the rect." alt="" coords="368,31,527,57"/>
-<area shape="rect" id="node6" href="$group__inputs.html#ga4ab738c504ee9cd61c12b5ddd3221d82" title="Returns true if the mouse left button has started getting pressed this frame." alt="" coords="370,81,525,108"/>
-<area shape="rect" id="node4" href="$group__geometry.html#ga2cdaa8c9b7328f81072de6d4adfb3c04" title="Returns wether a given point is inside a rect or not." alt="" coords="575,5,773,32"/>
-<area shape="rect" id="node5" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="632,56,716,83"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="timer0_int_handler" name="timer0_int_handler">
-<area shape="rect" id="node1" title="Handles Timer 0 interrupts." alt="" coords="372,5,517,32"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#gad28d50d54a702ef939da27609e3d6c1e" title="Wrapper for timer0 interrupt handler (ih)" alt="" coords="149,5,324,32"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="kbc_reenable_default_int" name="kbc_reenable_default_int">
-<area shape="rect" id="node1" title="Reenables the keyboard interrupts Avoids having to call the executable from a remote shell to restore..." alt="" coords="5,31,192,57"/>
-<area shape="rect" id="node2" href="$group__utils.html#ga4a78811a0601638f99d0ce3f3d8daa2c" title="Reads scancodes from the keyboard&#39;s output buffer." alt="" coords="240,5,363,32"/>
-<area shape="rect" id="node4" href="$group__utils.html#ga1c5abc048ffe2ed5ff2a47555f002166" title="Sends a KBC command." alt="" coords="242,56,361,83"/>
-<area shape="rect" id="node3" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="411,31,509,57"/>
-</map>

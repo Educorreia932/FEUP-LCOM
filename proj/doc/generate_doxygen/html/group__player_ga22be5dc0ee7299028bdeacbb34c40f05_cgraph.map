@@ -1,4 +1,0 @@
-<map id="player_set_speed" name="player_set_speed">
-<area shape="rect" id="node1" title="Changes the speed of the player." alt="" coords="5,5,141,32"/>
-<area shape="rect" id="node2" href="$group__gm.html#gaa93c8ec6b948996378887c2dbcd04d2c" title="Get the game manager object." alt="" coords="189,5,341,32"/>
-</map>
