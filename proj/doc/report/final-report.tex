@@ -472,7 +472,7 @@ O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que
 
 O nosso '\textit{main\_loop()}', o \textit{start\_game()} tem várias funções de update (static), mas visto elas estarem dentro de um objeto (\textit{GameManager}) e são atribuídas aquando da sua instanciação, elas não são detetadas pelo Doxygen. Algo peculiar foi que ao dar set da flag \textit{EXTRACT\_ALL} no Doxyfile, ele deixou de gerar sequer alguns \textit{call graphs} (nomeadamente start\_level, start\_switchboard, start\_arcade e start\_main\_menu).
 
-Em suma, tanto quanto percebems, pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game() (tendo em conta tudo que ele realmente chama), pelo que decidimos incluir o gráfico para o início de cada modo de jogo que temos e o menu principal em adição ao do start\_game().
+Em suma, tanto quanto entendemos, pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game() (tendo em conta tudo que ele realmente chama), pelo que decidimos incluir o gráfico para o início de cada modo de jogo que temos e o menu principal em adição ao do start\_game().
 
 \subsection{Menu Principal}
 
