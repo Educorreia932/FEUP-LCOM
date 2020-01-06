@@ -714,15 +714,31 @@ Por último, sempre que o \textit{Player} toca num destes \textit{lasers}, estes
 
 \subsection{Player}
 
-Animações
+\subsubsection{Físicas}
+
+O player é o único objeto ao qual é aplicado um sistema de físicas (embora só no eixo vertical). O intuito das físicas não foi elas serem realistas, mas tal como podemos aprender com os jogos mais bem sucedidos deste \textit{genre} (\textit{platformer}), o mais importante é que elas sejam bastanet satisfatórias de jogar, algo que acreditamos ter conseguido.
+
+O jogador tem sempre uma velocidade vertical, e sofre uma força gravítica (com sentido do ou positivo ou negativo do eixo). Sempre que o jogador está a 'cair', isto é, a sua velocidade tem o mesmo sentido que a gravidade atual, o efeito da gravidade é multiplicado. Se o jogador fosse contra algum obstáculo (verticalmente), a sua velocidade é drasticamente reduzida de modo a impedir que ele ultrapasse/entre dentro do obstáculo.
+
+\subsubsection{Animações}
+
+O jogador tem um sistema complexo de animações, tendo animações \textit{idle} (quando se encontra parado e no chão), animações de andar/correr e ainda animações de 'faíscas' que são mostradas exclusivamente quando o jogador ativa a anti-gravidade.
+
+Para transitar entre cada animação utilizamos várias máquinas de estados (uma para a idle animation, uma para a walk animation e outra para a das 'faíscas'). As animações vão dando cycle entre elas a um ritmo fixo.
+
+Entre a animação de idle e walk só é renderizada uma de cada vez, portanto temos algumas variáveis responsáveis por essa decisão (inpirado pelo sistema usado pelo Unity, tal como mencionado anteriormente). Dependedo de se o jogador se encontrar vivo ou morto, e de se ele se encontrar no chão (\textit{grounded}) e sem qualquer input. Para a \textit{Sprite} do player morrer simplesmente reaproveitamos um dos frames da animação de idle, mas recolorida.
+
+Para evitar a duplicação de \textit{Sprites}, utilizamos a vantagem de refletir a imagem sobre si pŕopria para renderizar o jogador em todas as direções, isto é a andar para esquerda, para a direita e para cada uma delas, a andar com a gravidade para baixo (normal) ou para cima (a personagem 'caminha' no teto).
+
+Um detalhe extra que implementámos foi que ao alterar a velocidade horizontal do jogador, alteramos a velocidade da sua animação conforme. Ao reduzir a velocidade ao mínimo a animação é lenta, mas ao colocar a velocidade ao máximo, na animação ele corre extremamente rápido.
 
 \subsection{PlayerTwo}
 
-O PlayerTwo posui a utilidade de representar um \textbf{segundo jogador} que está a jogar noutro computador no modo Arcade. 
+O PlayerTwo posui a utilidade de representar um \textbf{segundo jogador} que está a jogar noutro computador no modo Arcade, completo com a sua animação exata. No modo de jogo \textit{Arcade Versus}, o que num PC é Player será representado como o PlayerTwo no outro.
 
-O que é um Player num PC é representado como PlayerTwo no outro.
+A cada frame são sempre enviadas via UART infomações do Player para o PlayerTwo, tais como a sua posição, a animação em que ele está, e as informações extra para determinar outros aspetos, como por exemplo a sua direção (horizontal e vertical), se está idle, se está morto, entre outras. 
 
-A sua posição no ecrã e o seu estado são enviadas por UART e atualizadas no ecrã do outro jogador.
+Visto ser o tanto maior 'pacote' que enviamos via UART como o que é enviado com maior frequência, existem casos em que ele não chega a tempo ao outro jogador. Isto implica existirem frames em que o jogador recebe dois pacotes ao mesmo tempo. Para resolver esta situação, só atualizamos a informação do PlayerTwo quando recebemos o seu pacote respetivo. Durante frames em que recebemos múltiplos pacotes, só damos parse ao último recebido.
 
 \subsection{Campaign}
 
@@ -749,9 +765,7 @@ A diferença do modo Singleplayer para o modo Co-Op 1 reside no facto de, devido
 \subsection{Co-Op}
 Para um bom funcionamento do modo Co-Op, é essencial estabelecer um protocolo de comunicação sólida e identificar devidamente a informação trocada, como tal utilizámos \textit{headers} para indicar que informação estava a ser enviada.
 
-\subsection{Arcade}
-
-\subsubsection{Arcade Versus}
+\subsection{Arcade Versus}
 
 \section{Game Manager}
 
@@ -777,14 +791,14 @@ Assim evitamos a necessidade de um \textit{switch case} todos os frames para det
 
 \subsection{Mensagens recebidas via UART}
 
-Todas as nossas mensagens são pacotes de tamanho irregular que começam num \textit{header} predefinido e terminam num terminador \textit{Header\_Terminator}. A menor mensagem tem tamanho 2 e a maior 8. Após cada mensagem limpamos toda a \textit{Receiver Queue} até ela estar ou vazia ou encontrarmos um terminador. Propositadamente, se algum erro ocorrer na \textit{Queue}, receberemos o valor 0xFF (o valor de \textit{HEADER\_TERMINATOR}), portanto é um mecanismo de prevenção de erros. Se recebermos um \textit{header} que não estávamos à espera, essa mensagem é simplesmente eliminada.
+Todas as nossas mensagens são pacotes de tamanho irregular que começam num \textit{header} predefinido e terminam num terminador \textit{Header\_Terminator}. A menor mensagem tem tamanho 2 e a maior 8. Após cada mensagem limpamos toda a \textit{Receiver Queue} até ela estar vazia ou encontrarmos um terminador. Propositadamente, se algum erro ocorrer na \textit{Queue}, receberemos o valor 0xFF (o valor de \textit{HEADER\_TERMINATOR}), portanto é um mecanismo de prevenção de erros. Se recebermos um \textit{header} que não estávamos à espera, essa mensagem é simplesmente eliminada.
 
 Quando é iniciado um novo modo de jogo, a \textit{receiver Queue} do RTC é limpa, para garantir que não vamos ler mensagens antigas.
 
 As mensagens recebidas via UART são processadas apenas pela função de \textit{update} correta, isto é, o programa ignora as mensagens de que ele não está à espera (por exemplo receber uma mensagem da \textit{Switchboard} em \textit{Arcade Mode}).
 Existem duas etapas em cada função de \textit{update}: Uma primeira etapa em que os \textit{serial ports} ainda não estão 'sincronizados' (por isto entenda-se que não estão juntos no mesmo \textit{Gamemode}), depois de eles estarem 'sincronizados' ele espera um conjunto diferente de mensagens da \textit{UART}.
 
-Em cada frame lemos e interpretamos o maior número de mensagens possíveis. Para garantir que não lemos uma mensagem incompleta no entanto, verificamos sempre se a Queue tem pelo menos o tamanho do 'pacote' que estamos a receber. Nesse caso 
+Em cada frame lemos e interpretamos o maior número de mensagens possíveis. Para garantir que não lemos uma mensagem incompleta no entanto, verificamos sempre se a Queue tem pelo menos o tamanho do 'pacote' que estamos a receber. Nesses casos deixamos o pacote na Queue e continuamos o jogo com a informação atual, para no frame imediatamente a seguir, essa informação seja processada.
 
 \subsection{Main loop}
 
