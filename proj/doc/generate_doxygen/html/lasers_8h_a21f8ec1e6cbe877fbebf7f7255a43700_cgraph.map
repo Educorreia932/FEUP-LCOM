@@ -1,4 +1,0 @@
-<map id="arcade_add_laser" name="arcade_add_laser">
-<area shape="rect" id="node1" title="Creates and adds a new Laser to the Lasers object, with a random height (flappy bird like) onto the r..." alt="" coords="5,5,141,32"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga15d0d50c36cda9b20bfa4a4042c4d21b" title="Same as the default constructor, only that is receives uint16_t instead of floats as arguments." alt="" coords="189,5,351,32"/>
-</map>

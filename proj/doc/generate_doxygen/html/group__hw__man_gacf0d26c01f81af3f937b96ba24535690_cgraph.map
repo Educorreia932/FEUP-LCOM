@@ -1,5 +1,0 @@
-<map id="hw_manager_uart_size" name="hw_manager_uart_size">
-<area shape="rect" id="node1" title="Returns the current size of the receiver Queue." alt="" coords="5,5,177,32"/>
-<area shape="rect" id="node2" href="$group__uart.html#gaa87438fcfddb4bb2b708a26e9f586e9e" title="Gets the receiver queue size." alt="" coords="225,5,381,32"/>
-<area shape="rect" id="node3" href="$group__queue.html#ga84890cfd2294f6e2cd5455935002acb9" title="Returns the current size." alt="" coords="429,5,524,32"/>
-</map>

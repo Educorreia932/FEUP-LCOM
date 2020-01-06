@@ -1,7 +1,0 @@
-<map id="render_player_ui" name="render_player_ui">
-<area shape="rect" id="node1" title="Renders the UI of the Player (the buttons and sliders necessary in Campaign &#45; Singleplayer mode,..." alt="" coords="5,31,136,57"/>
-<area shape="rect" id="node2" href="$group__ui.html#gaf34266aa8fd2775dc485db79cbdff1f8" title="Renders a Button object." alt="" coords="184,5,297,32"/>
-<area shape="rect" id="node5" href="$group__ui.html#gadf321d2c4d73fc77576aed062380694d" title="Renders a Slider object." alt="" coords="345,56,452,83"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga35d8530fc91406f3175c01ee6d563fa1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="349,5,448,32"/>
-<area shape="rect" id="node4" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="500,31,643,57"/>
-</map>

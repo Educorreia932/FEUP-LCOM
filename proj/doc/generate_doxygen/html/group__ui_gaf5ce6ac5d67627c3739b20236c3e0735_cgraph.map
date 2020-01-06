@@ -1,5 +1,0 @@
-<map id="render_knob" name="render_knob">
-<area shape="rect" id="node1" title="Renders a Knob object." alt="" coords="5,5,108,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga35d8530fc91406f3175c01ee6d563fa1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="156,5,255,32"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="303,5,445,32"/>
-</map>

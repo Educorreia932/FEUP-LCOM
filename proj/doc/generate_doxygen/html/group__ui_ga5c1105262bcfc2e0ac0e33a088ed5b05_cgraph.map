@@ -1,8 +1,0 @@
-<map id="new_score" name="new_score">
-<area shape="rect" id="node1" title="Creates a new score object." alt="" coords="5,81,96,108"/>
-<area shape="rect" id="node2" href="$group__math__utils.html#ga97d1a08de1a9a8020362a119116e7e9e" title="Clamps the value between the established min and max." alt="" coords="144,31,247,57"/>
-<area shape="rect" id="node5" href="$group__math__utils.html#ga03fbc2214f5cb19e88f5dfade75b9adf" title="Retuns the minimum of two numbers." alt="" coords="148,81,243,108"/>
-<area shape="rect" id="node6" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="153,132,237,159"/>
-<area shape="rect" id="node3" href="$group__math__utils.html#ga3bcf908f7ca21d713dad8942966236a0" title="Retuns the maximum of two numbers." alt="" coords="295,5,385,32"/>
-<area shape="rect" id="node4" href="$group__math__utils.html#ga3302a52c6d231924e42b2d44b52bd17b" title="Retuns the minimum of two numbers." alt="" coords="297,56,383,83"/>
-</map>

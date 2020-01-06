@@ -1,5 +1,0 @@
-<map id="hw_manager_kbd" name="hw_manager_kbd">
-<area shape="rect" id="node1" title="Processes the data read by the keyboard ih." alt="" coords="5,35,143,61"/>
-<area shape="rect" id="node2" href="$group__kbd.html#ga09b6dda480c3d299946bf395173912b3" title="It&#39;s sole purpose is to parse both 1 &amp; 2 byte scancodes." alt="" coords="217,5,359,32"/>
-<area shape="rect" id="node3" href="$group__inputs.html#gaf718a26fff09581e44782bfb920d184e" title="To be called after the interrupt handler of the keyboard, to process the new received scancode" alt="" coords="191,57,385,98"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="uart_receiver_q_pop" name="uart_receiver_q_pop">
-<area shape="rect" id="node1" title="Pop&#39;s the top element from the receiver queue." alt="" coords="224,5,379,32"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#gab66d4bc95d174746bc510723eea7e1d9" title="Returns and pops the byte at the front of the data receiver Queue." alt="" coords="5,5,176,32"/>
-</map>

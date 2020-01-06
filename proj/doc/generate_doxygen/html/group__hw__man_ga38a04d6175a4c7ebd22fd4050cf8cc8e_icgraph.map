@@ -1,4 +1,0 @@
-<map id="hw_manager_rtc_ih" name="hw_manager_rtc_ih">
-<area shape="rect" id="node1" title="Wrapper for the real time clock interrupt handler (ih)" alt="" coords="149,5,299,32"/>
-<area shape="rect" id="node2" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="uart_receiver_q_size" name="uart_receiver_q_size">
-<area shape="rect" id="node1" title="Gets the receiver queue size." alt="" coords="5,5,161,32"/>
-<area shape="rect" id="node2" href="$group__queue.html#ga84890cfd2294f6e2cd5455935002acb9" title="Returns the current size." alt="" coords="209,5,304,32"/>
-</map>

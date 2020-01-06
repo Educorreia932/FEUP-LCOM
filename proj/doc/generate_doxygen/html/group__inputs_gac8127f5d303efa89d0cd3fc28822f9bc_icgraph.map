@@ -1,4 +1,0 @@
-<map id="mouse_get_x_delta" name="mouse_get_x_delta">
-<area shape="rect" id="node1" title="Returns the mouse&#39;s movement along the x axis over the last frame." alt="" coords="168,5,317,32"/>
-<area shape="rect" id="node2" href="$group__inputs.html#gadcaf3dad272a0c5e8d9ffa89823ede2a" title="Updates the needed data for the cursor to be rendered." alt="" coords="5,5,120,32"/>
-</map>

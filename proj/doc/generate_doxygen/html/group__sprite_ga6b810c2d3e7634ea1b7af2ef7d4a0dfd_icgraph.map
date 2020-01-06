@@ -1,4 +1,0 @@
-<map id="sprite_get_size" name="sprite_get_size">
-<area shape="rect" id="node1" title="Returns a Vec2d with the Sprite&#39;s size." alt="" coords="172,5,292,32"/>
-<area shape="rect" id="node2" href="$power__ups_8h.html#a357c3279c8ac8d42acb2ea0351231d58" title="Creates a new Power Up object." alt="" coords="5,5,124,32"/>
-</map>

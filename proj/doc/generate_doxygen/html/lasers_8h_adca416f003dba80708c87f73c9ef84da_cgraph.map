@@ -1,5 +1,0 @@
-<map id="render_lasers" name="render_lasers">
-<area shape="rect" id="node1" title="Renders a Lasers object&#39;s lasers onto the screen." alt="" coords="5,5,116,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga43df16a5bfabcf169205e1cc39618cf7" title="Draws a SpriteDynamic on the screen." alt="" coords="164,5,325,32"/>
-<area shape="rect" id="node3" href="$bitmap_8h.html#a520f3f00d4ae274a764bfca71db4b377" title="Draws a Bitmap on the screen." alt="" coords="373,5,544,32"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="main_menu_exit_submenu" name="main_menu_exit_submenu">
-<area shape="rect" id="node1" title="Exits a menu&#39;s submenu (the tutorials)" alt="" coords="5,5,204,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga42b432c638e02f812344825d3bb04e8b" title="Frees the Sprite passed on the pointer." alt="" coords="252,5,344,32"/>
-<area shape="rect" id="node3" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="392,5,493,32"/>
-</map>

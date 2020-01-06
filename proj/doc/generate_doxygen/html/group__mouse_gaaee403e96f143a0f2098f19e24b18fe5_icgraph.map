@@ -1,5 +1,0 @@
-<map id="mouse_data_reporting_enable" name="mouse_data_reporting_enable">
-<area shape="rect" id="node1" title="Enables stream mode data reporting by sending the respective command to the mouse." alt="" coords="396,5,564,47"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#ga0c72b14478361d90e9b4691d66ae299c" title="Subscribes to all needed interrupts." alt="" coords="149,13,348,39"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,13,101,39"/>
-</map>

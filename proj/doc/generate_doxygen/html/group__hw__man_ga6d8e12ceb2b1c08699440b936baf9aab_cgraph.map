@@ -1,4 +1,0 @@
-<map id="hw_manager_switch_double_buffer" name="hw_manager_switch_double_buffer">
-<area shape="rect" id="node1" title="Sends the content currently present on the buffer to the actual frame buffer." alt="" coords="5,5,212,47"/>
-<area shape="rect" id="node2" href="$group__video__gr.html#ga94d14fd56be1c8f8c5c3dba92bf0bf8c" title="Copies the double buffer data to the vram." alt="" coords="260,13,421,39"/>
-</map>

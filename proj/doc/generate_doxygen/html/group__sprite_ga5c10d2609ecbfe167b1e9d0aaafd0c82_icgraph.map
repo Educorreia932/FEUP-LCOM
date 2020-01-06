@@ -1,6 +1,0 @@
-<map id="draw_sprite_vec2d" name="draw_sprite_vec2d">
-<area shape="rect" id="node1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="280,56,424,83"/>
-<area shape="rect" id="node2" href="$group__inputs.html#ga699f18094e6a3b107141af8a875f5232" title="Renders the cursor onto the screen." alt="" coords="63,5,174,32"/>
-<area shape="rect" id="node3" href="$group__player.html#ga2ae799cdbccfa88f1f770bb37acd77d3" title="Renders the background of the second Player (that consists of sparks that appear whenever its anti&#45;gr..." alt="" coords="5,56,232,83"/>
-<area shape="rect" id="node4" href="$group__player.html#ga055e2bd88607a94a082cf671dafa13a9" title="Renders the foreground of the second Player (that consists of all of tis body)" alt="" coords="8,107,229,133"/>
-</map>

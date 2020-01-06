@@ -1,4 +1,0 @@
-<map id="free_queue" name="free_queue">
-<area shape="rect" id="node1" title="Frees an entire Queue (alongside all of its stored data)" alt="" coords="5,5,100,32"/>
-<area shape="rect" id="node2" href="$group__queue.html#ga71dc22164d9283381f746937781eac7c" title="Clears all the elements from the Queue." alt="" coords="148,5,249,32"/>
-</map>

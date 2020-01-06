@@ -1,6 +1,0 @@
-<map id="hw_manager_uart_send_char" name="hw_manager_uart_send_char">
-<area shape="rect" id="node1" title="Sends a byte through the serial port." alt="" coords="437,71,649,98"/>
-<area shape="rect" id="node2" href="$lasers_8h.html#a1e5721ad5d777eb603f5fa037cd4603b" title="Updates the lasers spawn rate and speed to ramp up the difficulty the longer you play." alt="" coords="221,5,389,47"/>
-<area shape="rect" id="node3" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,42,173,69"/>
-<area shape="rect" id="node4" href="$group__level.html#ga914867e4dddc078ea95b1fd2cb795367" title="Ends the arcade versus gamemode." alt="" coords="232,122,379,149"/>
-</map>

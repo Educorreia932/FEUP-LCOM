@@ -1,4 +1,0 @@
-<map id="set_animation_state" name="set_animation_state">
-<area shape="rect" id="node1" title="Set the animation state." alt="" coords="200,5,355,32"/>
-<area shape="rect" id="node2" href="$group__player.html#ga620c4fadc815f7d548cb168d47953162" title="Updates player two with the information received via serial port." alt="" coords="5,5,152,32"/>
-</map>

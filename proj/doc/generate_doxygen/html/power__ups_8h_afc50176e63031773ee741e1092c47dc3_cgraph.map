@@ -1,5 +1,0 @@
-<map id="render_power_up" name="render_power_up">
-<area shape="rect" id="node1" title="Renders a Power Up onto the screen." alt="" coords="5,5,140,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga35d8530fc91406f3175c01ee6d563fa1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="188,5,287,32"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="335,5,477,32"/>
-</map>

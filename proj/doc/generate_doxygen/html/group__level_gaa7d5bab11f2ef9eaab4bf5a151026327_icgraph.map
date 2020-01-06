@@ -1,6 +1,0 @@
-<map id="free_level" name="free_level">
-<area shape="rect" id="node1" title="Frees a level from memory." alt="" coords="364,31,451,57"/>
-<area shape="rect" id="node2" href="$group__gm.html#gaa88826584257ab90ce87feccb0dfdbcf" title="Sets up a new main menu. For careful use by the main menu." alt="" coords="151,5,315,32"/>
-<area shape="rect" id="node4" href="$group__gm.html#gaa7cbeefce6e0ee3e18c329e2c347b93b" title="Sets up a new switchboard. For careful use by the main menu." alt="" coords="149,56,316,83"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

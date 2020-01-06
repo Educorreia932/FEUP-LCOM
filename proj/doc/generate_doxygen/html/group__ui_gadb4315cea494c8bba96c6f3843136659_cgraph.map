@@ -1,4 +1,0 @@
-<map id="new_button_existing_sprite" name="new_button_existing_sprite">
-<area shape="rect" id="node1" title="Creates a new Button object and auto sizes the button, reusing a Sprite_t from somewhere else." alt="" coords="5,5,163,47"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga987968676cbdb80fb7cc5647ea39ceb6" title="The default constructor." alt="" coords="211,13,295,39"/>
-</map>

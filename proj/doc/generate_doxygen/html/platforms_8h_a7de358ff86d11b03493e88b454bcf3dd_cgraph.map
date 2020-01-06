@@ -1,5 +1,0 @@
-<map id="render_platforms" name="render_platforms">
-<area shape="rect" id="node1" title="Renders a Platforms&#39; platforms and walls onto the screen." alt="" coords="5,5,140,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga43df16a5bfabcf169205e1cc39618cf7" title="Draws a SpriteDynamic on the screen." alt="" coords="188,5,349,32"/>
-<area shape="rect" id="node3" href="$bitmap_8h.html#a520f3f00d4ae274a764bfca71db4b377" title="Draws a Bitmap on the screen." alt="" coords="397,5,568,32"/>
-</map>

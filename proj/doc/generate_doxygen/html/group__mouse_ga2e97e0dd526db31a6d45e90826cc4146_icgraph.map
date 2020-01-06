@@ -1,5 +1,0 @@
-<map id="mouse_data_handler" name="mouse_data_handler">
-<area shape="rect" id="node1" title="Handles the data (mouse packets) received." alt="" coords="355,5,513,32"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#ga5618c651e7eb0641e55180ac913208a1" title="Processes the data read by the mouse ih." alt="" coords="149,5,307,32"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

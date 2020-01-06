@@ -1,6 +1,0 @@
-<map id="rect_from_uints" name="rect_from_uints">
-<area shape="rect" id="node1" title="Same as the default constructor, only that is receives uint16_t instead of floats as arguments." alt="" coords="405,31,529,57"/>
-<area shape="rect" id="node2" href="$lasers_8h.html#a21f8ec1e6cbe877fbebf7f7255a43700" title="Creates and adds a new Laser to the Lasers object, with a random height (flappy bird like) onto the r..." alt="" coords="221,31,357,57"/>
-<area shape="rect" id="node3" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="11,5,168,32"/>
-<area shape="rect" id="node4" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,56,173,83"/>
-</map>

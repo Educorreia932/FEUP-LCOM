@@ -1,5 +1,0 @@
-<map id="render_player_background" name="render_player_background">
-<area shape="rect" id="node1" title="Renders the background of the Player (that consists of sparks that appear whenever its anti&#45;gravity i..." alt="" coords="5,5,200,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga35d8530fc91406f3175c01ee6d563fa1" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="248,5,347,32"/>
-<area shape="rect" id="node3" href="$group__sprite.html#ga329508c85b3148384d03eace7ba527f7" title="Draws a Sprite on the screen (check the documentation of draw_sprite_floats for more details)" alt="" coords="395,5,537,32"/>
-</map>

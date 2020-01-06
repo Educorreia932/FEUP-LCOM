@@ -1,5 +1,0 @@
-<map id="arcade_lasers_set_correct_delay" name="arcade_lasers_set_correct_delay">
-<area shape="rect" id="node1" title="Sets the delay for the next Laser&#39;s spawn." alt="" coords="221,23,412,65"/>
-<area shape="rect" id="node2" href="$group__level.html#ga863e5fcedd3b3cac7c0c6a4f1f95f0cc" title="Updates an arcade mode (single player) Level&#39;s required parts." alt="" coords="11,5,168,32"/>
-<area shape="rect" id="node3" href="$group__level.html#ga37ca0293977779797069be25bbc03599" title="Updates an arcade mode (versus) Level&#39;s required parts." alt="" coords="5,56,173,83"/>
-</map>

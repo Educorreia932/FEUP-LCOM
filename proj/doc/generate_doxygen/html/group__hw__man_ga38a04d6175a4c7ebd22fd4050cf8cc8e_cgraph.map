@@ -1,4 +1,0 @@
-<map id="hw_manager_rtc_ih" name="hw_manager_rtc_ih">
-<area shape="rect" id="node1" title="Wrapper for the real time clock interrupt handler (ih)" alt="" coords="5,5,155,32"/>
-<area shape="rect" id="node2" href="$group__rtc.html#ga75dad42881d64cf07cf1bdc2979a7056" title="Handles RTC interrupts." alt="" coords="203,5,261,32"/>
-</map>

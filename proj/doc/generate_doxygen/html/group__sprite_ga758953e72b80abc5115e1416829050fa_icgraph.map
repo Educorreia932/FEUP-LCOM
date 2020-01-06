@@ -1,9 +1,0 @@
-<map id="new_sprite_dynamic" name="new_sprite_dynamic">
-<area shape="rect" id="node1" title="Creates a new SpriteDynamic object." alt="" coords="224,132,380,159"/>
-<area shape="rect" id="node2" href="$lasers_8h.html#aa9e953d8a58c0f35f12f877ada6c9f00" title="Creates a Lasers object with the layout for arcade mode." alt="" coords="17,5,164,32"/>
-<area shape="rect" id="node3" href="$platforms_8h.html#af12013678da5b4ee10473fcfd3be9aff" title="Creates a Platforms object with the layout needed for the arcade mode." alt="" coords="5,56,176,83"/>
-<area shape="rect" id="node4" href="$spikes_8h.html#af4d4a05aa1a6b4db8c75ea01ae7859ca" title="Creates the Spikes for the arcade mode." alt="" coords="17,107,165,133"/>
-<area shape="rect" id="node5" href="$lasers_8h.html#abb501806fe9d03a9b6475e8d4d3510b2" title="Creates a Lasers object with the layout for the prototype campaign Level." alt="" coords="25,157,156,184"/>
-<area shape="rect" id="node6" href="$platforms_8h.html#aaddea4690934b1bd7aaa6bc642ffa86f" title="Creates a Platforms object with the layout of the prototype campaign Level." alt="" coords="13,208,168,235"/>
-<area shape="rect" id="node7" href="$spikes_8h.html#a477841cb67913c89edf986f3aeb6229a" title="Creates the Spikes for the prototype Campaign mode." alt="" coords="24,259,157,285"/>
-</map>

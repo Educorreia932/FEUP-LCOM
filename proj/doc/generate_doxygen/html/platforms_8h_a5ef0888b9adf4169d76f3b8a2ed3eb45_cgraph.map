@@ -1,5 +1,0 @@
-<map id="free_platforms" name="free_platforms">
-<area shape="rect" id="node1" title="Frees a Platforms object from memory." alt="" coords="5,5,124,32"/>
-<area shape="rect" id="node2" href="$group__sprite.html#ga9af1f4ab26492c0b908cd3644bc79fcd" title="Frees a SpriteDynamic." alt="" coords="172,5,327,32"/>
-<area shape="rect" id="node3" href="$bitmap_8h.html#a1fe5cbf141f8c730a151932212147967" title="Frees a given Bitmap from memory." alt="" coords="375,5,476,32"/>
-</map>

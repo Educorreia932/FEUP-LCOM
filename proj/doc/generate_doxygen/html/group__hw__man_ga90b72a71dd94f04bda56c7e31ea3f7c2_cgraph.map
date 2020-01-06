@@ -1,5 +1,0 @@
-<map id="hw_manager_mouse_ih" name="hw_manager_mouse_ih">
-<area shape="rect" id="node1" title="Wrapper for the mouse interrupt handler (ih)" alt="" coords="5,5,181,32"/>
-<area shape="rect" id="node2" href="$group__mouse.html#ga210374b50462acdedab00df64d5cea3c" title="Handles mouse interrutps." alt="" coords="229,5,315,32"/>
-<area shape="rect" id="node3" href="$group__utils.html#ga79a031a8611f5b2d6afa4158e92b0fb4" title="Invokes sys_inb() system call but reads the value into a uint8_t variable." alt="" coords="363,5,461,32"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="cursor_get_pos" name="cursor_get_pos">
-<area shape="rect" id="node1" title="Gets the current coordinates of the cursor inside the limits of the screen." alt="" coords="361,5,481,32"/>
-<area shape="rect" id="node2" href="$group__ui.html#ga22c151b6db0ca69682f3175530e271cf" title="Updates the Knob&#39;s handle position." alt="" coords="207,5,313,32"/>
-<area shape="rect" id="node3" href="$group__ui.html#ga223aa9507be1a014ec479a592b7f2429" title="Updates the needed information of the Switchboard." alt="" coords="5,5,159,32"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="sum_vec2d" name="sum_vec2d">
-<area shape="rect" id="node1" title="Returns the sum of two vectors." alt="" coords="5,5,101,32"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="149,5,211,32"/>
-</map>

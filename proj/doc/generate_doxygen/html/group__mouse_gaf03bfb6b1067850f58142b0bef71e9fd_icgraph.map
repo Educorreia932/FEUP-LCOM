@@ -1,5 +1,0 @@
-<map id="mouse_set_stream_mode" name="mouse_set_stream_mode">
-<area shape="rect" id="node1" title="Sets mouse to stream mode." alt="" coords="396,5,587,32"/>
-<area shape="rect" id="node2" href="$group__hw__man.html#ga0c72b14478361d90e9b4691d66ae299c" title="Subscribes to all needed interrupts." alt="" coords="149,5,348,32"/>
-<area shape="rect" id="node3" href="$group__gm.html#ga98f33ae82ae25258c95811cb91b79028" title="Starts (and plays) the game." alt="" coords="5,5,101,32"/>
-</map>

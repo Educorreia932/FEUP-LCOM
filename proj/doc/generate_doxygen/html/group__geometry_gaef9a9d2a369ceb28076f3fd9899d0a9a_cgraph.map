@@ -1,4 +1,0 @@
-<map id="rect_get_origin" name="rect_get_origin">
-<area shape="rect" id="node1" title="Returns the top leftmost point of the rectangle." alt="" coords="5,5,124,32"/>
-<area shape="rect" id="node2" href="$group__geometry.html#ga96b54753394e8ca6628a31745ddfebdf" title="Constructor for a vec2d." alt="" coords="172,5,281,32"/>
-</map>
