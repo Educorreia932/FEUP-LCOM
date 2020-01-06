@@ -155,7 +155,7 @@ Se for necessário re-compilar este relatório, em distribuições baseadas em \
 
 \subsection{Timer}
 
-O timer possui como principal função atualizar o estado do jogo, assim, a cada $\frac{1}{60}$s (o Timer 0 possui uma frequência de 60 Hz), todo a informação do nível (lasers ativos, coordenadas/estado do jogador, posição do rato...) é atualizada conforme os inputs do(s) utilizador(es) e o jogo é no ecrã renderizado de acordo com essa informação.
+O timer possui como principal função atualizar o estado do jogo, assim, a cada $\frac{1}{60}$ segundos (o Timer 0 possui uma frequência de 60 Hz), todo a informação do nível (lasers ativos, coordenadas/estado do jogador, posição do rato...) é atualizada conforme os inputs do(s) utilizador(es) e o jogo é no ecrã renderizado de acordo com essa informação.
 Também tem um papel importante no modo arcade ao ser utilizado para avaliar o tempo restante até o alarme do RTC terminar o jogo (foi usado o timer e o número de frames decorridos pois o RTC dava resultados diferentes nos dois PCs). Este número de frames decorrido também é responsável por ajustar a dificuldade do modo de jogo arcade.
 
 \subsection{Teclado}
@@ -470,6 +470,39 @@ O módulo \textit{Proj}, por mais que possa parecer contra-intuitivo, é dos que
 
 \section{Call Graph}
 
+Pelo facto de utilizarmos \textit{function pointers}, não é possível gerar devidamente o gráfico do start\_game, pelo que decidimos incluir o gráfico para cada modo de jogo que temos e o menu principal.
+
+\subsection{Menu Principal}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gm_start_main_menu}
+	\caption{Call Graph - gm\_start\_main\_menu()}
+\end{figure}
+
+\subsection{Arcade}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gm_start_arcade}
+	\caption{Call Graph - gm\_start\_arcade()}
+\end{figure}
+
+\subsection{Level}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gm_start_level}
+	\caption{Call Graph - gm\_start\_level()}
+\end{figure}
+
+\subsection{Switchboard}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gm_start_switchboard}
+	\caption{Call Graph - gm\_start\_switchboard()}
+\end{figure}
 
 \section{Peso Relativo dos Módulos no Projeto}
 
@@ -648,17 +681,23 @@ Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente ex
 \section{Level}
 
 % -> Level editor :(
-\section{Platforms e Spikes}
+\subsection{Platforms e Spikes}
 
-A classe Platforms representa o conjunto de plataformas que existirão em cada nível, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}
+A classe Platforms representa o conjunto de plataformas que existirão em cada nível, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}. Estas podem ou não serem paredes.
 
-\section{Lasers}
+Os espinhos são em tudo semelhantes às plataformas exceto pela sua aparência e pelo facto do jogador morrer ao tocar nestes. Estão apenas presentes no Level do modo Campaign.
+
+\subsection{Lasers}
 
 A classe Lasers representa o conjunto de lasers que existirão em cada nível. 
 
-No modo Campaign estes serão quatro, dois azuis, um vermelho e um rosa, só duas cores de lasers é que estarão ativas de cada vez (podendo-se definir quais cores) e não mudam de posição.
+No modo Campaign estes serão quatro, dois azuis, um vermelho e um rosa, só duas cores de lasers é que estarão ativas de cada vez (podendo-se definir quais cores --- \textit{lasers\_set\_link\_id()}) e não mudam de posição.
 
-Já no modo Arcade, o conjunto de lasers é todo da mesma cor (vermelho), estão sempre ativos e são constantemente gerados novos pares de lasers que surgem da ponta direita do ecrã --- \textit{arcade\_add\_laser()} com um intervalo de tempo até surgirem novos, e se deslocam até à esquerda do mapa --- \textit{arcade\_move\_lasers()}, sendo destruídos quando lá chegam \textit{}
+Já no modo Arcade, o conjunto de lasers é todo da mesma cor (vermelho), estão sempre ativos e são gerados novos pares de lasers --- \textit{arcade\_add\_laser()}, com uma altura aleatória --- \textit{arcade\_generate\_laser\_height()} periodicamente --- \textit{arcade\_lasers\_set\_correct\_delay()}, que surgem da ponta direita do ecrã --- \textit{arcade\_spawn\_next\_laser()}, e se deslocam até à esquerda do mapa --- \textit{arcade\_move\_lasers()}, com uma certa velocidade \textit{arcade\_lasers\_set\_speed()}, sendo destruídos quando lá chegam.
+
+A frequência a que os lasers surgem e a velocidade a que eles movem são ainda parâmetros que vão-se alterando conforme o jogador vai progredindo --- \textit{arcade\_update\_laser\_values} | \textit{arcade\_versus\_update\_laser\_values()}.
+
+Por último, sempre que o Player toca num destes lasers, estes são repostos, tal como a sua frequência a que são gerados e a sua velocidade --- \textit{arcade\_reset\_lasers()}, caso contrário, se ele conseguir passar por entre os lasers --- \textit{arcade\_player\_passes\_lasers()} recebe um ponto.
 
 \subsection{Player}
 
@@ -666,10 +705,15 @@ Animações
 
 \subsection{PlayerTwo}
 
-O PlayerTwo posui a utilidade de representar um segundo jogador que está a jogar noutro computador no modo Arcade
-Posição por UART 
+O PlayerTwo posui a utilidade de representar um segundo jogador que está a jogar noutro computador no modo Arcade. 
+
+O que é um Player num PC é representado como PlayerTwo no outro.
+
+A sua posição no ecrã e o seu estado são enviadas por UART e atualizadas no ecrã do outro jogador.
 
 \subsection{Campaign}
+
+% Chamar atenção de em singleplayer ter UI
 
 \subsection{Power Ups}
 
