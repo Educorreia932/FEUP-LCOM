@@ -23,7 +23,7 @@ Tiago Duarte Silva\\
 
 \section{Menu Principal}
 
-Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode selecionar um dos dois modos de jogos possíveis a iniciar, cada um com a opção de se jogar ou não com outro jogador.
+Ao iniciar o programa, é apresentada o menu principal, onde o jogador pode selecionar um dos dois modos de jogos possíveis a iniciar, cada um com a opção de se jogar ou não com outro jogador (se for para jogar em modo \textbf{Co-Op}, um computador deve selecionar Co-op P1 e o outro Co-op P2).
 
 Para sair do jogo, o utilizador deve pressionar a tecla \textbf{\textit{Esc}} duas vezes, o mesmo para voltar ao menu principal a partir de um dos modos de jogo.
 
@@ -37,13 +37,13 @@ Para sair do jogo, o utilizador deve pressionar a tecla \textbf{\textit{Esc}} du
 
 \section{Campaign}
 
-Este é o modo de jogo "principal" em que um jogador controla a personagem \textit{Watt} (Figura \ref{fig:watt}), uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra" (Figura \ref{fig:exit}), ou seja, neste caso, a personagem tem de alcançar o \textbf{canto superior direito do mapa} (Figura \ref{fig:level}\footnotemark). Para isso tem de ultrapassar diversos obstáculos tais como os \textbf{espinhos} e \textbf{lasers} (se tocar num destes a faísca dissipa-se e volta ao início).
+Este é o modo de jogo "principal", que se trata de um \textit{platformer} em que um jogador controla a personagem \textit{Watt} (Figura \ref{fig:watt}), uma faísca que ficou "presa" num curto-circuito e que para sair terá de fazer "ligação à terra" (Figura \ref{fig:exit}), ou seja, neste caso, a personagem tem de alcançar o \textbf{canto superior direito do mapa} (Figura \ref{fig:level}\footnotemark). Para isso tem de ultrapassar diversos obstáculos tais como os \textbf{espinhos} e \textbf{lasers} (se tocar num destes a faísca dissipa-se e volta ao início).
 
 Para além disso, é possível controlar certos aspetos da jogabilidade, como a \textbf{altura do salto} da personagem e a sua \textbf{velocidade} (através dos \textit{sliders} azul e laranja respetivamente). 
 
 Existem ainda dois \textbf{powerups} que após obtidos, desbloqueiam o controlo de funcionalidades adicionais, requeridas para acabar o nível. Estes são o powerup dos \textbf{lasers} (\textbf{canto superior esquerdo} - Figura 1.3) que permitem controlar qual dos lasers está \textbf{inativo} (vermelho, azul ou roxo - através dos botões com a cor correspondente) e alterar o sentido da gravidade da personagem (ou seja, a personagem passa a ser puxada para cima em vez de para baixo como seria normalmente). 
 
-Todos estes aspetos são controlados pelo \textbf{segundo jogador}se estiver a jogar em co-op através de uma \textbf{\textit{switchboard}} (Figura \ref{fig:switchboard}). Esta \textbf{\textit{switchboard}} possui ainda um \textbf{\textit{mini-jogo}} que consiste em destruir \textbf{\textit{balões}} que aparecem (clicando neles) antes que estes atinjam o \textbf{topo do ecrã}, caso contrário, tal gerará \textbf{\textit{interferência}} (o ecrã fica com \textit{ruído} para tornar a experiência mais desafiante e fazer com que quem controle a personagem 2 tenha de estar mais ativo).
+Todos estes aspetos são controlados pelo \textbf{segundo jogador}, se estiver a jogar em co-op através de uma \textbf{\textit{switchboard}} (Figura \ref{fig:switchboard}). Esta \textbf{\textit{switchboard}} possui ainda um \textbf{\textit{mini-jogo}} que consiste em destruir \textbf{\textit{balões}} que aparecem (clicando neles) antes que estes atinjam o \textbf{topo do ecrã}, caso contrário, tal gerará \textbf{\textit{interferência}} (o ecrã fica com \textit{ruído} para tornar a experiência mais desafiante e fazer com que quem controle a personagem 2 tenha de estar mais ativo).
 
 \begin{figure}[H]
 	\centering
@@ -199,7 +199,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
-O módulo \textbf{\textit{Geometry}} é dividido em duas partes, \textbf{\textit{Vec2d}}, que representa um vector bidemensional e \textbf{\textit{Rect}}, que representa um retângulo, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. É possível fazer diversas operações sobre estes dois elementos, como fazer produto escalar, soma e subtração... entre outras, no caso do Vec2d e verificar interseções, por exemplo, no caso do Rect.
+O módulo \textbf{\textit{Geometry}} é dividido em duas partes, \textbf{\textit{Vec2d}}, que representa um vector \textbf{bidemensional} e \textbf{\textit{Rect}}, que representa um retângulo, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. É possível fazer diversas operações sobre estes dois elementos, como fazer produto escalar, soma e subtração... entre outras, no caso do Vec2d e verificar interseções, por exemplo, no caso do Rect.
 
 \section{Bitmap} 
 
@@ -208,9 +208,11 @@ Peso relativo: 3\%
 Módulo desenvolvido por: Eduardo Correia (40\%) e Tiago Silva (60\%)
 \newline
 
-O módulo \textbf{\textit{Bitmap}} consiste em código de nível mais baixo que carrega um \textbf{\textit{bitmap}} individual para a memória, lendo o seu header e a imagem em si --- new\_bitmap().
-Tem a capacidade de renderizar imagens \textbf{normalmente} --- draw\_bitmap(), ou \textbf{invertidas} segundo os eixos \textit{x} --- \textit{draw\_bitmap\_reversed\_x\_axis()}, \textit{y} ---  \textit{draw\_bitmap\_reversed\_y\_axis()} ou ambos \textit{draw\_bitmap\_reversed\_both\_axis()} (garantindo a eficência). Permite ainda renderizar o que apelidamos de um \textbf{\textit{bitmap} dinâmico}, que permite renderizar uma imagem de tamanho indicado em runtime (abordado no capítulo 4).
-Permite transparência e aplicar uma cor sobre o que é renderizado
+O módulo \textbf{\textit{Bitmap}} consiste em código de nível mais baixo que carrega um \textbf{\textit{bitmap}} individual para a memória, lendo o seu header e a imagem em si --- \textit{new\_bitmap()}.
+Tem a capacidade de renderizar imagens \textbf{normalmente} --- draw\_bitmap(), ou \textbf{invertidas} segundo os eixos \textit{x} --- \textit{draw\_bitmap\_reversed\_x\_axis()}, \textit{y} ---  \textit{draw\_bitmap\_reversed\_y\_axis()} ou ambos \textit{draw\_bitmap\_reversed\_both\_axis()} (garantindo a eficência).
+
+Permite ainda renderizar o que apelidamos de um \textbf{\textit{bitmap} dinâmico}, que corresponde a representar uma imagem de tamanho indicado em \textit{runtime} (abordado no Capítulo 4).
+Permite \textbf{transparência} e a aplicação de uma cor sobre o que é renderizado.
 O \textit{path} absoluto para os \textit{assets} pode ser alterado como um \textit{command line argument}.
  
 \section{Sprite}
@@ -220,7 +222,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
-O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para o bitmap (tanto o normal como o dinâmico). Como acréscimo, tem uma "camada" extra que permite a animação de qualquer \textit{Sprite}, alternando o \textit{bitmap} a ser desenhada no ecrã na posição da \textit{Sprite} em questão.
+O módulo \textbf{\textit{Sprite}} é, na sua essência,um \textit{wrapper} para o bitmap (tanto o normal como o dinâmico). Como acréscimo, tem uma "camada" extra que permite a animação de qualquer \textit{Sprite}, alternando o \textit{bitmap} a ser desenhada no ecrã na posição da \textit{Sprite} em questão --- \textit{set\_animation\_state()}.
 
 \section{Game Manager}
 
@@ -229,7 +231,7 @@ Peso relativo: 9\%
 Módulo desenvolvido por: Eduardo Correia (25\%) e Tiago Silva (75\%)
 \newline
 
-Módulo essencial que gere todos os aspetos do jogo, desde as mensagens recebidas da UART ao \textbf{driver\_receive()} e aos ciclos de update e rendering. É instanciado e usado como um \textit{singleton}.
+Módulo essencial que gere todos os aspetos do jogo, desde as mensagens recebidas da UART ao \textbf{driver\_receive()} e aos ciclos de \textbf{\textit{update}} e \textbf{\textit{rendering}}. É instanciado e usado como um \textit{singleton}.
 
 \section{Hardware Manager}
 
@@ -238,9 +240,9 @@ Peso relativo: 1\%
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%)
 \newline
 
-Este módulo foi uma tentativa de tentar encapsular ao máximo todo o conhecimento e funções responáveis por interagir com o hardware num único sítio o e transparecer o mínimo possível sobre as nossas implementações internas do \textit{timer}, \textit{keyboard}, \textit{mouse}, etc..
+Este módulo foi uma tentativa de tentar encapsular ao máximo todo o conhecimento e funções responáveis por interagir com o \textbf{\textit{hardware}} num único sítio o e transparecer o mínimo possível sobre as nossas implementações internas do \textit{timer}, \textit{keyboard}, \textit{mouse}, etc..
 
-Infelizmente existem outros módulos com um grande conhecimento destes protocolos, como o \textit{InputEvents}, o \textit{GameManager} ou tudo o que envolvesse o \textit{serial port}.\newline
+Infelizmente existem outros módulos com um grande conhecimento destes protocolos, como o \textit{InputEvents}, o \textit{GameManager} ou tudo o que envolvesse o \textit{serial port}.
 
 \section{Level}
 
@@ -249,8 +251,7 @@ Peso relativo: 8\%
 Módulo desenvolvido por: Eduardo Correia (50\%) e Tiago Silva (50\%) 
 \newline
 
-O módulo \textbf{\textit{Level}} classe representa todo um nível e os seus constituintes (jogador, elementos UI, plataformas, lasers, espinhos...)
-Vão haver essencialmente dois níveis, um para a Campaign --- new\_prototype\_level() e outro para Arcade --- new\_arcade\_level(), sendo possível iniciar cada um destes como singleplayer ou não atraveś do parâmetro (bool is\_singleplayer).
+Vão haver essencialmente dois níveis, um para a \textbf{Campaign} --- new\_prototype\_level() e outro para \textbf{Arcade} --- new\_arcade\_level(), sendo possível iniciar cada um destes como singleplayer ou não atraveś do parâmetro (bool is\_singleplayer).
 
 \section{Platforms}
 
@@ -259,6 +260,9 @@ Peso relativo: 3\%
 Módulo desenvolvido por: Tiago Silva
 \newline
 
+As plataformas agem acima de tudo como blocos construtores do nível, para definir tanto as áreas sobre as quais o jogador pode caminhar como delimitar barreiras (nomeadamente as paredes laterais para o jogador não sair fora do nível).
+Possuem um SpriteDynamic para ser possível desenhá-las com uma tamanho variável e possuírmos assim maior flexibilidade no design do nível.
+
 \section{Lasers}
 
 Peso relativo: 5\%
@@ -266,7 +270,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%)
 \newline
 
-Os \textit{lasers} são o obstáculo mais comum que o jogador irá encontrar, tendo de evitá-los para não morrer. Cada um possui uma cor que serve também como ID para sabe que lasers estão ativos (estarão sempre todos ativos exceto o de cor correspondente ao ID inativo, controlado pelo utilizador no modo Campaign).
+Os \textit{lasers} são o obstáculo mais comum que o jogador irá encontrar, tendo de evitá-los para não morrer. Cada um possui uma cor que serve também como ID para sabe que lasers estão ativos (estarão sempre todos ativos exceto o de cor correspondente ao ID inativo, controlado pelo utilizador no modo Campaign) e podem ter qualquer a dimensão desejada. 
 
 \section{Spikes}
 
@@ -275,7 +279,7 @@ Peso relativo: 1\%
 Módulo desenvolvido por: Eduardo Correia
 \newline
 
-São o segundo obstáculo principal do jogo. Mais simples que os lasers e ao contrário destes, são imutáveis e estáticos, não é possível "desativá-los", de modo que o jogador será de encontrar maneiras de se desviar destes para os ultrapassar. Estão apenas presente no modo Campaign.
+São o segundo obstáculo principal do jogo. Mais simples que os lasers e ao contrário destes, são imutáveis e estáticos, não é possível "desativá-los", de modo que o jogador será de encontrar maneiras de se desviar destes para os ultrapassar. São de algum modo Platforms que o jogador não pode tocar e estão apenas presente no modo Campaign.
 
 \section{Switchboard}
 
@@ -284,6 +288,9 @@ Peso relativo: 3\%
 Módulo desenvolvido por: Eduardo Correia (10\%) e Tiago Silva (90\%)
 \newline
 
+Este módulo é exclusivo do modo Co-Op da Campaign e está disponível apenas para o segundo jogador. Está dotado de vários elementos UI que permitem ao segundo jogador interagir com o jogo que está a ocorrer no ecrã do primeiro jogador alterando as suas propriedades (como já foi referido anteriormente).
+Possui ainda um mini-jogo em que o jogador tem de clicar em balões que surgem esporadicamente.
+
 \section{Player}
 
 Peso relativo: 7\%
@@ -291,7 +298,7 @@ Peso relativo: 7\%
 Módulo desenvolvido por: Eduardo Correia (35\%) e Tiago Silva (65\%) 
 \newline
 
-O módulo \textit{Player} trata de gerir a representação de um jogador e da sua interface no nosso projeto bem como a sua interação com os restantes módulos. 
+O módulo \textit{Player} trata de gerirdor a representação de um jogador e da sua interface no nosso projeto bem como a sua interação com os restantes módulos. 
 
 A classe \textit{PlayerTwo} apenas é utilizado no modo Arcade - Versus para representar um segundo jogador que está a jogar noutra máquina. 
 
@@ -394,7 +401,7 @@ Peso relativo: 5\%
 Módulo desenvolvido por: Eduardo Correia (20\%) e Tiago Silva (80\%)
 \newline
 
-Este é o módulo que lida com o serial port e com a troca de informação entre os dois computadores que estarão a executar o jogo. Foi feita com FIFO's e em modo full-duplex
+Este é o módulo que lida com o serial port e com a troca de informação entre os dois computadores que estarão a executar o jogo. Foi feita com FIFO's e em modo full-duplex.
  
 \section{Queue}
 
@@ -513,43 +520,38 @@ TODO: Adicionar o call graph de cada updade e render sozinhos e explicar
 
 \section{Geometry}
 
-
-Peso relativo: 5\%
-
-Módulo desenvolvido por: Tiago
-
-O módulo \textit{Geometry} é dividido em duas partes, \textit{Vec2d} e \textit{Rect}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
+O módulo \textit{Geometry} é dividido em duas partes, \textbf{\textit{Vec2d}} e \textbf{\textit{Rect}}, e serve como base do nosso sistema de coordenadas, físicas, hitboxes e colisões. 
 \subsection{Vec2d}
 
-Este módulo é usado para representar vetores de duas dimensões, e consequentemente, pontos no espaço. Cada \textit{vec2d} é composto pelas suas componentes horizontal (x) e vertical (y), seguindo o referencial do frame buffer (x no sentido da esquerda para a direita e y no sentido de cima para baixo).
+Este módulo é usado para representar \textbf{vetores} de duas dimensões, e consequentemente, \textbf{pontos} no espaço (não se trata de nada mais que o vetor aplicado à origem do referencial). Cada \textbf{\textit{Vec2d}} é composto pelas suas componentes \textbf{horizontal} (\textit{x}) e \textbf{vertical} (\textit{y}), seguindo o referencial do \textit{frame buffer} (x no sentido da esquerda para a direita e y no sentido de cima para baixo).
 
-Existe um conjunto de operações que podemos efetuar com esta classe, nomeadamente somar, subtrair, multiplicar por um escalar, a norma do vetor, o ângulo entre dois vetores (usado para a \textit{Knob}), produto escalar, a distância entre dois pontos do plano, calcular a posição de um ponto em coordenadas polares, entre outros (todas estas funções encontram-se expostas no Doxygen deste módulo).
+Existe um conjunto de \textbf{operações} que podemos efetuar com esta classe, nomeadamente somar --- \textit{sum\_vec2d()}, subtrair --- \textit{subtract\_vec2d}, multiplicar por um escalar ---multiply\_by\_scalar\_vec2d()), obter a norma do vetor --- \textit{norm\_vec2d()}, o ângulo entre dois vetores (usado para a \textit{Knob}) --- \textit{angle\_vec2d()}, produto escalar --- \textit{internal\_prod\_vec2d()}, a distância entre dois pontos do plano --- \textit{distance\_vec2d()}, calcular a posição de um ponto em coordenadas polares --- \textit{circumference\_vec2d()}, entre outros (todas estas funções encontram-se expostas no \textit{Doxygen} deste módulo).
 
 \subsection{Rect}
 
-A classe \textit{Rect} representa, ao seu nível mais simples, \textit{retângulos}. Eles são usados para representar a \textit{hitbox} dos diversos elementos do jogo (\textit{Player}, \textit{Lasers}, \textit{Platforms}, ...) como dos \textit{UI elements} (que área do ecrã é dedicada a ativar um botão, por exemplo).
+A classe \textit{Rect} representa, ao seu nível mais simples, \textit{retângulos}. Eles são usados para representar a \textbf{\textit{hitbox}} tanto dos diversos elementos do jogo (\textit{Player}, \textit{Lasers}, \textit{Platforms}, ...), como dos \textit{UI elements} (que área do ecrã é dedicada a ativar um botão, por exemplo).
 
-Cada \textit{Rect} é composto pelas coordenadas do seu ponto mais acima e à esquerda, tanto como pela sua largura e altura. Existem vários construtores disponíveis com propósitos diferentes: \textit{rect()}, \textit{rect\_from\_vec2d()}, \textit{rect\_from\_points()} (gera o retângulo definido por dois pontos).
+Cada \textit{Rect} é composto pelas \textbf{coordenadas} do seu ponto superior esquerdo, tanto como pela sua \textbf{largura} e \textbf{altura}. Existem vários construtores disponíveis com propósitos diferentes: \textit{rect()}, \textit{rect\_from\_vec2d()}, \textit{rect\_from\_points()} (gera o retângulo definido por dois pontos).
 
 \subsection{Sistema de Colisões}
 
-O nosso sistema de colisões foi construído pensando em várias camadas, isto para permitir que um determinado objecto só colida com os necessários.
+O nosso sistema de colisões foi construído pensando em várias \textbf{camadas}, isto para permitir que um determinado objecto só colida com os necessários, como por exemplo, podemos querer verificar se um jogador colide com uma plataforma, ficando parado no sítio onde colidir, ou se morre por colidir com \textit{lasers} --- \textit{lasers\_collide\_player()} ou espinhos --- \textit{player\_touches\_spike()}.
 
 \section{Rendering}
 
-O nosso sistema de rendering foi pensado como tendo várias camadas, isto é, sabemos que temos que desenhar o \textit{Player} por cima do \textit{background}, e que temos que desenhar os \textit{Lasers} por cima deles.
+O nosso sistema de \textbf{\textit{rendering}}, tal como o nosso sistema de colisões, foi pensado como tendo várias \textbf{camadas}, isto é, sabemos que temos que desenhar o \textbf{\textit{Player}} por cima do \textbf{\textit{background}}, e que temos que desenhar os \textbf{\textit{Lasers}} por cima deles.
 
-A solução encontrada para esta questão foi dedicar diversas funções de \textit{rendering} ao \textit{GameManager}. Isto permitiu-nos renderizar um nível em \textit{Campaign singleplayer}, a \textit{Switchboard} num dos computadores em \textit{Campaign Co-op}, os níveis e os diversos contadores (\textit{Score}) em modo \textit{Arcade}, etc.. O método de trocar entre estas funções de render será abordado quando analisarmos o \textit{GameManager}.
+A solução encontrada para esta questão foi dedicar diversas funções de \textbf{\textit{rendering}} ao \textit{GameManager}. Isto permitiu-nos renderizar um nível em \textit{Campaign} --- \textit{render\_level()}, a \textit{Switchboard} --- \textit{render\_switchboard()} num dos computadores em \textit{Campaign - Co-op}, os níveis e os diversos contadores (\textit{Score}) --- \textit{render\_score()} em modo \textit{Arcade} --- \textit{render\_arcade\_single()} | \textit{render\_arcade\_versus()}, etc.. O método de trocar entre estas funções de \textit{render} será abordado quando analisarmos o \textbf{\textit{GameManager}}.
 
-Outro aspeto peculiar é podermos aplicar filtros sobre o ecrã inteiro sem diminuir drasticamente o performance. Podemos definir várias funções extra para assumirem o papel de copiar do buffer temporário para o \textit{frame buffer}, que usam efeitos especiais, como foi realizado na \textit{Switchboard} para o efeito de o ecrã aparenter ter 'estática' na imagem (só quando o utilizador não cumpre uma tarefa corretamente).
+Outro aspeto peculiar é podermos aplicar \textbf{filtros} sobre o ecrã inteiro sem diminuir drasticamente a \textbf{performance}. É possível definir várias funções extra para assumirem o papel de copiar do \textbf{\textit{buffer} temporário} para o \textbf{\textit{frame buffer}}, que usam efeitos especiais, como foi realizado na \textit{Switchboard} para o efeito de o ecrã aparenter ter 'estática' na imagem (só quando o utilizador não cumpre uma tarefa corretamente) --- \textit{glitched\_switch\_double\_buffer()}. 
 
 \subsection{Bitmap}
 
-O código que usamos ler bitmaps foi parcialmente retirado da internet, mas com várias alterações para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}}que usamos (criados no GIMP).
+O código que usamos ler \textbf{bitmaps} foi parcialmente retirado da internet, mas com várias alterações para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}} que usamos (criados no GIMP).
 
-Todos os ficheiros externos necessários (\textit{bitmaps}) encontram-se organizados dentro de uma pasta \textbf{\textit{assets}}, cuja localização pode ser específicada ao iniciar o jogo (até um limite de 255 caracteres, incluindo os ficheiros no interior dessa pasta).
+Todos os ficheiros externos necessários (\textit{.bmp}) encontram-se organizados dentro de uma pasta \textbf{\textit{assets}}, cuja localização pode ser especificada ao iniciar o jogo (até um limite de 255 carateres, incluíndo os ficheiros no interior dessa pasta).
 
-Com o intuito de reduzir a quantidade de \textit{bitmaps} criados, ao desenhar no ecrã cada \textit{bitmap} normal, existe a opção de o desenhar alinhado à \textbf{esquerda}, ao \textbf{centro} ou à \textbf{direita} do ponto do ecrã indicado num argumento. Para além desse argumento existe ainda a possibilidade de desenhar o \textbf{simétrico} de cada \textit{bitmap} segundo quer o seu eixo (centrado no \textit{bitmap}) horizontal, vertical ou ambos. Esta segunda \textit{feature} foi especialmente útil e importante para as animações do jogador. 
+Com o intuito de reduzir a quantidade de \textit{bitmaps} criados, ao desenhar no ecrã cada \textit{bitmap} \textbf{"normal"}, existe a opção de o desenhar alinhado à \textbf{esquerda}, ao \textbf{centro} ou à \textbf{direita} do ponto do ecrã indicado num argumento. Para além desse argumento existe ainda a possibilidade de desenhar o \textbf{simétrico} de cada \textit{bitmap} segundo quer o seu eixo (centrado no \textit{bitmap}) horizontal, vertical ou ambos. Esta segunda \textit{feature} foi especialmente útil e importante para as animações do jogador. 
 
 Ao desenvolver o projeto considerámos necessário uma maneira de poder renderizar todas as nossas plataformas, paredes, espinhos e lasers de uma maneira mais dinâmica, para evitar criar uma nova sprite manualmente por cada objeto novo dessas classes. Assim implementamos uma função bitmap\_draw\_dynamic() que nos permite criar \textit{bitmaps} bastante reduzidos e que ocupam extremamente pouca memória RAM. Cada um destes \textit{bitmaps} pode ser subdividido em 9 quadrados, todos de tamanho igual, específico de cada imagem. A função irá depois reproduzir cada secção apropriadamente para produzir no ecrã uma imagem do tamanho pretendido.
 
@@ -649,11 +651,23 @@ Estas duas classes, \textit{Number} e \textit{Score}, poderiam ser facilmente ex
 % -> Level editor :(
 \section{Platforms e Spikes}
 
+A classe Platforms representa o conjunto de plataformas que existirão em cada nível, tanto em Campaign --- \textit{prototype\_platforms()}, como em Arcade --- \textit{new\_arcade\_platforms()}
+
 \section{Lasers}
+
+A classe Lasers representa o conjunto de lasers que existirão em cada nível. 
+
+No modo Campaign estes serão quatro, dois azuis, um vermelho e um rosa, só duas cores de lasers é que estarão ativas de cada vez (podendo-se definir quais cores) e não mudam de posição.
+
+Já no modo Arcade
 
 \subsection{Player}
 
 Animações
+
+\subsection{PlayerTwo}
+
+
 
 \subsection{Campaign}
 
@@ -717,7 +731,7 @@ Em cada frame lemos e interpretamos o maior número de mensagens possíveis. Par
 
 \subsection{Main loop}
 
-O \textit{main loop}} está dentro da função \textit{start\_game()}}. Esta última função inicializa todas as classes necessárias (\textit{InputEvents}, \textit{MouseCursor}, \textit{GameManager}), subscreve a todas as interrupções, inicializa uma seed aleatória no \textit{srand()}.
+O \textit{main loop} está dentro da função \textit{start\_game()}. Esta última função inicializa todas as classes necessárias (\textit{InputEvents}, \textit{MouseCursor}, \textit{GameManager}), subscreve a todas as interrupções, inicializa uma seed aleatória no \textit{srand()}.
 
 Durante o ciclo do \textit{driver\_receive()}, processamos o mais rápido possível os interrupção e aquando de uma interrupção do \textit{timer 0}, chamamos as funções \textit{update()}, \textit{render()} e a função para tratar do \textit{double buffering}, nesta ordem.
 
