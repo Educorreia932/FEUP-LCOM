@@ -581,80 +581,83 @@ Outro aspeto peculiar é podermos aplicar \textbf{filtros} sobre o ecrã inteiro
 
 \subsection{Bitmap}
 
-O código que usamos ler \textbf{bitmaps} foi parcialmente retirado da internet, mas com várias alterações para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}} que usamos (criados no GIMP).
+O código que usamos ler \textbf{bitmaps} foi parcialmente retirado da internet (do seguinte site:\newline
+http://difusal.blogspot.com/2014/09/minixtutorial-8-loading-bmp-images.html), mas com várias alterações (descritas em baixo) para melhor se ajustar ao tipo de \textbf{\textit{bitmaps}} que usamos (criados no GIMP).
 
 Todos os ficheiros externos necessários (\textit{.bmp}) encontram-se organizados dentro de uma pasta \textbf{\textit{assets}}, cuja localização pode ser especificada ao iniciar o jogo (até um limite de 255 carateres, incluíndo os ficheiros no interior dessa pasta).
 
-Com o intuito de reduzir a quantidade de \textit{bitmaps} criados, ao desenhar no ecrã cada \textit{bitmap} \textbf{"normal"}, existe a opção de o desenhar alinhado à \textbf{esquerda}, ao \textbf{centro} ou à \textbf{direita} do ponto do ecrã indicado num argumento. Para além desse argumento existe ainda a possibilidade de desenhar o \textbf{simétrico} de cada \textit{bitmap} segundo quer o seu eixo (centrado no \textit{bitmap}) horizontal, vertical ou ambos. Esta segunda \textit{feature} foi especialmente útil e importante para as animações do jogador. 
+Com o intuito de reduzir a quantidade de \textit{bitmaps} criados, ao desenhar no ecrã cada \textit{bitmap} \textbf{"normal"}, existe a opção de o desenhar alinhado à \textbf{esquerda}, ao \textbf{centro} ou à \textbf{direita} do ponto do ecrã indicado num argumento. Para além desse argumento existe ainda a possibilidade de desenhar o \textbf{simétrico} de cada \textit{bitmap} segundo quer o seu eixo (centrado no \textit{bitmap}) horizontal, vertical ou ambos. Esta segunda \textbf{\textit{feature}} foi especialmente útil e importante para as \textbf{animações} do jogador. 
 
-Ao desenvolver o projeto considerámos necessário uma maneira de poder renderizar todas as nossas plataformas, paredes, espinhos e lasers de uma maneira mais dinâmica, para evitar criar uma nova sprite manualmente por cada objeto novo dessas classes. Assim implementamos uma função bitmap\_draw\_dynamic() que nos permite criar \textit{bitmaps} bastante reduzidos e que ocupam extremamente pouca memória RAM. Cada um destes \textit{bitmaps} pode ser subdividido em 9 quadrados, todos de tamanho igual, específico de cada imagem. A função irá depois reproduzir cada secção apropriadamente para produzir no ecrã uma imagem do tamanho pretendido.
+Ao desenvolver o projeto considerámos necessário uma maneira de poder renderizar todas as nossas plataformas, paredes, espinhos e lasers de uma maneira mais \textbf{dinâmica}, para evitar criar uma nova sprite manualmente por cada objeto novo dessas classes. Assim implementamos uma função \textit{bitmap\_draw\_dynamic()} que nos permite criar \textit{bitmaps} bastante reduzidos e que ocupam extremamente pouca \textbf{memória RAM}. Cada um destes \textit{bitmaps} pode ser subdividido em \textbf{9 quadrados}, todos de tamanho igual, específico de cada imagem. A função irá depois reproduzir cada secção apropriadamente para produzir no ecrã uma imagem do tamanho pretendido.
 
-Existe ainda a possibilidade de cada pixel ser "multiplicado" por uma cor. Devido ao custo pesado de computação desta operação, decidimos que usar uma operação bitwise entre a cor do pixel e da cor a multiplicar, visto que o efeito que ela produz seja satisfatório o suficiente para as nossas necessidades, mantendo um baixo custo computacional. Esta operação irá sempre escurecer a cor do \textit{bitmap} original, e quando aplicado a um pixel branco irá ficar apenas a cor a multiplicar. Esta propriedade foi usada a renderizar todas as plataformas e paredes. 
+Existe ainda a possibilidade de cada \textit{pixel} ser "multiplicado" por uma cor. Devido ao custo pesado de computação desta operação, decidimos que usar uma operação \textbf{\textit{bitwise}} entre a cor do \textit{pixel} e da cor a multiplicar, visto que o efeito que ela produz seja satisfatório o suficiente para as nossas necessidades, mantendo um baixo \textbf{custo computacional}. Esta operação irá sempre escurecer a cor do \textit{bitmap} original, aplicando-lhe a cor multiplicada, e quando aplicado a um pixel branco irá ficar apenas a cor a multiplicar. Esta propriedade foi usada a renderizar todas as plataformas e paredes. 
 
-Todos os \textit{bitmaps} podem ser desenhados com "transparência", isto é, definimos a cor rosa, \textbf{0xFF00FF} (em RBG 888), como a cor que será sempre ignorada ao desenhar.
+Todos os \textit{bitmaps} podem ser desenhados com \textbf{"transparência"}, isto é, definimos a cor rosa, \textbf{0xFF00FF} (em RBG 888), como a cor que será sempre ignorada ao desenhar.
 
-O path para o diretório \textit{Assets} (onde se encontram todas as imagens), pode ser alterado como um \textit{command line argument} ao correr o projeto.
+O \textit{path} para o diretório \textit{Assets} (onde se encontram todas as imagens), pode ser alterado como um \textit{command line argument} ao correr o projeto.
 
 \subsection{Sprite}
 
-No nosso programa existem duas classes de \textit{sprite}: a \textbf{normal} e a \textbf{dinâmica}. A dinâmica é usada sempre que quisermos usar a função bitmap\_draw\_dynamic() referida acima, a normal é usada em todos os outros casos. Todas as \textit{sprites} têm \textit{getters} para o seu tamanho, que são usados mais tarde para gerar automaticamente as \textit{hitboxes} do \textit{player} e dos botões.
+No nosso programa existem duas classes de \textit{sprite}: a \textbf{normal} e a \textbf{dinâmica}. A \textbf{dinâmica} é usada sempre que quisermos usar a função \textit{bitmap\_draw\_dynamic()} referida acima, a \textbf{normal} é usada em todos os outros casos.
 
-Foi tomada a decisão de implementar as animações seguindo o popular \textit{Unity}. Este \textit{game engine} tem uma propriedade \textit{Animator} que pode ser acoplado a qualquer objeto com um \textit{Renderer}. O \textit{Animator} é apenas uma máquina de estados que indica, no momento de renderizar o objeto no ecrã, qual a \textit{Sprite}, textura ou \textit{3D Model} a usar.
+Foi tomada a decisão de implementar as animações seguindo o popular \textbf{\textit{Unity}}. Este \textit{game engine} tem uma propriedade \textit{Animator} que pode ser acoplado a qualquer objeto com um \textit{Renderer}. O \textit{Animator} é apenas uma máquina de estados que indica, no momento de renderizar o objeto no ecrã, qual a \textit{Sprite}, textura ou \textit{3D Model} a usar.
 
-O sistema que decidimos implementar está imbutido diretamente na nossa classe \textit{Sprite}, que permite criar cada objeto com até 255 \textit{bitmaps}. Para permitir a instanciação de tantos \textit{bitmaps}, recorremos a um construtor que aceita um número variável de argumentos. A nossa classe tem uma propriedade "estado da animação", que indica qual dos n \textit{bitmaps} a desenhar. Este estado pode obtido e alterado através de um par de setters e getters.
+O sistema que decidimos implementar está imbutido diretamente na nossa classe \textit{Sprite}, que permite criar cada objeto com até 255 \textit{bitmaps}. Para permitir a instanciação de tantos \textit{bitmaps}, recorremos a um construtor que aceita um número  \textbf{variável} de argumentos --- \textit{new\_sprite()}. A nossa classe tem uma propriedade "estado da animação", que indica qual dos \textit{n} \textit{bitmaps} a desenhar. Este \textbf{estado} pode ser obtido através de um \textit{getter} --- \textit{get\_animation\_state()} e alterado através de um \textit{setter} --- \textit{set\_animation\_state()}.
 
-A máquina de estados responsável por controlar qual o valor deste estado (por \textit{default} este valor é 0, ou seja, o primeiro \textit{bitmap}). Este tema será abordado novamente ao discutir o \textit{player}.
+A \textbf{máquina de estados} responsável por controlar qual o valor deste estado (por \textit{default} este valor é 0, ou seja, o primeiro \textit{bitmap}). Este tema será abordado novamente ao discutir o \textit{player}.
 
-Cada \textit{sprite} criada também tem um \textit{offset} individual que é utilizado ao renderizar o \textit{bitmap} no ecrã. Existe ainda um getter das \textit{sprites} (\textbf{Vec2d\_t sprite\_get\_size(Sprite\_t *s)})que permite obter o tamanho do primeiro \textit{bitmap} carregado, especialmente útil para obter dinâmicamente a \textit{hitbox} do \textit{player} e dos botões.\newline
+Cada \textit{sprite} criada também tem um \textbf{\textit{offset}} individual que é utilizado ao renderizar o \textit{bitmap} no ecrã. Existe ainda um getter das \textit{sprites} --- \textit{sprite\_get\_size()} que permite obter o tamanho do primeiro \textit{bitmap} carregado, especialmente útil para obter dinâmicamente a \textit{hitbox} do \textit{player} e dos botões.
 
 \section{User Inputs}
 
 \subsection{KbdInputEvents}
 
-Com o propósito de criar um \textit{dispatcher} eficiente, foi usado um \textit{map} para mapear cada \textit{scancode} ao seu valor respetivo. É registada sempre se uma tecla está a ser pressionada e se uma tecla foi pressionada durante este frame (isto é, se o utilizador empurrou para baixo a tecla).
+Com o propósito de criar um \textbf{\textit{dispatcher}} eficiente, foi usado um \textbf{\textit{map}} para mapear cada \textit{scancode} ao seu valor respetivo. É registada sempre se uma tecla está a ser pressionada e se uma tecla foi pressionada durante este frame (isto é, se o utilizador empurrou para baixo a tecla).
 
-A função \textbf{kbd\_input\_events\_process\_scancode()} trata de interpretar qualquer scancode que seja recebido do \textit{keyboard}.
+A função \textit{kbd\_input\_events\_process\_scancode()} trata de interpretar qualquer scancode que seja recebido do \textit{keyboard}.
 
-Para mais permito um acesso mais simples a estas informações a partir de qualquer ponto do programa, esta classe foi tornada um \textit{singleton}, com dois getters para saber se uma tecla se encontra premida, \textbf{get\_key(KeyboardMap\_t map)}, e se uma tecla foi premida neste frame, \textbf{get\_key\_down(KeyboardMap\_t map)}.
+Para mais é permitido um acesso mais simples a estas informações a partir de qualquer ponto do programa, esta classe foi tornada um \textit{singleton}, com dois \textit{getters} para saber se uma \textbf{tecla} se encontra premida --- \textit{get\_key()}, e se uma \textbf{tecla} foi premida neste frame, \textit{get\_key\_down()}.
 
-O \textit{KeyboardMap} utilizado como argumento é um \textit{enum} com todas as teclas suportadas. Isto também permite que se o layout do teclado for diferente do \textit{default}, os scancodes podem ser alterados apenas nesse \textit{enum}.
+O \textit{KeyboardMap} utilizado como argumento é um \textbf{\textit{enum}} com todas as teclas suportadas. Isto também permite que se o layout do teclado for diferente do \textit{default}, os scancodes podem ser alterados apenas nesse \textit{enum}.
 
-Para detetar se uma tecla foi premida num certo frame, foi necessário limpar esse segundo map no final de cada frame, isto é, após a chamada da função \textit{update()}, para garantir que os inputs são interpretados corretamente, recorrendo à função \textbf{reset\_kbd\_input\_state()}.\newline
+Para detetar se uma \textbf{tecla} foi premida num certo \textbf{\textit{frame}}, foi necessário limpar esse segundo \textit{map} no final de cada \textit{frame}, isto é, após a chamada da função \textit{update()}, para garantir que os inputs são interpretados corretamente, recorrendo à função \textit{reset\_kbd\_input\_state()}.
 
 \subsection{MouseInputEvents e MouseCursor}
 
-Para permitir saber se um dado botão começou a ser premido num determinado frame e para garantir que o \textit{delta} do rato entre frames é o correto, recorremos ao mesmo truque do \textit{KbdInputEvents}, utilizando a função \textbf{reset\_mouse\_input\_state()}.
+Para permitir saber se um dado \textbf{botão do rato} começou a ser premido num determinado \textit{frame} e para garantir que o \textbf{\textit{delta}} (deslocação) do rato entre \textit{frames} é o correto, recorremos à mesma ténica do \textit{KbdInputEvents}, utilizando a função \textit{reset\_mouse\_input\_state()}.
 
 \section{Graphical User Interface}
 
-Este módulo é composto pelas classes Botão, \textit{Slider}, \textit{Knob}, \textit{Number} (usado internamente para o Score) e o \textit{Score}.
+Este módulo é composto pelas classes \textit{Button}, \textit{Slider}, \textit{Knob}, \textit{Number} (usado internamente para o \textit{Score}) e o próprio \textit{Score}.
 
-Todos os elementos de \textit{UI} com que o utilizador pode interagir (botão, \textit{sliders} e \textit{knob}) têm as propriedades de \textit{hidden} e \textit{active}. Quando a propriedade \textit{hidden} se encontra ativa, não é renderizado e não é possível o utilizador interagir com ele. Quando a propriedade \textit{active} se encontra ativa, ele é renderizado e é possível o utilizador interagir com ele (se não estiver ativo, é renderizado com uma cor mais escura e o utilizador não pode interagir com ele, propriedade usada quando um jogador não tem acesso a um \textit{power up}).
+Todos os \textbf{elementos de \textit{UI}} com que o utilizador pode interagir (botão, \textit{sliders} e \textit{knob}) têm as propriedades de \textit{hidden} e \textit{active}. Quando a propriedade \textbf{\textit{hidden}} se encontra ativa, não é renderizado e não é possível o utilizador interagir com ele. Quando a propriedade \textbf{\textit{active}} se encontra true, ele é renderizado e é possível o utilizador interagir com ele (se não estiver ativo, é renderizado com uma cor mais \textbf{escura} e o utilizador não pode interagir com ele, propriedade usada quando um jogador não tem acesso a um \textit{power up}).
 
-Estes possuem ainda um estado de ativo ou inativo e a qualquer momento é possível mudar o seu estado --- set\_activation(). Caso um elemento esteja inativo, a sua cor aparece ligeiramente menos saturada e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é clicável, se for um \textit{Slider}, não é 'arrastável' e, por último, se for uma \textit{Knob}, não é possível rodá-la. Se estiver ativo, a sua aparência é normal e já é permitida a interação com o utilizador.
+Estes possuem ainda um estado de \textbf{ativo} ou \textbf{inativo} e a qualquer momento é possível mudar o seu estado --- \textit{set\_activation()}. Caso um elemento esteja \textbf{inativo}, a sua cor aparece ligeiramente menos \textbf{saturada} e não é possível interagir com o mesmo, ou seja, se for um \textit{Button}, não é \textbf{clicável}, se for um \textit{Slider}, não é \textbf{arrastá-lo} e, por último, se for uma \textit{Knob}, não é possível \textbf{rodá-la}. Se estiver ativo, a sua aparência é \textbf{normal} e já é permitida a \textbf{interação} com o utilizador.
 
-Sempre que o utilizador passa o cursor por cima de algum elemento de \textit{UI} com que ele possa interagir, ele será rendered com uma saturação ligeiramente diferente, com o propósito de dar \textit{feedback} visual ao utilizador de que ele pode interagir com o elemento.
+Sempre que o utilizador passa o \textbf{cursor} por \textbf{cima} de algum elemento de \textit{UI} com que ele possa interagir, ele será rendered com uma saturação ligeiramente diferente, com o propósito de dar \textit{feedback} visual ao utilizador de que ele pode interagir com o elemento --- \textit{render\_button()} | \textit{render\_slider()} | \textit{render\_knob()}.
 
-Um desafio inesperado (mas óbvio) que surgiu neste módulo foi que quando o utilizador 'agarra' num elemento de UI, por exemplo o \textit{slider} ou a \textit{knob}, temos que ter em conta o offset desde o ponto que indica onde uma \textit{Sprite} é desenhada e o ponto onde o utilizador clicou, tendo que fazer sempre um cálculo para garantir que interpretamos e renderizamos corretamente as ações do utilizador.  
+Um \textbf{desafio} inesperado (mas óbvio) que surgiu neste módulo foi que quando o utilizador "agarra" \textbf{num elemento de UI}, por exemplo o \textit{Slider} ou a \textit{Knob}, temos que ter em conta o \textit{offset} desde o ponto que indica onde uma \textit{Sprite} é desenhada e o \textbf{ponto} onde o utilizador clicou, tendo que fazer sempre um \textbf{cálculo} para garantir que interpretamos e renderizamos corretamente as ações do utilizador.  
 
 \subsection{Button}
 
-Tal como o nome indica, esta "classe" representa um simples botão com uma aparência desejada e formato retangular que pode ser clicado para ativar alguma funcionalidade.
-Caso esteja ativo e o utilizador clicar nele com o cursor do rato, ativa a sua funcionalidade.
+Tal como o nome indica, esta "classe" representa um simples \textbf{botão} com uma \textbf{aparência} desejada e formato \textbf{retangular} que pode ser \textbf{clicado} para ativar alguma funcionalidade.
 
-Para este propósito, cada botão pode ser instanciado com a sua pŕopria \textit{Sprite} ou usar uma já definida noutro ponto do jogo (para evitar carregar os mesmos \textit{bitmaps} em memória e duplicados.
+Caso esteja \textbf{ativo} e o utilizador clicar nele com o \textbf{cursor do rato}, ativa a sua \textbf{funcionalidade}.
 
-Cada botão também tem definida uma \textit{hitbox}, isto é, a área do ecrã em que o cursor pode ativar o botão. Ao instanciar um botão temos a escolha de ajustar esta \textit{hitbox} automaticamente ao tamanho da \textit{Sprite}.
+Para este propósito, cada botão pode ser instanciado com a sua pŕopria \textit{Sprite}, especificadando \textbf{manualmente} o \textbf{tamanho} do botão --- \textit{new\_button()} ou auto-definindo-o como o tamanho da própria \textit{Sprite} --- \textit{new\_button\_auto\_size()}.
+Pode ainda ser instanciado usando uma \textit{Sprite} já \textbf{definida}noutro ponto do jogo (para evitar carregar os mesmos \textit{bitmaps} em memória e duplicados).
 
-Para os botões provocarem alterações no código, cada um deles tem um apontador para função (\textbf{void (*func)()}) que é chamado quando o utilizador clica nele.
+Cada \textbf{botão} também tem definida uma \textbf{\textit{hitbox}}, isto é, a área do ecrã em que o cursor pode ativar o botão. Ao instanciar um botão temos a escolha de ajustar esta \textit{hitbox} automaticamente ao tamanho da \textit{Sprite} (como foi falado em cima).
+
+Para os botões provocarem alterações no código, cada um deles tem um \textbf{apontador para função} ---\textit{void (*func)()}, que é chamado quando o utilizador \textbf{clica} nele.
 
 \subsection{Slider}
 
-Uma barra vertical ou horizontal com um manípulo no seu interior que pode ser deslizado e colocado numa posição que provocará um efeito de \textit{magnitude} proporcional à posição do manípulo no \textit{Slider} relativamente à sua extremidade. Este \textit{slider} é composto por uma \textit{sprite} de \textit{background} e outra para o \textit{handle} (parte com que o utilizador interage).
+Um \textbf{\textit{Slider}} consite numa \textbf{barra} com um \textbf{manípulo} no seu interior que pode ser \textbf{deslizado} e colocado numa posição que provocará um efeito de \textbf{\textit{magnitude}} proporcional à posição do manípulo no \textit{Slider}, relativamente à sua extremidade. Este \textit{Slider} é composto por uma \textit{sprite} de \textit{background} e outra para o \textit{handle} (parte com que o utilizador interage).
 
-Cada \textit{slider} tem um ponto inicial e final, que podem estar alinhados em qualquer direção (horizontal, vertical, diagonal), desde que o inicial seja o ponto mais acima e à esquerda. Esta restrição não traz qualquer problema, pois quando implementámos o \textit{slider} vertical para o multiplicador do salto, em que o início deveria ser em baixo, simplesmente interpretamos o input ao contrário (255 passa a 0 e vice-versa).
+Cada \textit{slider} tem um ponto inicial e final, que podem estar alinhados em qualquer direção (horizontal, vertical, diagonal), desde que o inicial seja o ponto mais \textbf{acima} e à \textbf{esquerda}. Esta restrição não traz qualquer problema, pois quando implementámos o \textit{slider} \textbf{vertical} para o \textbf{multiplicador do salto}, em que o início deveria ser em \textbf{baixo}, simplesmente interpretamos o input ao contrário (255 passa a 0 e vice-versa).
 
-Tal como o botão, o slider também tem um apontador para função (\textbf{void (*func)(uint8\_t)}), que é chamada sempre que o utilizador larga a \textit{handle}, enviando como argumento uma aproximação entre [0, número de estados máximos] (normalmente 255) da posição em que o utilizador largou o \textit{handle}, desdo o ponto inicial até ao ponto final.
+Tal como o botão, o slider também tem um apontador para função --- \textit{void (*func)(uint8\_t)}, que é chamada sempre que o utilizador \textbf{larga} a \textit{handle}, enviando como argumento uma \textbf{aproximação} entre [0, número de estados máximos] (normalmente 255) da \textbf{posição} em que o utilizador \textbf{largou} o \textit{handle}, desdo o ponto inicial até ao ponto final.
 
 \subsection{Knob}
 
